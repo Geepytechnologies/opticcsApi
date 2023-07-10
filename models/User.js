@@ -1,0 +1,232 @@
+const createUserTable = `CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+    phone VARCHAR(255) NOT NULL
+    state VARCHAR(255) NOT NULL
+    lga VARCHAR(255) NOT NULL
+    ward VARCHAR(255) NOT NULL
+    healthFacility VARCHAR(255) NOT NULL
+    healthWorker VARCHAR(255) NOT NULL
+)`;
+
+const healthpersonnel = {
+  id: id,
+  name: String,
+  email: String,
+  password: String,
+  phone: String,
+  state: String,
+  lga: String,
+  ward: String,
+  healthFacility: String,
+  healthWorker: String,
+  cadre: ["Midwife", "Nurse", "CHEW", "JCHEW", "CHO", "Others"],
+  patients: {
+    firstVisit: {
+      date: createdAt,
+      PersonalInformation: {
+        HospitalNumber: String,
+        FirstName: String,
+        middleName: String,
+        surname: String,
+        Address: String,
+        Gravidity: String,
+        parity: String,
+        LMP: String,
+        EDD: String,
+        EGA: String,
+        DoYouFeelthebabysmovement: String,
+        doyouknowdateoffirtbabymovement: String,
+        doyouknowdateoflastbabymovement: String,
+      },
+      dailyHabitsAndLifestyle: {
+        Doyouworkoutsidethehome: String,
+        Doyouwalklongdistances: String,
+        durationofwalkingdistanceinminutes: String,
+        heavyloads: String,
+        sleephours: String,
+        dailymealcount: String,
+        mealinthelasttwodays: String,
+        nonfoodsubstances: String,
+        babylessthanayear: String,
+        doYou: String,
+        WhodoyouLivewith: String,
+        Didanyoneever: String,
+        frightened: String,
+      },
+      obstetricHistory: {
+        convulsionduringapregnancy: String,
+        caesareansection: String,
+        tearsthroughsphincter: String,
+        haemorrhage: String,
+        Stillbirths: String,
+        prematureDeliveries: String,
+        lowbirthweightbabies: String,
+        deadbabies: String,
+        others: String,
+        breastfedbefore: String,
+        durationyoubreastfedyourbaby: String,
+        breastfeedingproblems: String,
+        others: String,
+      },
+      medicationHistory: {
+        allergies: String,
+        symptoms: string,
+        pulmonary: {
+          cough: String,
+          difficultyBreathing: String,
+        },
+        cardiovascular: {
+          palpitation: String,
+          swellingoffeet: String,
+          severechestpain: String,
+          Severeepigastricpain: String,
+          Severetirednesss: String,
+          difficultylyingflat: String,
+        },
+        neurologic: {
+          headaches: String,
+          dizziness: String,
+          convulsions: String,
+        },
+        gastrointestinal: {
+          severeabdominalpain: String,
+          vomiting: String,
+          diarrhoea: String,
+        },
+        urinary: {
+          pain: String,
+          severeflankpain: String,
+          bloodinurine: String,
+          swollenface: String,
+        },
+        Gynaecological: {
+          Vaginaldischarge: String,
+          painduringsex: String,
+          syphillis: String,
+        },
+        historyof: {
+          drycough: String,
+          weightloss: String,
+          nightsweat: String,
+          tuberculosisdiagnosed: String,
+          tuberculosistreated: String,
+        },
+        diagnosedof: {
+          heartdisease: String,
+          Anaemia: String,
+          kidney: String,
+          sicklecell: String,
+          diabetes: String,
+          goitre: String,
+          hiv: String,
+          covid: String,
+          anyother: String,
+          admitted: String,
+          reasonforadmission: String,
+          surgery: String,
+          reasonforsurgery: String,
+        },
+        onmedications: {
+          traditional: String,
+          herbalremedies: String,
+          vitamins: String,
+          otcDrugs: String,
+          dietary: String,
+          others: String,
+          tetanus: String,
+          tetanusdoses: String,
+          lastTetanusdose: String,
+          covidVaccination: String,
+        },
+      },
+    },
+    every: {
+      facialExpression: {
+        responsive: String,
+        dull: String,
+        unresponsive: String,
+      },
+      generalCleanliness: {
+        noVisibleDirt: String,
+        noodour: String,
+        visibleDirt: String,
+        odour: String,
+      },
+      herSkin: {
+        freeFromBruises: String,
+        hasBruises: String,
+      },
+      herConjunctiva: {
+        pink: String,
+        palePink: String,
+        whiteInColour: String,
+      },
+      sclera: {
+        white: String,
+        tinge: String,
+        deepYellow: String,
+        dirtyWhite: String,
+      },
+      bloodpressure: String,
+      adbominalExamination: {
+        abdomenScars: String,
+        palpateAndEstimatefundusdocumentation: String,
+        distancebtwTopOfFundusinWeeks: String,
+        cmFromTopfundusdocumentation: String,
+        distancebtwTopOfFundusinCM: String,
+      },
+    },
+  },
+  messages: [
+    {
+      from: String,
+      date: String,
+      status: {
+        delivered: Boolean,
+      },
+    },
+  ],
+  schedule: {
+    name: String,
+    state: String,
+    lga: String,
+    dateFrom: String,
+    dateTo: String,
+    completed: { type: Boolean, default: false },
+    confirmed: { type: Boolean, default: false },
+  },
+  testing: {
+    Test: {
+      patientID: String,
+      ANCbooking: String,
+      date: String,
+      time: String,
+      completed: { type: Boolean, default: false },
+      testResult: {
+        result: String,
+      },
+    },
+  },
+  myTests: [
+    {
+      patientID: String,
+      ANCbooking: String,
+      date: String,
+      time: String,
+      completed: Boolean,
+      testResult: {
+        result: String,
+      },
+    },
+  ],
+  deliveryReport: {
+    patientID: String,
+    gender: String,
+    NoOfChildren: String,
+    deliveryDate: String,
+    deliveryTime: String,
+  },
+};
