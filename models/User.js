@@ -13,7 +13,7 @@ const createUserTable = `CREATE TABLE users(
 
 //Table: healthpersonnel
 const createHealthPersonnelTable = `CREATE TABLE healthpersonnel (
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255),
   email VARCHAR(255),
   password VARCHAR(255),
@@ -27,6 +27,20 @@ const createHealthPersonnelTable = `CREATE TABLE healthpersonnel (
   accountType VARCHAR(255),
   refreshToken VARCHAR(255)
 )`;
+
+//Table: healthpersonnel
+const createHealthAdminTable = `CREATE TABLE healthadmin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(255),
+    lastname VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    phone VARCHAR(255),
+    staffid VARCHAR(255),
+    accountType VARCHAR(255),
+    otp VARCHAR(255)
+  );
+  `;
 
 //-- Table: patients
 const createPatientsTable = `CREATE TABLE patients (

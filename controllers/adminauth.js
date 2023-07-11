@@ -9,21 +9,18 @@ const {
   getExistingPhoneQuery,
   createUserQuery,
   updateUserRefresh,
-  getRefreshToken,
-} = require("../queries/user.js");
+} = require("../queries/adminUser.js");
 
 const signup = async (req, res, next) => {
   const {
-    name,
+    firstname,
+    lastname,
     email,
+    password,
     phone,
-    state,
-    lga,
-    ward,
-    healthFacility,
-    healthWorker,
-    cadre,
+    staffid,
     accountType,
+    otp,
   } = req.body;
 
   const existingEmail = () => {
@@ -71,17 +68,14 @@ const signup = async (req, res, next) => {
     return new Promise((resolve, reject) => {
       db.query(
         createUserQuery(
-          name,
+          firstname,
+          lastname,
           email,
-          hashedpassword,
+          password,
           phone,
-          state,
-          lga,
-          ward,
-          healthFacility,
-          healthWorker,
-          cadre,
-          accountType
+          staffid,
+          accountType,
+          otp
         ),
         (err, result) => {
           if (err) {
@@ -194,7 +188,6 @@ const signin = async (req, res, next) => {
 
     //save refresh token to the user model
     const updatedUser = await createRefresh(refreshToken);
-    console.log(updatedUser);
 
     // Creates Secure Cookie with refresh token
     res.cookie("token", refreshToken, {
@@ -227,7 +220,7 @@ const changepassword = async (req, res, next) => {
   };
   const updateUser = (password) => {
     const q = `
-        UPDATE healthpersonnel
+        UPDATE healthadmin
         SET password = '${password}'
         WHERE email = '${req.body.email}'
           `;
@@ -370,30 +363,6 @@ const resetPassword = async (req, res, next) => {
 };
 
 const signout = async (req, res, next) => {
-  const existingRefresh = (refreshToken) => {
-    return new Promise((resolve, reject) => {
-      db.query(getRefreshToken(refreshToken), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
-  };
-  const updateRefresh = (email, refreshToken) => {
-    return new Promise((resolve, reject) => {
-      db.query(updateUserRefresh(email, refreshToken), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
-  };
   // On client, also delete the accessToken
 
   const cookies = req.cookies;
@@ -401,7 +370,11 @@ const signout = async (req, res, next) => {
   const refreshToken = cookies.token;
 
   // Is refreshToken in db?
-  const foundUser = await existingRefresh();
+  const foundUser = await prisma.user.findUnique({
+    where: {
+      refreshtoken: refreshToken,
+    },
+  });
   if (!foundUser) {
     res.clearCookie("token", {
       httpOnly: true,
@@ -413,11 +386,14 @@ const signout = async (req, res, next) => {
 
   // Delete refreshToken in db
   foundUser.refreshtoken = "";
-
-  const updatedUser = await updateRefresh(
-    foundUser.email,
-    foundUser.refreshToken
-  );
+  const updatedUser = await prisma.user.update({
+    where: {
+      refreshtoken: refreshToken,
+    },
+    data: {
+      refreshtoken: foundUser.refreshtoken,
+    },
+  });
   console.log(updatedUser);
 
   res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: true });

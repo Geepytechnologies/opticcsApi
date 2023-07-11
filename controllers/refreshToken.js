@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { getRefreshToken } = require("../queries/user");
+// const { getRefreshToken } = require("../queries/user");
 const db = require("../config/db");
 
 const existingRefresh = (refreshToken) => {
@@ -9,6 +10,7 @@ const existingRefresh = (refreshToken) => {
         reject(err);
       } else {
         const user = result[0];
+        console.log({ fromrefresh: user });
         resolve(user);
       }
     });
@@ -23,7 +25,7 @@ const handleRefreshToken = async (req, res) => {
   try {
     const foundUser = await existingRefresh(refreshToken);
     if (!foundUser) {
-      res.status(403).json("User not Found");
+      return res.status(403).json("User not Found");
     }
     // evaluate jwt
     jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {

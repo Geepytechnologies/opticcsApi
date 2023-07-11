@@ -3,6 +3,7 @@ const express = require("express");
 const db = require("./config/db");
 const app = express();
 const authRoute = require("./routes/auth");
+const adminAuthRoute = require("./routes/adminAuth");
 const userRoute = require("./routes/users");
 const refreshTokenRoute = require("./routes/refreshToken");
 const { createUserQuery } = require("./queries/user");
@@ -17,6 +18,7 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+// app.use("/api/auth", adminAuthRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/refresh", refreshTokenRoute);
