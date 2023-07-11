@@ -11,6 +11,182 @@ const createUserTable = `CREATE TABLE users(
     healthWorker VARCHAR(255) NOT NULL
 )`;
 
+//Table: healthpersonnel
+const createHealthPersonnelTable = `CREATE TABLE healthpersonnel (
+  id INT AUTO_INCREMENT,
+  name VARCHAR(255),
+  email VARCHAR(255),
+  password VARCHAR(255),
+  phone VARCHAR(255),
+  state VARCHAR(255),
+  lga VARCHAR(255),
+  ward VARCHAR(255),
+  healthFacility VARCHAR(255),
+  healthWorker VARCHAR(255),
+  cadre VARCHAR(255),
+  accountType VARCHAR(255),
+  refreshToken VARCHAR(255)
+)`;
+
+//-- Table: patients
+const createPatientsTable = `CREATE TABLE patients (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  date DATETIME,
+  hospitalNumber VARCHAR(255),
+  firstName VARCHAR(255),
+  middleName VARCHAR(255),
+  surname VARCHAR(255),
+  address VARCHAR(255),
+  gravidity VARCHAR(255),
+  parity VARCHAR(255),
+  LMP VARCHAR(255),
+  EDD VARCHAR(255),
+  EGA VARCHAR(255),
+  doYouFeelTheBabysMovement VARCHAR(255),
+  doYouKnowDateOfFirstBabyMovement VARCHAR(255),
+  doYouKnowDateOfLastBabyMovement VARCHAR(255),
+  doYouWorkOutsideTheHome VARCHAR(255),
+  doYouWalkLongDistances VARCHAR(255),
+  durationOfWalkingDistanceInMinutes VARCHAR(255),
+  heavyLoads VARCHAR(255),
+  sleepHours VARCHAR(255),
+  dailyMealCount VARCHAR(255),
+  mealInTheLastTwoDays VARCHAR(255),
+  nonFoodSubstances VARCHAR(255),
+  babyLessThanAYear VARCHAR(255),
+  doYou VARCHAR(255),
+  whoDoYouLiveWith VARCHAR(255),
+  didAnyoneEver VARCHAR(255),
+  frightened VARCHAR(255),
+  convulsionDuringAPregnancy VARCHAR(255),
+  caesareanSection VARCHAR(255),
+  tearsThroughSphincter VARCHAR(255),
+  haemorrhage VARCHAR(255),
+  stillbirths VARCHAR(255),
+  prematureDeliveries VARCHAR(255),
+  lowBirthWeightBabies VARCHAR(255),
+  deadBabies VARCHAR(255),
+  obstetricOthers VARCHAR(255),
+  breastfedBefore VARCHAR(255),
+  durationYouBreastfedYourBaby VARCHAR(255),
+  breastfeedingProblems VARCHAR(255),
+  medicationAllergies VARCHAR(255),
+  medicationSymptoms VARCHAR(255),
+  pulmonaryCough VARCHAR(255),
+  pulmonaryDifficultyBreathing VARCHAR(255),
+  cardiovascularPalpitation VARCHAR(255),
+  cardiovascularSwellingOfFeet VARCHAR(255),
+  cardiovascularSevereChestPain VARCHAR(255),
+  cardiovascularSevereEpigastricPain VARCHAR(255),
+  cardiovascularSevereTiredness VARCHAR(255),
+  cardiovascularDifficultyLyingFlat VARCHAR(255),
+  neurologicHeadaches VARCHAR(255),
+  neurologicDizziness VARCHAR(255),
+  neurologicConvulsions VARCHAR(255),
+  gastrointestinalSevereAbdominalPain VARCHAR(255),
+  gastrointestinalVomiting VARCHAR(255),
+  gastrointestinalDiarrhoea VARCHAR(255),
+  urinaryPain VARCHAR(255),
+  urinarySevereFlankPain VARCHAR(255),
+  urinaryBloodInUrine VARCHAR(255),
+  urinarySwollenFace VARCHAR(255),
+  gynaecologicalVaginalDischarge VARCHAR(255),
+  gynaecologicalPainDuringSex VARCHAR(255),
+  gynaecologicalSyphillis VARCHAR(255),
+  historyOfDryCough VARCHAR(255),
+  historyOfWeightLoss VARCHAR(255),
+  historyOfNightSweat VARCHAR(255),
+  historyOfTuberculosisDiagnosed VARCHAR(255),
+  historyOfTuberculosisTreated VARCHAR(255),
+  diagnosedOfHeartDisease VARCHAR(255),
+  diagnosedOfAnaemia VARCHAR(255),
+  diagnosedOfKidney VARCHAR(255),
+  diagnosedOfSickleCell VARCHAR(255),
+  diagnosedOfDiabetes VARCHAR(255),
+  diagnosedOfGoitre VARCHAR(255),
+  diagnosedOfHIV VARCHAR(255),
+  diagnosedOfCOVID VARCHAR(255),
+  diagnosedOfAnyOther VARCHAR(255),
+  admitted VARCHAR(255),
+  reasonForAdmission VARCHAR(255),
+  surgery VARCHAR(255),
+  reasonForSurgery VARCHAR(255),
+  traditionalMedications VARCHAR(255),
+  herbalRemedies VARCHAR(255),
+  vitamins VARCHAR(255),
+  otcDrugs VARCHAR(255),
+  dietarySupplements VARCHAR(255),
+  otherMedications VARCHAR(255),
+  tetanus VARCHAR(255),
+  tetanusDoses VARCHAR(255),
+  lastTetanusDose VARCHAR(255),
+  covidVaccination VARCHAR(255),
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
+//-- Table: messages
+const createMessagesTable = `CREATE TABLE messages (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  from VARCHAR(255),
+  date DATETIME,
+  delivered BOOLEAN,
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
+//-- Table: schedule
+const createScheduleTable = `CREATE TABLE schedule (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  name VARCHAR(255),
+  state VARCHAR(255),
+  lga VARCHAR(255),
+  dateFrom VARCHAR(255),
+  dateTo VARCHAR(255),
+  completed BOOLEAN DEFAULT FALSE,
+  confirmed BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
+//-- Table: testing
+const createTestingTable = `CREATE TABLE testing (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  patientID VARCHAR(255),
+  ANCbooking VARCHAR(255),
+  date VARCHAR(255),
+  time VARCHAR(255),
+  completed BOOLEAN DEFAULT FALSE,
+  result VARCHAR(255),
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
+//-- Table: myTests
+const createmyTestsTable = `CREATE TABLE myTests (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  patientID VARCHAR(255),
+  ANCbooking VARCHAR(255),
+  date VARCHAR(255),
+  time VARCHAR(255),
+  completed BOOLEAN,
+  result VARCHAR(255),
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
+//-- Table: deliveryReport
+const createDeliveryReportTable = `CREATE TABLE deliveryReport (
+  id INT PRIMARY KEY,
+  healthpersonnel_id INT,
+  patientID VARCHAR(255),
+  gender VARCHAR(255),
+  NoOfChildren VARCHAR(255),
+  deliveryDate VARCHAR(255),
+  deliveryTime VARCHAR(255),
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id)
+)`;
+
 const healthpersonnel = {
   id: id,
   name: String,
