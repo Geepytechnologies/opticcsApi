@@ -245,30 +245,30 @@ const signin = async (req, res, next) => {
   try {
     const user = await existingEmail();
     console.log({ user: user });
-    if (!user) return next(createError(404, "User not found"));
+    if (!user) return res.status(404).json("User not found");
     const isMatched = bcrypt.compareSync(req.body.password, user.password);
     if (!isMatched) return next(createError(400, "wrong credentials"));
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-      expiresIn: "60s",
+      expiresIn: "10d",
     });
 
     //refresh Token
-    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-      expiresIn: "1d",
-    });
+    // const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
+    //   expiresIn: "1d",
+    // });
 
     //save refresh token to the user model
-    const updatedUser = await createRefresh(refreshToken);
-    console.log(updatedUser);
+    // const updatedUser = await createRefresh(refreshToken);
+    // console.log(updatedUser);
 
     // Creates Secure Cookie with refresh token
-    res.cookie("token", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      maxAge: 24 * 60 * 60 * 1000,
+    res.cookie("token", accessToken, {
+      // httpOnly: false,
+      // secure: true,
+      // sameSite: "None",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
     const { password, ...others } = user;

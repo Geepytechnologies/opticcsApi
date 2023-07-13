@@ -36,7 +36,7 @@ const createHealthAdminTable = `CREATE TABLE healthadmin (
     phone VARCHAR(255),
     staffid VARCHAR(255),
     accountType VARCHAR(255),
-    otp VARCHAR(255)
+    refreshToken VARCHAR(255)
   );
   `;
 

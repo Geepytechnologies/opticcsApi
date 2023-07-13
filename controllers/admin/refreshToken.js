@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { getRefreshToken } = require("../../queries/user/user");
+const { getRefreshToken } = require("../../queries/admin/adminUser");
 // const { getRefreshToken } = require("../queries/user");
 const db = require("../../config/db");
 
