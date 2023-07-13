@@ -136,7 +136,7 @@ const signup = async (req, res, next) => {
   };
   const newUser = () => {
     const salt = bcrypt.genSaltSync(10);
-    const hashedpassword = bcrypt.hashSync(req.body.password, salt);
+    const hashedpassword = bcrypt.hashSync(password, salt);
     return new Promise((resolve, reject) => {
       db.query(
         createUserQuery(
