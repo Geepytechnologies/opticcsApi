@@ -7,9 +7,15 @@ const {
   changepassword,
   forgotpassword,
   verifyEmail,
-} = require("../controllers/adminauth");
+  confirmOtp,
+  sendOtp,
+} = require("../../controllers/user/auth");
 
 router.post("/signup", signup);
+
+router.post("/sendOtp", sendOtp);
+
+router.post("/confirmOtp", confirmOtp);
 
 router.put("/changepassword", changepassword);
 

@@ -1,27 +1,90 @@
 const bcrypt = require("bcryptjs");
-const { createError } = require("../middlewares/error.js");
+const { createError } = require("../../middlewares/error.js");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const db = require("../config/db.js");
+const db = require("../../config/db.js");
 const {
   getExistingEmailQuery,
   getExistingUserQuery,
   getExistingPhoneQuery,
   createUserQuery,
   updateUserRefresh,
-} = require("../queries/adminUser.js");
+} = require("../../queries/admin/adminUser.js");
+const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
+const request = require("request");
+
+const sendOtp = async (req, res) => {
+  const options = {
+    method: "POST",
+    url: "https://api.sendchamp.com/api/v1/verification/create",
+    headers: {
+      Accept: "application/json,text/plain,*/*",
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+    },
+    body: JSON.stringify({
+      channel: "sms",
+      sender: "SAlert",
+      token_type: "numeric",
+      token_length: 4,
+      expiration_time: 2,
+      customer_mobile_number: req.body.mobile_number,
+      meta_data: { description: "demo" },
+      in_app_token: false,
+    }),
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while sending OTP." });
+    }
+    const mydata = JSON.parse(body);
+    console.log(mydata);
+    res.json(mydata);
+  });
+};
+const confirmOtp = async (req, res) => {
+  const options = {
+    method: "POST",
+    url: "https://api.sendchamp.com/api/v1/verification/confirm",
+    headers: {
+      Accept: "application/json,text/plain,*/*",
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+    },
+    body: JSON.stringify({
+      verification_reference: req.body.verification_reference,
+      verification_code: req.body.verification_code,
+      channel: "sms",
+      token_type: "numeric",
+      token_length: 4,
+      expiration_time: 2,
+      meta_data: { description: "demo" },
+      in_app_token: false,
+    }),
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while sending OTP." });
+    }
+    const mydata = JSON.parse(body);
+    console.log(mydata);
+    res.json(mydata);
+  });
+};
 
 const signup = async (req, res, next) => {
-  const {
-    firstname,
-    lastname,
-    email,
-    password,
-    phone,
-    staffid,
-    accountType,
-    otp,
-  } = req.body;
+  const { firstname, lastname, email, password, phone, staffid, accountType } =
+    req.body;
 
   const existingEmail = () => {
     return new Promise((resolve, reject) => {
@@ -64,18 +127,17 @@ const signup = async (req, res, next) => {
   };
   const newUser = () => {
     const salt = bcrypt.genSaltSync(10);
-    const hashedpassword = bcrypt.hashSync(req.body.password, salt);
+    const hashedpassword = bcrypt.hashSync(password, salt);
     return new Promise((resolve, reject) => {
       db.query(
         createUserQuery(
           firstname,
           lastname,
           email,
-          password,
+          hashedpassword,
           phone,
           staffid,
-          accountType,
-          otp
+          accountType
         ),
         (err, result) => {
           if (err) {
@@ -101,6 +163,7 @@ const signup = async (req, res, next) => {
     if (phone) {
       return next(createError(409, "Phone number already exists"));
     }
+
     // Create a new user
     const newuser = await newUser();
 
@@ -408,4 +471,6 @@ module.exports = {
   forgotpassword,
   verifyEmail,
   resetPassword,
+  sendOtp,
+  confirmOtp,
 };

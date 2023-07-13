@@ -2,11 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const db = require("./config/db");
 const app = express();
-const authRoute = require("./routes/auth");
-const adminAuthRoute = require("./routes/adminAuth");
-const userRoute = require("./routes/users");
-const refreshTokenRoute = require("./routes/refreshToken");
-const { createUserQuery } = require("./queries/user");
+const authRoute = require("./routes/user/auth");
+const patientRoute = require("./routes/user/patients");
+const adminAuthRoute = require("./routes/admin/adminAuth");
+const adminUserRoute = require("./routes/admin/users");
+const userRoute = require("./routes/user/users");
+const refreshTokenRoute = require("./routes/admin/refreshToken");
+const { createUserQuery } = require("./queries/user/user");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
@@ -18,9 +20,11 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
-// app.use("/api/auth", adminAuthRoute);
+app.use("/api/admin/auth", adminAuthRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
+app.use("/api/patients", patientRoute);
+app.use("/api/admin/users", adminUserRoute);
 app.use("/api/refresh", refreshTokenRoute);
 
 app.get("/", (req, res) => {

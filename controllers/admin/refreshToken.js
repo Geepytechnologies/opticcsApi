@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { getRefreshToken } = require("../queries/user");
+const { getRefreshToken } = require("../../queries/user/user");
 // const { getRefreshToken } = require("../queries/user");
-const db = require("../config/db");
+const db = require("../../config/db");
 
 const existingRefresh = (refreshToken) => {
   return new Promise((resolve, reject) => {

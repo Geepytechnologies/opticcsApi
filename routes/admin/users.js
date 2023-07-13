@@ -1,9 +1,9 @@
 const express = require("express");
-const { getAllUsers } = require("../controllers/users.js");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
-} = require("../middlewares/verifyToken");
+} = require("../../middlewares/verifyToken.js");
+const { getAllUsers } = require("../../controllers/admin/users.js");
 
 const router = express.Router();
 
