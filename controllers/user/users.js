@@ -122,7 +122,7 @@ const sendAMessageToWorker = (req, res, next) => {
   const { message_from, message_date, message_status_delivered, message } =
     req.body;
   const q = `
-  INSERT INTO messages (ghrjhdc 
+  INSERT INTO messages (
     healthpersonnel_id,
     message_from,
     message_date,

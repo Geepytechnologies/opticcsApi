@@ -42,8 +42,7 @@ function createUserQuery(
   password,
   phone,
   staffid,
-  accountType,
-  otp
+  accountType
 ) {
   return `
     INSERT INTO healthadmin (
@@ -53,9 +52,8 @@ function createUserQuery(
     password,
     phone,
     staffid,
-    accountType,
-    otp) 
-    VALUES ('${firstname}','${lastname}','${email}', '${password}', '${phone}', '${staffid}', '${accountType}', '${otp}')`;
+    accountType) 
+    VALUES ('${firstname}','${lastname}','${email}', '${password}', '${phone}', '${staffid}', '${accountType}')`;
 }
 
 module.exports = {

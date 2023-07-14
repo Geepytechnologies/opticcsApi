@@ -477,6 +477,25 @@ const getPatientRecord = async (req, res) => {
     res.status(200).json(response);
   } catch (err) {}
 };
+const getAllPatients = async (req, res) => {
+  const record = () => {
+    const q = `SELECT * FROM patients`;
+    return new Promise((resolve, reject) => {
+      db.query(q, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          const user = result;
+          resolve(user);
+        }
+      });
+    });
+  };
+  try {
+    const response = await record();
+    res.status(200).json(response);
+  } catch (err) {}
+};
 
 const createPatientEveryVisit = async (req, res, next) => {
   const {
@@ -651,4 +670,32 @@ const createPatientEveryVisit = async (req, res, next) => {
   }
 };
 
-module.exports = { createPatient, getPatientRecord, createPatientEveryVisit };
+const numberofPatientswith4visits = (req, res) => {
+  const q = `SELECT COUNT(*) AS patient_count
+  FROM (
+    SELECT patients.id
+    FROM patients
+    INNER JOIN firstVisit ON patients.id = firstVisit.patient_id
+    GROUP BY patients.id
+    HAVING COUNT(firstVisit.id) >= 4
+  ) AS subquery;
+  `;
+  try {
+    db.query(q, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        const user = result;
+        resolve(user);
+      }
+    });
+  } catch (err) {}
+};
+
+module.exports = {
+  createPatient,
+  getPatientRecord,
+  createPatientEveryVisit,
+  getAllPatients,
+  numberofPatientswith4visits,
+};
