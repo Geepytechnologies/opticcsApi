@@ -12,6 +12,7 @@ const {
   getRefreshToken,
 } = require("../../queries/user/user.js");
 const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
+const request = require("request");
 
 const sendOtp = async (req, res) => {
   const options = {

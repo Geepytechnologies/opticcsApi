@@ -7,7 +7,71 @@ const {
   createPatientFirstvisitDailyhabitQuery,
   createPatientFirstvisitObstetricQuery,
 } = require("../../queries/user/user");
+const request = require("request");
 
+// send users a message
+const sendMessage = async (req, res) => {
+  const options = {
+    method: "POST",
+    url: "https://api.sendchamp.com/api/v1/sms/send",
+    headers: {
+      Accept: "application/json,text/plain,*/*",
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+    },
+    body: JSON.stringify({
+      to: req.body.phone,
+      sender_name: "SAlert",
+      route: "dnd",
+      message: req.body.message,
+    }),
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while sending Message." });
+    }
+    const mydata = JSON.parse(body);
+    // console.log(mydata);
+    res.json(mydata);
+  });
+};
+const sendBulkMessage = async (req, res) => {
+  const options = {
+    method: "POST",
+    url: "https://api.sendchamp.com/api/v1/sms/send",
+    headers: {
+      Accept: "application/json,text/plain,*/*",
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+    },
+    body: JSON.stringify({
+      to: req.body.phone, // array of numbers ['2348106974201', '2348025645315']
+      sender_name: "SAlert",
+      route: "dnd",
+      message: req.body.message,
+    }),
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while sending Message." });
+    }
+    const mydata = JSON.parse(body);
+    console.log(mydata);
+    res.json(mydata);
+  });
+};
+
+// healthPersonnels
 const getAllUsers = (req, res, next) => {
   try {
     const q = `SELECT * FROM healthpersonnel`;
@@ -52,6 +116,113 @@ const getUsersPatients = (req, res, next) => {
     next(err);
   }
 };
+
+const sendAMessageToWorker = (req, res, next) => {
+  const { id } = req.params;
+  const { message_from, message_date, message_status_delivered, message } =
+    req.body;
+  const q = `
+  INSERT INTO messages (ghrjhdc 
+    healthpersonnel_id,
+    message_from,
+    message_date,
+    message_status_delivered,
+    message
+    ) 
+  VALUES ('${id}', '${message_from}', '${message_date}', '${message_status_delivered}','${message}')`;
+  try {
+    db.query(q, (err, result) => {
+      if (err) return res.json(err);
+      return res.json(result);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+const createASchedule = (req, res, next) => {
+  const { id } = req.params;
+  const {
+    schedule_name,
+    schedule_state,
+    schedule_lga,
+    schedule_dateFrom,
+    schedule_dateTo,
+    schedule_completed,
+    schedule_confirmed,
+  } = req.body;
+  const q = `
+  INSERT INTO schedule (
+    healthpersonnel_id,
+    schedule_name,
+    schedule_state,
+    schedule_lga,schedule_dateFrom,schedule_dateTo,schedule_completed,schedule_confirmed
+    ) 
+  VALUES ('${id}', '${schedule_name}', '${schedule_state}', '${schedule_lga}', '${schedule_dateFrom}','${schedule_dateTo}','${schedule_completed}','${schedule_confirmed}')`;
+  try {
+    db.query(q, (err, result) => {
+      if (err) return res.json(err);
+      return res.json(result);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+const createATest = (req, res, next) => {
+  const { id } = req.params;
+  const {
+    Test_patientID,
+    Test_ANCbooking,
+    Test_date,
+    Test_time,
+    Test_completed,
+    Test_result,
+  } = req.body;
+  const q = `
+  INSERT INTO testing (
+    healthpersonnel_id,
+    Test_patientID,
+    Test_ANCbooking,
+    Test_date,Test_time,Test_completed,Test_result
+    ) 
+  VALUES ('${id}', '${Test_patientID}', '${Test_ANCbooking}', '${Test_date}', '${Test_time}','${Test_completed}','${Test_result}')`;
+  try {
+    db.query(q, (err, result) => {
+      if (err) return res.json(err);
+      return res.json(result);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createDeliveryReport = (req, res, next) => {
+  const { id } = req.params;
+  const {
+    deliveryReport_patientID,
+    gender,
+    NoOfChildren,
+    deliveryDate,
+    deliveryTime,
+  } = req.body;
+  const q = `
+  INSERT INTO deliveryReport (
+    healthpersonnel_id,
+    deliveryReport_patientID,
+    gender,
+    NoOfChildren,deliveryDate,deliveryTime
+    ) 
+  VALUES ('${id}', '${deliveryReport_patientID}', '${gender}', '${NoOfChildren}', '${deliveryDate}','${deliveryTime}')`;
+  try {
+    db.query(q, (err, result) => {
+      if (err) return res.json(err);
+      return res.json(result);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//patients
 
 const createPatientFirstvisitPersonalInfo = (req, res, next) => {
   const {
@@ -438,7 +609,13 @@ const createPatientFirstVisit = (req, res, next) => {
 };
 
 module.exports = {
+  sendBulkMessage,
+  sendMessage,
+  sendAMessageToWorker,
   getAllUsers,
+  createASchedule,
+  createDeliveryReport,
+  createATest,
   getUserByEmail,
   getUserByPhone,
   getUsersPatients,

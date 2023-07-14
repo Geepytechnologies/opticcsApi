@@ -16,10 +16,10 @@ const corsOptions = {
   origin: process.env.ORIGIN,
   credentials: true, // enable cookies and other credentials
 };
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   next();
+// });
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());

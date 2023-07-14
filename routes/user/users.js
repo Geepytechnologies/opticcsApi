@@ -19,6 +19,11 @@ const {
   createPatientFirstvisitMedicationHistoryof,
   createPatientFirstvisitMedicationDiagnosedof,
   createPatientFirstvisitMedicationOnmedications,
+  sendMessage,
+  sendBulkMessage,
+  sendAMessageToWorker,
+  createASchedule,
+  createDeliveryReport,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -52,6 +57,16 @@ const router = express.Router();
 
 //delete user
 // router.delete("/:id", verifyTokenAndAuthorization, deleteUser);
+
+router.post("/sms", sendMessage);
+
+router.post("/sms/bulk", sendBulkMessage);
+
+router.post("/send/:id", sendAMessageToWorker);
+
+router.post("/schedule/:id", createASchedule);
+
+router.post("/deliveryreport/:id", createDeliveryReport);
 
 // get a user by mail
 router.get("/find/email", getUserByEmail);

@@ -37,7 +37,7 @@ const sendOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
+      console.error(error.message);
       return res
         .status(500)
         .json({ error: "An error occurred while sending OTP." });
@@ -155,13 +155,13 @@ const signup = async (req, res, next) => {
     const email = await existingEmail();
     const phone = await existingphone();
     if (user) {
-      return next(createError(409, "User already exists"));
+      return res.status(409).json("User already exists");
     }
     if (email) {
-      return next(createError(409, "Email already exists"));
+      return res.status(409).json("Email already exists");
     }
     if (phone) {
-      return next(createError(409, "Phone number already exists"));
+      return res.status(409).json("Phone number already exists");
     }
 
     // Create a new user
@@ -235,9 +235,9 @@ const signin = async (req, res, next) => {
   try {
     const user = await existingEmail();
     console.log({ user: user });
-    if (!user) return next(createError(404, "User not found"));
+    if (!user) return res.status(404).json("User not found");
     const isMatched = bcrypt.compareSync(req.body.password, user.password);
-    if (!isMatched) return next(createError(400, "wrong credentials"));
+    if (!isMatched) return res.status(400).json("Wrong credentials");
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {

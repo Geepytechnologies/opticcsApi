@@ -125,7 +125,7 @@ function createPatientFirstvisitObstetricQuery(
   others2
 ) {
   return `
-  INSERT INTO dailyHabitsAndLifestyle (
+  INSERT INTO obstetricHistory (
     firstVisit_id,
     convulsionduringapregnancy,
     caesareansection,

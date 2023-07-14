@@ -719,9 +719,10 @@ const healthpersonnel = {
 `CREATE TABLE messages (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  message_from VARCHAR(255),
+  message_from VARCHAR(255),:{>}
   message_date VARCHAR(255),
   message_status_delivered BOOLEAN,
+  message VARCHAR(255),
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
 
