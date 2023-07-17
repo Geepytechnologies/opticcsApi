@@ -72,52 +72,45 @@ const sendBulkMessage = async (req, res) => {
 };
 
 // healthPersonnels
-const getAllUsers = (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
+  const connection = await db.getConnection();
   try {
     const q = `SELECT * FROM healthpersonnel`;
-    db.query(q, (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(q);
+    connection.release();
+    res.status(200).json(result[0]);
   } catch (err) {
-    next(err);
+    res.status(500).json(err);
   }
 };
-const getUserByEmail = (req, res, next) => {
-  const { email } = req.body;
-  try {
-    db.query(getAUserByEmail(email), (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-const getUserByPhone = (req, res, next) => {
+
+const getUserByPhone = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { phone } = req.body;
   try {
-    db.query(getAUserByPhone(phone), (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(getAUserByPhone(phone));
+    connection.release();
+    res.status(200).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
-const getUsersPatients = (req, res, next) => {
+const getUsersPatients = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
   try {
-    db.query(getUserPatients(id), (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(getUserPatients(id));
+    connection.release();
+    res.status(200).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
 
-const sendAMessageToWorker = (req, res, next) => {
+const sendAMessageToWorker = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
   const { message_from, message_date, message_status_delivered, message } =
     req.body;
@@ -131,15 +124,16 @@ const sendAMessageToWorker = (req, res, next) => {
     ) 
   VALUES ('${id}', '${message_from}', '${message_date}', '${message_status_delivered}','${message}')`;
   try {
-    db.query(q, (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(q);
+    connection.release();
+    res.status(200).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
-const createASchedule = (req, res, next) => {
+const createASchedule = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
   const {
     schedule_name,
@@ -159,15 +153,16 @@ const createASchedule = (req, res, next) => {
     ) 
   VALUES ('${id}', '${schedule_name}', '${schedule_state}', '${schedule_lga}', '${schedule_dateFrom}','${schedule_dateTo}','${schedule_completed}','${schedule_confirmed}')`;
   try {
-    db.query(q, (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(q);
+    connection.release();
+    res.status(201).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
-const createATest = (req, res, next) => {
+const createATest = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
   const {
     Test_patientID,
@@ -186,16 +181,17 @@ const createATest = (req, res, next) => {
     ) 
   VALUES ('${id}', '${Test_patientID}', '${Test_ANCbooking}', '${Test_date}', '${Test_time}','${Test_completed}','${Test_result}')`;
   try {
-    db.query(q, (err, result) => {
-      if (err) return res.json(err);
-      return res.json(result);
-    });
+    const result = await connection.execute(q);
+    connection.release();
+    res.status(201).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
 
-const createDeliveryReport = (req, res, next) => {
+const createDeliveryReport = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
   const {
     deliveryReport_patientID,
@@ -213,18 +209,23 @@ const createDeliveryReport = (req, res, next) => {
     ) 
   VALUES ('${id}', '${deliveryReport_patientID}', '${gender}', '${NoOfChildren}', '${deliveryDate}','${deliveryTime}')`;
   try {
+    const result = await connection.execute(q);
+    connection.release();
+    res.status(201).json(result[0]);
     db.query(q, (err, result) => {
       if (err) return res.json(err);
       return res.json(result);
     });
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
 
 //patients
 
-const createPatientFirstvisitPersonalInfo = (req, res, next) => {
+const createPatientFirstvisitPersonalInfo = async (req, res, next) => {
+  const connection = await db.getConnection();
   const {
     HospitalNumber,
     FirstName,
@@ -241,7 +242,7 @@ const createPatientFirstvisitPersonalInfo = (req, res, next) => {
     doyouknowdateoflastbabymovement,
   } = req.body;
   try {
-    db.query(
+    const result = await connection.execute(
       createPatientPersonalInfoQuery(
         HospitalNumber,
         FirstName,
@@ -254,19 +255,18 @@ const createPatientFirstvisitPersonalInfo = (req, res, next) => {
         EDD,
         EGA,
         DoYouFeelthebabysmovement,
-        doyouknowdateoffirtbabymovement,
-        doyouknowdateoflastbabymovement
-      ),
-      (err, result) => {
-        if (err) return res.json(err);
-        return res.json(result);
-      }
+        doyouknowdateoffirtbabymovement
+      )
     );
+    connection.release();
+    res.status(201).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
-const createPatientFirstvisitDailyhabits = (req, res, next) => {
+const createPatientFirstvisitDailyhabits = async (req, res, next) => {
+  const connection = await db.getConnection();
   const {
     firstVisit_id,
     Doyouworkoutsidethehome,
@@ -284,7 +284,7 @@ const createPatientFirstvisitDailyhabits = (req, res, next) => {
     frightened,
   } = req.body;
   try {
-    db.query(
+    const result = await connection.execute(
       createPatientFirstvisitDailyhabitQuery(
         firstVisit_id,
         Doyouworkoutsidethehome,
@@ -300,16 +300,16 @@ const createPatientFirstvisitDailyhabits = (req, res, next) => {
         WhodoyouLivewith,
         Didanyoneever,
         frightened
-      ),
-      (err, result) => {
-        if (err) return res.json(err);
-        return res.json(result);
-      }
+      )
     );
+    connection.release();
+    res.status(201).json(result[0]);
   } catch (err) {
+    res.status(500).json(err);
     next(err);
   }
 };
+//i stopped here in the editing
 const createPatientFirstvisitObstetric = (req, res, next) => {
   const {
     firstVisit_id,
@@ -616,7 +616,6 @@ module.exports = {
   createASchedule,
   createDeliveryReport,
   createATest,
-  getUserByEmail,
   getUserByPhone,
   getUsersPatients,
   createPatientFirstvisitPersonalInfo,

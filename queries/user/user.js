@@ -188,7 +188,6 @@ WHERE patients.id = '${id}';
     `;
 }
 function createUserQuery(
-  email,
   hashedpassword,
   phone,
   state,
@@ -200,7 +199,6 @@ function createUserQuery(
 ) {
   return `
   INSERT INTO healthpersonnel (
-    email,
     password,
     phone,
     state,
@@ -210,7 +208,7 @@ function createUserQuery(
     healthWorker,
     cadre_id
     ) 
-  VALUES ('${email}', '${hashedpassword}', '${phone}', '${state}', '${lga}', '${ward}', '${healthFacility}','${healthWorker}','${cadre_id}')`;
+  VALUES ('${hashedpassword}', '${phone}', '${state}', '${lga}', '${ward}', '${healthFacility}','${healthWorker}','${cadre_id}')`;
 }
 
 module.exports = {

@@ -1,7 +1,6 @@
 const express = require("express");
 const {
   getAllUsers,
-  getUserByEmail,
   getUserByPhone,
   getUsersPatients,
   createPatient,
@@ -67,9 +66,6 @@ router.post("/send/:id", sendAMessageToWorker);
 router.post("/schedule/:id", createASchedule);
 
 router.post("/deliveryreport/:id", createDeliveryReport);
-
-// get a user by mail
-router.get("/find/email", getUserByEmail);
 
 // get a user by phone
 router.get("/find/phone", getUserByPhone);

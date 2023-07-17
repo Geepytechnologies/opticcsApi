@@ -332,6 +332,8 @@ const healthpersonnel = {
       },
     },
     every: {
+      healthpersonnel_id: String,
+      healthFacility: String,
       facialExpression: {
         responsive: String,
         dull: String,
@@ -465,6 +467,7 @@ const healthpersonnel = {
   FirstName VARCHAR(255),
   middleName VARCHAR(255),
   surname VARCHAR(255),
+  phone VARCHAR(255),
   Address VARCHAR(255),
   Gravidity VARCHAR(255),
   parity VARCHAR(255),

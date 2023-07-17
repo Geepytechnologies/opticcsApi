@@ -84,8 +84,8 @@ const confirmOtp = async (req, res) => {
 };
 
 const signup = async (req, res, next) => {
+  const connection = await db.getConnection();
   const {
-    email,
     phone,
     state,
     lga,
@@ -96,140 +96,53 @@ const signup = async (req, res, next) => {
     password,
   } = req.body;
 
-  const existingEmail = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingEmailQuery(req.body.email), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const email = result[0]?.email;
-          resolve(email);
-        }
-      });
-    });
+  const existingphone = async () => {
+    const result = await connection.execute(
+      getExistingPhoneQuery(req.body.phone)
+    );
+    return result[0];
   };
-  const existingphone = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingPhoneQuery(req.body.phone), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const phone = result[0]?.phone;
-          resolve(phone);
-        }
-      });
-    });
-  };
-  const existinguser = () => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        getExistingUserQuery(req.body.email, req.body.phone),
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            const user = result[0]?.email;
-            resolve(user);
-          }
-        }
-      );
-    });
-  };
-  const newUser = () => {
+
+  const newUser = async () => {
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(password, salt);
-    return new Promise((resolve, reject) => {
-      db.query(
-        createUserQuery(
-          email,
-          hashedpassword,
-          phone,
-          state,
-          lga,
-          ward,
-          healthFacility,
-          healthWorker,
-          cadre_id
-        ),
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            const user = result;
-            resolve(user);
-          }
-        }
-      );
-    });
+    const result = await connection.execute(
+      createUserQuery(
+        hashedpassword,
+        phone,
+        state,
+        lga,
+        ward,
+        healthFacility,
+        healthWorker,
+        cadre_id
+      )
+    );
+    return result[0];
   };
   try {
-    const user = await existinguser();
-    const email = await existingEmail();
     const phone = await existingphone();
-    if (user) {
-      return next(createError(409, "User already exists"));
-    }
-    if (email) {
-      return next(createError(409, "Email already exists"));
-    }
-    if (phone) {
-      return next(createError(409, "Phone number already exists"));
+    if (phone.length) {
+      return res.status(409).json("User already exists");
     }
     // Create a new user
     const newuser = await newUser();
 
+    connection.release();
     return res.status(201).json(newuser);
   } catch (err) {
     next(err);
   }
 };
 
-const verifyEmail = async (req, res) => {
-  const { token } = req.query;
-
-  // Find the user with the matching verification token
-  const user = await prisma.user.findMany({
-    where: {
-      verificationToken: token,
-    },
-  });
-  if (!user.length) {
-    return res.status(400).json({ error: "Invalid verification token" });
-  }
-  const currentDate = new Date();
-  if (user && currentDate > user.expiresAt) {
-    return res.status(400).json({ error: "Verification link has expired" });
-  }
-
-  // Update the user's verification status
-  const userId = user[0].id;
-  const updatedUser = await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      verified: true,
-      verificationToken: null,
-    },
-  });
-
-  res
-    .status(200)
-    .json({ message: "Email address verified", user: updatedUser });
-};
-
 const signin = async (req, res, next) => {
-  const existingEmail = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingEmailQuery(req.body.email), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
+  const connection = await db.getConnection();
+
+  const existingphone = async () => {
+    const result = await connection.execute(
+      getExistingPhoneQuery(req.body.phone)
+    );
+    return result[0];
   };
   const createRefresh = (access) => {
     return new Promise((resolve, reject) => {
@@ -244,11 +157,11 @@ const signin = async (req, res, next) => {
     });
   };
   try {
-    const user = await existingEmail();
+    const user = await existingphone();
     console.log({ user: user });
-    if (!user) return res.status(404).json("User not found");
-    const isMatched = bcrypt.compareSync(req.body.password, user.password);
-    if (!isMatched) return next(createError(400, "wrong credentials"));
+    if (!user.length) return res.status(404).json("User not found");
+    const isMatched = bcrypt.compareSync(req.body.password, user[0].password);
+    if (!isMatched) return res.status(400).json("wrong credentials");
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
@@ -281,44 +194,35 @@ const signin = async (req, res, next) => {
 };
 
 const changepassword = async (req, res, next) => {
-  const existingEmail = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingEmailQuery(req.body.email), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const email = result[0]?.email;
-          resolve(email);
-        }
-      });
-    });
+  const connection = await db.getConnection();
+
+  const existingphone = async () => {
+    const result = await connection.execute(
+      getExistingPhoneQuery(req.body.phone)
+    );
+    return result[0];
   };
-  const updateUser = (password) => {
+  const updateUser = async (password) => {
     const q = `
         UPDATE healthpersonnel
         SET password = '${password}'
-        WHERE email = '${req.body.email}'
+        WHERE phone = '${req.body.phone}'
           `;
-    return new Promise((resolve, reject) => {
-      db.query(q, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const email = result[0]?.email;
-          resolve(email);
-        }
-      });
-    });
+    const result = await connection.query(q);
+    return result[0];
   };
   try {
-    const user = await existingEmail();
-    if (!user) return next(createError(404, "User not found"));
-    const isMatched = bcrypt.compareSync(req.body.oldpassword, user.password);
-    if (!isMatched) return next(createError(400, "Old password is incorrect"));
+    const user = await existingphone();
+    if (!user.length) return res.status(404).json("User not found");
+    const isMatched = bcrypt.compareSync(
+      req.body.oldpassword,
+      user[0].password
+    );
+    if (!isMatched) return res.status(400).json("Old password is incorrect");
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(req.body.newpassword, salt);
-    await updateUser(hashedpassword);
-    res.status(201).json("successful");
+    const newusercredentials = await updateUser(hashedpassword);
+    res.status(201).json(newusercredentials);
   } catch (err) {
     next(err);
   }
@@ -498,7 +402,6 @@ module.exports = {
   signout,
   changepassword,
   forgotpassword,
-  verifyEmail,
   resetPassword,
   confirmOtp,
   sendOtp,
