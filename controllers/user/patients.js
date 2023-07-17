@@ -318,20 +318,24 @@ const createPatient = async (req, res, next) => {
     await connection.commit();
     connection.release();
     res.status(201).json({
-      personalInformation_id: personalInformation_id,
-      patientID: patientID,
-      firstvisitID: firstvisitID,
-      dailyhabit: dailyhabitcreation[0].insertId,
-      obstetric: obstetricCreation[0].insertId,
-      medicationpulmonary: medicationpulmonary[0].insertId,
-      medicationcardio: medicationcardio[0].insertId,
-      medicationneuro: medicationneuro[0].insertId,
-      medicationgastro: medicationgastro[0].insertId,
-      medicationurinary: medicationurinary[0].insertId,
-      medicationGynae: medicationGynae[0].insertId,
-      medicationhistoryof: medicationhistoryof[0].insertId,
-      medicationdiagnosedof: medicationdiagnosedof[0].insertId,
-      medicationOnMedications: medicationOnMedications[0].insertId,
+      statusCode: "201",
+      message: "successful",
+      result: {
+        personalInformation_id: personalInformation_id,
+        patientID: patientID,
+        firstvisitID: firstvisitID,
+        dailyhabit: dailyhabitcreation[0].insertId,
+        obstetric: obstetricCreation[0].insertId,
+        medicationpulmonary: medicationpulmonary[0].insertId,
+        medicationcardio: medicationcardio[0].insertId,
+        medicationneuro: medicationneuro[0].insertId,
+        medicationgastro: medicationgastro[0].insertId,
+        medicationurinary: medicationurinary[0].insertId,
+        medicationGynae: medicationGynae[0].insertId,
+        medicationhistoryof: medicationhistoryof[0].insertId,
+        medicationdiagnosedof: medicationdiagnosedof[0].insertId,
+        medicationOnMedications: medicationOnMedications[0].insertId,
+      },
     });
   } catch (error) {
     if (connection) {
@@ -339,29 +343,26 @@ const createPatient = async (req, res, next) => {
       connection.release();
     }
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while executing the transaction." });
+    res.status(500).json({
+      statusCode: "500",
+      error: "An error occurred while executing the transaction.",
+    });
   }
 };
 
 const getPatientRecord = async (req, res) => {
+  const connection = await db.getConnection();
   const { id } = req.params;
-  const record = () => {
-    return new Promise((resolve, reject) => {
-      db.query(patientRecordQuery(id), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result;
-          resolve(user);
-        }
-      });
-    });
+  const record = async () => {
+    const result = await connection.execute(patientRecordQuery(id));
+    return result[0];
   };
   try {
     const response = await record();
-    res.status(200).json(response);
+    connection.release();
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: response });
   } catch (err) {}
 };
 
@@ -372,16 +373,20 @@ const getAllPatients = async (req, res) => {
     const record = async () => {
       const q = `SELECT * FROM patients`;
       const result = await connection.execute(q);
-      return result;
+      return result[0];
     };
 
     const users = await record();
 
     connection.release();
-    res.status(200).json(users);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: users });
   } catch (err) {
     console.error("Error acquiring connection from pool:", err);
-    res.status(500).json({ error: "Database connection or query error" });
+    res
+      .status(500)
+      .json({ statusCode: "500", error: "Database connection or query error" });
   }
 };
 
@@ -516,9 +521,20 @@ const createPatientEveryVisit = async (req, res, next) => {
     connection.release();
 
     res.status(201).json({
-      everyVisitID: everyVisitID,
+      statusCode: "201",
+      message: "created successfully",
+      result: {
+        everyVisitID: everyVisitID,
+      },
     });
   } catch (err) {
+    res
+      .status(500)
+      .json({
+        statusCode: "500",
+        message: "Failed to create every visit for patient",
+        error: err,
+      });
     console.error(err);
     if (connection) {
       await connection.rollback();

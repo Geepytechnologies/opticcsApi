@@ -44,8 +44,7 @@ const sendOtp = async (req, res) => {
         .json({ error: "An error occurred while sending OTP." });
     }
     const mydata = JSON.parse(body);
-    console.log(mydata);
-    res.json(mydata);
+    res.json({ statusCode: "200", message: "successfull", result: mydata });
   });
 };
 const confirmOtp = async (req, res) => {
@@ -73,13 +72,13 @@ const confirmOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       console.error(error);
-      return res
-        .status(500)
-        .json({ error: "An error occurred while sending OTP." });
+      return res.status(500).json({
+        statusCode: "500",
+        error: "An error occurred while sending OTP.",
+      });
     }
     const mydata = JSON.parse(body);
-    console.log(mydata);
-    res.json(mydata);
+    res.json({ statusCode: "200", message: "successfull", result: mydata });
   });
 };
 
@@ -123,13 +122,17 @@ const signup = async (req, res, next) => {
   try {
     const phone = await existingphone();
     if (phone.length) {
-      return res.status(409).json("User already exists");
+      return res
+        .status(409)
+        .json({ statusCode: "409", message: "User already exists" });
     }
     // Create a new user
     const newuser = await newUser();
 
     connection.release();
-    return res.status(201).json(newuser);
+    return res
+      .status(201)
+      .json({ statusCode: "200", message: "successful", result: newuser });
   } catch (err) {
     next(err);
   }
@@ -159,9 +162,15 @@ const signin = async (req, res, next) => {
   try {
     const user = await existingphone();
     console.log({ user: user });
-    if (!user.length) return res.status(404).json("User not found");
+    if (!user.length)
+      return res
+        .status(404)
+        .json({ statusCode: "404", message: "User not found" });
     const isMatched = bcrypt.compareSync(req.body.password, user[0].password);
-    if (!isMatched) return res.status(400).json("wrong credentials");
+    if (!isMatched)
+      return res
+        .status(400)
+        .json({ statusCode: "400", message: "wrong credentials" });
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
@@ -187,7 +196,11 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
-    res.status(200).json({ others, accessToken });
+    res.status(200).json({
+      statusCode: "200",
+      message: "successful",
+      result: { others, accessToken },
+    });
   } catch (err) {
     next(err);
   }
@@ -213,16 +226,26 @@ const changepassword = async (req, res, next) => {
   };
   try {
     const user = await existingphone();
-    if (!user.length) return res.status(404).json("User not found");
+    if (!user.length)
+      return res
+        .status(404)
+        .json({ statusCode: "404", message: "User not found" });
     const isMatched = bcrypt.compareSync(
       req.body.oldpassword,
       user[0].password
     );
-    if (!isMatched) return res.status(400).json("Old password is incorrect");
+    if (!isMatched)
+      return res
+        .status(400)
+        .json({ statusCode: "404", message: "Old password is incorrect" });
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(req.body.newpassword, salt);
     const newusercredentials = await updateUser(hashedpassword);
-    res.status(201).json(newusercredentials);
+    res.status(201).json({
+      statusCode: "201",
+      message: "Changed password successfully",
+      result: newusercredentials,
+    });
   } catch (err) {
     next(err);
   }

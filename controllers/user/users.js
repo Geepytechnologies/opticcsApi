@@ -1,6 +1,5 @@
 const db = require("../../config/db");
 const {
-  getAUserByEmail,
   getAUserByPhone,
   getUserPatients,
   createPatientPersonalInfoQuery,
@@ -33,11 +32,14 @@ const sendMessage = async (req, res) => {
       console.error(error);
       return res
         .status(500)
-        .json({ error: "An error occurred while sending Message." });
+        .json({
+          statusCode: "500",
+          error: "An error occurred while sending Message.",
+        });
     }
     const mydata = JSON.parse(body);
     // console.log(mydata);
-    res.json(mydata);
+    res.json({ statusCode: "200", message: "successful", result: mydata });
   });
 };
 const sendBulkMessage = async (req, res) => {
@@ -63,11 +65,14 @@ const sendBulkMessage = async (req, res) => {
       console.error(error);
       return res
         .status(500)
-        .json({ error: "An error occurred while sending Message." });
+        .json({
+          statusCode: "500",
+          error: "An error occurred while sending Message.",
+        });
     }
     const mydata = JSON.parse(body);
     console.log(mydata);
-    res.json(mydata);
+    res.json({ statusCode: "200", message: "successful", result: mydata });
   });
 };
 
@@ -78,9 +83,11 @@ const getAllUsers = async (req, res, next) => {
     const q = `SELECT * FROM healthpersonnel`;
     const result = await connection.execute(q);
     connection.release();
-    res.status(200).json(result[0]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ statusCode: "500", error: err });
   }
 };
 
@@ -90,7 +97,9 @@ const getUserByPhone = async (req, res, next) => {
   try {
     const result = await connection.execute(getAUserByPhone(phone));
     connection.release();
-    res.status(200).json(result[0]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (err) {
     res.status(500).json(err);
     next(err);
@@ -102,7 +111,9 @@ const getUsersPatients = async (req, res, next) => {
   try {
     const result = await connection.execute(getUserPatients(id));
     connection.release();
-    res.status(200).json(result[0]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (err) {
     res.status(500).json(err);
     next(err);
