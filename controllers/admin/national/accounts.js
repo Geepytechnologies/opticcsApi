@@ -31,7 +31,7 @@ const createNationalUserAccount = async (req, res, next) => {
   try {
     const connection = await db.getConnection();
     const q = `INSERT INTO nationaladmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
     res

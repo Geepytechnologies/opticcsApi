@@ -85,45 +85,25 @@ const confirmOtp = async (req, res) => {
 const signup = async (req, res, next) => {
   const { firstname, lastname, email, password, phone, staffid, accountType } =
     req.body;
+  const connection = await db.getConnection();
 
-  const existingEmail = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingEmailQuery(req.body.email), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const email = result[0]?.email;
-          resolve(email);
-        }
-      });
-    });
+  const existingEmail = async () => {
+    const result = await connection.execute(
+      getExistingEmailQuery(req.body.email)
+    );
+    return result[0]?.emsil;
   };
-  const existingphone = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingPhoneQuery(req.body.phone), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const phone = result[0]?.phone;
-          resolve(phone);
-        }
-      });
-    });
+  const existingphone = async () => {
+    const result = await connection.execute(
+      getExistingPhoneQuery(req.body.phone)
+    );
+    return result[0];
   };
-  const existinguser = () => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        getExistingUserQuery(req.body.email, req.body.phone),
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            const user = result[0]?.email;
-            resolve(user);
-          }
-        }
-      );
-    });
+  const existinguser = async () => {
+    const result = await connection.execute(
+      getExistingUserQuery(req.body.email, req.body.phone)
+    );
+    return result[0];
   };
   const newUser = () => {
     const salt = bcrypt.genSaltSync(10);
@@ -208,18 +188,18 @@ const verifyEmail = async (req, res) => {
 };
 
 const signin = async (req, res, next) => {
-  const existingEmail = () => {
-    return new Promise((resolve, reject) => {
-      db.query(getExistingEmailQuery(req.body.email), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
-  };
+  // const existingEmail = () =>
+  //   return new Promise((resolve, reject) => {
+  //     db.query(getExistingEmailQuery(req.body.email), (err, result) => {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         const user = result[0];
+  //         resolve(user);
+  //       }
+  //     });
+  //   });
+  // };
   const createRefresh = (access) => {
     return new Promise((resolve, reject) => {
       db.query(updateUserRefresh(req.body.email, access), (err, result) => {

@@ -432,8 +432,8 @@ const healthpersonnel = {
   ward VARCHAR(255),
   healthFacility VARCHAR(255),
   healthWorker VARCHAR(255),
-  cadre_id INT,
-  FOREIGN KEY (cadre_id) REFERENCES cadre(id) ON DELETE CASCADE
+  verified BOOLEAN DEFAULT 0,
+  cadre_id VARCHAR(255)
 )`;
 
 // -- Table: cadre

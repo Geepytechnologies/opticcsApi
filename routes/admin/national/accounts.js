@@ -9,10 +9,10 @@ const {
 
 const router = express.Router();
 
-router.post("/user", createNationalUserAccount);
+router.post("/users", createNationalUserAccount);
 
 router.get("/refresh", handleRefreshToken);
 
-router.get("/signin", signin);
+router.post("/signin", signin);
 
 module.exports = router;

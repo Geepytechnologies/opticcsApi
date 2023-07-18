@@ -45,6 +45,7 @@ function createPatientPersonalInfoQuery(
   FirstName,
   middleName,
   surname,
+  phone,
   Address,
   Gravidity,
   parity,
@@ -61,6 +62,7 @@ function createPatientPersonalInfoQuery(
     FirstName,
     middleName,
     surname,
+    phone,
     Address,
     Gravidity,
     parity,
@@ -71,7 +73,7 @@ function createPatientPersonalInfoQuery(
     doyouknowdateoffirtbabymovement,
     doyouknowdateoflastbabymovement
     ) 
-  VALUES ('${HospitalNumber}','${FirstName}', '${middleName}', '${surname}', '${Address}', '${Gravidity}', '${parity}', '${LMP}','${EDD}','${EGA}','${DoYouFeelthebabysmovement}','${doyouknowdateoffirtbabymovement}','${doyouknowdateoflastbabymovement}')`;
+  VALUES ('${HospitalNumber}','${FirstName}', '${middleName}', '${surname}','${phone}', '${Address}', '${Gravidity}', '${parity}', '${LMP}','${EDD}','${EGA}','${DoYouFeelthebabysmovement}','${doyouknowdateoffirtbabymovement}','${doyouknowdateoflastbabymovement}')`;
 }
 function createPatientFirstvisitDailyhabitQuery(
   firstVisit_id,

@@ -7,7 +7,7 @@ const signin = async (req, res, next) => {
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM nationaladin WHERE userid = ?`;
+    const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
     const result = await connection.execute(q, [userid]);
     return result[0];
   };
@@ -94,7 +94,7 @@ const handleRefreshToken = async (req, res) => {
       });
       const { password, ...others } = foundUser;
       connection.release();
-      res.json({ accessToken, others });
+      res.json({ accessToken, others: others[0] });
     });
   } catch (err) {
     connection.release();

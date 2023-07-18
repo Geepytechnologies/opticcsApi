@@ -34,7 +34,7 @@ const handleRefreshToken = async (req, res) => {
         expiresIn: "60s",
       });
       const { password, ...others } = foundUser;
-      res.json({ accessToken, others });
+      res.json({ accessToken, others: others });
     });
   } catch (err) {
     console.error(err);

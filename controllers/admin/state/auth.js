@@ -94,7 +94,7 @@ const handleRefreshToken = async (req, res) => {
       });
       const { password, ...others } = foundUser;
       connection.release();
-      res.json({ accessToken, others });
+      res.json({ accessToken, others: others[0] });
     });
   } catch (err) {
     connection.release();
@@ -140,7 +140,6 @@ const signout = async (req, res, next) => {
     return result[0];
   };
   const updatedUser = await updateUserRefresh(refreshToken);
-  console.log(updatedUser);
 
   connection.release();
 

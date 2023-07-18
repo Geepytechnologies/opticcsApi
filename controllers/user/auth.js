@@ -44,7 +44,7 @@ const sendOtp = async (req, res) => {
         .json({ error: "An error occurred while sending OTP." });
     }
     const mydata = JSON.parse(body);
-    res.json({ statusCode: "200", message: "successfull", result: mydata });
+    res.json({ result: mydata });
   });
 };
 const confirmOtp = async (req, res) => {
@@ -78,7 +78,7 @@ const confirmOtp = async (req, res) => {
       });
     }
     const mydata = JSON.parse(body);
-    res.json({ statusCode: "200", message: "successfull", result: mydata });
+    res.json({ result: mydata });
   });
 };
 
@@ -134,6 +134,11 @@ const signup = async (req, res, next) => {
       .status(201)
       .json({ statusCode: "200", message: "successful", result: newuser });
   } catch (err) {
+    connection.release();
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Error signing up", error: err });
+
     next(err);
   }
 };
@@ -196,12 +201,17 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
+    connection.release();
     res.status(200).json({
       statusCode: "200",
       message: "successful",
       result: { others: others[0], accessToken },
     });
   } catch (err) {
+    connection.release();
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Error signing in", error: err });
     next(err);
   }
 };
@@ -241,12 +251,20 @@ const changepassword = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(req.body.newpassword, salt);
     const newusercredentials = await updateUser(hashedpassword);
+
+    connection.release();
     res.status(201).json({
       statusCode: "201",
       message: "Changed password successfully",
       result: newusercredentials,
     });
   } catch (err) {
+    connection.release();
+    res.status(500).json({
+      statusCode: "500",
+      message: "Error changing password",
+      error: err,
+    });
     next(err);
   }
 };

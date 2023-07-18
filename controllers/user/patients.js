@@ -17,6 +17,7 @@ const createPatient = async (req, res, next) => {
     FirstName,
     middleName,
     surname,
+    phone,
     Address,
     Gravidity,
     parity,
@@ -111,6 +112,7 @@ const createPatient = async (req, res, next) => {
       FirstName,
       middleName,
       surname,
+      phone,
       Address,
       Gravidity,
       parity,
@@ -360,26 +362,37 @@ const getPatientRecord = async (req, res) => {
   try {
     const response = await record();
     if (!response.length) {
-      res
-        .status(404)
-        .json({
-          statusCode: "404",
-          message: `Patient with ID of ${id} not found`,
-        });
+      res.status(404).json({
+        statusCode: "404",
+        message: `Patient with ID of ${id} not found`,
+      });
     }
     connection.release();
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: response });
-  } catch (err) {}
+  } catch (err) {
+    connection.release();
+    res
+      .status(500)
+      .json({
+        statusCode: "500",
+        message: "Error getting patient record",
+        error: err,
+      });
+  }
 };
 
 const getAllPatients = async (req, res) => {
-  try {
-    const connection = await db.getConnection();
+  const connection = await db.getConnection();
 
+  try {
     const record = async () => {
-      const q = `SELECT * FROM patients`;
+      // const q = `SELECT * FROM patients`;
+      const q = `SELECT patients.*, personalinformation.*
+      FROM patients
+      INNER JOIN personalinformation ON patients.personalInformation_id = personalinformation.id
+      `;
       const result = await connection.execute(q);
       return result[0];
     };
@@ -391,6 +404,7 @@ const getAllPatients = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: users });
   } catch (err) {
+    connection.release();
     console.error("Error acquiring connection from pool:", err);
     res
       .status(500)
@@ -551,6 +565,7 @@ const createPatientEveryVisit = async (req, res, next) => {
 };
 
 const numberofPatientswith4visits = async (req, res) => {
+  const connection = await db.getConnection();
   const q = `SELECT COUNT(*) AS patient_count
     FROM (
       SELECT patients.id
@@ -562,14 +577,16 @@ const numberofPatientswith4visits = async (req, res) => {
   `;
 
   try {
-    const result = await db.execute(q);
+    const result = await connection.execute(q);
     const patient_count = result[0].patient_count;
     res.status(200).json({ patient_count });
   } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while executing the query." });
+    connection.release();
+    res.status(500).json({
+      statusCode: "500",
+      error: err,
+      message: "An error occurred while executing the query.",
+    });
   }
 };
 
