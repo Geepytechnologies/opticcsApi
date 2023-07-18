@@ -359,6 +359,14 @@ const getPatientRecord = async (req, res) => {
   };
   try {
     const response = await record();
+    if (!response.length) {
+      res
+        .status(404)
+        .json({
+          statusCode: "404",
+          message: `Patient with ID of ${id} not found`,
+        });
+    }
     connection.release();
     res
       .status(200)
@@ -528,13 +536,11 @@ const createPatientEveryVisit = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        statusCode: "500",
-        message: "Failed to create every visit for patient",
-        error: err,
-      });
+    res.status(500).json({
+      statusCode: "500",
+      message: "Failed to create every visit for patient",
+      error: err,
+    });
     console.error(err);
     if (connection) {
       await connection.rollback();

@@ -52,7 +52,7 @@ const createStateUserAccount = async (req, res, next) => {
   try {
     const connection = await db.getConnection();
     const q = `INSERT INTO stateAdmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
     res

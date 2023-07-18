@@ -102,4 +102,50 @@ const handleRefreshToken = async (req, res) => {
   }
 };
 
-module.exports = { signin, handleRefreshToken };
+const signout = async (req, res, next) => {
+  const connection = await db.getConnection();
+  // On client, also delete the accessToken
+
+  const cookies = req.cookies;
+  if (!cookies?.token)
+    return res
+      .status(204)
+      .json({ statusCode: 204, message: "token not found" }); //No content
+  const refreshToken = cookies.token;
+
+  // Is refreshToken in db?
+  const existingRefresh = async (refreshToken) => {
+    const q = `SELECT * FROM stateAdmin WHERE refreshToken = ?`;
+    const result = await connection.execute(q, [refreshToken]);
+    return result[0];
+  };
+  const foundUser = await existingRefresh(refreshToken);
+  if (!foundUser) {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+    });
+    return res.sendStatus(204);
+  }
+
+  // Delete refreshToken in db
+  foundUser.refreshtoken = "";
+  const updateUserRefresh = async (refreshToken) => {
+    const q = `UPDATE stateAdmin SET refreshToken = ? WHERE refreshToken = ?`;
+    const result = await connection.execute(q, [
+      foundUser.refreshtoken,
+      refreshToken,
+    ]);
+    return result[0];
+  };
+  const updatedUser = await updateUserRefresh(refreshToken);
+  console.log(updatedUser);
+
+  connection.release();
+
+  res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: true });
+  res.status(204).json({ statusCode: "204", message: "cookie cleared" });
+};
+
+module.exports = { signin, signout, handleRefreshToken };

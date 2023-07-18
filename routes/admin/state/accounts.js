@@ -6,6 +6,7 @@ const {
 const {
   handleRefreshToken,
   signin,
+  signout,
 } = require("../../../controllers/admin/state/auth");
 const router = express.Router();
 
@@ -13,7 +14,9 @@ router.post("/", createStateAccount);
 
 router.get("/refresh", handleRefreshToken);
 
-router.get("/signin", signin);
+router.post("/signin", signin);
+
+router.get("/signout", signout);
 
 router.post("/user", createStateUserAccount);
 
