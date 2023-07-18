@@ -780,3 +780,100 @@ const healthpersonnel = {
   deliveryTime VARCHAR(255),
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
+
+//national
+const createNationalAdminTable = `CREATE TABLE nationaladmin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  state VARCHAR(255),
+  staffname VARCHAR(255),
+  staffid VARCHAR(255),
+  gender VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255),
+  cadre VARCHAR(255),
+  userid VARCHAR(255),
+  password VARCHAR(255),
+  accountType VARCHAR(255),
+  refreshToken VARCHAR(255)
+);
+`;
+
+//STATE
+const createStateAdminTable = `CREATE TABLE stateAdmin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  state VARCHAR(255),
+  staffname VARCHAR(255),
+  staffid VARCHAR(255),
+  gender VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255),
+  cadre VARCHAR(255),
+  userid VARCHAR(255),
+  password VARCHAR(255),
+  accountType VARCHAR(255),
+  refreshToken VARCHAR(255)
+);
+`;
+const createStateAccountTable = `CREATE TABLE stateAccount (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  state VARCHAR(255),
+  boardname VARCHAR(255),
+  stateid VARCHAR(255),
+  officeaddress VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255)
+);
+`;
+
+//LGA
+const createLgaAdminTable = `CREATE TABLE lgaAdmin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  lga VARCHAR(255),
+  staffname VARCHAR(255),
+  staffid VARCHAR(255),
+  gender VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255),
+  cadre VARCHAR(255),
+  userid VARCHAR(255),
+  password VARCHAR(255),
+  accountType VARCHAR(255),
+  refreshToken VARCHAR(255)
+);
+`;
+const createLgaAccountTable = `CREATE TABLE lgaAccount (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  lga VARCHAR(255),
+  boardname VARCHAR(255),
+  lgaID VARCHAR(255),
+  officeaddress VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255)
+);
+`;
+//health Facility
+const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityAdmin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ward VARCHAR(255),
+  staffname VARCHAR(255),
+  staffid VARCHAR(255),
+  gender VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255),
+  cadre VARCHAR(255),
+  userid VARCHAR(255),
+  password VARCHAR(255),
+  accountType VARCHAR(255),
+  refreshToken VARCHAR(255)
+);
+`;
+const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityAccount (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ward VARCHAR(255),
+  healthfacilityname VARCHAR(255),
+  healthfacilityID VARCHAR(255),
+  officeaddress VARCHAR(255),
+  phone VARCHAR(255),
+  email VARCHAR(255)
+);
+`;
