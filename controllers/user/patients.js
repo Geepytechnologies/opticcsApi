@@ -373,13 +373,11 @@ const getPatientRecord = async (req, res) => {
       .json({ statusCode: "200", message: "successful", result: response });
   } catch (err) {
     connection.release();
-    res
-      .status(500)
-      .json({
-        statusCode: "500",
-        message: "Error getting patient record",
-        error: err,
-      });
+    res.status(500).json({
+      statusCode: "500",
+      message: "Error getting patient record",
+      error: err,
+    });
   }
 };
 
@@ -389,9 +387,9 @@ const getAllPatients = async (req, res) => {
   try {
     const record = async () => {
       // const q = `SELECT * FROM patients`;
-      const q = `SELECT patients.*, personalinformation.*
+      const q = `SELECT patients.*, personalInformation.*
       FROM patients
-      INNER JOIN personalinformation ON patients.personalInformation_id = personalinformation.id
+      INNER JOIN personalInformation ON patients.personalInformation_id = personalInformation.id
       `;
       const result = await connection.execute(q);
       return result[0];
