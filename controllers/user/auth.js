@@ -199,7 +199,7 @@ const signin = async (req, res, next) => {
     res.status(200).json({
       statusCode: "200",
       message: "successful",
-      result: { others, accessToken },
+      result: { others: others[0], accessToken },
     });
   } catch (err) {
     next(err);
