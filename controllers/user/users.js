@@ -30,12 +30,10 @@ const sendMessage = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       console.error(error);
-      return res
-        .status(500)
-        .json({
-          statusCode: "500",
-          error: "An error occurred while sending Message.",
-        });
+      return res.status(500).json({
+        statusCode: "500",
+        error: "An error occurred while sending Message.",
+      });
     }
     const mydata = JSON.parse(body);
     // console.log(mydata);
@@ -63,12 +61,10 @@ const sendBulkMessage = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       console.error(error);
-      return res
-        .status(500)
-        .json({
-          statusCode: "500",
-          error: "An error occurred while sending Message.",
-        });
+      return res.status(500).json({
+        statusCode: "500",
+        error: "An error occurred while sending Message.",
+      });
     }
     const mydata = JSON.parse(body);
     console.log(mydata);
@@ -619,11 +615,30 @@ const createPatientFirstVisit = (req, res, next) => {
   }
 };
 
+const getUnverifiedworkers = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM healthpersonnel WHERE verified = 0`;
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+    connection.release();
+  } catch (error) {
+    res.status(500).json({ error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   sendBulkMessage,
   sendMessage,
   sendAMessageToWorker,
   getAllUsers,
+  getUnverifiedworkers,
   createASchedule,
   createDeliveryReport,
   createATest,

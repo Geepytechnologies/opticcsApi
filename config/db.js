@@ -6,7 +6,7 @@ const db = mysql.createPool({
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  connectionLimit: 10, // Adjust the limit based on your application's needs
+  connectionLimit: 30, // Adjust the limit based on your application's needs
 });
 
 // No need for db.connect() as connection is managed by the db

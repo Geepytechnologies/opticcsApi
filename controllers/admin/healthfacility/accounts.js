@@ -84,21 +84,56 @@ const createHealthfacilityUserAccount = async (req, res, next) => {
 
 const verifyHealthWorker = async (req, res) => {
   const id = req.params.id;
+  const connection = await db.getConnection();
   try {
-    const connection = await db.getConnection();
-    const q = `UPDATE healthpersonnel SET verified = true WHERE id = ?`;
+    const q = `UPDATE healthpersonnel SET verified = 1 WHERE id = ?`;
     const result = await connection.execute(q, [id]);
-    connection.release();
     res
       .status(201)
       .json({ statusCode: "201", message: "successful", result: result[0] });
+    connection.release();
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       statusCode: "500",
       message: "failure in verifying healthworker",
       error: err,
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getHealthfacilityAccounts = async (req, res, next) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM healthfacilityAccount`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+    connection.release();
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getHealthfacilityUserAccounts = async (req, res, next) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM healthfacilityAdmin`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+    connection.release();
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -106,4 +141,6 @@ module.exports = {
   createHealthfacilityAccount,
   createHealthfacilityUserAccount,
   verifyHealthWorker,
+  getHealthfacilityAccounts,
+  getHealthfacilityUserAccounts,
 };

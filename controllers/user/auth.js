@@ -105,21 +105,37 @@ const signup = async (req, res, next) => {
   const newUser = async () => {
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(password, salt);
-    const result = await connection.execute(
-      createUserQuery(
-        hashedpassword,
-        phone,
-        state,
-        lga,
-        ward,
-        healthFacility,
-        healthWorker,
-        cadre_id
-      )
-    );
-    return result[0];
+    try {
+      const result = await connection.execute(
+        createUserQuery(
+          hashedpassword,
+          phone,
+          state,
+          lga,
+          ward,
+          healthFacility,
+          healthWorker,
+          cadre_id
+        )
+      );
+      return result[0];
+    } catch (error) {
+      connection.release();
+      res
+        .status(500)
+        .json({
+          statusCode: "500",
+          message: "Error executing query",
+          error: err,
+        });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
   };
   try {
+    const connection = await db.getConnection();
     const phone = await existingphone();
     if (phone.length) {
       return res
@@ -129,17 +145,19 @@ const signup = async (req, res, next) => {
     // Create a new user
     const newuser = await newUser();
 
-    connection.release();
     return res
       .status(201)
       .json({ statusCode: "200", message: "successful", result: newuser });
   } catch (err) {
-    connection.release();
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing up", error: err });
 
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -201,18 +219,21 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
-    connection.release();
     res.status(200).json({
       statusCode: "200",
       message: "successful",
       result: { others: others[0], accessToken },
     });
-  } catch (err) {
     connection.release();
+  } catch (err) {
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 

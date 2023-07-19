@@ -54,19 +54,22 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
-    connection.release();
-
     res.status(200).json({
       statusCode: "200",
       message: "successful",
       result: { others: others[0], accessToken },
     });
+    connection.release();
   } catch (err) {
     connection.rollback();
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -83,9 +86,7 @@ const handleRefreshToken = async (req, res) => {
   const refreshToken = cookies.token;
 
   try {
-    console.log(refreshToken);
     const foundUser = await existingRefresh(refreshToken);
-    console.log({ first: foundUser });
     if (!foundUser) {
       return res.status(403).json("User not Found");
     }
@@ -96,11 +97,15 @@ const handleRefreshToken = async (req, res) => {
         expiresIn: "60s",
       });
       const { password, ...others } = foundUser;
+      res.json({ accessToken, others: others[0] });
       connection.release();
-      res.json({ accessToken, others });
     });
   } catch (err) {
     console.error(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 

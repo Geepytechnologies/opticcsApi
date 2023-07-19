@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createLgaAccount,
   createLgaUserAccount,
+  getLgaAccounts,
 } = require("../../../controllers/admin/lga/accounts");
 const {
   signin,
@@ -10,6 +11,8 @@ const {
 const router = express.Router();
 
 router.post("/", createLgaAccount);
+
+router.get("/find", getLgaAccounts);
 
 router.post("/signin", signin);
 

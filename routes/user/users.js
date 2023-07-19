@@ -23,6 +23,7 @@ const {
   sendAMessageToWorker,
   createASchedule,
   createDeliveryReport,
+  getUnverifiedworkers,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -77,6 +78,9 @@ router.get("/find/patients/:id", getUsersPatients);
 
 //get all users
 router.get("/find", getAllUsers);
+
+//get unverified users
+router.get("/find/unverified", getUnverifiedworkers);
 
 // create a cadre
 router.post("/cadre", createACadre);
