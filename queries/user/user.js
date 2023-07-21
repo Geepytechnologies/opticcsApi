@@ -8,7 +8,7 @@ function getExistingEmailQuery(email) {
 function getExistingUserQuery(email, phone) {
   return `
       SELECT * FROM healthpersonnel
-      WHERE email = '${email}' AND phone = '${phone}'
+      WHERE email = :email AND phone = :phone
     `;
 }
 

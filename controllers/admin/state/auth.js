@@ -33,7 +33,7 @@ const signin = async (req, res, next) => {
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-      expiresIn: "1d",
+      expiresIn: "5m",
     });
 
     //refresh Token
@@ -45,7 +45,7 @@ const signin = async (req, res, next) => {
     const updatedUser = await createRefresh(refreshToken);
 
     // Creates Secure Cookie with refresh token
-    res.cookie("token", refreshToken, {
+    res.cookie("statetoken", refreshToken, {
       // httpOnly: false,
       // secure: true,
       // sameSite: "None",
@@ -82,8 +82,8 @@ const handleRefreshToken = async (req, res) => {
     return result[0];
   };
   const cookies = req.cookies;
-  if (!cookies?.token) return res.sendStatus(401);
-  const refreshToken = cookies.token;
+  if (!cookies?.statetoken) return res.sendStatus(401);
+  const refreshToken = cookies.statetoken;
 
   try {
     const foundUser = await existingRefresh(refreshToken);

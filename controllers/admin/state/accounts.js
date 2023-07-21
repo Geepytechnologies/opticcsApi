@@ -68,4 +68,22 @@ const createStateUserAccount = async (req, res, next) => {
   }
 };
 
-module.exports = { createStateAccount, createStateUserAccount };
+const getAllStates = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM stateAccount`;
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+    connection.release();
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+module.exports = { createStateAccount, createStateUserAccount, getAllStates };

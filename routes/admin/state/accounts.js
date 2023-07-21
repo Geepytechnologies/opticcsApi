@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createStateAccount,
   createStateUserAccount,
+  getAllStates,
 } = require("../../../controllers/admin/state/accounts");
 const {
   handleRefreshToken,
@@ -11,6 +12,8 @@ const {
 const router = express.Router();
 
 router.post("/", createStateAccount);
+
+router.get("/find", getAllStates);
 
 router.get("/refresh", handleRefreshToken);
 

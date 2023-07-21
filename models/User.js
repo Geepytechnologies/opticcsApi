@@ -360,6 +360,7 @@ const healthpersonnel = {
         deepYellow: String,
         dirtyWhite: String,
       },
+      //add genital examination
       bloodpressure: String,
       adbominalExamination: {
         abdomenScars: String,
@@ -794,7 +795,8 @@ const createNationalAdminTable = `CREATE TABLE nationaladmin (
   userid VARCHAR(255),
   password VARCHAR(255),
   accountType VARCHAR(255),
-  refreshToken VARCHAR(255)
+  refreshToken VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
@@ -811,7 +813,8 @@ const createStateAdminTable = `CREATE TABLE stateAdmin (
   userid VARCHAR(255),
   password VARCHAR(255),
   accountType VARCHAR(255),
-  refreshToken VARCHAR(255)
+  refreshToken VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 const createStateAccountTable = `CREATE TABLE stateAccount (
@@ -821,7 +824,8 @@ const createStateAccountTable = `CREATE TABLE stateAccount (
   stateid VARCHAR(255),
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
-  email VARCHAR(255)
+  email VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
@@ -838,7 +842,8 @@ const createLgaAdminTable = `CREATE TABLE lgaAdmin (
   userid VARCHAR(255),
   password VARCHAR(255),
   accountType VARCHAR(255),
-  refreshToken VARCHAR(255)
+  refreshToken VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 const createLgaAccountTable = `CREATE TABLE lgaAccount (
@@ -848,7 +853,8 @@ const createLgaAccountTable = `CREATE TABLE lgaAccount (
   lgaID VARCHAR(255),
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
-  email VARCHAR(255)
+  email VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 //health Facility
@@ -864,7 +870,8 @@ const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityAdmin (
   userid VARCHAR(255),
   password VARCHAR(255),
   accountType VARCHAR(255),
-  refreshToken VARCHAR(255)
+  refreshToken VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityAccount (
@@ -874,6 +881,7 @@ const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityAccount (
   healthfacilityID VARCHAR(255),
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
-  email VARCHAR(255)
+  email VARCHAR(255),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;

@@ -33,19 +33,21 @@ const signin = async (req, res, next) => {
 
     //access Token
     const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-      expiresIn: "1d",
+      expiresIn: "5m",
     });
 
     //refresh Token
     const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
       expiresIn: "30m",
     });
+    console.log({ adminrefresh: refreshToken });
 
     //save refresh token to the user model
     const updatedUser = await createRefresh(refreshToken);
+    console.log(updatedUser);
 
     // Creates Secure Cookie with refresh token
-    res.cookie("token", refreshToken, {
+    res.cookie("nationaltoken", refreshToken, {
       // httpOnly: false,
       // secure: true,
       // sameSite: "None",
@@ -54,19 +56,22 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
-    connection.release();
-
     res.status(200).json({
       statusCode: "200",
       message: "successful",
       result: { others: others[0], accessToken },
     });
+    connection.release();
   } catch (err) {
     connection.rollback();
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -78,8 +83,8 @@ const handleRefreshToken = async (req, res) => {
     return result[0];
   };
   const cookies = req.cookies;
-  if (!cookies?.token) return res.sendStatus(401);
-  const refreshToken = cookies.token;
+  if (!cookies?.nationaltoken) return res.sendStatus(401);
+  const refreshToken = cookies.nationaltoken;
 
   try {
     const foundUser = await existingRefresh(refreshToken);
@@ -93,12 +98,16 @@ const handleRefreshToken = async (req, res) => {
         expiresIn: "60s",
       });
       const { password, ...others } = foundUser;
-      connection.release();
+
       res.json({ accessToken, others: others[0] });
+      connection.release();
     });
   } catch (err) {
-    connection.release();
     res.status(500).json({ message: "error refreshing token", error: err });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 

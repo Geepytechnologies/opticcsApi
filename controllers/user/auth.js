@@ -96,10 +96,18 @@ const signup = async (req, res, next) => {
   } = req.body;
 
   const existingphone = async () => {
-    const result = await connection.execute(
-      getExistingPhoneQuery(req.body.phone)
-    );
-    return result[0];
+    return new Promise((resolve, reject) => {
+      connection.execute(
+        getExistingPhoneQuery(req.body.phone),
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result[0]);
+          }
+        }
+      );
+    });
   };
 
   const newUser = async () => {
@@ -119,15 +127,12 @@ const signup = async (req, res, next) => {
         )
       );
       return result[0];
-    } catch (error) {
-      connection.release();
-      res
-        .status(500)
-        .json({
-          statusCode: "500",
-          message: "Error executing query",
-          error: err,
-        });
+    } catch (err) {
+      res.status(500).json({
+        statusCode: "500",
+        message: "Error executing query",
+        error: err,
+      });
     } finally {
       if (connection) {
         connection.release();
@@ -135,7 +140,6 @@ const signup = async (req, res, next) => {
     }
   };
   try {
-    const connection = await db.getConnection();
     const phone = await existingphone();
     if (phone.length) {
       return res
@@ -152,8 +156,6 @@ const signup = async (req, res, next) => {
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing up", error: err });
-
-    next(err);
   } finally {
     if (connection) {
       connection.release();
@@ -163,27 +165,11 @@ const signup = async (req, res, next) => {
 
 const signin = async (req, res, next) => {
   const connection = await db.getConnection();
-
-  const existingphone = async () => {
-    const result = await connection.execute(
+  try {
+    const userresult = await connection.execute(
       getExistingPhoneQuery(req.body.phone)
     );
-    return result[0];
-  };
-  const createRefresh = (access) => {
-    return new Promise((resolve, reject) => {
-      db.query(updateUserRefresh(req.body.email, access), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result;
-          resolve(user);
-        }
-      });
-    });
-  };
-  try {
-    const user = await existingphone();
+    const user = userresult[0];
     console.log({ user: user });
     if (!user.length)
       return res
@@ -224,7 +210,6 @@ const signin = async (req, res, next) => {
       message: "successful",
       result: { others: others[0], accessToken },
     });
-    connection.release();
   } catch (err) {
     res
       .status(500)
@@ -273,20 +258,21 @@ const changepassword = async (req, res, next) => {
     const hashedpassword = bcrypt.hashSync(req.body.newpassword, salt);
     const newusercredentials = await updateUser(hashedpassword);
 
-    connection.release();
     res.status(201).json({
       statusCode: "201",
       message: "Changed password successfully",
       result: newusercredentials,
     });
   } catch (err) {
-    connection.release();
     res.status(500).json({
       statusCode: "500",
       message: "Error changing password",
       error: err,
     });
-    next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
