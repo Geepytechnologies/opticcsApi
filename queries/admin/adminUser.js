@@ -23,9 +23,9 @@ function getAllUsers() {
         SELECT * FROM healthadmin
       `;
 }
-function getRefreshToken(refreshToken) {
+function getRefreshToken() {
   return `
-        SELECT * FROM healthadmin WHERE refreshToken = '${refreshToken}'
+        SELECT * FROM healthadmin WHERE refreshToken = '?'
       `;
 }
 function updateUserRefresh(email, refreshToken) {

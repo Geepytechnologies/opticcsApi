@@ -12,10 +12,10 @@ function getExistingUserQuery(email, phone) {
     `;
 }
 
-function getExistingPhoneQuery(phone) {
+function getExistingPhoneQuery() {
   return `
       SELECT * FROM healthpersonnel
-      WHERE phone = '${phone}'
+      WHERE phone = ?
     `;
 }
 function getAllUsers() {
@@ -23,21 +23,21 @@ function getAllUsers() {
       SELECT * FROM healthpersonnel
     `;
 }
-function getAUserByEmail(email) {
+function getAUserByEmail() {
   return `
-      SELECT * FROM healthpersonnel WHERE email = '${email}'
+      SELECT * FROM healthpersonnel WHERE email = :email
     `;
 }
 function getAUserByPhone(phone) {
   return `
-      SELECT * FROM healthpersonnel WHERE phone = '${phone}'
+      SELECT * FROM healthpersonnel WHERE phone = :phone
     `;
 }
 function getUserPatients(id) {
   return `
   SELECT p.*
   FROM patients p
-  WHERE p.healthpersonnel_id = '${id}';  
+  WHERE p.healthpersonnel_id = :id;  
     `;
 }
 function createPatientPersonalInfoQuery(
@@ -72,8 +72,23 @@ function createPatientPersonalInfoQuery(
     DoYouFeelthebabysmovement,
     doyouknowdateoffirtbabymovement,
     doyouknowdateoflastbabymovement
-    ) 
-  VALUES ('${HospitalNumber}','${FirstName}', '${middleName}', '${surname}','${phone}', '${Address}', '${Gravidity}', '${parity}', '${LMP}','${EDD}','${EGA}','${DoYouFeelthebabysmovement}','${doyouknowdateoffirtbabymovement}','${doyouknowdateoflastbabymovement}')`;
+  ) 
+  VALUES (
+    :HospitalNumber,
+    :FirstName,
+    :middleName,
+    :surname,
+    :phone,
+    :Address,
+    :Gravidity,
+    :parity,
+    :LMP,
+    :EDD,
+    :EGA,
+    :DoYouFeelthebabysmovement,
+    :doyouknowdateoffirtbabymovement,
+    :doyouknowdateoflastbabymovement
+  )`;
 }
 function createPatientFirstvisitDailyhabitQuery(
   firstVisit_id,
@@ -108,7 +123,7 @@ function createPatientFirstvisitDailyhabitQuery(
         Didanyoneever,
         frightened
     ) 
-  VALUES ('${firstVisit_id}','${Doyouworkoutsidethehome}', '${Doyouwalklongdistances}', '${durationofwalkingdistanceinminutes}', '${heavyloads}', '${sleephours}', '${dailymealcount}', '${mealinthelasttwodays}','${nonfoodsubstances}','${babylessthanayear}','${doYou}','${WhodoyouLivewith}','${Didanyoneever}','${frightened}')`;
+  VALUES (:firstVisit_id, :Doyouworkoutsidethehome, :Doyouwalklongdistances, :durationofwalkingdistanceinminutes, :heavyloads, :sleephours, :dailymealcount, :mealinthelasttwodays,:nonfoodsubstances, :babylessthanayear, :doYou, :WhodoyouLivewith, :Didanyoneever, :frightened)`;
 }
 function createPatientFirstvisitObstetricQuery(
   firstVisit_id,
@@ -143,12 +158,12 @@ function createPatientFirstvisitObstetricQuery(
     breastfeedingproblems,
     others2
     ) 
-  VALUES ('${firstVisit_id}','${convulsionduringapregnancy}', '${caesareansection}', '${tearsthroughsphincter}', '${haemorrhage}', '${Stillbirths}', '${prematureDeliveries}', '${lowbirthweightbabies}','${deadbabies}','${others1}','${breastfedbefore}','${durationyoubreastfedyourbaby}','${breastfeedingproblems}','${others2}')`;
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 }
 
-function getRefreshToken(refreshToken) {
+function getRefreshToken() {
   return `
-      SELECT * FROM healthpersonnel WHERE refreshToken = '${refreshToken}'
+      SELECT * FROM healthpersonnel WHERE refreshToken = ?
     `;
 }
 
@@ -189,16 +204,7 @@ LEFT JOIN messages ON patients.healthpersonnel_id = messages.healthpersonnel_id
 WHERE patients.id = '${id}';
     `;
 }
-function createUserQuery(
-  hashedpassword,
-  phone,
-  state,
-  lga,
-  ward,
-  healthFacility,
-  healthWorker,
-  cadre_id
-) {
+function createUserQuery() {
   return `
   INSERT INTO healthpersonnel (
     password,
@@ -210,7 +216,7 @@ function createUserQuery(
     healthWorker,
     cadre_id
     ) 
-  VALUES ('${hashedpassword}', '${phone}', '${state}', '${lga}', '${ward}', '${healthFacility}','${healthWorker}','${cadre_id}')`;
+  VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 }
 
 module.exports = {

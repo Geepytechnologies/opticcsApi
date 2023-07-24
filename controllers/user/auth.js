@@ -95,37 +95,20 @@ const signup = async (req, res, next) => {
     password,
   } = req.body;
 
-  const existingphone = async () => {
-    return new Promise((resolve, reject) => {
-      connection.execute(
-        getExistingPhoneQuery(req.body.phone),
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result[0]);
-          }
-        }
-      );
-    });
-  };
-
   const newUser = async () => {
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(password, salt);
     try {
-      const result = await connection.execute(
-        createUserQuery(
-          hashedpassword,
-          phone,
-          state,
-          lga,
-          ward,
-          healthFacility,
-          healthWorker,
-          cadre_id
-        )
-      );
+      const result = await connection.execute(createUserQuery(), [
+        hashedpassword,
+        phone,
+        state,
+        lga,
+        ward,
+        healthFacility,
+        healthWorker,
+        cadre_id,
+      ]);
       return result[0];
     } catch (err) {
       res.status(500).json({
@@ -140,7 +123,12 @@ const signup = async (req, res, next) => {
     }
   };
   try {
-    const phone = await existingphone();
+    const phonequery = `
+    SELECT * FROM healthpersonnel
+    WHERE phone = ?
+  `;
+    const phoneresult = await connection.execute(phonequery, [req.body.phone]);
+    const phone = phoneresult[0];
     if (phone.length) {
       return res
         .status(409)
@@ -164,11 +152,14 @@ const signup = async (req, res, next) => {
 };
 
 const signin = async (req, res, next) => {
+  const { phone } = req.body;
   const connection = await db.getConnection();
   try {
-    const userresult = await connection.execute(
-      getExistingPhoneQuery(req.body.phone)
-    );
+    const q = `
+    SELECT * FROM healthpersonnel
+    WHERE phone = ?
+  `;
+    const userresult = await connection.execute(q, [phone]);
     const user = userresult[0];
     console.log({ user: user });
     if (!user.length)
@@ -224,24 +215,22 @@ const signin = async (req, res, next) => {
 
 const changepassword = async (req, res, next) => {
   const connection = await db.getConnection();
-
-  const existingphone = async () => {
-    const result = await connection.execute(
-      getExistingPhoneQuery(req.body.phone)
-    );
-    return result[0];
-  };
   const updateUser = async (password) => {
     const q = `
         UPDATE healthpersonnel
-        SET password = '${password}'
-        WHERE phone = '${req.body.phone}'
+        SET password = ?
+        WHERE phone = ?
           `;
-    const result = await connection.query(q);
+    const result = await connection.query(q, [password, req.body.phone]);
     return result[0];
   };
   try {
-    const user = await existingphone();
+    const phonequery = `
+    SELECT * FROM healthpersonnel
+    WHERE phone = ?
+  `;
+    const userResult = await connection.execute(phonequery, [req.body.phone]);
+    const user = userResult[0];
     if (!user.length)
       return res
         .status(404)
@@ -390,58 +379,55 @@ const resetPassword = async (req, res, next) => {
 };
 
 const signout = async (req, res, next) => {
-  const existingRefresh = (refreshToken) => {
-    return new Promise((resolve, reject) => {
-      db.query(getRefreshToken(refreshToken), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
-  };
-  const updateRefresh = (email, refreshToken) => {
-    return new Promise((resolve, reject) => {
-      db.query(updateUserRefresh(email, refreshToken), (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          const user = result[0];
-          resolve(user);
-        }
-      });
-    });
-  };
+  const connection = await db.getConnection();
+
   // On client, also delete the accessToken
+  try {
+    const cookies = req.cookies;
+    if (!cookies?.token) return res.sendStatus(204); //No content
+    const refreshToken = cookies.token;
 
-  const cookies = req.cookies;
-  if (!cookies?.token) return res.sendStatus(204); //No content
-  const refreshToken = cookies.token;
+    // Is refreshToken in db?
+    const existingrefreshQuery = ` SELECT * FROM healthpersonnel WHERE refreshToken = ?`;
+    const foundUserResult = await connection.execute(existingrefreshQuery, [
+      refreshToken,
+    ]);
+    const foundUser = foundUserResult[0];
+    if (!foundUser) {
+      res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      });
+      return res.sendStatus(204);
+    }
 
-  // Is refreshToken in db?
-  const foundUser = await existingRefresh();
-  if (!foundUser) {
+    // Delete refreshToken in db
+    foundUser.refreshtoken = "";
+
+    const updateRefreshQuery = `UPDATE healthpersonnel
+  SET refreshToken = ?
+  WHERE email = ?`;
+
+    const updatedUserResult = await connection.execute(updateRefreshQuery, [
+      foundUser.email,
+      foundUser.refreshToken,
+    ]);
+    const updatedUser = updatedUserResult[0];
+
     res.clearCookie("token", {
       httpOnly: true,
       sameSite: "None",
       secure: true,
     });
-    return res.sendStatus(204);
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ statusCode: "500", message: "Error signing out" });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
-
-  // Delete refreshToken in db
-  foundUser.refreshtoken = "";
-
-  const updatedUser = await updateRefresh(
-    foundUser.email,
-    foundUser.refreshToken
-  );
-  console.log(updatedUser);
-
-  res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: true });
-  res.sendStatus(204);
 };
 
 module.exports = {

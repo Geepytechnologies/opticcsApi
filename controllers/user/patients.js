@@ -128,8 +128,12 @@ const createPatient = async (req, res, next) => {
   };
   const createpatient = async (personalInformation_id) => {
     const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstVisit_date, personalInformation_id)
-    VALUES ('${healthpersonnel_id}','${firstVisit_date}', '${personalInformation_id}')`;
-    const result = await connection.execute(createPatientQuery); // Use connection.execute
+    VALUES (?,?, ?)`;
+    const result = await connection.execute(createPatientQuery, [
+      healthpersonnel_id,
+      firstVisit_date,
+      personalInformation_id,
+    ]); // Use connection.execute
     return result;
   };
   const createfirstvisit = async (patient_id) => {
@@ -186,8 +190,12 @@ const createPatient = async (req, res, next) => {
       allergies,
       symptoms
       ) 
-    VALUES ('${firstVisit_id}','${allergies}', '${symptoms}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?, ?)`;
+    const result = await connection.execute(q, [
+      firstVisit_id,
+      allergies,
+      symptoms,
+    ]);
     return result;
   };
   const createmedicationHistorypulmonary = async (medicationHistory_id) => {
@@ -196,8 +204,12 @@ const createPatient = async (req, res, next) => {
       cough,
       difficultyBreathing
       ) 
-    VALUES ('${medicationHistory_id}','${cough}', '${difficultyBreathing}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?, ?)`;
+    const result = await connection.execute(q, [
+      medicationHistory_id,
+      cough,
+      difficultyBreathing,
+    ]);
     return result;
   };
   const createmedicationHistorycardio = async (medicationHistory_id) => {
@@ -397,7 +409,6 @@ const getAllPatients = async (req, res) => {
 
     const users = await record();
 
-    connection.release();
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: users });
@@ -407,6 +418,10 @@ const getAllPatients = async (req, res) => {
     res
       .status(500)
       .json({ statusCode: "500", error: "Database connection or query error" });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -562,29 +577,31 @@ const createPatientEveryVisit = async (req, res, next) => {
   }
 };
 
-const numberofPatientswith4visits = async (req, res) => {
+const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
-  const q = `SELECT COUNT(*) AS patient_count
-    FROM (
-      SELECT patients.id
-      FROM patients
-      INNER JOIN firstVisit ON patients.id = firstVisit.patient_id
-      GROUP BY patients.id
-      HAVING COUNT(firstVisit.id) >= 4
-    ) AS subquery;
-  `;
-
   try {
+    const q = `SELECT p.id AS patient_id
+    FROM patients p
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS first_visit_count
+        FROM firstVisit
+        GROUP BY patient_id
+    ) fv ON p.id = fv.patient_id
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS every_visit_count
+        FROM everyVisit
+        GROUP BY patient_id
+    ) ev ON p.id = ev.patient_id
+    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.every_visit_count, 0)) > 4;    
+    `;
     const result = await connection.execute(q);
-    const patient_count = result[0].patient_count;
-    res.status(200).json({ patient_count });
-  } catch (err) {
-    connection.release();
-    res.status(500).json({
-      statusCode: "500",
-      error: err,
-      message: "An error occurred while executing the query.",
-    });
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -593,5 +610,5 @@ module.exports = {
   getPatientRecord,
   createPatientEveryVisit,
   getAllPatients,
-  numberofPatientswith4visits,
+  numberofwomenwith4visits,
 };

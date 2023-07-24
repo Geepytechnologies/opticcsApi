@@ -5,7 +5,7 @@ const db = require("../../config/db");
 
 const existingRefresh = (refreshToken) => {
   return new Promise((resolve, reject) => {
-    db.query(getRefreshToken(refreshToken), (err, result) => {
+    db.query(getRefreshToken(), [refreshToken], (err, result) => {
       if (err) {
         reject(err);
       } else {
