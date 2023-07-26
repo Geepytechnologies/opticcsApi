@@ -623,7 +623,23 @@ const getUnverifiedworkers = async (req, res) => {
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
-    connection.release();
+  } catch (error) {
+    res.status(500).json({ error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getHealthworkerInfo = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  try {
+    const q = `SELECT * FROM healthpersonnel WHERE id = ?`;
+    const result = await connection.execute(q, [userid]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
     res.status(500).json({ error });
   } finally {
@@ -633,13 +649,106 @@ const getUnverifiedworkers = async (req, res) => {
   }
 };
 
+//schedule
+const createHealthworkerSchedule = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  const { id } = req.params;
+  const { dateFrom, dateTo } = req.body;
+  const values = [userid, id, dateFrom, dateTo];
+  try {
+    const q = `INSERT INTO schedule (healthpersonnel_id, patient_id, dateFrom, dateTo) VALUES (?, ?, ?, ?)`;
+    const result = await connection.execute(q, values);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllHealthworkersSchedule = async (req, res) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  const values = [userid];
+  try {
+    const q = `SELECT * FROM schedule WHERE healthpersonnel_id = ?`;
+    const result = await connection.execute(q, values);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const updateHealthworkerScheduleCompleted = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  const { id } = req.params;
+  const { completed, upcoming, missed, flagged } = req.body;
+  const values = [completed, upcoming, missed, flagged, id];
+  try {
+    const q = `UPDATE schedule
+    SET
+      completed = IFNULL(?, completed),
+      upcoming = IFNULL(?, upcoming),
+      missed = IFNULL(?, missed),
+      flagged = IFNULL(?, flagged)
+    WHERE id = ?;
+    `;
+    const result = await connection.execute(q, values);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const deleteAHealthworkerSchedule = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  const { id } = req.params;
+  const values = [id];
+  try {
+    const q = `DELETE FROM schedule
+    WHERE id = ?;    
+    `;
+    const result = await connection.execute(q, values);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   sendBulkMessage,
+  getHealthworkerInfo,
   sendMessage,
   sendAMessageToWorker,
   getAllUsers,
   getUnverifiedworkers,
   createASchedule,
+  createHealthworkerSchedule,
+  getAllHealthworkersSchedule,
+  updateHealthworkerScheduleCompleted,
+  deleteAHealthworkerSchedule,
   createDeliveryReport,
   createATest,
   getUserByPhone,

@@ -40,107 +40,43 @@ function getUserPatients(id) {
   WHERE p.healthpersonnel_id = :id;  
     `;
 }
-function createPatientPersonalInfoQuery(
-  HospitalNumber,
-  FirstName,
-  middleName,
-  surname,
-  phone,
-  Address,
-  Gravidity,
-  parity,
-  LMP,
-  EDD,
-  EGA,
-  DoYouFeelthebabysmovement,
-  doyouknowdateoffirtbabymovement,
-  doyouknowdateoflastbabymovement
-) {
+function createPatientPersonalInfoQuery() {
   return `
-  INSERT INTO personalInformation (
-    HospitalNumber,
-    FirstName,
-    middleName,
-    surname,
-    phone,
-    Address,
-    Gravidity,
-    parity,
-    LMP,
-    EDD,
-    EGA,
-    DoYouFeelthebabysmovement,
-    doyouknowdateoffirtbabymovement,
-    doyouknowdateoflastbabymovement
+  INSERT INTO personalinformation (
+    hospitalnumber,
+      firstname,
+      middlename,
+      surname,
+      phone,
+      address,
+      gravidity,
+      parity,
+      lmp,
+      edd,
+      ega,
+      doyoufeelthebabysmovement,
+      doyouknowdateoffirtbabymovement,
+      doyouknowdateoflastbabymovement
   ) 
   VALUES (
-    :HospitalNumber,
-    :FirstName,
-    :middleName,
-    :surname,
-    :phone,
-    :Address,
-    :Gravidity,
-    :parity,
-    :LMP,
-    :EDD,
-    :EGA,
-    :DoYouFeelthebabysmovement,
-    :doyouknowdateoffirtbabymovement,
-    :doyouknowdateoflastbabymovement
+    ?,?,?,?,?,?,?,?,?,?,?,?,?,?
   )`;
 }
-function createPatientFirstvisitDailyhabitQuery(
-  firstVisit_id,
-  Doyouworkoutsidethehome,
-  Doyouwalklongdistances,
-  durationofwalkingdistanceinminutes,
-  heavyloads,
-  sleephours,
-  dailymealcount,
-  mealinthelasttwodays,
-  nonfoodsubstances,
-  babylessthanayear,
-  doYou,
-  WhodoyouLivewith,
-  Didanyoneever,
-  frightened
-) {
+function createPatientFirstvisitDailyhabitQuery() {
   return `
   INSERT INTO dailyHabitsAndLifestyle (
     firstVisit_id,
-        Doyouworkoutsidethehome,
-        Doyouwalklongdistances,
-        durationofwalkingdistanceinminutes,
-        heavyloads,
-        sleephours,
-        dailymealcount,
-        mealinthelasttwodays,
-        nonfoodsubstances,
-        babylessthanayear,
-        doYou,
-        WhodoyouLivewith,
-        Didanyoneever,
-        frightened
+    doyousmoke,
+    doyoudrinkalcohol,
+    doyouuseharmfulsubstances,
+    whodoyoulivewith,
+    stoppedfromleavingthehouse,
+    threatenedyourlife,
+    abusedphysicallyorsexually
     ) 
-  VALUES (:firstVisit_id, :Doyouworkoutsidethehome, :Doyouwalklongdistances, :durationofwalkingdistanceinminutes, :heavyloads, :sleephours, :dailymealcount, :mealinthelasttwodays,:nonfoodsubstances, :babylessthanayear, :doYou, :WhodoyouLivewith, :Didanyoneever, :frightened)`;
+  VALUES (?,?,?,?,?,?,?,?)`;
 }
-function createPatientFirstvisitObstetricQuery(
-  firstVisit_id,
-  convulsionduringapregnancy,
-  caesareansection,
-  tearsthroughsphincter,
-  haemorrhage,
-  Stillbirths,
-  prematureDeliveries,
-  lowbirthweightbabies,
-  deadbabies,
-  others1,
-  breastfedbefore,
-  durationyoubreastfedyourbaby,
-  breastfeedingproblems,
-  others2
-) {
+function createPatientFirstvisitObstetricQuery() {
   return `
   INSERT INTO obstetricHistory (
     firstVisit_id,
@@ -152,13 +88,10 @@ function createPatientFirstvisitObstetricQuery(
     prematureDeliveries,
     lowbirthweightbabies,
     deadbabies,
-    others1,
-    breastfedbefore,
-    durationyoubreastfedyourbaby,
-    breastfeedingproblems,
-    others2
+    miscarriages,
+    others
     ) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 }
 
 function getRefreshToken() {
@@ -214,7 +147,7 @@ function createUserQuery() {
     ward,
     healthFacility,
     healthWorker,
-    cadre_id
+    cadre
     ) 
   VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 }

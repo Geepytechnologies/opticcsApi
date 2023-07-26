@@ -24,6 +24,11 @@ const {
   createASchedule,
   createDeliveryReport,
   getUnverifiedworkers,
+  getHealthworkerInfo,
+  createHealthworkerSchedule,
+  updateHealthworkerScheduleCompleted,
+  deleteAHealthworkerSchedule,
+  getAllHealthworkersSchedule,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -38,25 +43,7 @@ const {
 const router = express.Router();
 
 //update user
-// router.put("/:id", verifyToken, update);
-
-//update user for purchase
-// router.put("/purchase/:id", verifyToken, updateuserforpurchase);
-
-//update user for purchase
-// router.put("/purchase/special/:id", verifyToken, updateforspecialpackage);
-
-//update user for purchase
-// router.put("/purchase/special/earned/:id", verifyToken, updatespecialearned);
-
-//update user referraldata
-// router.put("/referral/:id", verifyToken, updatereferralbonus);
-
-//update user referraldata on signup
-// router.put("/signup/:id", updatereferral);
-
-//delete user
-// router.delete("/:id", verifyTokenAndAuthorization, deleteUser);
+router.get("/find/details", verifyToken, getHealthworkerInfo);
 
 router.post("/sms", sendMessage);
 
@@ -64,7 +51,17 @@ router.post("/sms/bulk", sendBulkMessage);
 
 router.post("/send/:id", sendAMessageToWorker);
 
-router.post("/schedule/:id", createASchedule);
+router.post("/schedule/:id", verifyToken, createHealthworkerSchedule);
+
+router.get("/schedule/find", verifyToken, getAllHealthworkersSchedule);
+
+router.delete("/schedule/:id", verifyToken, deleteAHealthworkerSchedule);
+
+router.put(
+  "/schedule/update/:id",
+  verifyToken,
+  updateHealthworkerScheduleCompleted
+);
 
 router.post("/deliveryreport/:id", createDeliveryReport);
 

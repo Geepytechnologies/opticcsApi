@@ -7,7 +7,7 @@ const createStateAccount = async (req, res, next) => {
   try {
     const connection = await db.getConnection();
     const q = `INSERT INTO stateAccount (state, boardname, stateid, officeaddress, phone, email)
-      VALUES (?, ?, ?, ?, ?, ?,?)`;
+      VALUES (?, ?, ?, ?, ?, ?)`;
     const result = await connection.execute(q, values);
     connection.release();
     res
@@ -85,5 +85,27 @@ const getAllStates = async (req, res) => {
     }
   }
 };
+const getAllStateUsers = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM stateAdmin`;
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+    connection.release();
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
-module.exports = { createStateAccount, createStateUserAccount, getAllStates };
+module.exports = {
+  createStateAccount,
+  createStateUserAccount,
+  getAllStates,
+  getAllStateUsers,
+};

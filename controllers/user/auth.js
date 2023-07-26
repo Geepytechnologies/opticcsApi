@@ -91,36 +91,24 @@ const signup = async (req, res, next) => {
     ward,
     healthFacility,
     healthWorker,
-    cadre_id,
+    cadre,
     password,
   } = req.body;
 
   const newUser = async () => {
     const salt = bcrypt.genSaltSync(10);
     const hashedpassword = bcrypt.hashSync(password, salt);
-    try {
-      const result = await connection.execute(createUserQuery(), [
-        hashedpassword,
-        phone,
-        state,
-        lga,
-        ward,
-        healthFacility,
-        healthWorker,
-        cadre_id,
-      ]);
-      return result[0];
-    } catch (err) {
-      res.status(500).json({
-        statusCode: "500",
-        message: "Error executing query",
-        error: err,
-      });
-    } finally {
-      if (connection) {
-        connection.release();
-      }
-    }
+    const result = await connection.execute(createUserQuery(), [
+      hashedpassword,
+      phone,
+      state,
+      lga,
+      ward,
+      healthFacility,
+      healthWorker,
+      cadre,
+    ]);
+    return result[0];
   };
   try {
     const phonequery = `
@@ -139,7 +127,7 @@ const signup = async (req, res, next) => {
 
     return res
       .status(201)
-      .json({ statusCode: "200", message: "successful", result: newuser });
+      .json({ statusCode: "201", message: "successful", result: newuser });
   } catch (err) {
     res
       .status(500)
@@ -161,7 +149,6 @@ const signin = async (req, res, next) => {
   `;
     const userresult = await connection.execute(q, [phone]);
     const user = userresult[0];
-    console.log({ user: user });
     if (!user.length)
       return res
         .status(404)
@@ -173,9 +160,13 @@ const signin = async (req, res, next) => {
         .json({ statusCode: "400", message: "wrong credentials" });
 
     //access Token
-    const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-      expiresIn: "10d",
-    });
+    const accessToken = jwt.sign(
+      { id: user[0].id },
+      process.env.ACCESS_SECRET,
+      {
+        expiresIn: "10d",
+      }
+    );
 
     //refresh Token
     // const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
@@ -187,12 +178,12 @@ const signin = async (req, res, next) => {
     // console.log(updatedUser);
 
     // Creates Secure Cookie with refresh token
-    res.cookie("token", accessToken, {
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: "None",
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-    });
+    // res.cookie("token", accessToken, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: "None",
+    //   maxAge: 10 * 24 * 60 * 60 * 1000,
+    // });
 
     const { password, ...others } = user;
 

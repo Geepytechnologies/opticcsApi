@@ -12,280 +12,369 @@ const createPatient = async (req, res, next) => {
   const connection = await db.getConnection();
   const {
     healthpersonnel_id,
-    firstVisit_date,
-    HospitalNumber,
-    FirstName,
-    middleName,
+    firstvisit_date,
+    hospitalnumber,
+    firstname,
+    middlename,
     surname,
     phone,
-    Address,
-    Gravidity,
+    address,
+    gravidity,
     parity,
-    LMP,
-    EDD,
-    EGA,
-    DoYouFeelthebabysmovement,
+    lmp,
+    edd,
+    ega,
+    doyoufeelthebabysmovement,
     doyouknowdateoffirtbabymovement,
     doyouknowdateoflastbabymovement,
-    Doyouworkoutsidethehome,
-    Doyouwalklongdistances,
-    durationofwalkingdistanceinminutes,
-    heavyloads,
-    sleephours,
-    dailymealcount,
-    mealinthelasttwodays,
-    nonfoodsubstances,
-    babylessthanayear,
-    doYou,
-    WhodoyouLivewith,
-    Didanyoneever,
-    frightened,
+    doyousmoke,
+    doyoudrinkalcohol,
+    doyouuseharmfulsubstances,
+    whodoyoulivewith,
+    stoppedfromleavingthehouse,
+    threatenedyourlife,
+    abusedphysicallyorsexually,
+    fever,
+    headache,
+    dizziness,
+    convulsions,
+    weakness,
+    blurryvision,
+    cough,
+    difficultybreathing,
+    palpitation,
+    swellingoffeet,
+    severechestpain,
+    severeepigastricpain,
+    pepticulcerpatient,
+    severetirednesss,
+    difficultylyingflat,
+    severeabdominalpain,
+    vomiting,
+    diarrhoea,
+    urinarypain,
+    severeflankpain,
+    bloodinurine,
+    increasedurination,
+    antsaroundurine,
+    increasedthirst,
+    vaginaldischarge,
+    painduringsex,
+    syphillis,
     convulsionduringapregnancy,
     caesareansection,
     tearsthroughsphincter,
     haemorrhage,
-    Stillbirths,
+    stillbirths,
     prematureDeliveries,
     lowbirthweightbabies,
     deadbabies,
-    obstetricothers1,
-    breastfedbefore,
-    durationyoubreastfedyourbaby,
-    breastfeedingproblems,
-    others2,
+    miscarriages,
+    others,
     allergies,
-    symptoms,
-    cough,
-    difficultyBreathing,
-    palpitation,
-    swellingoffeet,
-    severechestpain,
-    Severeepigastricpain,
-    Severetirednesss,
-    difficultylyingflat,
-    headaches,
-    dizziness,
-    severeabdominalpain,
-    vomiting,
-    diarrhoea,
-    pain,
-    severeflankpain,
-    bloodinurine,
-    swollenface,
-    Vaginaldischarge,
-    painduringsex,
-    syphillis,
-    drycough,
-    weightloss,
-    nightsweat,
-    tuberculosisdiagnosed,
-    tuberculosistreated,
+    herbalremedies,
+    vitamins,
+    otcdrugs,
+    dietary,
+    othersdrughistory,
+    tetanus,
+    tetanusdoses,
+    lasttetanusdose,
+    covidvaccination,
+    hypertension,
     heartdisease,
-    Anaemia,
-    kidney,
+    anaemia,
+    kidneydisease,
     sicklecell,
     diabetes,
     goitre,
     hiv,
-    covid,
-    anyother,
-    admitted,
-    reasonforadmission,
-    surgery,
-    reasonforsurgery,
-    traditional,
-    herbalremedies,
-    vitamins,
-    otcDrugs,
-    dietary,
-    onmedicationsothers1,
-    tetanus,
-    tetanusdoses,
-    lastTetanusdose,
-    covidVaccination,
+    currentlyontreatmentforhiv,
+    seriouschronicillness,
+    covidvaccinationpast,
+    everhadsurgery,
+    haveyoubreastfedbefore,
+    lengthofbreastfeeding,
+    problemsbreastfeeding,
+    babylessthanayear,
+    areyoustillbreastfeeding,
+    camewithachildunder5years,
+    immunisationstatus,
+    unvaccinatedchildrenathome,
   } = req.body;
 
   // Replacing the individual db.query with pool.query for connection pooling
   const personalRecord = async () => {
-    const query = createPatientPersonalInfoQuery(
-      HospitalNumber,
-      FirstName,
-      middleName,
+    const query = createPatientPersonalInfoQuery();
+    const values = [
+      hospitalnumber,
+      firstname,
+      middlename,
       surname,
       phone,
-      Address,
-      Gravidity,
+      address,
+      gravidity,
       parity,
-      LMP,
-      EDD,
-      EGA,
-      DoYouFeelthebabysmovement,
+      lmp,
+      edd,
+      ega,
+      doyoufeelthebabysmovement,
       doyouknowdateoffirtbabymovement,
-      doyouknowdateoflastbabymovement
-    );
-    const result = await connection.execute(query); // Use connection.execute
+      doyouknowdateoflastbabymovement,
+    ];
+    const result = await connection.execute(query, values); // Use connection.execute
     return result;
   };
-  const createpatient = async (personalInformation_id) => {
-    const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstVisit_date, personalInformation_id)
+  const createpatient = async (personalinformation_id) => {
+    const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstvisit_date, personalinformation_id)
     VALUES (?,?, ?)`;
     const result = await connection.execute(createPatientQuery, [
       healthpersonnel_id,
-      firstVisit_date,
-      personalInformation_id,
+      firstvisit_date,
+      personalinformation_id,
     ]); // Use connection.execute
     return result;
   };
   const createfirstvisit = async (patient_id) => {
-    const createFirstVisitQuery = `INSERT INTO firstVisit (patient_id, createdAt) VALUES ('${patient_id}','${firstVisit_date}')`;
+    const createFirstVisitQuery = `INSERT INTO firstvisit (patient_id, createdAt) VALUES ('${patient_id}','${firstvisit_date}')`;
     const result = await connection.execute(createFirstVisitQuery); // Use connection.execute
     return result;
   };
 
-  const createdailyhabit = async (firstVisit_id) => {
+  const createdailyhabit = async (firstvisit_id) => {
+    const values = [
+      firstvisit_id,
+      doyousmoke,
+      doyoudrinkalcohol,
+      doyouuseharmfulsubstances,
+      whodoyoulivewith,
+      stoppedfromleavingthehouse,
+      threatenedyourlife,
+      abusedphysicallyorsexually,
+    ];
     const result = await connection.execute(
-      createPatientFirstvisitDailyhabitQuery(
-        firstVisit_id,
-        Doyouworkoutsidethehome,
-        Doyouwalklongdistances,
-        durationofwalkingdistanceinminutes,
-        heavyloads,
-        sleephours,
-        dailymealcount,
-        mealinthelasttwodays,
-        nonfoodsubstances,
-        babylessthanayear,
-        doYou,
-        WhodoyouLivewith,
-        Didanyoneever,
-        frightened
-      )
+      createPatientFirstvisitDailyhabitQuery(),
+      values
     );
     return result;
   };
-  const createobstetric = async (firstVisit_id) => {
+  const createobstetric = async (firstvisit_id) => {
+    const values = [
+      firstvisit_id,
+      convulsionduringapregnancy,
+      caesareansection,
+      tearsthroughsphincter,
+      haemorrhage,
+      stillbirths,
+      prematureDeliveries,
+      lowbirthweightbabies,
+      deadbabies,
+      miscarriages,
+      others,
+    ];
     const result = await connection.execute(
-      createPatientFirstvisitObstetricQuery(
-        firstVisit_id,
-        convulsionduringapregnancy,
-        caesareansection,
-        tearsthroughsphincter,
-        haemorrhage,
-        Stillbirths,
-        prematureDeliveries,
-        lowbirthweightbabies,
-        deadbabies,
-        obstetricothers1,
-        breastfedbefore,
-        durationyoubreastfedyourbaby,
-        breastfeedingproblems,
-        others2
-      )
+      createPatientFirstvisitObstetricQuery(),
+      values
     );
     return result;
   };
   const createmedicationHistory = async (firstVisit_id) => {
-    const q = `INSERT INTO medicationHistory (
-      firstVisit_id,
-      allergies,
-      symptoms
+    const q = `INSERT INTO medicationhistory (
+      firstVisit_id
       ) 
-    VALUES (?,?, ?)`;
-    const result = await connection.execute(q, [
-      firstVisit_id,
-      allergies,
-      symptoms,
-    ]);
+    VALUES (?)`;
+    const result = await connection.execute(q, [firstVisit_id]);
     return result;
   };
-  const createmedicationHistorypulmonary = async (medicationHistory_id) => {
+  const createmedicationHistorypulmonary = async (medicationhistory_id) => {
     const q = `INSERT INTO pulmonary (
-      medicationHistory_id,
+      medicationhistory_id,
       cough,
-      difficultyBreathing
+      difficultybreathing
       ) 
     VALUES (?,?, ?)`;
     const result = await connection.execute(q, [
-      medicationHistory_id,
+      medicationhistory_id,
       cough,
-      difficultyBreathing,
+      difficultybreathing,
     ]);
     return result;
   };
   const createmedicationHistorycardio = async (medicationHistory_id) => {
+    const values = [
+      medicationHistory_id,
+      palpitation,
+      swellingoffeet,
+      severechestpain,
+      severeepigastricpain,
+      pepticulcerpatient,
+      severetirednesss,
+      difficultylyingflat,
+    ];
     const q = `INSERT INTO cardiovascular (
       medicationHistory_id,
       palpitation,
-      swellingoffeet,severechestpain,Severeepigastricpain,Severetirednesss,difficultylyingflat
+      swellingoffeet,severechestpain,severeepigastricpain,pepticulcerpatient,severetirednesss,difficultylyingflat
       ) 
-    VALUES ('${medicationHistory_id}','${palpitation}', '${swellingoffeet}', '${severechestpain}','${Severeepigastricpain}','${Severetirednesss}','${difficultylyingflat}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryneuro = async (medicationHistory_id) => {
-    const q = `INSERT INTO neurologic (
-      medicationHistory_id,
-      headaches,
-      dizziness
-      ) 
-    VALUES ('${medicationHistory_id}','${headaches}', '${dizziness}')`;
-    const result = await connection.execute(q);
-    return result;
-  };
-  const createmedicationHistoryGastro = async (medicationHistory_id) => {
+  const createmedicationHistoryGastro = async (medicationhistory_id) => {
+    const values = [
+      medicationhistory_id,
+      severeabdominalpain,
+      vomiting,
+      diarrhoea,
+    ];
     const q = `INSERT INTO gastrointestinal (
-      medicationHistory_id,
+      medicationhistory_id,
       severeabdominalpain, vomiting, diarrhoea
       ) 
-    VALUES ('${medicationHistory_id}','${severeabdominalpain}', '${vomiting}','${diarrhoea}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryUrinary = async (medicationHistory_id) => {
+  const createmedicationHistoryUrinary = async (medicationhistory_id) => {
+    const values = [
+      medicationhistory_id,
+      urinarypain,
+      severeflankpain,
+      bloodinurine,
+      increasedurination,
+      antsaroundurine,
+      increasedthirst,
+    ];
     const q = `INSERT INTO urinary (
-      medicationHistory_id,
-      pain, severeflankpain, bloodinurine,swollenface
+      medicationhistory_id,
+      urinarypain, severeflankpain, bloodinurine,increasedurination,antsaroundurine,increasedthirst
       ) 
-    VALUES ('${medicationHistory_id}','${pain}', '${severeflankpain}','${bloodinurine}','${swollenface}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryGynae = async (medicationHistory_id) => {
+  const createmedicationHistoryGynae = async (medicationhistory_id) => {
+    const values = [
+      medicationhistory_id,
+      vaginaldischarge,
+      painduringsex,
+      syphillis,
+    ];
     const q = `INSERT INTO gynaecological (
-      medicationHistory_id,
-      Vaginaldischarge,
+      medicationhistory_id,
+      vaginaldischarge,
       painduringsex,
       syphillis
       ) 
-    VALUES ('${medicationHistory_id}','${Vaginaldischarge}', '${painduringsex}','${syphillis}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryHistoryof = async (medicationHistory_id) => {
-    const q = `INSERT INTO historyof (
-      medicationHistory_id,
-      drycough, weightloss, nightsweat,tuberculosisdiagnosed,tuberculosistreated
+  const createmedicationHistoryOnmedications = async (medicationhistory_id) => {
+    const values = [
+      medicationhistory_id,
+      allergies,
+      herbalremedies,
+      vitamins,
+      otcdrugs,
+      dietary,
+      othersdrughistory,
+      tetanus,
+      tetanusdoses,
+      lasttetanusdose,
+      covidvaccination,
+    ];
+    const q = `INSERT INTO drughistory (
+      medicationhistory_id,
+      allergies, herbalremedies, vitamins,otcdrugs,dietary,othersdrughistory,tetanus,tetanusdoses,lasttetanusdose,covidvaccination
       ) 
-    VALUES ('${medicationHistory_id}','${drycough}', '${weightloss}','${nightsweat}','${tuberculosisdiagnosed}','${tuberculosistreated}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryDiagnosedof = async (medicationHistory_id) => {
-    const q = `INSERT INTO diagnosedof (
-      medicationHistory_id,
-      heartdisease, Anaemia, kidney,sicklecell,diabetes,goitre,hiv,covid,anyother,admitted,reasonforadmission,surgery,reasonforsurgery
+  const createpastmedicalHistory = async (firstvisit_id) => {
+    const values = [
+      firstvisit_id,
+      hypertension,
+      heartdisease,
+      anaemia,
+      kidneydisease,
+      sicklecell,
+      diabetes,
+      goitre,
+      hiv,
+      currentlyontreatmentforhiv,
+      seriouschronicillness,
+      covidvaccinationpast,
+      everhadsurgery,
+    ];
+    const q = `INSERT INTO pastmedicalhistory (
+      firstvisit_id,
+      hypertension,
+      heartdisease,
+      anaemia,
+      kidneydisease,
+      sicklecell,
+      diabetes,
+      goitre,
+      hiv,
+      currentlyontreatmentforhiv,
+      seriouschronicillness,
+      covidvaccinationpast,
+      everhadsurgery
       ) 
-    VALUES ('${medicationHistory_id}','${heartdisease}', '${Anaemia}','${kidney}','${sicklecell}','${diabetes}','${goitre}','${hiv}','${covid}','${anyother}','${admitted}','${reasonforadmission}','${surgery}','${reasonforsurgery}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
-  const createmedicationHistoryOnmedications = async (medicationHistory_id) => {
-    const q = `INSERT INTO onmedications (
-      medicationHistory_id,
-      traditional, herbalremedies, vitamins,otcDrugs,dietary,others1,tetanus,tetanusdoses,lastTetanusdose,covidVaccination
+  const createfamilyHistory = async (firstvisit_id) => {
+    const values = [
+      firstvisit_id,
+      haveyoubreastfedbefore,
+      lengthofbreastfeeding,
+      problemsbreastfeeding,
+      babylessthanayear,
+      areyoustillbreastfeeding,
+      camewithachildunder5years,
+      immunisationstatus,
+      unvaccinatedchildrenathome,
+    ];
+    const q = `INSERT INTO familyhistory (
+      firstvisit_id,
+      haveyoubreastfedbefore,
+      lengthofbreastfeeding,
+      problemsbreastfeeding,
+      babylessthanayear,
+      areyoustillbreastfeeding,
+      camewithachildunder5years,
+      immunisationstatus,
+      unvaccinatedchildrenathome
       ) 
-    VALUES ('${medicationHistory_id}','${traditional}', '${herbalremedies}','${vitamins}','${otcDrugs}','${dietary}','${onmedicationsothers1}','${tetanus}','${tetanusdoses}','${lastTetanusdose}','${covidVaccination}')`;
-    const result = await connection.execute(q);
+    VALUES (?,?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
+    return result;
+  };
+  const createGeneral = async (medicationhistory_id) => {
+    const values = [
+      medicationhistory_id,
+      fever,
+      headache,
+      dizziness,
+      convulsions,
+      weakness,
+      blurryvision,
+    ];
+    const q = `INSERT INTO general (
+      medicationhistory_id,
+  fever,
+  headache,
+  dizziness,
+  convulsions,
+  weakness,
+  blurryvision
+      ) 
+    VALUES (?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
     return result;
   };
 
@@ -297,17 +386,19 @@ const createPatient = async (req, res, next) => {
     const patientID = patientcreate[0].insertId;
     const firstvisitcreation = await createfirstvisit(patientID);
     const firstvisitID = firstvisitcreation[0].insertId;
+    const pastmedicalhistorycreation = await createpastmedicalHistory(
+      firstvisitID
+    );
+    await createfamilyHistory(firstvisitID);
     const dailyhabitcreation = await createdailyhabit(firstvisitID);
     const obstetricCreation = await createobstetric(firstvisitID);
     const medicationCreation = await createmedicationHistory(firstvisitID);
     const medicationHistory_id = medicationCreation[0].insertId;
+    const generalcreation = await createGeneral(medicationHistory_id);
     const medicationpulmonary = await createmedicationHistorypulmonary(
       medicationHistory_id
     );
     const medicationcardio = await createmedicationHistorycardio(
-      medicationHistory_id
-    );
-    const medicationneuro = await createmedicationHistoryneuro(
       medicationHistory_id
     );
     const medicationgastro = await createmedicationHistoryGastro(
@@ -319,18 +410,11 @@ const createPatient = async (req, res, next) => {
     const medicationGynae = await createmedicationHistoryGynae(
       medicationHistory_id
     );
-    const medicationhistoryof = await createmedicationHistoryHistoryof(
-      medicationHistory_id
-    );
-    const medicationdiagnosedof = await createmedicationHistoryDiagnosedof(
-      medicationHistory_id
-    );
     const medicationOnMedications = await createmedicationHistoryOnmedications(
       medicationHistory_id
     );
 
     await connection.commit();
-    connection.release();
     res.status(201).json({
       statusCode: "201",
       message: "successful",
@@ -342,15 +426,13 @@ const createPatient = async (req, res, next) => {
         obstetric: obstetricCreation[0].insertId,
         medicationpulmonary: medicationpulmonary[0].insertId,
         medicationcardio: medicationcardio[0].insertId,
-        medicationneuro: medicationneuro[0].insertId,
         medicationgastro: medicationgastro[0].insertId,
         medicationurinary: medicationurinary[0].insertId,
         medicationGynae: medicationGynae[0].insertId,
-        medicationhistoryof: medicationhistoryof[0].insertId,
-        medicationdiagnosedof: medicationdiagnosedof[0].insertId,
         medicationOnMedications: medicationOnMedications[0].insertId,
       },
     });
+    connection.release();
   } catch (error) {
     if (connection) {
       await connection.rollback();
@@ -361,6 +443,10 @@ const createPatient = async (req, res, next) => {
       statusCode: "500",
       error: "An error occurred while executing the transaction.",
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -379,17 +465,20 @@ const getPatientRecord = async (req, res) => {
         message: `Patient with ID of ${id} not found`,
       });
     }
-    connection.release();
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: response });
-  } catch (err) {
     connection.release();
+  } catch (err) {
     res.status(500).json({
       statusCode: "500",
       message: "Error getting patient record",
       error: err,
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -605,10 +694,156 @@ const numberofwomenwith4visits = async (req, res) => {
   }
 };
 
+const getAllPatientsAndHealthworker = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT
+    p.*,
+    hp.*,
+    pi.*
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalInformation pi ON p.personalInformation_id = pi.id
+  `;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getPatientPersonalinfo = async (req, res) => {
+  const connection = await db.getConnection();
+  const id = req.params.id;
+  try {
+    const q = `SELECT
+    pi.*
+  FROM
+    patients p
+  JOIN
+    personalInformation pi ON p.personalInformation_id = pi.id
+  WHERE
+    p.id = ?;  
+  `;
+    const result = await connection.execute(q, [id]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getPatientFirstVisit = async (req, res) => {
+  const connection = await db.getConnection();
+  const id = req.params.id;
+  try {
+    const q = `SELECT
+    fv.*,
+    dhal.*,
+    oh.*,mh.*,p.*,c.*,n.*,gi.*,u.*,g.*,ho.*,do.*,om.*
+  FROM
+    firstVisit fv
+  LEFT JOIN
+    dailyHabitsAndLifestyle dhal ON fv.id = dhal.firstVisit_id
+  LEFT JOIN
+    obstetricHistory oh ON fv.id = oh.firstVisit_id
+    LEFT JOIN
+    medicationHistory mh ON fv.id = mh.firstVisit_id
+  LEFT JOIN
+    pulmonary p ON mh.id = p.medicationHistory_id
+  LEFT JOIN
+    cardiovascular c ON mh.id = c.medicationHistory_id
+  LEFT JOIN
+    neurologic n ON mh.id = n.medicationHistory_id
+  LEFT JOIN
+    gastrointestinal gi ON mh.id = gi.medicationHistory_id
+  LEFT JOIN
+    urinary u ON mh.id = u.medicationHistory_id
+  LEFT JOIN
+    gynaecological g ON mh.id = g.medicationHistory_id
+  LEFT JOIN
+    historyof ho ON mh.id = ho.medicationHistory_id
+  LEFT JOIN
+    diagnosedof do ON mh.id = do.medicationHistory_id
+  LEFT JOIN
+    onmedications om ON mh.id = om.medicationHistory_id
+  WHERE
+    fv.patient_id = ?; 
+  `;
+    const result = await connection.execute(q, [id]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getPatientEveryVisit = async (req, res) => {
+  const connection = await db.getConnection();
+  const id = req.params.id;
+  try {
+    const q = `SELECT
+    ev.*,
+    dhal.*,
+    oh.*,mh.*,p.*,c.*,n.*,gi.*,u.*,g.*,ho.*,do.*,om.*
+  FROM
+  everyVisit ev
+  LEFT JOIN
+    dailyHabitsAndLifestyle dhal ON fv.id = dhal.firstVisit_id
+  LEFT JOIN
+    obstetricHistory oh ON fv.id = oh.firstVisit_id
+    LEFT JOIN
+    medicationHistory mh ON fv.id = mh.firstVisit_id
+  LEFT JOIN
+    pulmonary p ON mh.id = p.medicationHistory_id
+  LEFT JOIN
+    cardiovascular c ON mh.id = c.medicationHistory_id
+  LEFT JOIN
+    neurologic n ON mh.id = n.medicationHistory_id
+  LEFT JOIN
+    gastrointestinal gi ON mh.id = gi.medicationHistory_id
+  LEFT JOIN
+    urinary u ON mh.id = u.medicationHistory_id
+  LEFT JOIN
+    gynaecological g ON mh.id = g.medicationHistory_id
+  LEFT JOIN
+    historyof ho ON mh.id = ho.medicationHistory_id
+  LEFT JOIN
+    diagnosedof do ON mh.id = do.medicationHistory_id
+  LEFT JOIN
+    onmedications om ON mh.id = om.medicationHistory_id
+  WHERE
+    fv.patient_id = ?; 
+  `;
+    const result = await connection.execute(q, [id]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   createPatient,
   getPatientRecord,
   createPatientEveryVisit,
+  getPatientFirstVisit,
   getAllPatients,
   numberofwomenwith4visits,
+  getAllPatientsAndHealthworker,
+  getPatientPersonalinfo,
 };

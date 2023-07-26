@@ -212,8 +212,8 @@ const healthpersonnel = {
   healthWorker: String,
   cadre: ["Midwife", "Nurse", "CHEW", "JCHEW", "CHO", "Others"],
   patients: {
-    firstVisit: {
-      date: createdAt,
+    firstvisit: {
+      date: createdat,
       PersonalInformation: {
         HospitalNumber: String,
         FirstName: String,
@@ -259,7 +259,7 @@ const healthpersonnel = {
         breastfeedingproblems: String,
         others: String,
       },
-      medicationHistory: {
+      medicationhistory: {
         allergies: String,
         symptoms: string,
         pulmonary: {
@@ -434,299 +434,375 @@ const healthpersonnel = {
   healthFacility VARCHAR(255),
   healthWorker VARCHAR(255),
   verified BOOLEAN DEFAULT 0,
-  cadre_id VARCHAR(255)
-)`;
-
-// -- Table: cadre
-`CREATE TABLE cadre (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  cadre_name VARCHAR(255)
+  cadre VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
 
 // -- Table: patients
 `CREATE TABLE patients (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  firstVisit_date DATE,
-  personalInformation_id INT,
+  firstvisit_date DATE,
+  personalinformation_id INT,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE,
-  FOREIGN KEY (personalInformation_id) REFERENCES personalInformation(id) ON DELETE CASCADE
+  FOREIGN KEY (personalinformation_id) REFERENCES personalinformation(id) ON DELETE CASCADE
 )`;
 
-// -- Table: firstVisit
-`CREATE TABLE firstVisit (
+// -- Table: firstvisit
+`CREATE TABLE firstvisit (
   id INT PRIMARY KEY AUTO_INCREMENT,
+  firstvisit_date DATE,
   patient_id INT,
-  createdAt DATETIME,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
 )`;
 
-// -- Table: personalInformation
-`CREATE TABLE personalInformation (
+// -- Table: personalinformation
+`CREATE TABLE personalinformation (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  HospitalNumber VARCHAR(255),
-  FirstName VARCHAR(255),
-  middleName VARCHAR(255),
+  hospitalnumber VARCHAR(255),
+  firstname VARCHAR(255),
+  middlename VARCHAR(255),
   surname VARCHAR(255),
   phone VARCHAR(255),
-  Address VARCHAR(255),
-  Gravidity VARCHAR(255),
+  address VARCHAR(255),
+  gravidity VARCHAR(255),
   parity VARCHAR(255),
-  LMP VARCHAR(255),
-  EDD VARCHAR(255),
-  EGA VARCHAR(255),
-  DoYouFeelthebabysmovement VARCHAR(255),
+  lmp VARCHAR(255),
+  edd VARCHAR(255),
+  ega VARCHAR(255),
+  doyoufeelthebabysmovement VARCHAR(255),
   doyouknowdateoffirtbabymovement VARCHAR(255),
-  doyouknowdateoflastbabymovement VARCHAR(255)
+  doyouknowdateoflastbabymovement VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 )`;
 
-// -- Table: dailyHabitsAndLifestyle
-`CREATE TABLE dailyHabitsAndLifestyle (
+// -- Table: updateddailyHabitsAndLifestyle
+`CREATE TABLE dailyhabitsandlifestyle (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstVisit_id INT,
-  Doyouworkoutsidethehome VARCHAR(255),
-  Doyouwalklongdistances VARCHAR(255),
-  durationofwalkingdistanceinminutes VARCHAR(255),
-  heavyloads VARCHAR(255),
-  sleephours VARCHAR(255),
-  dailymealcount VARCHAR(255),
-  mealinthelasttwodays VARCHAR(255),
-  nonfoodsubstances VARCHAR(255),
-  babylessthanayear VARCHAR(255),
-  doYou VARCHAR(255),
-  WhodoyouLivewith VARCHAR(255),
-  Didanyoneever VARCHAR(255),
-  frightened VARCHAR(255),
-  FOREIGN KEY (firstVisit_id) REFERENCES firstVisit(id) ON DELETE CASCADE
+  firstvisit_id INT,
+  doyousmoke VARCHAR(255),
+  doyoudrinkalcohol VARCHAR(255),
+  doyouuseharmfulsubstances VARCHAR(255),
+  whodoyoulivewith VARCHAR(255),
+  stoppedfromleavingthehouse VARCHAR(255),
+  threatenedyourlife VARCHAR(255),
+  abusedphysicallyorsexually VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE
 )`;
 
-// -- Table: obstetricHistory
-`CREATE TABLE obstetricHistory (
+// -- Table: medicationhistory
+`CREATE TABLE medicationhistory (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstVisit_id INT,
-  convulsionduringapregnancy VARCHAR(255),
-  caesareansection VARCHAR(255),
-  tearsthroughsphincter VARCHAR(255),
-  haemorrhage VARCHAR(255),
-  Stillbirths VARCHAR(255),
-  prematureDeliveries VARCHAR(255),
-  lowbirthweightbabies VARCHAR(255),
-  deadbabies VARCHAR(255),
-  others1 VARCHAR(255),
-  breastfedbefore VARCHAR(255),
-  durationyoubreastfedyourbaby VARCHAR(255),
-  breastfeedingproblems VARCHAR(255),
-  others2 VARCHAR(255),
-  FOREIGN KEY (firstVisit_id) REFERENCES firstVisit(id) ON DELETE CASCADE
+  firstvisit_id INT,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE
 )`;
 
-// -- Table: medicationHistory
-`CREATE TABLE medicationHistory (
+// `-- Table: General
+`CREATE TABLE general (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstVisit_id INT,
-  allergies VARCHAR(255),
-  symptoms VARCHAR(255),
-  FOREIGN KEY (firstVisit_id) REFERENCES firstVisit(id) ON DELETE CASCADE
+  medicationhistory_id INT,
+  fever VARCHAR(255),
+  headache VARCHAR(255),
+  dizziness VARCHAR(255),
+  convulsions VARCHAR(255),
+  weakness VARCHAR(255),
+  blurryvision VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
 // `-- Table: pulmonary
 `CREATE TABLE pulmonary (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
+  medicationhistory_id INT,
   cough VARCHAR(255),
-  difficultyBreathing VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  difficultybreathing VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
 // `-- Table: cardiovascular
 `CREATE TABLE cardiovascular (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
+  medicationhistory_id INT,
   palpitation VARCHAR(255),
   swellingoffeet VARCHAR(255),
   severechestpain VARCHAR(255),
-  Severeepigastricpain VARCHAR(255),
-  Severetirednesss VARCHAR(255),
+  severeepigastricpain VARCHAR(255),
+  pepticulcerpatient VARCHAR(255),
+  severetirednesss VARCHAR(255),
   difficultylyingflat VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
-)`;
-
-// -- Table: neurologic
-`CREATE TABLE neurologic (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
-  headaches VARCHAR(255),
-  dizziness VARCHAR(255),
-  convulsions VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
 // -- Table: gastrointestinal
 `CREATE TABLE gastrointestinal (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
+  medicationhistory_id INT,
   severeabdominalpain VARCHAR(255),
   vomiting VARCHAR(255),
   diarrhoea VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
 // -- Table: urinary
 `CREATE TABLE urinary (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
-  pain VARCHAR(255),
+  medicationhistory_id INT,
+  urinarypain VARCHAR(255),
   severeflankpain VARCHAR(255),
   bloodinurine VARCHAR(255),
-  swollenface VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  increasedurination VARCHAR(255),
+  antsaroundurine VARCHAR(255),
+  increasedthirst VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
 // -- Table: gynaecological
 `CREATE TABLE gynaecological (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
-  Vaginaldischarge VARCHAR(255),
+  medicationhistory_id INT,
+  vaginaldischarge VARCHAR(255),
   painduringsex VARCHAR(255),
   syphillis VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
-// -- Table: historyof
-`CREATE TABLE historyof (
+// -- Table: obstetricHistory i made a change here
+`CREATE TABLE obstetrichistory (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
-  drycough VARCHAR(255),
-  weightloss VARCHAR(255),
-  nightsweat VARCHAR(255),
-  tuberculosisdiagnosed VARCHAR(255),
-  tuberculosistreated VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
+  firstvisit_id INT,
+  convulsionduringapregnancy VARCHAR(255),
+  caesareansection VARCHAR(255),
+  tearsthroughsphincter VARCHAR(255),
+  haemorrhage VARCHAR(255),
+  stillbirths VARCHAR(255),
+  prematureDeliveries VARCHAR(255),
+  lowbirthweightbabies VARCHAR(255),
+  deadbabies VARCHAR(255),
+  miscarriages VARCHAR(255),
+  others VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE
 )`;
 
-// `-- Table: diagnosedof
-`CREATE TABLE diagnosedof (
+// -- Table: drughistory
+`CREATE TABLE drughistory (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
+  medicationhistory_id INT,
+  allergies VARCHAR(255),
+  herbalremedies VARCHAR(255),
+  vitamins VARCHAR(255),
+  otcdrugs VARCHAR(255),
+  dietary VARCHAR(255),
+  othersdrughistory VARCHAR(255),
+  tetanus VARCHAR(255),
+  tetanusdoses VARCHAR(255),
+  lasttetanusdose VARCHAR(255),
+  covidvaccination VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
+)`;
+
+// -- Table: pastmedicalhistory
+`CREATE TABLE pastmedicalhistory (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  firstvisit_id INT,
+  hypertension VARCHAR(255),
   heartdisease VARCHAR(255),
-  Anaemia VARCHAR(255),
-  kidney VARCHAR(255),
+  anaemia VARCHAR(255),
+  kidneydisease VARCHAR(255),
   sicklecell VARCHAR(255),
   diabetes VARCHAR(255),
   goitre VARCHAR(255),
   hiv VARCHAR(255),
-  covid VARCHAR(255),
-  anyother VARCHAR(255),
-  admitted VARCHAR(255),
-  reasonforadmission VARCHAR(255),
-  surgery VARCHAR(255),
-  reasonforsurgery VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
-)`;
+  currentlyontreatmentforhiv VARCHAR(255),
+  seriouschronicillness VARCHAR(255),
+  covidvaccinationpast VARCHAR(255),
+  everhadsurgery VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE)`;
 
-// -- Table: onmedications
-`CREATE TABLE onmedications (
+// -- Table: familyHistory
+`CREATE TABLE familyhistory (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  medicationHistory_id INT,
-  traditional VARCHAR(255),
-  herbalremedies VARCHAR(255),
-  vitamins VARCHAR(255),
-  otcDrugs VARCHAR(255),
-  dietary VARCHAR(255),
-  others1 VARCHAR(255),
-  tetanus VARCHAR(255),
-  tetanusdoses VARCHAR(255),
-  lastTetanusdose VARCHAR(255),
-  covidVaccination VARCHAR(255),
-  FOREIGN KEY (medicationHistory_id) REFERENCES medicationHistory(id) ON DELETE CASCADE
-)`;
+  firstvisit_id INT,
+  haveyoubreastfedbefore VARCHAR(255),
+  lengthofbreastfeeding VARCHAR(255),
+  problemsbreastfeeding VARCHAR(255),
+  babylessthanayear VARCHAR(255),
+  areyoustillbreastfeeding VARCHAR(255),
+  camewithachildunder5years VARCHAR(255),
+  immunisationstatus VARCHAR(255),
+  unvaccinatedchildrenathome VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE)`;
 
-// -- Table: everyVisit
-`CREATE TABLE everyVisit (
+// -- Table: returnVisit
+`CREATE TABLE returnvisit (
   id INT PRIMARY KEY AUTO_INCREMENT,
   patient_id INT,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
 )`;
 
 // -- Table: facialExpression
-`CREATE TABLE facialExpression (
+`CREATE TABLE facialexpression (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
+  returnvisit_id INT,
   responsive VARCHAR(255),
   dull VARCHAR(255),
   unresponsive VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
 )`;
 
 // -- Table: generalCleanliness
 `CREATE TABLE generalCleanliness (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
-  noVisibleDirt VARCHAR(255),
+  returnvisit_id INT,
+  novisibledirt VARCHAR(255),
   noodour VARCHAR(255),
-  visibleDirt VARCHAR(255),
+  visibledirt VARCHAR(255),
   odour VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
-)`;
-
-// `-- Table: herSkin
-`CREATE TABLE herSkin (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
-  freeFromBruises VARCHAR(255),
-  hasBruises VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
 )`;
 
 // `-- Table: herConjunctiva
 `CREATE TABLE herConjunctiva (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
+  returnvisit_id INT,
   pink VARCHAR(255),
-  palePink VARCHAR(255),
-  whiteInColour VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  palepink VARCHAR(255),
+  whiteincolour VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
 )`;
 
 // -- Table: sclera
 `CREATE TABLE sclera (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
+  returnvisit_id INT,
   white VARCHAR(255),
   tinge VARCHAR(255),
-  deepYellow VARCHAR(255),
-  dirtyWhite VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  deepyellow VARCHAR(255),
+  dirtywhite VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
+)`;
+// -- Table: returnvisit others
+`CREATE TABLE returnvisitinfo (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  complaints VARCHAR(255),
+  receivedcaresincelastvisit VARCHAR(255),
+  whoprovidedthecare VARCHAR(255),
+  whatcarewasprovided VARCHAR(255),
+  outcomeofthecare VARCHAR(255),
+  problemwithdrugs VARCHAR(255),
+  followedrecommendations VARCHAR(255),
+  reactionstodrugs VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
 )`;
 
 // -- Table: bloodpressure
 `CREATE TABLE bloodpressure (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
+  returnvisit_id INT,
   bloodpressure VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
+)`;
+// -- Table: respiratoryrate new
+`CREATE TABLE respiratoryrate (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  respiratoryrate VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
+)`;
+// -- Table: pulserate new
+`CREATE TABLE pulserate (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  pulserate VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
+)`;
+// -- Table: temperature new
+`CREATE TABLE temperature (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  temperature VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
 )`;
 
 // -- Table: adbominalExamination
 `CREATE TABLE adbominalExamination (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  everyVisit_id INT,
+  returnvisit_id INT,
   abdomenScars VARCHAR(255),
   palpateAndEstimatefundusdocumentation VARCHAR(255),
-  distancebtwTopOfFundusinWeeks VARCHAR(255),
-  cmFromTopfundusdocumentation VARCHAR(255),
-  distancebtwTopOfFundusinCM VARCHAR(255),
-  FOREIGN KEY (everyVisit_id) REFERENCES everyVisit(id) ON DELETE CASCADE
+  distancebtwtopdffundus VARCHAR(255),
+  cmfromtopfundusdocumentation VARCHAR(255),
+  cmfromuppersymphysis VARCHAR(255),
+  presentation VARCHAR(255),
+  descent VARCHAR(255),
+  positionoffoetus VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE
+)`;
+
+// -- Table:visualbreastexamination new
+`CREATE TABLE visualbreastexamination (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  firstvisit_id INT,
+  normal VARCHAR(255),
+  abnormal VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE)
+)`;
+
+// -- Table: genitalexamination new
+`CREATE TABLE genitalexamination (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  returnvisit_id INT,
+  firstvisit_id INT,
+  normal VARCHAR(255),
+  abnormal VARCHAR(255),
+  discharge VARCHAR(255),
+  tenderness VARCHAR(255),
+  ulcers VARCHAR(255),
+  fistulas VARCHAR(255),
+  irregularities VARCHAR(255),
+  swelling VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (returnvisit_id) REFERENCES returnvisit(id) ON DELETE CASCADE,
+  FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE)
 )`;
 
 // -- Table: messages
 `CREATE TABLE messages (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  message_from VARCHAR(255),:{>}
-  message_date VARCHAR(255),
-  message_status_delivered BOOLEAN,
+  messagefrom VARCHAR(255),
+  date VARCHAR(255),
+  status BOOLEAN,
   message VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
 
@@ -734,26 +810,32 @@ const healthpersonnel = {
 `CREATE TABLE schedule (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  schedule_name VARCHAR(255),
-  schedule_state VARCHAR(255),
-  schedule_lga VARCHAR(255),
-  schedule_dateFrom VARCHAR(255),
-  schedule_dateTo VARCHAR(255),
-  schedule_completed BOOLEAN DEFAULT FALSE,
-  schedule_confirmed BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
+  patient_id INT,
+  datefrom VARCHAR(255),
+  dateto VARCHAR(255),
+  completed BOOLEAN DEFAULT FALSE,
+  upcoming BOOLEAN DEFAULT TRUE,
+  missed BOOLEAN DEFAULT FALSE,
+  flagged BOOLEAN DEFAULT FALSE,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE,
+  FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
 )`;
 
 // -- Table: testing
 `CREATE TABLE testing (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  Test_patientID VARCHAR(255),
-  Test_ANCbooking VARCHAR(255),
-  Test_date VARCHAR(255),
-  Test_time VARCHAR(255),
-  Test_completed BOOLEAN DEFAULT FALSE,
-  Test_result VARCHAR(255),
+  pcv VARCHAR(255),
+  bloodgroup VARCHAR(255),
+  hivscreening VARCHAR(255),
+  bloodgenotype BOOLEAN DEFAULT FALSE,
+  hepatitisb VARCHAR(255),
+  uss VARCHAR(255),
+  bloodsugar VARCHAR(255),
+  patient_id INT,
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
 
@@ -767,6 +849,7 @@ const healthpersonnel = {
   myTests_time VARCHAR(255),
   myTests_completed BOOLEAN,
   myTests_result VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
 
@@ -774,11 +857,12 @@ const healthpersonnel = {
 `CREATE TABLE deliveryReport (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  deliveryReport_patientID VARCHAR(255),
+  patient_id VARCHAR(255),
   gender VARCHAR(255),
-  NoOfChildren VARCHAR(255),
-  deliveryDate VARCHAR(255),
-  deliveryTime VARCHAR(255),
+  numberofchildren VARCHAR(255),
+  deliverydate VARCHAR(255),
+  deliverytime VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;
 
@@ -794,14 +878,14 @@ const createNationalAdminTable = `CREATE TABLE nationaladmin (
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
-  accountType VARCHAR(255),
-  refreshToken VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  accounttype VARCHAR(255),
+  refreshtoken VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
 //STATE
-const createStateAdminTable = `CREATE TABLE stateAdmin (
+const createStateAdminTable = `CREATE TABLE stateadmin (
   id INT AUTO_INCREMENT PRIMARY KEY,
   state VARCHAR(255),
   staffname VARCHAR(255),
@@ -812,12 +896,12 @@ const createStateAdminTable = `CREATE TABLE stateAdmin (
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
-  accountType VARCHAR(255),
-  refreshToken VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  accounttype VARCHAR(255),
+  refreshtoken VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
-const createStateAccountTable = `CREATE TABLE stateAccount (
+const createStateAccountTable = `CREATE TABLE stateaccount (
   id INT AUTO_INCREMENT PRIMARY KEY,
   state VARCHAR(255),
   boardname VARCHAR(255),
@@ -825,12 +909,12 @@ const createStateAccountTable = `CREATE TABLE stateAccount (
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
 //LGA
-const createLgaAdminTable = `CREATE TABLE lgaAdmin (
+const createLgaAdminTable = `CREATE TABLE lgadmin (
   id INT AUTO_INCREMENT PRIMARY KEY,
   lga VARCHAR(255),
   staffname VARCHAR(255),
@@ -841,12 +925,12 @@ const createLgaAdminTable = `CREATE TABLE lgaAdmin (
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
-  accountType VARCHAR(255),
-  refreshToken VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  accounttype VARCHAR(255),
+  refreshtoken VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
-const createLgaAccountTable = `CREATE TABLE lgaAccount (
+const createLgaAccountTable = `CREATE TABLE lgaccount (
   id INT AUTO_INCREMENT PRIMARY KEY,
   lga VARCHAR(255),
   boardname VARCHAR(255),
@@ -854,11 +938,11 @@ const createLgaAccountTable = `CREATE TABLE lgaAccount (
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 //health Facility
-const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityAdmin (
+const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityadmin (
   id INT AUTO_INCREMENT PRIMARY KEY,
   ward VARCHAR(255),
   staffname VARCHAR(255),
@@ -869,12 +953,12 @@ const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityAdmin (
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
-  accountType VARCHAR(255),
-  refreshToken VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  accounttype VARCHAR(255),
+  refreshtoken VARCHAR(255),
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
-const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityAccount (
+const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityaccount (
   id INT AUTO_INCREMENT PRIMARY KEY,
   ward VARCHAR(255),
   healthfacilityname VARCHAR(255),
@@ -882,6 +966,6 @@ const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityAccount (
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
