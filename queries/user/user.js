@@ -64,8 +64,8 @@ function createPatientPersonalInfoQuery() {
 }
 function createPatientFirstvisitDailyhabitQuery() {
   return `
-  INSERT INTO dailyHabitsAndLifestyle (
-    firstVisit_id,
+  INSERT INTO dailyhabitsandlifestyle (
+    firstvisit_id,
     doyousmoke,
     doyoudrinkalcohol,
     doyouuseharmfulsubstances,
@@ -79,7 +79,7 @@ function createPatientFirstvisitDailyhabitQuery() {
 function createPatientFirstvisitObstetricQuery() {
   return `
   INSERT INTO obstetricHistory (
-    firstVisit_id,
+    firstvisit_id,
     convulsionduringapregnancy,
     caesareansection,
     tearsthroughsphincter,
@@ -96,14 +96,14 @@ function createPatientFirstvisitObstetricQuery() {
 
 function getRefreshToken() {
   return `
-      SELECT * FROM healthpersonnel WHERE refreshToken = ?
+      SELECT * FROM healthpersonnel WHERE refreshtoken = ?
     `;
 }
 
-function updateUserRefresh(email, refreshToken) {
+function updateUserRefresh(email, refreshtoken) {
   return `
   UPDATE healthpersonnel
-  SET refreshToken = '${refreshToken}'
+  SET refreshtoken = '${refreshtoken}'
   WHERE email = '${email}'
     `;
 }
@@ -111,28 +111,28 @@ function patientRecordQuery(id) {
   return `
   SELECT *
 FROM patients
-LEFT JOIN personalInformation ON patients.personalInformation_id = personalInformation.id
-LEFT JOIN firstVisit ON patients.id = firstVisit.patient_id
-LEFT JOIN dailyHabitsAndLifestyle ON firstVisit.id = dailyHabitsAndLifestyle.firstVisit_id
-LEFT JOIN obstetricHistory ON firstVisit.id = obstetricHistory.firstVisit_id
-LEFT JOIN medicationHistory ON firstVisit.id = medicationHistory.firstVisit_id
-LEFT JOIN pulmonary ON medicationHistory.id = pulmonary.medicationHistory_id
-LEFT JOIN cardiovascular ON medicationHistory.id = cardiovascular.medicationHistory_id
-LEFT JOIN neurologic ON medicationHistory.id = neurologic.medicationHistory_id
-LEFT JOIN gastrointestinal ON medicationHistory.id = gastrointestinal.medicationHistory_id
-LEFT JOIN urinary ON medicationHistory.id = urinary.medicationHistory_id
-LEFT JOIN gynaecological ON medicationHistory.id = gynaecological.medicationHistory_id
-LEFT JOIN historyof ON medicationHistory.id = historyof.medicationHistory_id
-LEFT JOIN diagnosedof ON medicationHistory.id = diagnosedof.medicationHistory_id
-LEFT JOIN onmedications ON medicationHistory.id = onmedications.medicationHistory_id
-LEFT JOIN everyVisit ON patients.id = everyVisit.patient_id
-LEFT JOIN facialExpression ON everyVisit.id = facialExpression.everyVisit_id
-LEFT JOIN generalCleanliness ON everyVisit.id = generalCleanliness.everyVisit_id
-LEFT JOIN herSkin ON everyVisit.id = herSkin.everyVisit_id
-LEFT JOIN herConjunctiva ON everyVisit.id = herConjunctiva.everyVisit_id
-LEFT JOIN sclera ON everyVisit.id = sclera.everyVisit_id
-LEFT JOIN bloodpressure ON everyVisit.id = bloodpressure.everyVisit_id
-LEFT JOIN adbominalExamination ON everyVisit.id = adbominalExamination.everyVisit_id
+LEFT JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
+LEFT JOIN firstvisit ON patients.id = firstvisit.patient_id
+LEFT JOIN dailyhabitsandlifestyle ON firstvisit.id = dailyhabitsandlifestyle.firstvisit_id
+LEFT JOIN obstetrichistory ON firstvisit.id = obstetrichistory.firstvisit_id
+LEFT JOIN medicationhistory ON firstvisit.id = medicationhistory.firstvisit_id
+LEFT JOIN pulmonary ON medicationhistory.id = pulmonary.medicationhistory_id
+LEFT JOIN cardiovascular ON medicationhistory.id = cardiovascular.medicationhistory_id
+LEFT JOIN neurologic ON medicationhistory.id = neurologic.medicationhistory_id
+LEFT JOIN gastrointestinal ON medicationhistory.id = gastrointestinal.medicationhistory_id
+LEFT JOIN urinary ON medicationhistory.id = urinary.medicationhistory_id
+LEFT JOIN gynaecological ON medicationhistory.id = gynaecological.medicationhistory_id
+LEFT JOIN historyof ON medicationhistory.id = historyof.medicationhistory_id
+LEFT JOIN diagnosedof ON medicationhistory.id = diagnosedof.medicationhistory_id
+LEFT JOIN onmedications ON medicationhistory.id = onmedications.medicationhistory_id
+LEFT JOIN returnvisit ON patients.id = returnvisit.patient_id
+LEFT JOIN facialExpression ON returnvisit.id = facialExpression.returnvisit_id
+LEFT JOIN generalCleanliness ON returnvisit.id = generalCleanliness.returnvisit_id
+LEFT JOIN herSkin ON returnvisit.id = herSkin.returnvisit_id
+LEFT JOIN herConjunctiva ON returnvisit.id = herConjunctiva.returnvisit_id
+LEFT JOIN sclera ON returnvisit.id = sclera.returnvisit_id
+LEFT JOIN bloodpressure ON returnvisit.id = bloodpressure.returnvisit_id
+LEFT JOIN adbominalExamination ON returnvisit.id = adbominalExamination.returnvisit_id
 LEFT JOIN messages ON patients.healthpersonnel_id = messages.healthpersonnel_id
 WHERE patients.id = '${id}';
     `;

@@ -488,9 +488,9 @@ const getAllPatients = async (req, res) => {
   try {
     const record = async () => {
       // const q = `SELECT * FROM patients`;
-      const q = `SELECT patients.*, personalInformation.*
+      const q = `SELECT patients.*, personalinformation.*
       FROM patients
-      INNER JOIN personalInformation ON patients.personalInformation_id = personalInformation.id
+      INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
       `;
       const result = await connection.execute(q);
       return result[0];
@@ -834,6 +834,17 @@ const getPatientEveryVisit = async (req, res) => {
     if (connection) {
       connection.release();
     }
+  }
+};
+
+const getAllSchedule = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM schedule`;
+    const res = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+  } finally {
   }
 };
 
