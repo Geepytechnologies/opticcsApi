@@ -501,7 +501,7 @@ const healthpersonnel = {
   FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE
 )`;
 
-// `-- Table: General
+// -- Table: General
 `CREATE TABLE general (
   id INT PRIMARY KEY AUTO_INCREMENT,
   medicationhistory_id INT,
@@ -515,7 +515,7 @@ const healthpersonnel = {
   FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
-// `-- Table: pulmonary
+// -- Table: pulmonary
 `CREATE TABLE pulmonary (
   id INT PRIMARY KEY AUTO_INCREMENT,
   medicationhistory_id INT,
@@ -525,7 +525,7 @@ const healthpersonnel = {
   FOREIGN KEY (medicationhistory_id) REFERENCES medicationhistory(id) ON DELETE CASCADE
 )`;
 
-// `-- Table: cardiovascular
+// -- Table: cardiovascular
 `CREATE TABLE cardiovascular (
   id INT PRIMARY KEY AUTO_INCREMENT,
   medicationhistory_id INT,

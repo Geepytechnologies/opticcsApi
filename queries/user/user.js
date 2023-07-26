@@ -78,7 +78,7 @@ function createPatientFirstvisitDailyhabitQuery() {
 }
 function createPatientFirstvisitObstetricQuery() {
   return `
-  INSERT INTO obstetricHistory (
+  INSERT INTO obstetrichistory (
     firstvisit_id,
     convulsionduringapregnancy,
     caesareansection,
