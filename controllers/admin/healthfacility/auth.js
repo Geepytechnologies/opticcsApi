@@ -11,11 +11,11 @@ const signin = async (req, res, next) => {
     const result = await connection.execute(q, [userid]);
     return result[0];
   };
-  const createRefresh = async (refreshToken) => {
+  const createRefresh = async (refreshtoken) => {
     const q = `UPDATE healthfacilityadmin
         SET refreshtoken = ?
         WHERE userid = ?`;
-    const result = await connection.execute(q, [refreshToken, userid]);
+    const result = await connection.execute(q, [refreshtoken, userid]);
     return result[0];
   };
 
