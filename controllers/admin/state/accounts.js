@@ -6,7 +6,7 @@ const createStateAccount = async (req, res, next) => {
   const values = [state, boardname, stateid, officeaddress, phone, email];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO stateAccount (state, boardname, stateid, officeaddress, phone, email)
+    const q = `INSERT INTO stateaccount (state, boardname, stateid, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?)`;
     const result = await connection.execute(q, values);
     connection.release();
@@ -51,7 +51,7 @@ const createStateUserAccount = async (req, res, next) => {
   ];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO stateAdmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
+    const q = `INSERT INTO stateadmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
@@ -71,7 +71,7 @@ const createStateUserAccount = async (req, res, next) => {
 const getAllStates = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM stateAccount`;
+    const q = `SELECT * FROM stateaccount`;
     const result = await connection.execute(q);
     res
       .status(200)
@@ -88,7 +88,7 @@ const getAllStates = async (req, res) => {
 const getAllStateUsers = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM stateAdmin`;
+    const q = `SELECT * FROM stateadmin`;
     const result = await connection.execute(q);
     res
       .status(200)

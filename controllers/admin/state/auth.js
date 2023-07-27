@@ -7,12 +7,12 @@ const signin = async (req, res, next) => {
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM stateAdmin WHERE userid = ?`;
+    const q = `SELECT * FROM stateadmin WHERE userid = ?`;
     const result = await connection.execute(q, [userid]);
     return result[0];
   };
   const createRefresh = async (refreshToken) => {
-    const q = `UPDATE stateAdmin
+    const q = `UPDATE stateadmin
         SET refreshToken = ?
         WHERE userid = ?`;
     const result = await connection.execute(q, [refreshToken, userid]);
@@ -76,22 +76,22 @@ const signin = async (req, res, next) => {
 
 const handleRefreshToken = async (req, res) => {
   const connection = await db.getConnection();
-  const existingRefresh = async (refreshToken) => {
-    const q = `SELECT * FROM stateAdmin WHERE refreshToken = ?`;
-    const result = await connection.execute(q, [refreshToken]);
+  const existingRefresh = async (refreshtoken) => {
+    const q = `SELECT * FROM stateadmin WHERE refreshtoken = ?`;
+    const result = await connection.execute(q, [refreshtoken]);
     return result[0];
   };
   const cookies = req.cookies;
   if (!cookies?.statetoken) return res.sendStatus(401);
-  const refreshToken = cookies.statetoken;
+  const refreshtoken = cookies.statetoken;
 
   try {
-    const foundUser = await existingRefresh(refreshToken);
+    const foundUser = await existingRefresh(refreshtoken);
     if (!foundUser) {
       return res.status(403).json("User not Found");
     }
     // evaluate jwt
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
+    jwt.verify(refreshtoken, process.env.REFRESH_SECRET, (err, user) => {
       if (err || foundUser?.id !== user.id) return res.sendStatus(403);
       const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
         expiresIn: "60s",
@@ -119,17 +119,17 @@ const signout = async (req, res, next) => {
       return res
         .status(204)
         .json({ statusCode: 204, message: "token not found" }); //No content
-    const refreshToken = cookies.token;
+    const refreshtoken = cookies.token;
 
     // Is refreshToken in db?
-    const existingRefresh = async (refreshToken) => {
-      const q = `SELECT * FROM stateAdmin WHERE refreshToken = ?`;
-      const result = await connection.execute(q, [refreshToken]);
+    const existingRefresh = async (refreshtoken) => {
+      const q = `SELECT * FROM stateadmin WHERE refreshtoken = ?`;
+      const result = await connection.execute(q, [refreshtoken]);
       return result[0];
     };
-    const foundUser = await existingRefresh(refreshToken);
+    const foundUser = await existingRefresh(refreshtoken);
     if (!foundUser) {
-      res.clearCookie("token", {
+      res.clearCookie("statetoken", {
         httpOnly: true,
         sameSite: "None",
         secure: true,
@@ -140,16 +140,16 @@ const signout = async (req, res, next) => {
     // Delete refreshToken in db
     foundUser.refreshtoken = "";
     const updateUserRefresh = async (refreshToken) => {
-      const q = `UPDATE stateAdmin SET refreshToken = ? WHERE refreshToken = ?`;
+      const q = `UPDATE stateadmin SET refreshtoken = ? WHERE refreshtoken = ?`;
       const result = await connection.execute(q, [
         foundUser.refreshtoken,
-        refreshToken,
+        refreshtoken,
       ]);
       return result[0];
     };
-    const updatedUser = await updateUserRefresh(refreshToken);
+    const updatedUser = await updateUserRefresh(refreshtoken);
 
-    res.clearCookie("token", {
+    res.clearCookie("statetoken", {
       httpOnly: true,
       sameSite: "None",
       secure: true,
