@@ -7,13 +7,13 @@ const signin = async (req, res, next) => {
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM healthfacilityAdmin WHERE userid = ?`;
+    const q = `SELECT * FROM healthfacilityadmin WHERE userid = ?`;
     const result = await connection.execute(q, [userid]);
     return result[0];
   };
   const createRefresh = async (refreshToken) => {
-    const q = `UPDATE healthfacilityAdmin
-        SET refreshToken = ?
+    const q = `UPDATE healthfacilityadmin
+        SET refreshtoken = ?
         WHERE userid = ?`;
     const result = await connection.execute(q, [refreshToken, userid]);
     return result[0];
@@ -37,15 +37,15 @@ const signin = async (req, res, next) => {
     });
 
     //refresh Token
-    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
+    const refreshtoken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
       expiresIn: "30m",
     });
 
     //save refresh token to the user model
-    const updatedUser = await createRefresh(refreshToken);
+    const updatedUser = await createRefresh(refreshtoken);
 
     // Creates Secure Cookie with refresh token
-    res.cookie("healthtoken", refreshToken, {
+    res.cookie("healthtoken", refreshtoken, {
       // httpOnly: false,
       // secure: true,
       // sameSite: "None",
@@ -75,23 +75,23 @@ const signin = async (req, res, next) => {
 
 const handleRefreshToken = async (req, res) => {
   const connection = await db.getConnection();
-  const existingRefresh = async (refreshToken) => {
-    const q = `SELECT * FROM healthfacilityAdmin WHERE refreshToken = ?`;
-    const result = await connection.execute(q, [refreshToken]);
+  const existingRefresh = async (refreshtoken) => {
+    const q = `SELECT * FROM healthfacilityadmin WHERE refreshtoken = ?`;
+    const result = await connection.execute(q, [refreshtoken]);
     console.log({ result: result[0] });
     return result[0];
   };
   const cookies = req.cookies;
   if (!cookies?.healthtoken) return res.sendStatus(401);
-  const refreshToken = cookies.healthtoken;
+  const refreshtoken = cookies.healthtoken;
 
   try {
-    const foundUser = await existingRefresh(refreshToken);
+    const foundUser = await existingRefresh(refreshtoken);
     if (!foundUser) {
       return res.status(403).json("User not Found");
     }
     // evaluate jwt
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
+    jwt.verify(refreshtoken, process.env.REFRESH_SECRET, (err, user) => {
       if (err || foundUser?.id !== user.id) return res.sendStatus(403);
       const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
         expiresIn: "60s",

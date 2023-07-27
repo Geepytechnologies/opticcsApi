@@ -20,7 +20,7 @@ const createHealthfacilityAccount = async (req, res, next) => {
   ];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO healthfacilityAccount (ward, healthfacilityname, healthfacilityID, officeaddress, phone, email)
+    const q = `INSERT INTO healthfacilityaccount (ward, healthfacilityname, healthfacilityID, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?)`;
     const result = await connection.execute(q, values);
     connection.release();
@@ -65,7 +65,7 @@ const createHealthfacilityUserAccount = async (req, res, next) => {
   ];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO healthfacilityAdmin (ward, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
+    const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
@@ -108,7 +108,7 @@ const verifyHealthWorker = async (req, res) => {
 const getHealthfacilityAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM healthfacilityAccount`;
+    const q = `SELECT * FROM healthfacilityaccount`;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
     connection.release();
@@ -124,7 +124,7 @@ const getHealthfacilityAccounts = async (req, res, next) => {
 const getHealthfacilityUserAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM healthfacilityAdmin`;
+    const q = `SELECT * FROM healthfacilityadmin`;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
     connection.release();

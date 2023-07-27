@@ -6,7 +6,7 @@ const createLgaAccount = async (req, res, next) => {
   const values = [lga, boardname, lgaID, officeaddress, phone, email];
   const connection = await db.getConnection();
   try {
-    const q = `INSERT INTO lgaAccount (lga, boardname, lgaID, officeaddress, phone, email)
+    const q = `INSERT INTO lgaccount (lga, boardname, lgaID, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?)`;
     const result = await connection.execute(q, values);
     res
@@ -54,7 +54,7 @@ const createLgaUserAccount = async (req, res, next) => {
   ];
   const connection = await db.getConnection();
   try {
-    const q = `INSERT INTO lgaAdmin (lga, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
+    const q = `INSERT INTO lgadmin (lga, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     res
@@ -77,7 +77,22 @@ const createLgaUserAccount = async (req, res, next) => {
 const getLgaAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM lgaAccount`;
+    const q = `SELECT * FROM lgaccount`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+    connection.release();
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getLgaUserAccounts = async (req, res, next) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM lgadmin`;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
     connection.release();
@@ -90,4 +105,9 @@ const getLgaAccounts = async (req, res, next) => {
   }
 };
 
-module.exports = { createLgaAccount, createLgaUserAccount, getLgaAccounts };
+module.exports = {
+  createLgaAccount,
+  createLgaUserAccount,
+  getLgaAccounts,
+  getLgaUserAccounts,
+};

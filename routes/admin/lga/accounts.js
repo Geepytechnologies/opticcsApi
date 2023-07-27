@@ -3,6 +3,7 @@ const {
   createLgaAccount,
   createLgaUserAccount,
   getLgaAccounts,
+  getLgaUserAccounts,
 } = require("../../../controllers/admin/lga/accounts");
 const {
   signin,
@@ -19,5 +20,7 @@ router.post("/signin", signin);
 router.get("/refresh", handleRefreshToken);
 
 router.post("/users", createLgaUserAccount);
+
+router.get("/users", getLgaUserAccounts);
 
 module.exports = router;
