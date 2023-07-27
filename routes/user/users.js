@@ -29,6 +29,7 @@ const {
   updateHealthworkerScheduleCompleted,
   deleteAHealthworkerSchedule,
   getAllHealthworkersSchedule,
+  getAllSchedule,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -54,6 +55,8 @@ router.post("/send/:id", sendAMessageToWorker);
 router.post("/schedule/:id", verifyToken, createHealthworkerSchedule);
 
 router.get("/schedule/find", verifyToken, getAllHealthworkersSchedule);
+
+router.get("/schedule/find/all", getAllSchedule);
 
 router.delete("/schedule/:id", verifyToken, deleteAHealthworkerSchedule);
 

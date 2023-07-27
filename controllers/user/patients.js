@@ -200,9 +200,9 @@ const createPatient = async (req, res, next) => {
     ]);
     return result;
   };
-  const createmedicationHistorycardio = async (medicationHistory_id) => {
+  const createmedicationHistorycardio = async (medicationhistory_id) => {
     const values = [
-      medicationHistory_id,
+      medicationhistory_id,
       palpitation,
       swellingoffeet,
       severechestpain,
@@ -212,7 +212,7 @@ const createPatient = async (req, res, next) => {
       difficultylyingflat,
     ];
     const q = `INSERT INTO cardiovascular (
-      medicationHistory_id,
+      medicationhistory_id,
       palpitation,
       swellingoffeet,severechestpain,severeepigastricpain,pepticulcerpatient,severetirednesss,difficultylyingflat
       ) 
@@ -393,25 +393,25 @@ const createPatient = async (req, res, next) => {
     const dailyhabitcreation = await createdailyhabit(firstvisitID);
     const obstetricCreation = await createobstetric(firstvisitID);
     const medicationCreation = await createmedicationHistory(firstvisitID);
-    const medicationHistory_id = medicationCreation[0].insertId;
-    const generalcreation = await createGeneral(medicationHistory_id);
+    const medicationhistory_id = medicationCreation[0].insertId;
+    const generalcreation = await createGeneral(medicationhistory_id);
     const medicationpulmonary = await createmedicationHistorypulmonary(
-      medicationHistory_id
+      medicationhistory_id
     );
     const medicationcardio = await createmedicationHistorycardio(
-      medicationHistory_id
+      medicationhistory_id
     );
     const medicationgastro = await createmedicationHistoryGastro(
-      medicationHistory_id
+      medicationhistory_id
     );
     const medicationurinary = await createmedicationHistoryUrinary(
-      medicationHistory_id
+      medicationhistory_id
     );
     const medicationGynae = await createmedicationHistoryGynae(
-      medicationHistory_id
+      medicationhistory_id
     );
     const medicationOnMedications = await createmedicationHistoryOnmedications(
-      medicationHistory_id
+      medicationhistory_id
     );
 
     await connection.commit();
@@ -518,128 +518,183 @@ const createPatientEveryVisit = async (req, res, next) => {
   const connection = await db.getConnection();
   const {
     patient_id,
-    responsive,
-    dull,
-    unresponsive,
-    noVisibleDirt,
-    noodour,
-    visibleDirt,
-    odour,
-    freeFromBruises,
-    hasBruises,
+    fever,
+    headache,
+    dizziness,
+    convulsions,
+    weakness,
+    blurryvision,
+    cough,
+    difficultybreathing,
+    palpitation,
+    swellingoffeet,
+    severechestpain,
+    severeepigastricpain,
+    pepticulcerpatient,
+    severetirednesss,
+    difficultylyingflat,
+    severeabdominalpain,
+    vomiting,
+    diarrhoea,
+    urinarypain,
+    severeflankpain,
+    bloodinurine,
+    increasedurination,
+    antsaroundurine,
+    increasedthirst,
+    vaginaldischarge,
+    painduringsex,
+    syphillis,
+    receivedcaresincelastvisit,
+    whoprovidedthecare,
+    whatcarewasprovided,
+    outcomeofthecare,
+    takingprescribeddrugs,
+    problemtakingdrugs,
+    followadvice,
+    reactionorsideeffects,
+    anythingrelatedtopregnancy,
     pink,
-    palePink,
-    whiteInColour,
+    palepink,
+    whiteincolour,
     white,
     tinge,
-    deepYellow,
-    dirtyWhite,
+    deepyellow,
+    dirtywhite,
     bloodpressure,
+    respiratoryrate,
+    temperature,
+    pulserate,
     abdomenScars,
     palpateAndEstimatefundusdocumentation,
-    distancebtwTopOfFundusinWeeks,
-    cmFromTopfundusdocumentation,
-    distancebtwTopOfFundusinCM,
+    distancebtwtopdffundus,
+    cmfromtopfundusdocumentation,
+    cmfromuppersymphysis,
+    presentation,
+    descent,
+    positionoffoetus,
   } = req.body;
 
   try {
+    const values = [
+      patient_id,
+      fever,
+      headache,
+      dizziness,
+      convulsions,
+      weakness,
+      blurryvision,
+      cough,
+      difficultybreathing,
+      palpitation,
+      swellingoffeet,
+      severechestpain,
+      severeepigastricpain,
+      pepticulcerpatient,
+      severetirednesss,
+      difficultylyingflat,
+      severeabdominalpain,
+      vomiting,
+      diarrhoea,
+      urinarypain,
+      severeflankpain,
+      bloodinurine,
+      increasedurination,
+      antsaroundurine,
+      increasedthirst,
+      vaginaldischarge,
+      painduringsex,
+      syphillis,
+      receivedcaresincelastvisit,
+      whoprovidedthecare,
+      whatcarewasprovided,
+      outcomeofthecare,
+      takingprescribeddrugs,
+      problemtakingdrugs,
+      followadvice,
+      reactionorsideeffects,
+      anythingrelatedtopregnancy,
+      pink,
+      palepink,
+      whiteincolour,
+      white,
+      tinge,
+      deepyellow,
+      dirtywhite,
+      bloodpressure,
+      respiratoryrate,
+      temperature,
+      pulserate,
+      abdomenScars,
+      palpateAndEstimatefundusdocumentation,
+      distancebtwtopdffundus,
+      cmfromtopfundusdocumentation,
+      cmfromuppersymphysis,
+      presentation,
+      descent,
+      positionoffoetus,
+    ];
+
     const connection = await db.getConnection();
-    await connection.beginTransaction();
 
-    const everyVisit = async () => {
-      const q = `INSERT INTO everyVisit (patient_id) VALUES (?)`;
-      const result = await connection.execute(q, [patient_id]);
-      return result;
-    };
-
-    const facialExpression = async (everyVisit_id) => {
-      const q = `INSERT INTO facialExpression (everyVisit_id, responsive, dull, unresponsive) VALUES (?, ?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        responsive,
-        dull,
-        unresponsive,
-      ]);
-      return result;
-    };
-
-    const herSkin = async (everyVisit_id) => {
-      const q = `INSERT INTO herSkin (everyVisit_id, freeFromBruises, hasBruises) VALUES (?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        freeFromBruises,
-        hasBruises,
-      ]);
-      return result;
-    };
-
-    const herConjunctiva = async (everyVisit_id) => {
-      const q = `INSERT INTO herConjunctiva (everyVisit_id, pink, palePink, whiteInColour) VALUES (?, ?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
+    const q = `INSERT INTO returnvisit (patient_id,
+        fever,
+        headache,
+        dizziness,
+        convulsions,
+        weakness,
+        blurryvision,
+        cough,
+        difficultybreathing,
+        palpitation,
+        swellingoffeet,
+        severechestpain,
+        severeepigastricpain,
+        pepticulcerpatient,
+        severetirednesss,
+        difficultylyingflat,
+        severeabdominalpain,
+        vomiting,
+        diarrhoea,
+        urinarypain,
+        severeflankpain,
+        bloodinurine,
+        increasedurination,
+        antsaroundurine,
+        increasedthirst,
+        vaginaldischarge,
+        painduringsex,
+        syphillis,
+        receivedcaresincelastvisit,
+        whoprovidedthecare,
+        whatcarewasprovided,
+        outcomeofthecare,
+        takingprescribeddrugs,
+        problemtakingdrugs,
+        followadvice,
+        reactionorsideeffects,
+        anythingrelatedtopregnancy,
         pink,
-        palePink,
-        whiteInColour,
-      ]);
-      return result;
-    };
-
-    const sclera = async (everyVisit_id) => {
-      const q = `INSERT INTO sclera (everyVisit_id, white, tinge, deepYellow, dirtyWhite) VALUES (?, ?, ?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        white,
-        tinge,
-        deepYellow,
-        dirtyWhite,
-      ]);
-      return result;
-    };
-
-    const bloodpressurecall = async (everyVisit_id) => {
-      const q = `INSERT INTO bloodpressure (everyVisit_id, bloodpressure) VALUES (?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        bloodpressure,
-      ]);
-      return result;
-    };
-
-    const adbominalExamination = async (everyVisit_id) => {
-      const q = `INSERT INTO adbominalExamination (everyVisit_id, abdomenScars, palpateAndEstimatefundusdocumentation, distancebtwTopOfFundusinWeeks, cmFromTopfundusdocumentation, distancebtwTopOfFundusinCM) VALUES (?, ?, ?, ?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        abdomenScars,
-        palpateAndEstimatefundusdocumentation,
-        distancebtwTopOfFundusinWeeks,
-        cmFromTopfundusdocumentation,
-        distancebtwTopOfFundusinCM,
-      ]);
-      return result;
-    };
-
-    const generalCleanliness = async (everyVisit_id) => {
-      const q = `INSERT INTO generalCleanliness (everyVisit_id, noVisibleDirt, noodour, visibleDirt, odour) VALUES (?, ?, ?, ?, ?)`;
-      const result = await connection.execute(q, [
-        everyVisit_id,
-        noVisibleDirt,
-        noodour,
-        visibleDirt,
-        odour,
-      ]);
-      return result;
-    };
-
-    const everyVisitres = await everyVisit();
-    const everyVisitID = everyVisitres[0].insertId;
-
-    await facialExpression(everyVisitID);
-    await herSkin(everyVisitID);
-    await generalCleanliness(everyVisitID);
-    await adbominalExamination(everyVisitID);
-    await bloodpressurecall(everyVisitID);
-    await sclera(everyVisitID);
-    await herConjunctiva(everyVisitID);
+      palepink,
+      whiteincolour,
+      white,
+      tinge,
+      deepyellow,
+      dirtywhite,
+      bloodpressure,
+      respiratoryrate,
+      temperature,
+      pulserate,
+      abdomenScars,
+      palpateAndEstimatefundusdocumentation,
+      distancebtwtopdffundus,
+      cmfromtopfundusdocumentation,
+      cmfromuppersymphysis,
+      presentation,
+      descent,
+      positionoffoetus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
+    const returnvisitid = result[0];
 
     await connection.commit();
     connection.release();
@@ -648,21 +703,20 @@ const createPatientEveryVisit = async (req, res, next) => {
       statusCode: "201",
       message: "created successfully",
       result: {
-        everyVisitID: everyVisitID,
+        returnvisitid,
       },
     });
   } catch (err) {
     res.status(500).json({
       statusCode: "500",
-      message: "Failed to create every visit for patient",
+      message: "Failed to create return visit for patient",
       error: err,
     });
     console.error(err);
+  } finally {
     if (connection) {
-      await connection.rollback();
       connection.release();
     }
-    next(err);
   }
 };
 
@@ -673,15 +727,15 @@ const numberofwomenwith4visits = async (req, res) => {
     FROM patients p
     LEFT JOIN (
         SELECT patient_id, COUNT(*) AS first_visit_count
-        FROM firstVisit
+        FROM firstvisit
         GROUP BY patient_id
     ) fv ON p.id = fv.patient_id
     LEFT JOIN (
-        SELECT patient_id, COUNT(*) AS every_visit_count
-        FROM everyVisit
+        SELECT patient_id, COUNT(*) AS return_visit_count
+        FROM returnvisit
         GROUP BY patient_id
     ) ev ON p.id = ev.patient_id
-    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.every_visit_count, 0)) > 4;    
+    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4;    
     `;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
@@ -706,7 +760,7 @@ const getAllPatientsAndHealthworker = async (req, res) => {
   LEFT JOIN
     healthpersonnel hp ON p.healthpersonnel_id = hp.id
   LEFT JOIN
-    personalInformation pi ON p.personalInformation_id = pi.id
+    personalinformation pi ON p.personalinformation_id = pi.id
   `;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
@@ -728,7 +782,7 @@ const getPatientPersonalinfo = async (req, res) => {
   FROM
     patients p
   JOIN
-    personalInformation pi ON p.personalInformation_id = pi.id
+    personalinformation pi ON p.personalinformation_id = pi.id
   WHERE
     p.id = ?;  
   `;
@@ -749,33 +803,27 @@ const getPatientFirstVisit = async (req, res) => {
     const q = `SELECT
     fv.*,
     dhal.*,
-    oh.*,mh.*,p.*,c.*,n.*,gi.*,u.*,g.*,ho.*,do.*,om.*
+    oh.*,mh.*,p.*,c.*,gi.*,u.*,g.*,om.*
   FROM
-    firstVisit fv
+    firstvisit fv
   LEFT JOIN
-    dailyHabitsAndLifestyle dhal ON fv.id = dhal.firstVisit_id
+    dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
   LEFT JOIN
-    obstetricHistory oh ON fv.id = oh.firstVisit_id
+    obstetrichistory oh ON fv.id = oh.firstvisit_id
     LEFT JOIN
-    medicationHistory mh ON fv.id = mh.firstVisit_id
+    medicationhistory mh ON fv.id = mh.firstvisit_id
   LEFT JOIN
-    pulmonary p ON mh.id = p.medicationHistory_id
+    pulmonary p ON mh.id = p.medicationhistory_id
   LEFT JOIN
-    cardiovascular c ON mh.id = c.medicationHistory_id
+    cardiovascular c ON mh.id = c.medicationhistory_id
   LEFT JOIN
-    neurologic n ON mh.id = n.medicationHistory_id
+    gastrointestinal gi ON mh.id = gi.medicationhistory_id
   LEFT JOIN
-    gastrointestinal gi ON mh.id = gi.medicationHistory_id
+    urinary u ON mh.id = u.medicationhistory_id
   LEFT JOIN
-    urinary u ON mh.id = u.medicationHistory_id
+    gynaecological g ON mh.id = g.medicationhistory_id
   LEFT JOIN
-    gynaecological g ON mh.id = g.medicationHistory_id
-  LEFT JOIN
-    historyof ho ON mh.id = ho.medicationHistory_id
-  LEFT JOIN
-    diagnosedof do ON mh.id = do.medicationHistory_id
-  LEFT JOIN
-    onmedications om ON mh.id = om.medicationHistory_id
+    drughistory om ON mh.id = om.medicationhistory_id
   WHERE
     fv.patient_id = ?; 
   `;
@@ -789,42 +837,13 @@ const getPatientFirstVisit = async (req, res) => {
     }
   }
 };
-const getPatientEveryVisit = async (req, res) => {
+const getPatientReturnVisit = async (req, res) => {
   const connection = await db.getConnection();
   const id = req.params.id;
   try {
-    const q = `SELECT
-    ev.*,
-    dhal.*,
-    oh.*,mh.*,p.*,c.*,n.*,gi.*,u.*,g.*,ho.*,do.*,om.*
-  FROM
-  everyVisit ev
-  LEFT JOIN
-    dailyHabitsAndLifestyle dhal ON fv.id = dhal.firstVisit_id
-  LEFT JOIN
-    obstetricHistory oh ON fv.id = oh.firstVisit_id
-    LEFT JOIN
-    medicationHistory mh ON fv.id = mh.firstVisit_id
-  LEFT JOIN
-    pulmonary p ON mh.id = p.medicationHistory_id
-  LEFT JOIN
-    cardiovascular c ON mh.id = c.medicationHistory_id
-  LEFT JOIN
-    neurologic n ON mh.id = n.medicationHistory_id
-  LEFT JOIN
-    gastrointestinal gi ON mh.id = gi.medicationHistory_id
-  LEFT JOIN
-    urinary u ON mh.id = u.medicationHistory_id
-  LEFT JOIN
-    gynaecological g ON mh.id = g.medicationHistory_id
-  LEFT JOIN
-    historyof ho ON mh.id = ho.medicationHistory_id
-  LEFT JOIN
-    diagnosedof do ON mh.id = do.medicationHistory_id
-  LEFT JOIN
-    onmedications om ON mh.id = om.medicationHistory_id
+    const q = `SELECT * FROM returnvisit
   WHERE
-    fv.patient_id = ?; 
+    patient_id = ?; 
   `;
     const result = await connection.execute(q, [id]);
     res.status(200).json(result[0]);
@@ -853,6 +872,7 @@ module.exports = {
   getPatientRecord,
   createPatientEveryVisit,
   getPatientFirstVisit,
+  getPatientReturnVisit,
   getAllPatients,
   numberofwomenwith4visits,
   getAllPatientsAndHealthworker,

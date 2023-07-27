@@ -8,16 +8,19 @@ const {
   getAllPatientsAndHealthworker,
   getPatientPersonalinfo,
   getPatientFirstVisit,
+  getPatientReturnVisit,
 } = require("../../controllers/user/patients");
 const router = express.Router();
 
 router.post("/create", createPatient);
 
-router.post("/create/every", createPatientEveryVisit);
+router.post("/create/return", createPatientEveryVisit);
 
 router.get("/find/:id", getPatientRecord);
 
 router.get("/find/firstvisit/:id", getPatientFirstVisit);
+
+router.get("/find/returnvisit/:id", getPatientReturnVisit);
 
 router.get("/find/4visits", numberofwomenwith4visits);
 

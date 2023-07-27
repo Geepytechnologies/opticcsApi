@@ -737,6 +737,26 @@ const deleteAHealthworkerSchedule = async (req, res, next) => {
   }
 };
 
+const getAllSchedule = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM schedule;    
+    `;
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "error getting schedule", error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   sendBulkMessage,
   getHealthworkerInfo,
@@ -747,6 +767,7 @@ module.exports = {
   createASchedule,
   createHealthworkerSchedule,
   getAllHealthworkersSchedule,
+  getAllSchedule,
   updateHealthworkerScheduleCompleted,
   deleteAHealthworkerSchedule,
   createDeliveryReport,
