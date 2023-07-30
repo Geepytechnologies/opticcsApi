@@ -26,7 +26,7 @@ const sendOtp = async (req, res) => {
     },
     body: JSON.stringify({
       channel: "sms",
-      sender: "SAlert",
+      sender: "Sendchamp",
       token_type: "numeric",
       token_length: 4,
       expiration_time: 5,
