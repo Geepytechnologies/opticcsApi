@@ -441,7 +441,7 @@ const createPatient = async (req, res, next) => {
     console.error(error);
     res.status(500).json({
       statusCode: "500",
-      error: "An error occurred while executing the transaction.",
+      error: error.sqlMessage ? error.sqlMessage : error,
     });
   } finally {
     if (connection) {
@@ -762,9 +762,21 @@ const getAllPatientsAndHealthworker = async (req, res) => {
   LEFT JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
   `;
+    const lastvisitquery = `SELECT patient_id, MAX(createdAt) AS last_visit
+  FROM (
+      SELECT patient_id, createdat FROM returnvisit
+      UNION ALL
+      SELECT patient_id, createdat FROM firstvisit
+  ) AS combined_visits
+  GROUP BY patient_id;
+  `;
     const result = await connection.execute(q);
-    res.status(200).json(result[0]);
+    const result2 = await connection.execute(lastvisitquery);
+    res.status(200).json({ result: result[0], lastvisit: result2[0] });
   } catch (error) {
+    if (connection) {
+      connection.rollback();
+    }
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -856,14 +868,216 @@ const getPatientReturnVisit = async (req, res) => {
   }
 };
 
+const createTest = async (req, res) => {
+  const connection = await db.getConnection();
+  const {
+    healthpersonnel_id,
+    hb,
+    wcc,
+    rcc,
+    pcv,
+    mcv,
+    platelet,
+    glucose,
+    hiv,
+    hepatitis,
+    patient_id,
+    rdt,
+  } = req.body;
+  const values = [
+    healthpersonnel_id,
+    hb,
+    wcc,
+    rcc,
+    pcv,
+    mcv,
+    platelet,
+    glucose,
+    hiv,
+    hepatitis,
+    patient_id,
+    rdt,
+  ];
+  try {
+    const q = `INSERT INTO testresult (
+      healthpersonnel_id,
+      hb,
+      wcc,
+      rcc,
+      pcv,
+      mcv,
+      platelet,
+      glucose,
+      hiv,
+      hepatitis,
+      patient_id,
+      rdt
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const result = await connection.execute(q, values);
+    const testresultid = result[0].insertId;
+    const q2 = `SELECT * FROM testresult WHERE id = ?`;
+    const result2 = await connection.execute(q2, [testresultid]);
+    res.status(200).json(result2[0]);
+  } catch (error) {
+    if (connection) {
+      connection.rollback();
+    }
+    res.status(500).json({ statusCode: 500, message: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAPatientsTest = async (req, res) => {
+  const connection = await db.getConnection();
+  const patient_id = req.query.patient_id;
+  try {
+    const q = `SELECT * FROM testresult WHERE patient_id = ?`;
+    const result = await connection.execute(q, [patient_id]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ statusCode: 500, error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const updateTest = async (req, res) => {
+  const connection = await db.getConnection();
+  const {
+    healthpersonnel_id,
+    hb,
+    wcc,
+    rcc,
+    pcv,
+    mcv,
+    platelet,
+    glucose,
+    hiv,
+    hepatitis,
+    rdt,
+  } = req.body;
+  const values = [
+    healthpersonnel_id,
+    hb,
+    wcc,
+    rcc,
+    pcv,
+    mcv,
+    platelet,
+    glucose,
+    hiv,
+    hepatitis,
+    rdt,
+    req.params.id,
+  ];
+  try {
+    const q = `UPDATE testresult
+    SET
+      healthpersonnel_id = IFNULL(?,healthpersonnel_id),
+      hb = IFNULL(?, hb),
+      wcc = IFNULL(?, wcc),
+      rcc = IFNULL(?, rcc),
+      pcv = IFNULL(?, pcv),
+      mcv = IFNULL(?, mcv),
+      platelet = IFNULL(?, platelet),
+      glucose = IFNULL(?, glucose),
+      hiv = IFNULL(?, hiv),
+      hepatitis = IFNULL(?, hepatitis),
+      rdt = IFNULL(?, rdt)
+    WHERE id = ?;
+    ;`;
+    const q2 = `SELECT * FROM testresult where id = ?`;
+    const result = await connection.execute(q, values);
+    const result2 = await connection.execute(q2, [req.params.id]);
+    res.status(200).json(result2[0]);
+  } catch (error) {
+    if (connection) {
+      connection.rollback();
+    }
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 const getAllSchedule = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT * FROM schedule`;
-    const res = await connection.execute(q);
+    const result = await connection.execute(q);
     res.status(200).json(result[0]);
   } catch (error) {
   } finally {
+  }
+};
+
+const graviditygreaterthan8 = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT *
+  FROM personalinformation
+  WHERE CAST(gravidity AS SIGNED) > 8 OR CAST(gravidity AS SIGNED) = 8`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+    console.log(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const graviditylessthan8 = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT *
+  FROM personalinformation
+  WHERE CAST(gravidity AS SIGNED) < 8`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getedd = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT 
+    quarter,
+    COUNT(*) AS number
+  FROM (
+    SELECT 
+      edd,
+      CASE 
+        WHEN MONTH(edd) BETWEEN 1 AND 3 THEN 'Q1'
+        WHEN MONTH(edd) BETWEEN 4 AND 6 THEN 'Q2'
+        WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
+        WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
+      END AS quarter
+    FROM personalinformation
+  ) AS subquery
+  GROUP BY quarter
+  ORDER BY MIN(edd);  
+  
+`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -877,4 +1091,10 @@ module.exports = {
   numberofwomenwith4visits,
   getAllPatientsAndHealthworker,
   getPatientPersonalinfo,
+  graviditygreaterthan8,
+  graviditylessthan8,
+  getedd,
+  createTest,
+  updateTest,
+  getAPatientsTest,
 };

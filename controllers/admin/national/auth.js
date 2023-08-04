@@ -13,7 +13,7 @@ const signin = async (req, res, next) => {
   };
   const createRefresh = async (refreshToken) => {
     const q = `UPDATE nationaladmin
-        SET refreshToken = ?
+        SET refreshtoken = ?
         WHERE userid = ?`;
     const result = await connection.execute(q, [refreshToken, userid]);
     return result[0];
@@ -21,6 +21,7 @@ const signin = async (req, res, next) => {
 
   try {
     const user = await existinguserid();
+    console.log({ userfromsignin: user[0].id });
     if (!user.length)
       return res
         .status(404)
@@ -37,14 +38,15 @@ const signin = async (req, res, next) => {
     });
 
     //refresh Token
+    console.log({ userid: user.id });
     const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
       expiresIn: "30m",
     });
     console.log({ adminrefresh: refreshToken });
 
     //save refresh token to the user model
-    const updatedUser = await createRefresh(refreshToken);
-    console.log(updatedUser);
+    await createRefresh(refreshToken);
+    const newuser = await existinguserid();
 
     // Creates Secure Cookie with refresh token
     res.cookie("nationaltoken", refreshToken, {
@@ -54,7 +56,7 @@ const signin = async (req, res, next) => {
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
-    const { password, ...others } = user;
+    const { password, ...others } = newuser;
 
     res.status(200).json({
       statusCode: "200",
@@ -85,7 +87,6 @@ const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.nationaltoken) return res.sendStatus(401);
   const refreshToken = cookies.nationaltoken;
-
   try {
     const foundUser = await existingRefresh(refreshToken);
     if (!foundUser) {
@@ -111,4 +112,60 @@ const handleRefreshToken = async (req, res) => {
   }
 };
 
-module.exports = { signin, handleRefreshToken };
+const signout = async (req, res, next) => {
+  console.log(req.user);
+  const connection = await db.getConnection();
+
+  // On client, also delete the accessToken
+  try {
+    const cookies = req.cookies;
+    if (!cookies?.nationaltoken) return res.sendStatus(204); //No content
+    const refreshtoken = cookies.nationaltoken;
+
+    // Is refreshToken in db?
+    const existingrefreshQuery = ` SELECT * FROM nationaladmin WHERE refreshtoken = ?`;
+    const foundUserResult = await connection.execute(existingrefreshQuery, [
+      refreshtoken,
+    ]);
+    const foundUser = foundUserResult[0];
+    if (!foundUser) {
+      res.clearCookie("nationaltoken", {
+        // httpOnly: true,
+        // sameSite: "None",
+        // secure: true,
+      });
+      return res.sendStatus(204);
+    }
+
+    // Delete refreshToken in db
+    foundUser.refreshtoken = "";
+
+    const updateRefreshQuery = `UPDATE nationaladmin
+     SET refreshtoken = ? WHERE id = ?`;
+
+    const updatedUserResult = await connection.execute(updateRefreshQuery, [
+      foundUser.refreshtoken,
+      req.user.id,
+    ]);
+    const updatedUser = updatedUserResult[0];
+    console.log({ updatedUser: updatedUser });
+
+    res.clearCookie("nationaltoken", {
+      // httpOnly: true,
+      // sameSite: "None",
+      // secure: true,
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Error signing out", err: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+module.exports = { signin, signout, handleRefreshToken };

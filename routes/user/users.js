@@ -30,6 +30,10 @@ const {
   deleteAHealthworkerSchedule,
   getAllHealthworkersSchedule,
   getAllSchedule,
+  getAllCompletedSchedule,
+  getAllUpcomingSchedule,
+  getAllMissedSchedule,
+  getAllFlaggedSchedule,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -57,6 +61,11 @@ router.post("/schedule/:id", verifyToken, createHealthworkerSchedule);
 router.get("/schedule/find", verifyToken, getAllHealthworkersSchedule);
 
 router.get("/schedule/find/all", getAllSchedule);
+
+router.get("/schedule/find/completed", verifyToken, getAllCompletedSchedule);
+router.get("/schedule/find/upcoming", verifyToken, getAllUpcomingSchedule);
+router.get("/schedule/find/missed", verifyToken, getAllMissedSchedule);
+router.get("/schedule/find/flagged", verifyToken, getAllFlaggedSchedule);
 
 router.delete("/schedule/:id", verifyToken, deleteAHealthworkerSchedule);
 
