@@ -6,6 +6,7 @@ const {
   handleRefreshToken,
   signin,
   signout,
+  resetpassword,
 } = require("../../../controllers/admin/national/auth");
 const { verifyToken } = require("../../../middlewares/verifyToken");
 const {
@@ -19,6 +20,8 @@ router.post("/users", createNationalUserAccount);
 router.get("/refresh", handleRefreshToken);
 
 router.post("/signin", signin);
+
+router.post("/resetpassword", verifyNationalAdminToken, resetpassword);
 
 router.get("/signout", verifyNationalAdminToken, signout);
 

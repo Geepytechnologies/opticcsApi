@@ -49,6 +49,9 @@ function createPatientPersonalInfoQuery() {
       surname,
       phone,
       address,
+      state,
+      lga,
+      healthfacility,
       gravidity,
       parity,
       lmp,
@@ -59,7 +62,7 @@ function createPatientPersonalInfoQuery() {
       doyouknowdateoflastbabymovement
   ) 
   VALUES (
-    ?,?,?,?,?,?,?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
   )`;
 }
 function createPatientFirstvisitDailyhabitQuery() {

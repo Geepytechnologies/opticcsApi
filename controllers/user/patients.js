@@ -19,6 +19,9 @@ const createPatient = async (req, res, next) => {
     surname,
     phone,
     address,
+    state,
+    lga,
+    healthfacility,
     gravidity,
     parity,
     lmp,
@@ -113,6 +116,9 @@ const createPatient = async (req, res, next) => {
       surname,
       phone,
       address,
+      state,
+      lga,
+      healthfacility,
       gravidity,
       parity,
       lmp,
@@ -488,8 +494,9 @@ const getAllPatients = async (req, res) => {
   try {
     const record = async () => {
       // const q = `SELECT * FROM patients`;
-      const q = `SELECT patients.*, personalinformation.*
+      const q = `SELECT patients.*, personalinformation.*,healthpersonnel.state,healthpersonnel.lga,healthpersonnel.healthfacility
       FROM patients
+      LEFT JOIN healthpersonnel ON patients.healthpersonnel_id = healthpersonnel.id
       INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
       `;
       const result = await connection.execute(q);
@@ -518,6 +525,9 @@ const createPatientEveryVisit = async (req, res, next) => {
   const connection = await db.getConnection();
   const {
     patient_id,
+    state,
+    lga,
+    healthfacility,
     fever,
     headache,
     dizziness,
@@ -573,11 +583,20 @@ const createPatientEveryVisit = async (req, res, next) => {
     presentation,
     descent,
     positionoffoetus,
+    persisitentdrycough,
+    unexplainedweightloss,
+    nightsweats,
+    diagnosedwithtuberculosis,
+    treatedfortuberculosis,
+    heartrate,
   } = req.body;
 
   try {
     const values = [
       patient_id,
+      state,
+      lga,
+      healthfacility,
       fever,
       headache,
       dizziness,
@@ -633,11 +652,21 @@ const createPatientEveryVisit = async (req, res, next) => {
       presentation,
       descent,
       positionoffoetus,
+      persisitentdrycough,
+      unexplainedweightloss,
+      nightsweats,
+      diagnosedwithtuberculosis,
+      treatedfortuberculosis,
+      heartrate,
     ];
 
     const connection = await db.getConnection();
 
-    const q = `INSERT INTO returnvisit (patient_id,
+    const q = `INSERT INTO returnvisit (
+        patient_id,
+        state,
+        lga,
+        healthfacility,
         fever,
         headache,
         dizziness,
@@ -692,7 +721,18 @@ const createPatientEveryVisit = async (req, res, next) => {
       cmfromuppersymphysis,
       presentation,
       descent,
-      positionoffoetus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      positionoffoetus,persisitentdrycough,
+      unexplainedweightloss,
+      nightsweats,
+      diagnosedwithtuberculosis,
+      treatedfortuberculosis,
+      heartrate,
+      complaint,
+      stategenobser,
+      generalwellchoice,
+      syphillistreatment,
+      pregnancydiscuss
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const returnvisitid = result[0];
 
@@ -720,59 +760,33 @@ const createPatientEveryVisit = async (req, res, next) => {
   }
 };
 
-const numberofwomenwith4visits = async (req, res) => {
-  const connection = await db.getConnection();
-  try {
-    const q = `SELECT p.id AS patient_id
-    FROM patients p
-    LEFT JOIN (
-        SELECT patient_id, COUNT(*) AS first_visit_count
-        FROM firstvisit
-        GROUP BY patient_id
-    ) fv ON p.id = fv.patient_id
-    LEFT JOIN (
-        SELECT patient_id, COUNT(*) AS return_visit_count
-        FROM returnvisit
-        GROUP BY patient_id
-    ) ev ON p.id = ev.patient_id
-    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4;    
-    `;
-    const result = await connection.execute(q);
-    res.status(200).json(result[0]);
-  } catch (error) {
-    res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
-
 const getAllPatientsAndHealthworker = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
-    p.*,
-    hp.*,
-    pi.*
-  FROM
-    patients p
-  LEFT JOIN
-    healthpersonnel hp ON p.healthpersonnel_id = hp.id
-  LEFT JOIN
-    personalinformation pi ON p.personalinformation_id = pi.id
-  `;
-    const lastvisitquery = `SELECT patient_id, MAX(createdAt) AS last_visit
-  FROM (
-      SELECT patient_id, createdat FROM returnvisit
-      UNION ALL
-      SELECT patient_id, createdat FROM firstvisit
-  ) AS combined_visits
-  GROUP BY patient_id;
-  `;
+      p.*,
+      hp.*,
+      pi.*,
+      last_visits.last_visit
+    FROM
+      patients p
+    LEFT JOIN
+      healthpersonnel hp ON p.healthpersonnel_id = hp.id
+    LEFT JOIN
+      personalinformation pi ON p.personalinformation_id = pi.id
+    LEFT JOIN (
+      SELECT patient_id, MAX(createdat) AS last_visit
+      FROM (
+        SELECT patient_id, createdat FROM returnvisit
+        UNION ALL
+        SELECT patient_id, createdat FROM firstvisit
+      ) AS combined_visits
+      GROUP BY patient_id
+    ) AS last_visits ON p.id = last_visits.patient_id;
+    `;
+
     const result = await connection.execute(q);
-    const result2 = await connection.execute(lastvisitquery);
-    res.status(200).json({ result: result[0], lastvisit: result2[0] });
+    res.status(200).json({ result: result[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
@@ -883,6 +897,11 @@ const createTest = async (req, res) => {
     hepatitis,
     patient_id,
     rdt,
+    bodytemp,
+    heartrate,
+    respiratoryrate,
+    bodypressure,
+    malariarapid,
   } = req.body;
   const values = [
     healthpersonnel_id,
@@ -897,6 +916,11 @@ const createTest = async (req, res) => {
     hepatitis,
     patient_id,
     rdt,
+    bodytemp,
+    heartrate,
+    respiratoryrate,
+    bodypressure,
+    malariarapid,
   ];
   try {
     const q = `INSERT INTO testresult (
@@ -911,8 +935,13 @@ const createTest = async (req, res) => {
       hiv,
       hepatitis,
       patient_id,
-      rdt
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+      rdt,
+      bodytemp,
+  heartrate,
+  respiratoryrate,
+  bodypressure,
+  malariarapid
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM testresult WHERE id = ?`;
@@ -1016,71 +1045,6 @@ const getAllSchedule = async (req, res) => {
   }
 };
 
-const graviditygreaterthan8 = async (req, res) => {
-  const connection = await db.getConnection();
-  try {
-    const q = `SELECT *
-  FROM personalinformation
-  WHERE CAST(gravidity AS SIGNED) > 8 OR CAST(gravidity AS SIGNED) = 8`;
-    const result = await connection.execute(q);
-    res.status(200).json(result[0]);
-  } catch (error) {
-    res.status(500).json(error);
-    console.log(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
-const graviditylessthan8 = async (req, res) => {
-  const connection = await db.getConnection();
-  try {
-    const q = `SELECT *
-  FROM personalinformation
-  WHERE CAST(gravidity AS SIGNED) < 8`;
-    const result = await connection.execute(q);
-    res.status(200).json(result[0]);
-  } catch (error) {
-    res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
-const getedd = async (req, res) => {
-  const connection = await db.getConnection();
-  try {
-    const q = `SELECT 
-    quarter,
-    COUNT(*) AS number
-  FROM (
-    SELECT 
-      edd,
-      CASE 
-        WHEN MONTH(edd) BETWEEN 1 AND 3 THEN 'Q1'
-        WHEN MONTH(edd) BETWEEN 4 AND 6 THEN 'Q2'
-        WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
-        WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
-      END AS quarter
-    FROM personalinformation
-  ) AS subquery
-  GROUP BY quarter
-  ORDER BY MIN(edd);  
-  
-`;
-    const result = await connection.execute(q);
-    res.status(200).json(result[0]);
-  } catch (error) {
-    res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
-
 module.exports = {
   createPatient,
   getPatientRecord,
@@ -1088,12 +1052,8 @@ module.exports = {
   getPatientFirstVisit,
   getPatientReturnVisit,
   getAllPatients,
-  numberofwomenwith4visits,
   getAllPatientsAndHealthworker,
   getPatientPersonalinfo,
-  graviditygreaterthan8,
-  graviditylessthan8,
-  getedd,
   createTest,
   updateTest,
   getAPatientsTest,

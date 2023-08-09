@@ -1,6 +1,64 @@
 const db = require("../../../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+
+// Function to generate a random string of given length
+const generateRandomString = (length) => {
+  return crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString("hex")
+    .slice(0, length);
+};
+// Function to generate a unique username and password
+const generateUniqueCredentials = async (callback) => {
+  const username = generateRandomString(8);
+  const password = generateRandomString(12);
+  const connection = await db.getConnection();
+
+  try {
+    // Check if the generated username already exists in the database
+    const [results, fields] = await connection.execute(
+      "SELECT * FROM stateadmin WHERE userid = ?",
+      [username]
+    );
+
+    if (results.length > 0) {
+      // If the username already exists, regenerate the credentials and call the callback recursively
+      generateUniqueCredentials(callback);
+    } else {
+      // If the username is unique, call the callback with the generated credentials
+      callback(null, { username, password });
+    }
+  } catch (err) {
+    // If there's an error during the query, call the callback with the error
+    callback(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const generatestatedetails = async (req, res) => {
+  try {
+    const credentials = await new Promise((resolve, reject) => {
+      generateUniqueCredentials((err, data) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+    res.json(credentials);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Failed to generate credentials.", message: err });
+  }
+};
 
 const signin = async (req, res, next) => {
   const connection = await db.getConnection();
@@ -166,4 +224,4 @@ const signout = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, signout, handleRefreshToken };
+module.exports = { signin, signout, handleRefreshToken, generatestatedetails };

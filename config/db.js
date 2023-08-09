@@ -1,4 +1,7 @@
 const mysql = require("mysql2/promise");
+const path = require("path");
+const fs = require("fs");
+const certificatePath = "../opticcs-ca-certificate.crt";
 
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
@@ -12,7 +15,6 @@ const db = mysql.createPool({
 // No need for db.connect() as connection is managed by the db
 (async () => {
   try {
-    // Check if the connection to MySQL is successful
     await db.query("SELECT 1");
     console.log("Connected to MySQL pool!");
   } catch (error) {

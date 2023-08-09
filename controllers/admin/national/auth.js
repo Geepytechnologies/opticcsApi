@@ -21,7 +21,6 @@ const signin = async (req, res, next) => {
 
   try {
     const user = await existinguserid();
-    console.log({ userfromsignin: user[0].id });
     if (!user.length)
       return res
         .status(404)
@@ -33,16 +32,22 @@ const signin = async (req, res, next) => {
         .json({ statusCode: "400", message: "wrong credentials" });
 
     //access Token
-    const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-      expiresIn: "5m",
-    });
+    const accessToken = jwt.sign(
+      { id: user[0].id },
+      process.env.ACCESS_SECRET,
+      {
+        expiresIn: "5m",
+      }
+    );
 
     //refresh Token
-    console.log({ userid: user.id });
-    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-      expiresIn: "30m",
-    });
-    console.log({ adminrefresh: refreshToken });
+    const refreshToken = jwt.sign(
+      { id: user[0].id },
+      process.env.REFRESH_SECRET,
+      {
+        expiresIn: "30m",
+      }
+    );
 
     //save refresh token to the user model
     await createRefresh(refreshToken);
@@ -56,19 +61,72 @@ const signin = async (req, res, next) => {
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
-    const { password, ...others } = newuser;
+    const { password, refreshtoken, ...others } = newuser[0];
 
     res.status(200).json({
       statusCode: "200",
       message: "successful",
-      result: { others: others[0], accessToken },
+      result: { others: others, accessToken },
     });
-    connection.release();
   } catch (err) {
     connection.rollback();
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
+    next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const resetpassword = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const { oldpassword, newpassword } = req.body;
+  console.log(req.user.id);
+  const salt = bcrypt.genSaltSync(10);
+  const hashedpassword = bcrypt.hashSync(newpassword, salt);
+
+  const existinguserid = async () => {
+    const q = `SELECT * FROM nationaladmin WHERE id = ?`;
+    const result = await connection.execute(q, [req.user.id]);
+    return result[0];
+  };
+  const createNewpassword = async () => {
+    const q = `UPDATE nationaladmin
+        SET password = ?
+        WHERE id = ?`;
+    const result = await connection.execute(q, [hashedpassword, req.user.id]);
+    return result[0];
+  };
+
+  try {
+    const user = await existinguserid();
+    console.log(user);
+    if (!user.length)
+      return res
+        .status(404)
+        .json({ statusCode: "404", message: "User not found" });
+    const isMatched = bcrypt.compareSync(oldpassword, user[0].password);
+    if (!isMatched)
+      return res
+        .status(400)
+        .json({ statusCode: "400", message: "Wrong password" });
+
+    //save new password to the user model
+    const newuser = await createNewpassword();
+
+    res.status(201).json({
+      statusCode: "201",
+      message: "password Changed",
+    });
+  } catch (err) {
+    connection.rollback();
+    res.status(500).json({
+      statusCode: "500",
+      message: "Error Resetting password",
+      error: err,
+    });
     next(err);
   } finally {
     if (connection) {
@@ -89,18 +147,19 @@ const handleRefreshToken = async (req, res) => {
   const refreshToken = cookies.nationaltoken;
   try {
     const foundUser = await existingRefresh(refreshToken);
-    if (!foundUser) {
+    if (!foundUser.length) {
       return res.status(403).json("User not Found");
     }
     // evaluate jwt
     jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
-      if (err || foundUser?.id !== user.id) return res.sendStatus(403);
+      if (err || foundUser[0]?.id !== user.id) return res.sendStatus(403);
       const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
         expiresIn: "60s",
       });
-      const { password, ...others } = foundUser;
+      const { password, refreshtoken, ...others } = foundUser[0];
+      console.log(others);
 
-      res.json({ accessToken, others: others[0] });
+      res.json({ accessToken, others: others });
       connection.release();
     });
   } catch (err) {
@@ -113,7 +172,6 @@ const handleRefreshToken = async (req, res) => {
 };
 
 const signout = async (req, res, next) => {
-  console.log(req.user);
   const connection = await db.getConnection();
 
   // On client, also delete the accessToken
@@ -128,6 +186,7 @@ const signout = async (req, res, next) => {
       refreshtoken,
     ]);
     const foundUser = foundUserResult[0];
+    console.log({ first: foundUser });
     if (!foundUser) {
       res.clearCookie("nationaltoken", {
         // httpOnly: true,
@@ -137,14 +196,11 @@ const signout = async (req, res, next) => {
       return res.sendStatus(204);
     }
 
-    // Delete refreshToken in db
-    foundUser.refreshtoken = "";
-
     const updateRefreshQuery = `UPDATE nationaladmin
      SET refreshtoken = ? WHERE id = ?`;
 
     const updatedUserResult = await connection.execute(updateRefreshQuery, [
-      foundUser.refreshtoken,
+      null,
       req.user.id,
     ]);
     const updatedUser = updatedUserResult[0];
@@ -168,4 +224,4 @@ const signout = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, signout, handleRefreshToken };
+module.exports = { signin, signout, handleRefreshToken, resetpassword };

@@ -9,6 +9,7 @@ const {
   handleRefreshToken,
   signin,
   signout,
+  generatestatedetails,
 } = require("../../../controllers/admin/state/auth");
 const router = express.Router();
 
@@ -19,6 +20,8 @@ router.get("/find", getAllStates);
 router.get("/find/users", getAllStateUsers);
 
 router.get("/refresh", handleRefreshToken);
+
+router.get("/generateuser", generatestatedetails);
 
 router.post("/signin", signin);
 
