@@ -4,20 +4,7 @@ const {
   getUserByPhone,
   getUsersPatients,
   createPatient,
-  createPatientFirstVisit,
   createPatientFirstvisitPersonalInfo,
-  createPatientFirstvisitDailyhabits,
-  createPatientFirstvisitObstetric,
-  createPatientFirstvisitMedication,
-  createPatientFirstvisitMedicationPulmonary,
-  createPatientFirstvisitMedicationCardiovascular,
-  createPatientFirstvisitMedicationNeuro,
-  createPatientFirstvisitMedicationGastro,
-  createPatientFirstvisitMedicationUrinary,
-  createPatientFirstvisitMedicationGynae,
-  createPatientFirstvisitMedicationHistoryof,
-  createPatientFirstvisitMedicationDiagnosedof,
-  createPatientFirstvisitMedicationOnmedications,
   sendMessage,
   sendBulkMessage,
   sendAMessageToWorker,
@@ -103,62 +90,7 @@ router.delete("/cadre/:id", deleteACadre);
 //create patient personal info
 router.post("/patient/firstvisit/info", createPatientFirstvisitPersonalInfo);
 
-//create patient firstvisit daily habits
-router.post(
-  "/patient/firstvisit/dailyhabits",
-  createPatientFirstvisitDailyhabits
-);
-
-//create patient firstvisit obstetric
-router.post("/patient/firstvisit/obstetric", createPatientFirstvisitObstetric);
-
-//create patient firstvisit medication
-router.post(
-  "/patient/firstvisit/medication",
-  createPatientFirstvisitMedication
-);
-router.post(
-  "/patient/firstvisit/medication/pulmonary",
-  createPatientFirstvisitMedicationPulmonary
-);
-router.post(
-  "/patient/firstvisit/medication/cardio",
-  createPatientFirstvisitMedicationCardiovascular
-);
-router.post(
-  "/patient/firstvisit/medication/neuro",
-  createPatientFirstvisitMedicationNeuro
-);
-router.post(
-  "/patient/firstvisit/medication/gastro",
-  createPatientFirstvisitMedicationGastro
-);
-router.post(
-  "/patient/firstvisit/medication/urinary",
-  createPatientFirstvisitMedicationUrinary
-);
-router.post(
-  "/patient/firstvisit/medication/gynae",
-  createPatientFirstvisitMedicationGynae
-);
-router.post(
-  "/patient/firstvisit/medication/historyof",
-  createPatientFirstvisitMedicationHistoryof
-);
-router.post(
-  "/patient/firstvisit/medication/diagnosedof",
-  createPatientFirstvisitMedicationDiagnosedof
-);
-
-router.post(
-  "/patient/firstvisit/medication/onmedications",
-  createPatientFirstvisitMedicationOnmedications
-);
-
 //create patient personal info
 router.post("/patient", createPatient);
-
-//create patient firstvisit
-router.post("/patient/firstvisit", createPatientFirstVisit);
 
 module.exports = router;

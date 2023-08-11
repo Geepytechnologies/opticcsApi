@@ -15,25 +15,38 @@ const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
 const request = require("request");
 
 const sendOtp = async (req, res) => {
+  // const options = {
+  //   method: "POST",
+  //   url: "https://api.sendchamp.com/api/v1/verification/create",
+  //   headers: {
+  //     Accept: "application/json,text/plain,*/*",
+  //     "Content-Type": "application/json",
+  //     Authorization:
+  //       "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+  //   },
+  //   body: JSON.stringify({
+  //     channel: "sms",
+  //     sender: "Sendchamp",
+  //     token_type: "numeric",
+  //     token_length: 4,
+  //     expiration_time: 5,
+  //     customer_mobile_number: req.body.mobile_number,
+  //     meta_data: { description: "demo" },
+  //     in_app_token: false,
+  //   }),
+  // };
+
+  const { name, mobile_number } = req.body;
   const options = {
     method: "POST",
-    url: "https://api.sendchamp.com/api/v1/verification/create",
+    url: `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`,
     headers: {
-      Accept: "application/json,text/plain,*/*",
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+      accept: "application/json",
+      "content-type": "application/json",
+      authkey: process.env.MSGAUTHKEY,
     },
-    body: JSON.stringify({
-      channel: "sms",
-      sender: "Sendchamp",
-      token_type: "numeric",
-      token_length: 4,
-      expiration_time: 5,
-      customer_mobile_number: req.body.mobile_number,
-      meta_data: { description: "demo" },
-      in_app_token: false,
-    }),
+    body: { name: name },
+    json: true,
   };
 
   request(options, (error, response, body) => {
@@ -43,30 +56,36 @@ const sendOtp = async (req, res) => {
         .status(500)
         .json({ error: "An error occurred while sending OTP." });
     }
-    const mydata = JSON.parse(body);
-    res.json({ result: mydata });
+    res.status(200).json({ result: body });
   });
 };
 const confirmOtp = async (req, res) => {
+  const { otp, mobile_number } = req.body;
+  // const options = {
+  //   method: "POST",
+  //   url: "https://api.sendchamp.com/api/v1/verification/confirm",
+  //   headers: {
+  //     Accept: "application/json,text/plain,*/*",
+  //     "Content-Type": "application/json",
+  //     Authorization:
+  //       "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+  //   },
+  //   body: JSON.stringify({
+  //     verification_reference: req.body.verification_reference,
+  //     verification_code: req.body.verification_code,
+  //     channel: "sms",
+  //     token_type: "numeric",
+  //     token_length: 4,
+  //     expiration_time: 5,
+  //     meta_data: { description: "demo" },
+  //     in_app_token: false,
+  //   }),
+  // };
+
   const options = {
-    method: "POST",
-    url: "https://api.sendchamp.com/api/v1/verification/confirm",
-    headers: {
-      Accept: "application/json,text/plain,*/*",
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
-    },
-    body: JSON.stringify({
-      verification_reference: req.body.verification_reference,
-      verification_code: req.body.verification_code,
-      channel: "sms",
-      token_type: "numeric",
-      token_length: 4,
-      expiration_time: 5,
-      meta_data: { description: "demo" },
-      in_app_token: false,
-    }),
+    method: "GET",
+    url: `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`,
+    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
   };
 
   request(options, (error, response, body) => {
@@ -74,11 +93,30 @@ const confirmOtp = async (req, res) => {
       console.error(error);
       return res.status(500).json({
         statusCode: "500",
-        error: "An error occurred while sending OTP.",
+        error: "An error confirming OTP.",
       });
     }
-    const mydata = JSON.parse(body);
-    res.json({ result: mydata });
+    res.status(200).json({ result: body });
+  });
+};
+const retryOtp = async (req, res) => {
+  const { mobile_number, type } = req.body;
+
+  const options = {
+    method: "GET",
+    url: `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`,
+    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({
+        statusCode: "500",
+        error: "error retrying OTP.",
+      });
+    }
+    res.status(200).json({ result: body });
   });
 };
 
@@ -89,8 +127,8 @@ const signup = async (req, res, next) => {
     state,
     lga,
     ward,
-    healthFacility,
-    healthWorker,
+    healthfacility,
+    healthworker,
     cadre,
     password,
   } = req.body;
@@ -104,8 +142,8 @@ const signup = async (req, res, next) => {
       state,
       lga,
       ward,
-      healthFacility,
-      healthWorker,
+      healthfacility,
+      healthworker,
       cadre,
     ]);
     return result[0];
@@ -164,26 +202,9 @@ const signin = async (req, res, next) => {
       { id: user[0].id },
       process.env.ACCESS_SECRET,
       {
-        expiresIn: "10d",
+        expiresIn: "30d",
       }
     );
-
-    //refresh Token
-    // const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-    //   expiresIn: "1d",
-    // });
-
-    //save refresh token to the user model
-    // const updatedUser = await createRefresh(refreshToken);
-    // console.log(updatedUser);
-
-    // Creates Secure Cookie with refresh token
-    // res.cookie("token", accessToken, {
-    //   httpOnly: false,
-    //   secure: true,
-    //   sameSite: "None",
-    //   maxAge: 10 * 24 * 60 * 60 * 1000,
-    // });
 
     const { password, ...others } = user;
 
@@ -429,5 +450,6 @@ module.exports = {
   forgotpassword,
   resetPassword,
   confirmOtp,
+  retryOtp,
   sendOtp,
 };

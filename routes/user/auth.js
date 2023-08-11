@@ -8,6 +8,7 @@ const {
   forgotpassword,
   confirmOtp,
   sendOtp,
+  retryOtp,
 } = require("../../controllers/user/auth");
 
 router.post("/signup", signup);
@@ -15,6 +16,8 @@ router.post("/signup", signup);
 router.post("/sendOtp", sendOtp);
 
 router.post("/confirmOtp", confirmOtp);
+
+router.post("/retryOtp", retryOtp);
 
 router.put("/changepassword", changepassword);
 

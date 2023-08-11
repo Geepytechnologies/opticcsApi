@@ -16,6 +16,31 @@ const refreshTokenRoute = require("./routes/admin/refreshToken");
 const { createUserQuery } = require("./queries/user/user");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const request = require("request");
+
+app.post("/sendotp2", (req, res) => {
+  const options = {
+    method: "POST",
+    url: "https://control.msg91.com/api/v5/otp?template_id=64d21743d6fc055e40287382&mobile=2348106974201&otp_length=6&otp_expiry=5",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      authkey: "394982AVwwiRgqf64d2116bP1",
+    },
+    body: { name: "Geepy" },
+    json: true,
+  };
+  try {
+    request(options, function (error, response, body) {
+      if (error) throw new Error(error);
+
+      console.log(body);
+    });
+    res.status(200).json("successful");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 const corsOptions = {
   origin: process.env.ORIGIN,

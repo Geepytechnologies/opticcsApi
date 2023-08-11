@@ -44,57 +44,59 @@ function createPatientPersonalInfoQuery() {
   return `
   INSERT INTO personalinformation (
     hospitalnumber,
-      firstname,
-      middlename,
-      surname,
-      phone,
-      address,
-      state,
-      lga,
-      healthfacility,
-      gravidity,
-      parity,
-      lmp,
-      edd,
-      ega,
-      doyoufeelthebabysmovement,
-      doyouknowdateoffirtbabymovement,
-      doyouknowdateoflastbabymovement
+    firstname,
+    middlename,
+    surname,
+    phone,
+    address,
+    state,
+    dateofbirth,
+    lga,
+    healthfacility,
+    gravidity,
+    parity,
+    alive,
+    lmpknown,
+    lmp,
+    edd,
+    ega,
+    laborstarted,
+    firstbabymovement,
+    doyoufeelthebabysmovement,
+    doyouknowdateoffirstbabymovement
   ) 
   VALUES (
-    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
   )`;
 }
 function createPatientFirstvisitDailyhabitQuery() {
   return `
   INSERT INTO dailyhabitsandlifestyle (
     firstvisit_id,
-    doyousmoke,
-    doyoudrinkalcohol,
-    doyouuseharmfulsubstances,
+    doyou,
     whodoyoulivewith,
-    stoppedfromleavingthehouse,
-    threatenedyourlife,
-    abusedphysicallyorsexually
+    specifywhodoyoulivewith,
+    didanyoneever
     ) 
-  VALUES (?,?,?,?,?,?,?,?)`;
+  VALUES (?,?,?,?,?)`;
 }
 function createPatientFirstvisitObstetricQuery() {
   return `
   INSERT INTO obstetrichistory (
     firstvisit_id,
-    convulsionduringapregnancy,
-    caesareansection,
-    tearsthroughsphincter,
-    haemorrhage,
-    Stillbirths,
-    prematureDeliveries,
-    lowbirthweightbabies,
-    deadbabies,
-    miscarriages,
-    others
+    obstetrichistory,
+    otherinputobstetrichistory,
+    yearofpregnancy,
+    carriedtoterm,
+    modeofdelivery,
+    weightofbaby,
+    sexofbaby,
+    babycriedafterbirth,
+    complicationsafterdelivery,
+    specifycomplicationsafterdelivery,
+    breastfedexclusively
     ) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 }
 
 function getRefreshToken() {
@@ -116,24 +118,6 @@ function patientRecordQuery(id) {
 FROM patients
 LEFT JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
 LEFT JOIN firstvisit ON patients.id = firstvisit.patient_id
-LEFT JOIN dailyhabitsandlifestyle ON firstvisit.id = dailyhabitsandlifestyle.firstvisit_id
-LEFT JOIN obstetrichistory ON firstvisit.id = obstetrichistory.firstvisit_id
-LEFT JOIN medicationhistory ON firstvisit.id = medicationhistory.firstvisit_id
-LEFT JOIN pulmonary ON medicationhistory.id = pulmonary.medicationhistory_id
-LEFT JOIN cardiovascular ON medicationhistory.id = cardiovascular.medicationhistory_id
-LEFT JOIN gastrointestinal ON medicationhistory.id = gastrointestinal.medicationhistory_id
-LEFT JOIN urinary ON medicationhistory.id = urinary.medicationhistory_id
-LEFT JOIN gynaecological ON medicationhistory.id = gynaecological.medicationhistory_id
-LEFT JOIN drughistory ON medicationhistory.id = drughistory.medicationhistory_id
-LEFT JOIN returnvisit ON patients.id = returnvisit.patient_id
-LEFT JOIN facialExpression ON returnvisit.id = facialExpression.returnvisit_id
-LEFT JOIN generalCleanliness ON returnvisit.id = generalCleanliness.returnvisit_id
-LEFT JOIN herSkin ON returnvisit.id = herSkin.returnvisit_id
-LEFT JOIN herConjunctiva ON returnvisit.id = herConjunctiva.returnvisit_id
-LEFT JOIN sclera ON returnvisit.id = sclera.returnvisit_id
-LEFT JOIN bloodpressure ON returnvisit.id = bloodpressure.returnvisit_id
-LEFT JOIN adbominalExamination ON returnvisit.id = adbominalExamination.returnvisit_id
-LEFT JOIN messages ON patients.healthpersonnel_id = messages.healthpersonnel_id
 WHERE patients.id = '${id}';
     `;
 }
@@ -145,8 +129,8 @@ function createUserQuery() {
     state,
     lga,
     ward,
-    healthFacility,
-    healthWorker,
+    healthfacility,
+    healthworker,
     cadre
     ) 
   VALUES (?, ?, ?, ?, ?, ?,?,?)`;
