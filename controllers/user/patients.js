@@ -1828,10 +1828,16 @@ const datanumbers = async (req, res) => {
     const { returnvisit } = rv[0][0];
     const { testresult } = tr[0][0];
     const { schedule } = sch[0][0];
-    const { delivery } = dr[0][0];
+    const { deliveryreport } = dr[0][0];
     res.status(200).json({
       statusCode: "200",
-      result: { firstvisit, returnvisit, testresult, schedule, delivery },
+      result: {
+        firstvisit,
+        returnvisit,
+        testresult,
+        schedule,
+        deliveryreport,
+      },
     });
   } catch (error) {
     res.status(500).json(error);
