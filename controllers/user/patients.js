@@ -1809,30 +1809,29 @@ const createtestoptions = async (req, res) => {
 const datanumbers = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const firstvisitcount = `SELECT COUNT(*) AS firstvisitcount FROM firstvisit;
+    const firstvisitcount = `SELECT COUNT(*) AS firstvisit FROM firstvisit;
     `;
-    const returnvisitcount = `SELECT COUNT(*) AS returnvisitcount FROM returnvisit;
+    const returnvisitcount = `SELECT COUNT(*) AS returnvisit FROM returnvisit;
     `;
-    const testresultcount = `SELECT COUNT(*) AS testresultcount FROM testresult;
+    const testresultcount = `SELECT COUNT(*) AS testresult FROM testresult;
     `;
-    const schedulecount = `SELECT COUNT(*) AS schedulecount FROM schedule;
+    const schedulecount = `SELECT COUNT(*) AS schedule FROM schedule;
     `;
-    const deliveryreportcount = `SELECT COUNT(*) AS deliveryreportcount FROM deliveryreport;
+    const deliveryreportcount = `SELECT COUNT(*) AS deliveryreport FROM deliveryreport;
     `;
     const fv = await connection.execute(firstvisitcount);
     const rv = await connection.execute(returnvisitcount);
     const tr = await connection.execute(testresultcount);
     const sch = await connection.execute(schedulecount);
     const dr = await connection.execute(deliveryreportcount);
+    const { firstvisit } = fv[0][0];
+    const { returnvisit } = rv[0][0];
+    const { testresult } = tr[0][0];
+    const { schedule } = sch[0][0];
+    const { delivery } = dr[0][0];
     res.status(200).json({
       statusCode: "200",
-      result: {
-        firstvisit: fv[0],
-        returnvisit: rv[0],
-        testresult: tr[0],
-        schedules: sch[0],
-        deliveryreport: dr[0],
-      },
+      result: { firstvisit, returnvisit, testresult, schedule, delivery },
     });
   } catch (error) {
     res.status(500).json(error);

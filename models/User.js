@@ -439,7 +439,7 @@
 )`;
 
 // -- Table: deliveryReport
-`CREATE TABLE deliveryReport (
+`CREATE TABLE deliveryreport (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
   patient_id VARCHAR(255),
