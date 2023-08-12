@@ -9,69 +9,110 @@ const {
 const request = require("request");
 
 // send users a message
-const sendMessage = async (req, res) => {
+const patientscheduledvisitsms = async (req, res) => {
+  const { mobile_number, firstname, lastname, day, date, healthfacilityname } =
+    req.body;
   const options = {
     method: "POST",
-    url: "https://api.sendchamp.com/api/v1/sms/send",
+    url: "https://control.msg91.com/api/v5/flow/",
     headers: {
-      Accept: "application/json,text/plain,*/*",
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+      accept: "application/json",
+      "content-type": "application/json",
+      authkey: process.env.MSGAUTHKEY,
     },
-    body: JSON.stringify({
-      to: req.body.phone,
-      sender_name: "SAlert",
-      route: "dnd",
-      message: req.body.message,
-    }),
+    body: {
+      template_id: "64d69114d6fc0516725eb0d3",
+      sender: "Opticcs",
+      short_url: "1",
+      mobiles: mobile_number,
+      firstname: firstname,
+      lastname: lastname,
+      day: day,
+      date: date,
+      healthfacilityname: healthfacilityname,
+    },
+    json: true,
   };
-
   request(options, (error, response, body) => {
     if (error) {
       console.error(error);
-      return res.status(500).json({
-        statusCode: "500",
+      return res.status(400).json({
+        statusCode: "400",
         error: "An error occurred while sending Message.",
       });
     }
-    const mydata = JSON.parse(body);
-    // console.log(mydata);
-    res.json({ statusCode: "200", message: "successful", result: mydata });
+    res.json({ statusCode: "200", message: "successful", result: body });
   });
 };
-const sendBulkMessage = async (req, res) => {
+const patientscheduledvisitremindersms = async (req, res) => {
+  const { mobile_number, firstname, lastname, date, healthfacilityname } =
+    req.body;
   const options = {
     method: "POST",
-    url: "https://api.sendchamp.com/api/v1/sms/send",
+    url: "https://control.msg91.com/api/v5/flow/",
     headers: {
-      Accept: "application/json,text/plain,*/*",
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
+      accept: "application/json",
+      "content-type": "application/json",
+      authkey: "394982AVwwiRgqf64d2116bP1",
     },
-    body: JSON.stringify({
-      to: req.body.phone, // array of numbers ['2348106974201', '2348025645315']
-      sender_name: "SAlert",
-      route: "dnd",
-      message: req.body.message,
-    }),
+    body: {
+      template_id: "64d691aad6fc052a1473dc42",
+      sender: "Opticcs",
+      short_url: "1",
+      mobiles: mobile_number,
+      firstname: firstname,
+      lastname: lastname,
+      date: date,
+      healthfacilityname: healthfacilityname,
+    },
+    json: true,
   };
-
   request(options, (error, response, body) => {
     if (error) {
       console.error(error);
-      return res.status(500).json({
-        statusCode: "500",
+      return res.status(400).json({
+        statusCode: "400",
         error: "An error occurred while sending Message.",
       });
     }
-    const mydata = JSON.parse(body);
-    console.log(mydata);
-    res.json({ statusCode: "200", message: "successful", result: mydata });
+    res.json({ statusCode: "200", message: "successful", result: body });
   });
 };
-
+const patientscheduledvisitmissedsms = async (req, res) => {
+  const { mobile_number, firstname, lastname, day, date, healthfacilityname } =
+    req.body;
+  const options = {
+    method: "POST",
+    url: "https://control.msg91.com/api/v5/flow/",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      authkey: process.env.MSGAUTHKEY,
+    },
+    body: {
+      template_id: "64d6923ed6fc05311c3659f2",
+      sender: "Opticcs",
+      short_url: "1",
+      mobiles: mobile_number,
+      firstname: firstname,
+      lastname: lastname,
+      day: day,
+      date: date,
+      healthfacilityname: healthfacilityname,
+    },
+    json: true,
+  };
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error(error);
+      return res.status(400).json({
+        statusCode: "400",
+        error: "An error occurred while sending Message.",
+      });
+    }
+    res.json({ statusCode: "200", message: "successful", result: body });
+  });
+};
 // healthPersonnels
 const getAllUsers = async (req, res, next) => {
   const connection = await db.getConnection();
@@ -842,9 +883,10 @@ const getAllSchedule = async (req, res) => {
 };
 
 module.exports = {
-  sendBulkMessage,
+  patientscheduledvisitsms,
+  patientscheduledvisitremindersms,
+  patientscheduledvisitmissedsms,
   getHealthworkerInfo,
-  sendMessage,
   sendAMessageToWorker,
   getAllUsers,
   getUnverifiedworkers,

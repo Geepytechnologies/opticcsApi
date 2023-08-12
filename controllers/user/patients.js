@@ -1507,16 +1507,23 @@ const getPatientFirstVisit = async (req, res) => {
     const q = `SELECT
     fv.*,
     dhal.*,
-    oh.*,mh.*
+    oh.*,mh.*,pmh.*,dh.*,fh.*,pe.*
   FROM
     firstvisit fv
   LEFT JOIN
     dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
   LEFT JOIN
     obstetrichistory oh ON fv.id = oh.firstvisit_id
-    LEFT JOIN
+  LEFT JOIN
     medicalhistory mh ON fv.id = mh.firstvisit_id
   LEFT JOIN
+    pastmedicalhistory pmh ON fv.id = pmh.firstvisit_id
+  LEFT JOIN
+    drughistory dh ON fv.id = dh.firstvisit_id
+  LEFT JOIN
+    familyhistory fh ON fv.id = fh.firstvisit_id
+  LEFT JOIN
+    physicalexamination pe ON fv.id = pe.firstvisit_id
   WHERE
     fv.patient_id = ?; 
   `;
@@ -1827,7 +1834,13 @@ const datanumbers = async (req, res) => {
         deliveryreport: dr[0],
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 };
 
 const getAllSchedule = async (req, res) => {

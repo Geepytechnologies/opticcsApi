@@ -5,8 +5,6 @@ const {
   getUsersPatients,
   createPatient,
   createPatientFirstvisitPersonalInfo,
-  sendMessage,
-  sendBulkMessage,
   sendAMessageToWorker,
   createASchedule,
   createDeliveryReport,
@@ -21,6 +19,9 @@ const {
   getAllUpcomingSchedule,
   getAllMissedSchedule,
   getAllFlaggedSchedule,
+  patientscheduledvisitsms,
+  patientscheduledvisitremindersms,
+  patientscheduledvisitmissedsms,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -37,9 +38,11 @@ const router = express.Router();
 //update user
 router.get("/find/details", verifyToken, getHealthworkerInfo);
 
-router.post("/sms", sendMessage);
+router.post("/sms/schedule", patientscheduledvisitsms);
 
-router.post("/sms/bulk", sendBulkMessage);
+router.post("/sms/schedulereminder", patientscheduledvisitremindersms);
+
+router.post("/sms/schedulemissed", patientscheduledvisitmissedsms);
 
 router.post("/send/:id", sendAMessageToWorker);
 

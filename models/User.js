@@ -3,7 +3,7 @@
   id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(50),
   password VARCHAR(255),
-  phone VARCHAR(20),
+  phone VARCHAR(255),
   state VARCHAR(255),
   lga VARCHAR(255),
   ward VARCHAR(50),
@@ -21,7 +21,7 @@
   firstname VARCHAR(30),
   middlename VARCHAR(30),
   surname VARCHAR(30),
-  phone VARCHAR(16),
+  phone VARCHAR(255),
   address VARCHAR(255),
   state VARCHAR(30),
   dateofbirth DATE,
@@ -426,7 +426,7 @@
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100),
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-)`// -- Table: requestedtest
+)` // -- Table: requestedtest
 `CREATE TABLE requestedtest (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
