@@ -194,6 +194,14 @@ const getfirstbabymovement = async (req, res) => {
   }
 };
 
+const getconvulsions = async (req, res) => {
+  try {
+    const q = `SELECT`;
+  } catch (error) {
+  } finally {
+  }
+};
+
 module.exports = {
   graviditygreaterthan8,
   graviditylessthan8,

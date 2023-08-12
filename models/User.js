@@ -430,10 +430,9 @@
 `CREATE TABLE requestedtest (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  testoption_id INT,
+  testoption JSON,
   patient_id INT,
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (testoption_id) REFERENCES testoption(id) ON DELETE CASCADE,
   FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
   FOREIGN KEY (healthpersonnel_id) REFERENCES healthpersonnel(id) ON DELETE CASCADE
 )`;

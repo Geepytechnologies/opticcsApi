@@ -10,131 +10,6 @@ const {
 
 const createPatient = async (req, res, next) => {
   const connection = await db.getConnection();
-  // const {
-  //   healthpersonnel_id,
-  //   firstvisit_date,
-  //   hospitalnumber,
-  //   firstname,
-  //   middlename,
-  //   surname,
-  //   phone,
-  //   address,
-  //   state,
-  //   lga,
-  //   healthfacility,
-  //   gravidity,
-  //   parity,
-  //   lmp,
-  //   edd,
-  //   ega,
-  //   doyoufeelthebabysmovement,
-  //   doyouknowdateoffirstbabymovement,
-  //   doyouknowdateoflastbabymovement,
-  //   doyousmoke,
-  //   doyoudrinkalcohol,
-  //   doyouuseharmfulsubstances,
-  //   whodoyoulivewith,
-  //   stoppedfromleavingthehouse,
-  //   threatenedyourlife,
-  //   abusedphysicallyorsexually,
-  //   fever,
-  //   chills,
-  //   headaches,
-  //   dizziness,
-  //   convulsions,
-  //   weakness,
-  //   blurryvision,
-  //   cough,
-  //   difficultybreathing,
-  //   severechestpain,
-  //   severeepigastricpain,
-  //   pepticulcerpatient,
-  //   severetiredness,
-  //     severeabdominalpain,
-  //     persistentvomiting,
-  //     severediarrhoea,
-  //     painwithurination,
-  //     severeflankpain,
-  //     bloodinurine,
-  //     increasedurination,
-  //     noticedantsaroundplaceurinated,
-  //     increasedthirst,
-  //     vaginaldischarge,
-  //     deeppelvicpain,
-  //     syphilis,
-  //     syphilistreatment,
-  //     feveryes,
-  //     chillsyes,
-  //     headachesyes,
-  //     dizzinessyes,
-  //     convulsionsyes,
-  //     weaknessyes,
-  //     blurryvisionyes,
-  //     coughyes,
-  //     persistentdrycough,
-  //     persistentdrycoughyes,
-  //     progressiveweightloss,
-  //     progressiveweightlossyes,
-  //     nightsweats,
-  //     nightsweatsyes,
-  //     diagnosedwithtuberculosis,
-  //     diagnosedwithtuberculosisyes,
-  //     treatedTBpreviously,
-  //     treatedTBpreviouslyyes,
-  //     difficultybreathingyes,
-  //     severechestpainyes,
-  //     severeepigastricpainyes,
-  //     palpitations,
-  //     palpitationyes,
-  //     swellingfeet,
-  //     swellingfeetyes,
-  //     difficultytosleep,
-  //     difficultytosleepyes,
-  //     pepticulcerpatientyes,
-  //     severetirednessyes,
-  //     severeabdominalpainyes,
-  //     persistentvomitingyes,
-  //     severediarrhoeayes,
-  //     painwithurinationyes,
-  //     severeflankpainyes,
-  //     bloodinurineyes,
-  //     increasedurinationyes,
-  //     increasedthirstyes,
-  //     vaginaldischargeyes,
-  //     deeppelvicpainyes,
-  //     syphilisyes,
-  //   convulsionduringapregnancy,
-  //   caesareansection,
-  //   tearsthroughsphincter,
-  //   haemorrhage,
-  //   stillbirths,
-  //   prematureDeliveries,
-  //   lowbirthweightbabies,
-  //   deadbabies,
-  //   miscarriages,
-  //   others,
-  //   hypertension,
-  //   heartdisease,
-  //   anaemia,
-  //   kidneydisease,
-  //   sicklecell,
-  //   diabetes,
-  //   goitre,
-  //   hiv,
-  //   currentlyontreatmentforhiv,
-  //   seriouschronicillness,
-  //   covidvaccinationpast,
-  //   everhadsurgery,
-  //   haveyoubreastfedbefore,
-  //   lengthofbreastfeeding,
-  //   problemsbreastfeeding,
-  //   babylessthanayear,
-  //   areyoustillbreastfeeding,
-  //   camewithachildunder5years,
-  //   immunisationstatus,
-  //   unvaccinatedchildrenathome,
-  // } = req.body;
-
   // Replacing the individual db.query with pool.query for connection pooling
   const {
     hospitalnumber,
@@ -776,6 +651,7 @@ const createPatient = async (req, res, next) => {
   const getnewlycreatedpatientrecord = async (patient_id) => {
     const q = `SELECT
     p.*,
+    pi.*,
     fv.*,
     dhal.*,
     oh.*,
@@ -788,6 +664,8 @@ FROM
     patients p
 JOIN
     firstvisit fv ON p.id = fv.patient_id
+JOIN 
+    personalinformation pi ON p.id = pi.id
 LEFT JOIN
     dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
 LEFT JOIN
@@ -826,14 +704,13 @@ WHERE
     await createdrugHistory(firstvisitID);
     await createphysicalexamination(firstvisitID);
     const newpatientrecord = await getnewlycreatedpatientrecord(patientID);
+    const result = newpatientrecord[0];
 
     await connection.commit();
     res.status(201).json({
       statusCode: "201",
       message: "successful",
-      result: {
-        newpatientrecord,
-      },
+      result,
     });
     connection.release();
   } catch (error) {
@@ -918,13 +795,7 @@ WHERE
         lastvisit: patientlastvisit[0],
       },
     });
-    connection.release();
   } catch (err) {
-    res.status(500).json({
-      statusCode: "500",
-      message: "Error getting patient record",
-      error: err,
-    });
   } finally {
     if (connection) {
       connection.release();
@@ -1774,12 +1645,20 @@ const getAPatientsDeliveryreport = async (req, res) => {
 
 const requestingatest = async (req, res) => {
   const connection = await db.getConnection();
-  const { healthpersonnel_id, testoption_id, patient_id } = req.body;
-  const values = [healthpersonnel_id, testoption_id, patient_id];
+  const { healthpersonnel_id, testoption, patient_id } = req.body;
+  const values = [healthpersonnel_id, testoption, patient_id];
   try {
-    const q = `INSERT INTO requestedtest (healthpersonnel_id, testoption_id, patient_id) VALUES (?,?,?)`;
+    const q = `INSERT INTO requestedtest (healthpersonnel_id, testoption, patient_id) VALUES (?,?,?)`;
+    const resultquery = `SELECT * FROM requestedtest WHERE id = ?`;
     const requestatest = await connection.execute(q, values);
-    res.status(201).json({ statusCode: "201", message: "successful" });
+    const newlycreatedtest = await connection.execute(resultquery, [
+      requestatest[0].insertId,
+    ]);
+    res.status(201).json({
+      statusCode: "201",
+      message: "successful",
+      result: newlycreatedtest[0],
+    });
   } catch (error) {
     res.status(500).json({ statusCode: "500", message: error });
   } finally {
@@ -1817,7 +1696,8 @@ const datanumbers = async (req, res) => {
     `;
     const schedulecount = `SELECT COUNT(*) AS schedule FROM schedule;
     `;
-    const deliveryreportcount = `SELECT COUNT(*) AS deliveryreport FROM deliveryreport;
+    const deliveryreportcount = `SELECT COALESCE(SUM(CAST(numberofchildren AS SIGNED)), 0) AS delivery FROM deliveryreport
+    ;
     `;
     const fv = await connection.execute(firstvisitcount);
     const rv = await connection.execute(returnvisitcount);
@@ -1828,7 +1708,7 @@ const datanumbers = async (req, res) => {
     const { returnvisit } = rv[0][0];
     const { testresult } = tr[0][0];
     const { schedule } = sch[0][0];
-    const { deliveryreport } = dr[0][0];
+    const { delivery } = dr[0][0];
     res.status(200).json({
       statusCode: "200",
       result: {
@@ -1836,7 +1716,7 @@ const datanumbers = async (req, res) => {
         returnvisit,
         testresult,
         schedule,
-        deliveryreport,
+        delivery,
       },
     });
   } catch (error) {

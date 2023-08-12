@@ -15,27 +15,6 @@ const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
 const request = require("request");
 
 const sendOtp = async (req, res) => {
-  // const options = {
-  //   method: "POST",
-  //   url: "https://api.sendchamp.com/api/v1/verification/create",
-  //   headers: {
-  //     Accept: "application/json,text/plain,*/*",
-  //     "Content-Type": "application/json",
-  //     Authorization:
-  //       "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
-  //   },
-  //   body: JSON.stringify({
-  //     channel: "sms",
-  //     sender: "Sendchamp",
-  //     token_type: "numeric",
-  //     token_length: 4,
-  //     expiration_time: 5,
-  //     customer_mobile_number: req.body.mobile_number,
-  //     meta_data: { description: "demo" },
-  //     in_app_token: false,
-  //   }),
-  // };
-
   const { name, mobile_number } = req.body;
   const options = {
     method: "POST",
@@ -51,36 +30,17 @@ const sendOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
       return res
         .status(500)
         .json({ error: "An error occurred while sending OTP." });
     }
-    res.status(200).json({ result: body });
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: body });
   });
 };
 const confirmOtp = async (req, res) => {
   const { otp, mobile_number } = req.body;
-  // const options = {
-  //   method: "POST",
-  //   url: "https://api.sendchamp.com/api/v1/verification/confirm",
-  //   headers: {
-  //     Accept: "application/json,text/plain,*/*",
-  //     "Content-Type": "application/json",
-  //     Authorization:
-  //       "Bearer sendchamp_live_$2a$10$8i7elhCUcmIi2b921WjFkedBImY5YDWsZU86MNRw..wz1e11pcZDq",
-  //   },
-  //   body: JSON.stringify({
-  //     verification_reference: req.body.verification_reference,
-  //     verification_code: req.body.verification_code,
-  //     channel: "sms",
-  //     token_type: "numeric",
-  //     token_length: 4,
-  //     expiration_time: 5,
-  //     meta_data: { description: "demo" },
-  //     in_app_token: false,
-  //   }),
-  // };
 
   const options = {
     method: "GET",
@@ -90,13 +50,14 @@ const confirmOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
       return res.status(500).json({
         statusCode: "500",
-        error: "An error confirming OTP.",
+        error: "Error confirming OTP.",
       });
     }
-    res.status(200).json({ result: body });
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: body });
   });
 };
 const retryOtp = async (req, res) => {
@@ -110,13 +71,14 @@ const retryOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
       return res.status(500).json({
         statusCode: "500",
         error: "error retrying OTP.",
       });
     }
-    res.status(200).json({ result: body });
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: body });
   });
 };
 
