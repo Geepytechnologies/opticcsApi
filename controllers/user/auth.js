@@ -31,12 +31,13 @@ const sendOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res
-        .status(500)
+        .status(response.statusCode)
         .json({ error: "An error occurred while sending OTP." });
     }
-    res
-      .status(200)
-      .json({ statusCode: "200", message: "successful", result: body });
+    res.status(response.statusCode).json({
+      statusCode: response.statusCode,
+      result: JSON.parse(body),
+    });
   });
 };
 const confirmOtp = async (req, res) => {
@@ -50,14 +51,15 @@ const confirmOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      return res.status(500).json({
-        statusCode: "500",
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode,
         error: "Error confirming OTP.",
       });
     }
-    res
-      .status(200)
-      .json({ statusCode: "200", message: "successful", result: body });
+    res.status(response.statusCode).json({
+      statusCode: response.statusCode,
+      result: JSON.parse(body),
+    });
   });
 };
 const retryOtp = async (req, res) => {
@@ -71,14 +73,14 @@ const retryOtp = async (req, res) => {
 
   request(options, (error, response, body) => {
     if (error) {
-      return res.status(500).json({
-        statusCode: "500",
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode,
         error: "error retrying OTP.",
       });
     }
     res
-      .status(200)
-      .json({ statusCode: "200", message: "successful", result: body });
+      .status(response.statusCode)
+      .json({ statusCode: response.statusCode, result: JSON.parse(body) });
   });
 };
 

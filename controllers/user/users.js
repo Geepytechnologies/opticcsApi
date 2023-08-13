@@ -35,13 +35,12 @@ const patientscheduledvisitsms = async (req, res) => {
   };
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
-      return res.status(400).json({
-        statusCode: "400",
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode,
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: "200", message: "successful", result: body });
+    res.json({ statusCode: response.statusCode, result: JSON.parse(body) });
   });
 };
 const patientscheduledvisitremindersms = async (req, res) => {
@@ -69,13 +68,12 @@ const patientscheduledvisitremindersms = async (req, res) => {
   };
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
-      return res.status(400).json({
-        statusCode: "400",
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode,
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: "200", message: "successful", result: body });
+    res.json({ statusCode: response.statusCode, result: JSON.parse(body) });
   });
 };
 const patientscheduledvisitmissedsms = async (req, res) => {
@@ -104,13 +102,12 @@ const patientscheduledvisitmissedsms = async (req, res) => {
   };
   request(options, (error, response, body) => {
     if (error) {
-      console.error(error);
-      return res.status(400).json({
-        statusCode: "400",
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode,
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: "200", message: "successful", result: body });
+    res.json({ statusCode: response.statusCode, result: JSON.parse(body) });
   });
 };
 // healthPersonnels
