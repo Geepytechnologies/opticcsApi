@@ -75,40 +75,13 @@ app.get("/test", (req, res) => {
     return res.json(result);
   });
 });
-app.post("/createuser", (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    phone,
-    state,
-    lga,
-    ward,
-    healthFacility,
-    healthWorker,
-    cadre,
-    accountType,
-  } = req.body;
-  console.log(req.body);
-  const q = `
-    INSERT INTO healthpersonnel (name,
-      email,
-      password,
-      phone,
-      state,
-      lga,
-      ward,
-      healthFacility,
-      healthWorker,
-      cadre,
-      accountType) 
-    VALUES ('${name}','${email}', '${password}', '${phone}', '${state}', '${lga}', '${ward}', '${healthFacility}','${healthWorker}','${cadre}','${accountType}')RETURNING *;`;
-  db.query(q, (err, result) => {
-    if (err) return res.json(err);
-    return res.status(201).json("Record added successfully");
-  });
-
-  //   res.status(201).json(newUser);
+app.get("/liveuser", async (req, res) => {
+  try {
+    const connection = await db.getConnection();
+    const q = `SELECT * FROM obstetrichistory WHERE id = ?`;
+    const result = await connection.execute(q, [1]);
+    res.status(200).json(result[0]);
+  } catch (error) {}
 });
 
 const port = process.env.PORT || 3000;

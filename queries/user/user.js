@@ -84,7 +84,14 @@ function createPatientFirstvisitObstetricQuery() {
   return `
   INSERT INTO obstetrichistory (
     firstvisit_id,
-    obstetrichistory,
+    caesarean,
+    tearsthroughsphincter,
+    postpartiumhaemorrghage,
+    stillbirths,
+    prematuredeliveries,
+    lowbirthbabies,
+    babieswhodied,
+    miscarriages,
     otherinputobstetrichistory,
     yearofpregnancy,
     carriedtoterm,
@@ -96,7 +103,7 @@ function createPatientFirstvisitObstetricQuery() {
     specifycomplicationsafterdelivery,
     breastfedexclusively
     ) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?)`;
 }
 
 function getRefreshToken() {
