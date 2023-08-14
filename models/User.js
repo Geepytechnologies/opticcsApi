@@ -441,7 +441,8 @@
 `CREATE TABLE deliveryreport (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
-  patient_id VARCHAR(255),
+  firstname VARCHAR(255),
+  lastname VARCHAR(255),
   gendermale VARCHAR(50),
   genderfemale VARCHAR(50),
   numberofchildren VARCHAR(255),

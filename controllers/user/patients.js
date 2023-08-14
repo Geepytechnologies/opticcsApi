@@ -1335,7 +1335,7 @@ const getAllPatientsAndHealthworker = async (req, res) => {
     `;
 
     const result = await connection.execute(q);
-    res.status(200).json({ result: result[0] });
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
@@ -1362,7 +1362,7 @@ const getPatientPersonalinfo = async (req, res) => {
     p.id = ?;  
   `;
     const result = await connection.execute(q, [id]);
-    res.status(200).json(result[0]);
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
     res.status(500).json(error);
   } finally {
@@ -1399,7 +1399,7 @@ const getPatientFirstVisit = async (req, res) => {
     fv.patient_id = ?; 
   `;
     const result = await connection.execute(q, [id]);
-    res.status(200).json(result[0]);
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
     res.status(500).json(error);
   } finally {
@@ -1584,7 +1584,8 @@ const createdeliveryreport = async (req, res) => {
   const connection = await db.getConnection();
   const {
     healthpersonnel_id,
-    patient_id,
+    firstname,
+    lastname,
     gendermale,
     genderfemale,
     numberofchildren,
@@ -1593,7 +1594,8 @@ const createdeliveryreport = async (req, res) => {
   } = req.body;
   const values = [
     healthpersonnel_id,
-    patient_id,
+    firstname,
+    lastname,
     gendermale,
     genderfemale,
     numberofchildren,
@@ -1603,23 +1605,24 @@ const createdeliveryreport = async (req, res) => {
   try {
     const q = `INSERT INTO deliveryreport (
       healthpersonnel_id,
-      patient_id,
+      firstname,
+      lastname,
       gendermale,
       genderfemale,
       numberofchildren,
       deliverydate,
       deliverytime
-      ) VALUES (?,?,?,?,?,?,?)`;
+      ) VALUES (?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM deliveryreport WHERE id = ?`;
     const result2 = await connection.execute(q2, [testresultid]);
-    res.status(200).json(result2[0]);
+    res.status(200).json({ statusCode: "200", result: result2[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
     }
-    res.status(500).json({ statusCode: 500, message: error });
+    res.status(500).json({ statusCode: "500", message: error });
   } finally {
     if (connection) {
       connection.release();
@@ -1632,9 +1635,9 @@ const getAllDeliveryreports = async (req, res) => {
   try {
     const q = `SELECT * FROM deliveryreport`;
     const result = await connection.execute(q);
-    res.status(200).json(result[0]);
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: error });
+    res.status(500).json({ statusCode: "500", message: error });
   } finally {
     if (connection) {
       connection.release();
@@ -1647,9 +1650,9 @@ const getAllDeliveryreportsByAWorker = async (req, res) => {
   try {
     const q = `SELECT * FROM deliveryreport WHERE healthpersonnel_id = ?`;
     const result = await connection.execute(q, [id]);
-    res.status(200).json(result[0]);
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: error });
+    res.status(500).json({ statusCode: "500", message: error });
   } finally {
     if (connection) {
       connection.release();
@@ -1662,9 +1665,9 @@ const getAPatientsDeliveryreport = async (req, res) => {
   try {
     const q = `SELECT * FROM deliveryreport WHERE patient_id = ?`;
     const result = await connection.execute(q, [patient_id]);
-    res.status(200).json(result[0]);
+    res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: error });
+    res.status(500).json({ statusCode: "500", message: error });
   } finally {
     if (connection) {
       connection.release();
