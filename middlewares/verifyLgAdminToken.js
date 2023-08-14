@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { createError } = require("./error.js");
 
-const verifyNationalAdminToken = (req, res, next) => {
-  const cookies = req.cookies.nationaltoken;
+const verifyLgAdminToken = (req, res, next) => {
+  const cookies = req.cookies.lgatoken;
   if (cookies) {
     jwt.verify(cookies, process.env.REFRESH_SECRET, (err, user) => {
       if (err) return next(createError(403, "Token is not valid!"));
@@ -15,5 +15,5 @@ const verifyNationalAdminToken = (req, res, next) => {
 };
 
 module.exports = {
-  verifyNationalAdminToken,
+  verifyLgAdminToken,
 };

@@ -9,7 +9,13 @@ const {
 const {
   signin,
   handleRefreshToken,
+  generatehealthfacilitydetails,
+  signout,
+  resetpassword,
 } = require("../../../controllers/admin/healthfacility/auth");
+const {
+  verifyHealthfacilityAdminToken,
+} = require("../../../middlewares/verifyHealthfacilityAdminToken");
 const router = express.Router();
 
 router.post("/", createHealthfacilityAccount);
@@ -19,6 +25,12 @@ router.get("/find", getHealthfacilityAccounts);
 router.get("/find/users", getHealthfacilityUserAccounts);
 
 router.post("/signin", signin);
+
+router.post("/signout", signout);
+
+router.get("/generateuser", generatehealthfacilitydetails);
+
+router.post("/resetpassword", verifyHealthfacilityAdminToken, resetpassword);
 
 router.get("/refresh", handleRefreshToken);
 

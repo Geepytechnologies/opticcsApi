@@ -10,7 +10,11 @@ const {
   signin,
   signout,
   generatestatedetails,
+  resetpassword,
 } = require("../../../controllers/admin/state/auth");
+const {
+  verifyStateAdminToken,
+} = require("../../../middlewares/verifyStateAdminToken");
 const router = express.Router();
 
 router.post("/", createStateAccount);
@@ -22,6 +26,8 @@ router.get("/find/users", getAllStateUsers);
 router.get("/refresh", handleRefreshToken);
 
 router.get("/generateuser", generatestatedetails);
+
+router.post("/resetpassword", verifyStateAdminToken, resetpassword);
 
 router.post("/signin", signin);
 

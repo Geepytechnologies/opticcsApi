@@ -35,8 +35,8 @@ const sendOtp = async (req, res) => {
         .json({ error: "An error occurred while sending OTP." });
     }
     res.status(response.statusCode).json({
-      statusCode: response.statusCode,
-      result: JSON.parse(body),
+      statusCode: response.statusCode.toString(),
+      result: body,
     });
   });
 };
@@ -57,7 +57,7 @@ const confirmOtp = async (req, res) => {
       });
     }
     res.status(response.statusCode).json({
-      statusCode: response.statusCode,
+      statusCode: response.statusCode.toString(),
       result: JSON.parse(body),
     });
   });
@@ -74,7 +74,7 @@ const retryOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+        statusCode: response.statusCode.toString(),
         error: "error retrying OTP.",
       });
     }

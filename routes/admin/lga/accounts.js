@@ -9,7 +9,12 @@ const {
   signin,
   handleRefreshToken,
   generatelgadetails,
+  signout,
+  resetpassword,
 } = require("../../../controllers/admin/lga/auth");
+const {
+  verifyLgAdminToken,
+} = require("../../../middlewares/verifyLgAdminToken");
 const router = express.Router();
 
 router.post("/", createLgaAccount);
@@ -18,9 +23,13 @@ router.get("/find", getLgaAccounts);
 
 router.post("/signin", signin);
 
+router.post("/signout", signout);
+
 router.get("/generateuser", generatelgadetails);
 
 router.get("/refresh", handleRefreshToken);
+
+router.post("/resetpassword", verifyLgAdminToken, resetpassword);
 
 router.post("/users", createLgaUserAccount);
 

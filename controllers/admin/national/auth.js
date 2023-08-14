@@ -154,10 +154,9 @@ const handleRefreshToken = async (req, res) => {
     jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
       if (err || foundUser[0]?.id !== user.id) return res.sendStatus(403);
       const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-        expiresIn: "60s",
+        expiresIn: "5m",
       });
       const { password, refreshtoken, ...others } = foundUser[0];
-      console.log(others);
 
       res.json({ accessToken, others: others });
       connection.release();

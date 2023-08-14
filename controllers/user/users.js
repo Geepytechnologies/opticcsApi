@@ -36,7 +36,7 @@ const patientscheduledvisitsms = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+        statusCode: response.statusCode.toString(),
         error: "An error occurred while sending Message.",
       });
     }
@@ -69,7 +69,7 @@ const patientscheduledvisitremindersms = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+        statusCode: response.statusCode.toString(),
         error: "An error occurred while sending Message.",
       });
     }
@@ -103,7 +103,7 @@ const patientscheduledvisitmissedsms = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+        statusCode: response.statusCode.toString(),
         error: "An error occurred while sending Message.",
       });
     }
