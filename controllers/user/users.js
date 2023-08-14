@@ -843,7 +843,8 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    res.status(500).json({ error: error });
+    console.log(error);
+    res.status(500).json(error);
   } finally {
     if (connection) {
       connection.release();
