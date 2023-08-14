@@ -827,15 +827,16 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
   const connection = await db.getConnection();
   const userid = req.user.id;
   const { id } = req.params;
-  const { completed, upcoming, missed, flagged } = req.body;
-  const values = [completed, upcoming, missed, flagged, id];
+  const { completed, upcoming, missed, flagged, datefrom, dateto } = req.body;
+  const values = [completed, upcoming, missed, flagged, datefrom, dateto, id];
   try {
     const q = `UPDATE schedule
     SET
       completed = IFNULL(?, completed),
       upcoming = IFNULL(?, upcoming),
       missed = IFNULL(?, missed),
-      flagged = IFNULL(?, flagged)
+      flagged = IFNULL(?, flagged),
+      datefrom = ?, dateto = ?
     WHERE id = ?;
     `;
     const result = await connection.execute(q, values);
