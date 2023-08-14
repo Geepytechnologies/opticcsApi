@@ -22,6 +22,7 @@ const {
   patientscheduledvisitsms,
   patientscheduledvisitremindersms,
   patientscheduledvisitmissedsms,
+  getMissedSchedulewithWorker,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -55,6 +56,12 @@ router.get("/schedule/find/all", getAllSchedule);
 router.get("/schedule/find/completed", verifyToken, getAllCompletedSchedule);
 router.get("/schedule/find/upcoming", verifyToken, getAllUpcomingSchedule);
 router.get("/schedule/find/missed", verifyToken, getAllMissedSchedule);
+
+router.get(
+  "/schedule/find/missedbypatient",
+  verifyToken,
+  getMissedSchedulewithWorker
+);
 router.get("/schedule/find/flagged", verifyToken, getAllFlaggedSchedule);
 
 router.delete("/schedule/:id", verifyToken, deleteAHealthworkerSchedule);

@@ -1627,6 +1627,35 @@ const createdeliveryreport = async (req, res) => {
   }
 };
 
+const getAllDeliveryreports = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM deliveryreport`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ statusCode: 500, error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllDeliveryreportsByAWorker = async (req, res) => {
+  const connection = await db.getConnection();
+  const { id } = req.user;
+  try {
+    const q = `SELECT * FROM deliveryreport WHERE healthpersonnel_id = ?`;
+    const result = await connection.execute(q, [id]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ statusCode: 500, error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getAPatientsDeliveryreport = async (req, res) => {
   const connection = await db.getConnection();
   const patient_id = req.query.patient_id;
@@ -1756,5 +1785,7 @@ module.exports = {
   getAPatientsTest,
   createdeliveryreport,
   getAPatientsDeliveryreport,
+  getAllDeliveryreports,
+  getAllDeliveryreportsByAWorker,
   datanumbers,
 };

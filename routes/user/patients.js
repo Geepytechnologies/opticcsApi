@@ -16,7 +16,11 @@ const {
   requestingatest,
   createtestoptions,
   datanumbers,
+  getAPatientsDeliveryreport,
+  getAllDeliveryreports,
+  getAllDeliveryreportsByAWorker,
 } = require("../../controllers/user/patients");
+const { verifyToken } = require("../../middlewares/verifyToken");
 const router = express.Router();
 
 router.post("/create", createPatient);
@@ -37,7 +41,15 @@ router.post("/deliveryreport", createdeliveryreport);
 
 router.put("/deliveryreport/:id", updateTest);
 
-router.get("/deliveryreport/find", getAPatientsTest);
+router.get("/deliveryreport/find", getAPatientsDeliveryreport);
+
+router.get("/deliveryreport/findall", getAllDeliveryreports);
+
+router.get(
+  "/deliveryreport/worker/findall",
+  verifyToken,
+  getAllDeliveryreportsByAWorker
+);
 
 router.get("/find/:id", getPatientRecord);
 

@@ -803,6 +803,26 @@ const getAllHealthworkersSchedule = async (req, res) => {
     }
   }
 };
+const getMissedSchedulewithWorker = async (req, res) => {
+  const connection = await db.getConnection();
+  const userid = req.user.id;
+  const { patient_id } = req.query;
+  const values = [userid, patient_id];
+  try {
+    const q = `SELECT * FROM schedule WHERE healthpersonnel_id = ? AND patient_id = ?`;
+    const result = await connection.execute(q, values);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 const updateHealthworkerScheduleCompleted = async (req, res, next) => {
   const connection = await db.getConnection();
   const userid = req.user.id;
@@ -897,6 +917,7 @@ module.exports = {
   getAllMissedSchedule,
   getAllFlaggedSchedule,
   getAllUpcomingSchedule,
+  getMissedSchedulewithWorker,
   createDeliveryReport,
   createATest,
   getUserByPhone,
