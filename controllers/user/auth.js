@@ -52,7 +52,7 @@ const confirmOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+        statusCode: response.statusCode.toString(),
         error: "Error confirming OTP.",
       });
     }
@@ -80,7 +80,10 @@ const retryOtp = async (req, res) => {
     }
     res
       .status(response.statusCode)
-      .json({ statusCode: response.statusCode, result: JSON.parse(body) });
+      .json({
+        statusCode: response.statusCode.toString(),
+        result: JSON.parse(body),
+      });
   });
 };
 

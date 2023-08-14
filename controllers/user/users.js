@@ -40,7 +40,7 @@ const patientscheduledvisitsms = async (req, res) => {
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: response.statusCode, result: body });
+    res.json({ statusCode: response.statusCode.toString(), result: body });
   });
 };
 const patientscheduledvisitremindersms = async (req, res) => {
@@ -73,7 +73,7 @@ const patientscheduledvisitremindersms = async (req, res) => {
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: response.statusCode, result: body });
+    res.json({ statusCode: response.statusCode.toString(), result: body });
   });
 };
 const patientscheduledvisitmissedsms = async (req, res) => {
@@ -107,7 +107,7 @@ const patientscheduledvisitmissedsms = async (req, res) => {
         error: "An error occurred while sending Message.",
       });
     }
-    res.json({ statusCode: response.statusCode, result: body });
+    res.json({ statusCode: response.statusCode.toString(), result: body });
   });
 };
 // healthPersonnels
