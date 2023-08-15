@@ -785,33 +785,36 @@ WHERE
   try {
     const result = await connection.execute(patientRecordQuery(id));
     const data = result[0][0];
-    const patientfirstvisit = await connection.execute(patientfirstvisitquery, [
-      id,
-    ]);
-    const patientreturnvisit = await connection.execute(
-      patientreturnvisitquery,
-      [id]
-    );
-    const patientlastvisit = await connection.execute(getpatientlastvisit, [
-      id,
-      id,
-    ]);
-    if (!result.length) {
+    if (!result[0].length) {
       res.status(404).json({
         statusCode: "404",
         message: `Patient with ID of ${id} not found`,
       });
+    } else {
+      const patientfirstvisit = await connection.execute(
+        patientfirstvisitquery,
+        [id]
+      );
+      const patientreturnvisit = await connection.execute(
+        patientreturnvisitquery,
+        [id]
+      );
+      const patientlastvisit = await connection.execute(getpatientlastvisit, [
+        id,
+        id,
+      ]);
+
+      res.status(200).json({
+        statusCode: "200",
+        message: "successful",
+        result: {
+          data,
+          firstvisit: patientfirstvisit[0],
+          returnvisit: patientreturnvisit[0],
+          lastvisit: patientlastvisit[0],
+        },
+      });
     }
-    res.status(200).json({
-      statusCode: "200",
-      message: "successful",
-      result: {
-        data,
-        firstvisit: patientfirstvisit[0],
-        returnvisit: patientreturnvisit[0],
-        lastvisit: patientlastvisit[0],
-      },
-    });
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
