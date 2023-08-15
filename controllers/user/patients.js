@@ -39,6 +39,7 @@ const createPatient = async (req, res, next) => {
     whodoyoulivewith,
     specifywhodoyoulivewith,
     didanyoneever,
+    convulsionsduringpregnancy,
     caesarean,
     tearsthroughsphincter,
     postpartiumhaemorrghage,
@@ -278,6 +279,7 @@ const createPatient = async (req, res, next) => {
   const createobstetric = async (firstvisit_id) => {
     const values = [
       firstvisit_id,
+      convulsionsduringpregnancy,
       caesarean,
       tearsthroughsphincter,
       postpartiumhaemorrghage,
@@ -803,7 +805,7 @@ WHERE
       statusCode: "200",
       message: "successful",
       result: {
-        data: response,
+        response,
         firstvisit: patientfirstvisit[0],
         returnvisit: patientreturnvisit[0],
         lastvisit: patientlastvisit[0],
@@ -1445,6 +1447,7 @@ const createTest = async (req, res) => {
   const connection = await db.getConnection();
   const {
     healthpersonnel_id,
+    requestedtest_id,
     hb,
     wcc,
     rcc,
@@ -1464,6 +1467,7 @@ const createTest = async (req, res) => {
   } = req.body;
   const values = [
     healthpersonnel_id,
+    requestedtest_id,
     hb,
     wcc,
     rcc,
@@ -1484,6 +1488,7 @@ const createTest = async (req, res) => {
   try {
     const q = `INSERT INTO testresult (
       healthpersonnel_id,
+      requestedtest_id,
       hb,
       wcc,
       rcc,
@@ -1496,11 +1501,11 @@ const createTest = async (req, res) => {
       patient_id,
       rdt,
       bodytemp,
-  heartrate,
-  respiratoryrate,
-  bodypressure,
-  malariarapid
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      heartrate,
+      respiratoryrate,
+      bodypressure,
+      malariarapid
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM testresult WHERE id = ?`;
@@ -1713,6 +1718,63 @@ const requestingatest = async (req, res) => {
     }
   }
 };
+const getrequestedtests = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM requestedtest`;
+    const requestedtests = await connection.execute(q);
+    res.status(200).json({
+      statusCode: "200",
+      message: "successful",
+      result: requestedtests[0],
+    });
+  } catch (error) {
+    res.status(500).json({ statusCode: "500", message: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const updaterequestedtest = async (req, res) => {
+  const connection = await db.getConnection();
+  const { id } = req.params;
+  const { healthpersonnel_id, completed, pending, testoption, patient_id } =
+    req.body;
+  const values = [
+    healthpersonnel_id,
+    completed,
+    pending,
+    testoption,
+    patient_id,
+    id,
+  ];
+  try {
+    const q = `UPDATE requestedtest
+    SET
+      healthpersonnel_id = IFNULL(?,healthpersonnel_id),
+      completed = IFNULL(?, completed),
+      pending = IFNULL(?, pending),
+      testoption = IFNULL(?, testoption),
+      patient_id = IFNULL(?, patient_id)
+    WHERE id = ?;
+    ;`;
+    const resultquery = `SELECT * FROM requestedtest WHERE id = ?`;
+    const updatetest = await connection.execute(q, values);
+    const updatedtest = await connection.execute(resultquery, [id]);
+    res.status(201).json({
+      statusCode: "201",
+      message: "successful",
+      result: updatedtest[0],
+    });
+  } catch (error) {
+    res.status(500).json({ statusCode: "500", message: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 const createtestoptions = async (req, res) => {
   const connection = await db.getConnection();
@@ -1798,6 +1860,8 @@ module.exports = {
   createTest,
   updateTest,
   requestingatest,
+  getrequestedtests,
+  updaterequestedtest,
   createtestoptions,
   getAPatientsTest,
   createdeliveryreport,

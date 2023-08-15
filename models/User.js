@@ -151,6 +151,7 @@
 `CREATE TABLE obstetrichistory (
   id INT PRIMARY KEY AUTO_INCREMENT,
   firstvisit_id INT,
+  convulsionsduringpregnancy TEXT,
   caesarean TEXT,
   tearsthroughsphincter TEXT,
   postpartiumhaemorrghage TEXT,
@@ -391,8 +392,8 @@
   middlename VARCHAR(255),
   lastname VARCHAR(255),
   phone VARCHAR(255),
-  datefrom VARCHAR(255),
-  dateto VARCHAR(255),
+  datefrom DATE,
+  dateto DATE,
   completed BOOLEAN DEFAULT FALSE,
   upcoming BOOLEAN DEFAULT TRUE,
   missed BOOLEAN DEFAULT FALSE,
@@ -406,6 +407,7 @@
 `CREATE TABLE testresult (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
+  requestedtest_id INT,
   hb TEXT,
   wcc TEXT,
   rcc TEXT,
@@ -433,10 +435,14 @@
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100),
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-)` // -- Table: requestedtest
+)`;
+
+// -- Table: requestedtest
 `CREATE TABLE requestedtest (
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
+  completed BOOLEAN DEFAULT FALSE,
+  pending BOOLEAN DEFAULT TRUE, 
   testoption JSON,
   patient_id INT,
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

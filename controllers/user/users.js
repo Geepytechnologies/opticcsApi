@@ -705,7 +705,9 @@ const createHealthworkerSchedule = async (req, res, next) => {
   ];
   try {
     const q = `INSERT INTO schedule (healthpersonnel_id, patient_id, dateFrom, dateTo, firstname, middlename, lastname, phone) VALUES (?, ?, ?, ?,?,?,?,?)`;
-    const result = await connection.execute(q, values);
+    const resultquery = `SELECT * FROM schedule WHERE id = ?`;
+    const create = await connection.execute(q, values);
+    const result = await connection.execute(resultquery, [create[0].insertId]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
@@ -836,10 +838,13 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
       upcoming = IFNULL(?, upcoming),
       missed = IFNULL(?, missed),
       flagged = IFNULL(?, flagged),
-      datefrom = ?, dateto = ?
+      datefrom = IFNULL(?, datefrom), 
+      dateto = IFNULL(?, dateto)
     WHERE id = ?;
     `;
-    const result = await connection.execute(q, values);
+    const resultquery = `SELECT * FROM schedule;`;
+    await connection.execute(q, values);
+    const result = await connection.execute(resultquery);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
