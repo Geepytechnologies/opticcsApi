@@ -842,9 +842,9 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
       dateto = IFNULL(?, dateto)
     WHERE id = ?;
     `;
-    const resultquery = `SELECT * FROM schedule;`;
+    const resultquery = `SELECT * FROM schedule WHERE id = ?;`;
     await connection.execute(q, values);
-    const result = await connection.execute(resultquery);
+    const result = await connection.execute(resultquery, [id]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
