@@ -783,7 +783,8 @@ WHERE
     return result[0];
   };
   try {
-    const response = await record();
+    const result = await connection.execute(patientRecordQuery(id));
+    const data = result[0][0];
     const patientfirstvisit = await connection.execute(patientfirstvisitquery, [
       id,
     ]);
@@ -795,7 +796,7 @@ WHERE
       id,
       id,
     ]);
-    if (!response.length) {
+    if (!result.length) {
       res.status(404).json({
         statusCode: "404",
         message: `Patient with ID of ${id} not found`,
@@ -805,13 +806,15 @@ WHERE
       statusCode: "200",
       message: "successful",
       result: {
-        response,
+        data,
         firstvisit: patientfirstvisit[0],
         returnvisit: patientreturnvisit[0],
         lastvisit: patientlastvisit[0],
       },
     });
   } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
   } finally {
     if (connection) {
       connection.release();
@@ -1545,7 +1548,7 @@ const getAllTests = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT * FROM testresult`;
-    const result = await connection.execute(q, [patient_id]);
+    const result = await connection.execute(q);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });

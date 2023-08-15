@@ -408,6 +408,7 @@
   id INT PRIMARY KEY AUTO_INCREMENT,
   healthpersonnel_id INT,
   requestedtest_id INT,
+  completed BOOLEAN DEFAULT TRUE,
   hb TEXT,
   wcc TEXT,
   rcc TEXT,

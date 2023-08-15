@@ -41,7 +41,7 @@ router.get("/test/find", getAPatientsTest);
 
 router.get("/test/find/all", getAllTests);
 
-router.get("/test/user/find", getATestByAUser);
+router.get("/test/user/find/:id", getATestByAUser);
 
 router.get("/test/requestedtests", getrequestedtests);
 
