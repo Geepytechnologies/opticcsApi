@@ -1761,7 +1761,17 @@ const requestingatest = async (req, res) => {
 const getrequestedtests = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM requestedtest`;
+    const q = `SELECT
+    requestedtest.*,
+    personalinformation.firstname,
+    personalinformation.surname
+  FROM
+    requestedtest
+  JOIN
+    patients ON requestedtest.patient_id = patients.id
+  JOIN
+    personalinformation ON patients.personalinformation_id = personalinformation.id;
+  `;
     const requestedtests = await connection.execute(q);
     res.status(200).json({
       statusCode: "200",
