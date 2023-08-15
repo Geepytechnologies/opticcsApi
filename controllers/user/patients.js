@@ -1550,7 +1550,17 @@ const getAPatientsTest = async (req, res) => {
 const getAllTests = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM testresult`;
+    const q = `SELECT 
+    testresult.*,
+    personalinformation.firstname,
+    personalinformation.surname
+  FROM
+    testresult
+  JOIN
+    patients ON testresult.patient_id = patients.id
+  JOIN
+    personalinformation ON patients.personalinformation_id = personalinformation.id;
+  `;
     const result = await connection.execute(q);
     res
       .status(200)

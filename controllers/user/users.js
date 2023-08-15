@@ -757,8 +757,14 @@ const getAllFlaggedSchedule = async (req, res) => {
   const connection = await db.getConnection();
   const userid = req.user.id;
   try {
-    const q = `SELECT * FROM schedule WHERE flagged = 1 AND healthpersonnel_id = ?`;
+    const q = `SELECT s.*,
+    (SELECT COUNT(*) FROM schedule WHERE missed = 1 AND patient_id = s.patient_id) AS numberofmissed
+      FROM schedule s
+      WHERE s.flagged = 1 AND s.healthpersonnel_id = ?;
+    `;
+    const q2 = `SELECT * FROM schedule WHERE missed = 1 AND healthpersonnel_id = ?`;
     const result = await connection.execute(q, [userid]);
+    const result2 = await connection.execute(q2, [userid]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
