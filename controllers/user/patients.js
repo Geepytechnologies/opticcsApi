@@ -1510,12 +1510,14 @@ const createTest = async (req, res) => {
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM testresult WHERE id = ?`;
     const result2 = await connection.execute(q2, [testresultid]);
-    res.status(200).json(result2[0]);
+    res
+      .status(200)
+      .json({ status: "200", message: "successful", result: result2[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
     }
-    res.status(500).json({ statusCode: 500, message: error });
+    res.status(500).json({ statusCode: "500", message: error });
   } finally {
     if (connection) {
       connection.release();
@@ -1528,9 +1530,45 @@ const getAPatientsTest = async (req, res) => {
   try {
     const q = `SELECT * FROM testresult WHERE patient_id = ?`;
     const result = await connection.execute(q, [patient_id]);
-    res.status(200).json(result[0]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: error });
+    res.status(500).json({ statusCode: "500", error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllTests = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM testresult`;
+    const result = await connection.execute(q, [patient_id]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ statusCode: "500", error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getATestByAUser = async (req, res) => {
+  const connection = await db.getConnection();
+  const { patient_id } = req.body;
+  const { id } = req.params;
+  try {
+    const q = `SELECT * FROM testresult WHERE id = ? AND patient_id = ?`;
+    const result = await connection.execute(q, [id, patient_id]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ statusCode: "500", error: error });
   } finally {
     if (connection) {
       connection.release();
@@ -1585,8 +1623,10 @@ const updateTest = async (req, res) => {
     ;`;
     const q2 = `SELECT * FROM testresult where id = ?`;
     const result = await connection.execute(q, values);
-    const result2 = await connection.execute(q2, [req.params.id]);
-    res.status(200).json(result2[0]);
+    // const result2 = await connection.execute(q2, [req.params.id]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "succcessfull", result: result[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
@@ -1850,6 +1890,8 @@ module.exports = {
   getPatientPersonalinfo,
   createTest,
   updateTest,
+  getATestByAUser,
+  getAllTests,
   requestingatest,
   getrequestedtests,
   updaterequestedtest,

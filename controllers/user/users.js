@@ -830,6 +830,7 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
   const userid = req.user.id;
   const { id } = req.params;
   const { completed, upcoming, missed, flagged, datefrom, dateto } = req.body;
+  console.log({ updatescheduleparameters: req.body, id: id });
   const values = [completed, upcoming, missed, flagged, datefrom, dateto, id];
   try {
     const q = `UPDATE schedule
@@ -849,6 +850,7 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    console.log({ errorfromupdate: error });
     res.status(500).json(error);
   } finally {
     if (connection) {
