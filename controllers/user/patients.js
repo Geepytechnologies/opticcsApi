@@ -1739,22 +1739,13 @@ const getrequestedtests = async (req, res) => {
 const updaterequestedtest = async (req, res) => {
   const connection = await db.getConnection();
   const { id } = req.params;
-  const { healthpersonnel_id, completed, pending, testoption, patient_id } =
-    req.body;
-  const values = [
-    healthpersonnel_id,
-    completed,
-    pending,
-    testoption,
-    patient_id,
-    id,
-  ];
+  const { healthpersonnel_id, completed, testoption, patient_id } = req.body;
+  const values = [healthpersonnel_id, completed, testoption, patient_id, id];
   try {
     const q = `UPDATE requestedtest
     SET
       healthpersonnel_id = IFNULL(?,healthpersonnel_id),
       completed = IFNULL(?, completed),
-      pending = IFNULL(?, pending),
       testoption = IFNULL(?, testoption),
       patient_id = IFNULL(?, patient_id)
     WHERE id = ?;

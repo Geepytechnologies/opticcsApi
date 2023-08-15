@@ -710,7 +710,7 @@ const createHealthworkerSchedule = async (req, res, next) => {
     const result = await connection.execute(resultquery, [create[0].insertId]);
     res
       .status(200)
-      .json({ statusCode: "200", message: "successful", result: result[0] });
+      .json({ statusCode: "200", message: "successful", result: create[0] });
   } catch (error) {
     res.status(500).json({ error: error });
   } finally {
@@ -843,13 +843,12 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
     WHERE id = ?;
     `;
     const resultquery = `SELECT * FROM schedule WHERE id = ?;`;
-    await connection.execute(q, values);
-    const result = await connection.execute(resultquery, [id]);
+    const result = await connection.execute(q, values);
+    // await connection.execute(resultquery, [id]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   } finally {
     if (connection) {
