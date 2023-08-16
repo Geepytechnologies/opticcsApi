@@ -96,22 +96,29 @@ const getedd2 = async () => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT 
-      quarter,
-      COUNT(*) AS number
-    FROM (
-      SELECT 
-        edd,
-        CASE 
-          WHEN MONTH(edd) BETWEEN 1 AND 3 THEN 'Q1'
-          WHEN MONTH(edd) BETWEEN 4 AND 6 THEN 'Q2'
-          WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
-          WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
-        END AS quarter,
-        state,lga,healthFacility
-      FROM personalinformation
-    ) AS subquery
-    GROUP BY quarter
-    ORDER BY MIN(edd);  
+    quarters.quarter,
+    COUNT(subquery.quarter) AS number
+  FROM (
+    SELECT 'Q1' AS quarter
+    UNION ALL SELECT 'Q2'
+    UNION ALL SELECT 'Q3'
+    UNION ALL SELECT 'Q4'
+  ) AS quarters
+  LEFT JOIN (
+    SELECT 
+      edd,
+      CASE 
+        WHEN MONTH(edd) BETWEEN 1 AND 3 THEN 'Q1'
+        WHEN MONTH(edd) BETWEEN 4 AND 6 THEN 'Q2'
+        WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
+        WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
+      END AS quarter,
+      state, lga, healthFacility
+    FROM personalinformation
+  ) AS subquery ON quarters.quarter = subquery.quarter
+  GROUP BY quarters.quarter
+  ORDER BY MIN(subquery.edd);
+  
     
   `;
     const result = await connection.execute(q);
@@ -136,7 +143,7 @@ const getparity = async () => {
   `;
     const less = await connection.execute(q1);
     const greater = await connection.execute(q2);
-    return { less: less[0], greater: greater[0] };
+    return { less: less[0].length, greater: greater[0].length };
   } catch (error) {
     connection.rollback();
     res.status(500).json(error);
@@ -171,10 +178,10 @@ const getbabysmovement = async () => {
     const dontknow = await connection.execute(q3, ["i don't know"]);
     const notapplicable = await connection.execute(q4, ["not applicable"]);
     return {
-      yes: yes[0],
-      no: no[0],
-      dontknow: dontknow[0],
-      notapplicable: notapplicable[0],
+      yes: yes[0].length,
+      no: no[0].length,
+      dontknow: dontknow[0].length,
+      notapplicable: notapplicable[0].length,
     };
   } catch (error) {
     connection.rollback();
@@ -208,10 +215,10 @@ const getfirstbabymovement = async () => {
     const dontknow = await connection.execute(q3, ["i don't know"]);
     const notapplicable = await connection.execute(q4, ["not applicable"]);
     return {
-      yes: yes[0],
-      no: no[0],
-      dontknow: dontknow[0],
-      notapplicable: notapplicable[0],
+      yes: yes[0].length,
+      no: no[0].length,
+      dontknow: dontknow[0].length,
+      notapplicable: notapplicable[0].length,
     };
   } catch (error) {
     connection.rollback();
@@ -227,7 +234,9 @@ const getconvulsions = async () => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE convulsionsduringpregnancy = ?`;
     const result = await connection.execute(q, ["yes"]);
-    return result[0];
+    const q2 = `SELECT * FROM obstetrichistory WHERE convulsionsduringpregnancy = ?`;
+    const result2 = await connection.execute(q2, ["yes"]);
+    return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
     if (connection) {
@@ -240,7 +249,9 @@ const getsurgery = async () => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE caesarean  = ?`;
     const result = await connection.execute(q, ["yes"]);
-    return result[0];
+    const q2 = `SELECT * FROM obstetrichistory WHERE caesarean  = ?`;
+    const result2 = await connection.execute(q2, ["yes"]);
+    return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
     if (connection) {
@@ -251,9 +262,11 @@ const getsurgery = async () => {
 const gettearsthroughsphincter = async () => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter   = ?`;
+    const q = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter = ?`;
     const result = await connection.execute(q, ["yes"]);
-    return result[0];
+    const q2 = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter = ?`;
+    const result2 = await connection.execute(q2, ["no"]);
+    return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
     if (connection) {
@@ -265,8 +278,10 @@ const getpostpartiumhaemorrghage = async () => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
+    const q2 = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
     const result = await connection.execute(q, ["yes"]);
-    return result[0];
+    const result2 = await connection.execute(q2, ["no"]);
+    return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
     if (connection) {
@@ -284,7 +299,7 @@ const nationalgeneraldata = async (req, res) => {
     const tearsthroughsphincter = await gettearsthroughsphincter();
     const postpartiumhaemorrghage = await getpostpartiumhaemorrghage();
     const firstbabymovement = await getfirstbabymovement();
-    const parity = await getfirstbabymovement();
+    const parity = await getparity();
     const babysmovement = await getbabysmovement();
     const graviditygreaterthan8result = await graviditygreaterthan8();
     const graviditylessthan8result = await graviditylessthan8();
