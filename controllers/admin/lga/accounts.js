@@ -2,12 +2,13 @@ const db = require("../../../config/db");
 const bcrypt = require("bcryptjs");
 
 const createLgaAccount = async (req, res, next) => {
-  const { lga, boardname, lgaID, officeaddress, phone, email } = req.body;
-  const values = [lga, boardname, lgaID, officeaddress, phone, email];
+  const { lga, boardname, state, lgaID, officeaddress, phone, email } =
+    req.body;
+  const values = [lga, boardname, state, lgaID, officeaddress, phone, email];
   const connection = await db.getConnection();
   try {
-    const q = `INSERT INTO lgaccount (lga, boardname, lgaID, officeaddress, phone, email)
-      VALUES (?, ?, ?, ?, ?, ?)`;
+    const q = `INSERT INTO lgaccount (lga, boardname,state, lgaID, officeaddress, phone, email)
+      VALUES (?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     res
       .status(201)
@@ -28,6 +29,7 @@ const createLgaAccount = async (req, res, next) => {
 const createLgaUserAccount = async (req, res, next) => {
   const {
     lga,
+    state,
     staffname,
     staffid,
     gender,
@@ -42,6 +44,7 @@ const createLgaUserAccount = async (req, res, next) => {
   const hashedpassword = bcrypt.hashSync(password, salt);
   const values = [
     lga,
+    state,
     staffname,
     staffid,
     gender,
@@ -54,7 +57,7 @@ const createLgaUserAccount = async (req, res, next) => {
   ];
   const connection = await db.getConnection();
   try {
-    const q = `INSERT INTO lgadmin (lga, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
+    const q = `INSERT INTO lgadmin (lga, state, staffname, staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
     const result = await connection.execute(q, values);
     res

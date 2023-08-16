@@ -112,7 +112,7 @@ const signin = async (req, res, next) => {
     const newuser = await existinguserid();
 
     // Creates Secure Cookie with refresh token
-    res.cookie("healthtoken", refreshtoken, {
+    res.cookie("healthtoken", refreshToken, {
       // httpOnly: false,
       // secure: true,
       // sameSite: "None",
@@ -124,7 +124,7 @@ const signin = async (req, res, next) => {
     res.status(200).json({
       statusCode: "200",
       message: "successful",
-      result: { others: others[0], accessToken },
+      result: { others: others, accessToken },
     });
   } catch (err) {
     connection.rollback();

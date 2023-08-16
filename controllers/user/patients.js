@@ -1346,11 +1346,11 @@ const getAllPatientsAndHealthworker = async (req, res) => {
     LEFT JOIN
       personalinformation pi ON p.personalinformation_id = pi.id
     LEFT JOIN (
-      SELECT patient_id, MAX(createdat) AS last_visit
+      SELECT patient_id, MAX(visit_date) AS last_visit
       FROM (
-        SELECT patient_id, returnvisit_date FROM returnvisit
+        SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
         UNION ALL
-        SELECT patient_id, firstvisit_date FROM firstvisit
+        SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
       ) AS combined_visits
       GROUP BY patient_id
     ) AS last_visits ON p.id = last_visits.patient_id;

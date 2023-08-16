@@ -275,7 +275,7 @@ const getpostpartiumhaemorrghage = async () => {
   }
 };
 
-const nationalgeneraldata = async (req, res) => {
+const stategeneraldata = async (req, res) => {
   try {
     const edd = await getedd2();
     //obstetric
@@ -308,6 +308,6 @@ const nationalgeneraldata = async (req, res) => {
 };
 
 module.exports = {
-  nationalgeneraldata,
+  stategeneraldata,
   numberofwomenwith4visits,
 };

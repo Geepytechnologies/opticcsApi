@@ -522,6 +522,7 @@ const createLgaAdminTable = `CREATE TABLE lgadmin (
   gender VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
+  state VARCHAR(255),
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
@@ -533,6 +534,7 @@ const createLgaAdminTable = `CREATE TABLE lgadmin (
 const createLgaAccountTable = `CREATE TABLE lgaccount (
   id INT AUTO_INCREMENT PRIMARY KEY,
   lga VARCHAR(255),
+  state VARCHAR(255),
   boardname VARCHAR(255),
   lgaID VARCHAR(255),
   officeaddress VARCHAR(255),
@@ -550,10 +552,12 @@ const createHealthfacilityAdminTable = `CREATE TABLE healthfacilityadmin (
   gender VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
+  state VARCHAR(255),
+  lga VARCHAR(255),
   cadre VARCHAR(255),
   userid VARCHAR(255),
   password VARCHAR(255),
-  accounttype VARCHAR(255),
+  healthfacilityid VARCHAR(255),
   refreshtoken VARCHAR(255),
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
@@ -566,6 +570,8 @@ const createHealthfacilityAccountTable = `CREATE TABLE healthfacilityaccount (
   officeaddress VARCHAR(255),
   phone VARCHAR(255),
   email VARCHAR(255),
+  state VARCHAR(255),
+  lga VARCHAR(255),
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 `;

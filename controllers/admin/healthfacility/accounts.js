@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const createHealthfacilityAccount = async (req, res, next) => {
   const {
     ward,
+    state,
+    lga,
     healthfacilityname,
     healthfacilityID,
     officeaddress,
@@ -13,6 +15,8 @@ const createHealthfacilityAccount = async (req, res, next) => {
   const values = [
     ward,
     healthfacilityname,
+    lga,
+    state,
     healthfacilityID,
     officeaddress,
     phone,
@@ -20,8 +24,8 @@ const createHealthfacilityAccount = async (req, res, next) => {
   ];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO healthfacilityaccount (ward, healthfacilityname, healthfacilityID, officeaddress, phone, email)
-      VALUES (?, ?, ?, ?, ?, ?)`;
+    const q = `INSERT INTO healthfacilityaccount (ward, healthfacilityname, lga, state, healthfacilityID, officeaddress, phone, email)
+      VALUES (?, ?, ?, ?, ?, ?,?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
     res
@@ -42,12 +46,14 @@ const createHealthfacilityUserAccount = async (req, res, next) => {
     staffname,
     staffid,
     gender,
+    lga,
+    state,
     cadre,
     phone,
     email,
     userid,
     password,
-    accountType,
+    healthfacilityid,
   } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
@@ -56,17 +62,19 @@ const createHealthfacilityUserAccount = async (req, res, next) => {
     staffname,
     staffid,
     gender,
+    lga,
+    state,
     cadre,
     phone,
     email,
     userid,
     hashedpassword,
-    accountType,
+    healthfacilityid,
   ];
   try {
     const connection = await db.getConnection();
-    const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+    const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacilityid)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
     const result = await connection.execute(q, values);
     connection.release();
     res

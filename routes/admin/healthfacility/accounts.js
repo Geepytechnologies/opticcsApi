@@ -26,7 +26,7 @@ router.get("/find/users", getHealthfacilityUserAccounts);
 
 router.post("/signin", signin);
 
-router.post("/signout", signout);
+router.get("/signout", verifyHealthfacilityAdminToken, signout);
 
 router.get("/generateuser", generatehealthfacilitydetails);
 

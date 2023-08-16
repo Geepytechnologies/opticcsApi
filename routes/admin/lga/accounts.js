@@ -23,7 +23,7 @@ router.get("/find", getLgaAccounts);
 
 router.post("/signin", signin);
 
-router.post("/signout", signout);
+router.get("/signout", verifyLgAdminToken, signout);
 
 router.get("/generateuser", generatelgadetails);
 

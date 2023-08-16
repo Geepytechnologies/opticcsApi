@@ -31,7 +31,7 @@ router.post("/resetpassword", verifyStateAdminToken, resetpassword);
 
 router.post("/signin", signin);
 
-router.get("/signout", signout);
+router.get("/signout", verifyStateAdminToken, signout);
 
 router.post("/user", createStateUserAccount);
 

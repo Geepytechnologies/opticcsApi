@@ -185,7 +185,6 @@ const signout = async (req, res, next) => {
       refreshtoken,
     ]);
     const foundUser = foundUserResult[0];
-    console.log({ first: foundUser });
     if (!foundUser) {
       res.clearCookie("nationaltoken", {
         // httpOnly: true,
