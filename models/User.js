@@ -65,10 +65,16 @@
 `CREATE TABLE dailyhabitsandlifestyle (
   id INT PRIMARY KEY AUTO_INCREMENT,
   firstvisit_id INT,
-  doyou TEXT,
+  doyousmoke TEXT,
+  doyoudrinkalcohol TEXT,
+  othersubstances TEXT,
+  doyounone TEXT,
   whodoyoulivewith TEXT,
   specifywhodoyoulivewith TEXT,
-  didanyoneever TEXT,
+  stoppedfromleavingthehouse TEXT,
+  threatenedyourlife TEXT,
+  abusedphysically TEXT,
+  didanyoneevernone TEXT,
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (firstvisit_id) REFERENCES firstvisit(id) ON DELETE CASCADE
 )`;
@@ -457,8 +463,7 @@
   healthpersonnel_id INT,
   firstname VARCHAR(255),
   lastname VARCHAR(255),
-  gendermale VARCHAR(50),
-  genderfemale VARCHAR(50),
+  deliverydata JSON,
   numberofchildren VARCHAR(255),
   deliverydate DATE,
   deliverytime VARCHAR(255),

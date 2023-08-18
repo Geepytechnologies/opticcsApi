@@ -28,13 +28,13 @@ const numberofwomenwith4visits = async (req, res) => {
   }
 };
 
-const graviditygreaterthan8 = async (state) => {
+const graviditygreaterthan8 = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT *
     FROM personalinformation
-    WHERE CAST(gravidity AS SIGNED) > 8 OR CAST(gravidity AS SIGNED) = 8 AND state = ?`;
-    const result = await connection.execute(q, [state]);
+    WHERE CAST(gravidity AS SIGNED) > 8 OR CAST(gravidity AS SIGNED) = 8 AND healthfacility = ?`;
+    const result = await connection.execute(q, [healthfacility]);
     return result[0].length;
   } catch (error) {
     console.log(error);
@@ -44,13 +44,13 @@ const graviditygreaterthan8 = async (state) => {
     }
   }
 };
-const graviditylessthan8 = async (state) => {
+const graviditylessthan8 = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT *
     FROM personalinformation
-    WHERE CAST(gravidity AS SIGNED) < 8 AND state = ?`;
-    const result = await connection.execute(q, [state]);
+    WHERE CAST(gravidity AS SIGNED) < 8 AND healthfacility = ?`;
+    const result = await connection.execute(q, [healthfacility]);
     return result[0].length;
   } catch (error) {
     console.log(error);
@@ -75,7 +75,7 @@ const getedd = async (req, res) => {
           WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
           WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
         END AS quarter,
-        state,lga,healthFacility
+        healthfacility,healthfacility,healthFacility
       FROM personalinformation
     ) AS subquery
     GROUP BY quarter
@@ -92,7 +92,7 @@ const getedd = async (req, res) => {
     }
   }
 };
-const getedd2 = async (state) => {
+const getedd2 = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT 
@@ -113,15 +113,15 @@ const getedd2 = async (state) => {
         WHEN MONTH(edd) BETWEEN 7 AND 9 THEN 'Q3'
         WHEN MONTH(edd) BETWEEN 10 AND 12 THEN 'Q4'
       END AS quarter,
-      state, lga, healthFacility
-    FROM personalinformation WHERE state = ?
+      healthfacility, healthfacility, healthFacility
+    FROM personalinformation WHERE healthfacility = ?
   ) AS subquery ON quarters.quarter = subquery.quarter
   GROUP BY quarters.quarter
   ORDER BY MIN(subquery.edd);
   
     
   `;
-    const result = await connection.execute(q, [state]);
+    const result = await connection.execute(q, [healthfacility]);
     return result[0];
   } catch (error) {
   } finally {
@@ -130,19 +130,19 @@ const getedd2 = async (state) => {
     }
   }
 };
-const getparity = async (state) => {
+const getparity = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q1 = `SELECT *
       FROM personalinformation
-      WHERE CAST(parity AS SIGNED) <= 24 AND state = ?;
+      WHERE CAST(parity AS SIGNED) <= 24 AND healthfacility = ?;
   `;
     const q2 = `SELECT *
       FROM personalinformation
-      WHERE CAST(parity AS SIGNED) > 24 AND state = ?;
+      WHERE CAST(parity AS SIGNED) > 24 AND healthfacility = ?;
   `;
-    const less = await connection.execute(q1, [state]);
-    const greater = await connection.execute(q2, [state]);
+    const less = await connection.execute(q1, [healthfacility]);
+    const greater = await connection.execute(q2, [healthfacility]);
     return { less: less[0].length, greater: greater[0].length };
   } catch (error) {
     connection.rollback();
@@ -154,31 +154,34 @@ const getparity = async (state) => {
   }
 };
 
-const getbabysmovement = async (state) => {
+const getbabysmovement = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q1 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
     const q2 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
     const q3 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? ANd state = ?;
+      WHERE doyoufeelthebabysmovement = ? ANd healthfacility = ?;
   `;
     const q4 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
-    const yes = await connection.execute(q1, ["yes", state]);
-    const no = await connection.execute(q2, ["no", state]);
-    const dontknow = await connection.execute(q3, ["i don't know", state]);
+    const yes = await connection.execute(q1, ["yes", healthfacility]);
+    const no = await connection.execute(q2, ["no", healthfacility]);
+    const dontknow = await connection.execute(q3, [
+      "i don't know",
+      healthfacility,
+    ]);
     const notapplicable = await connection.execute(q4, [
       "not applicable",
-      state,
+      healthfacility,
     ]);
     return {
       yes: yes[0].length,
@@ -194,31 +197,34 @@ const getbabysmovement = async (state) => {
     }
   }
 };
-const getfirstbabymovement = async (state) => {
+const getfirstbabymovement = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q1 = `SELECT *
       FROM personalinformation
-      WHERE doyouknowdateoffirtbabymovement = ? AND state = ?;
+      WHERE doyouknowdateoffirtbabymovement = ? AND healthfacility = ?;
   `;
     const q2 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
     const q3 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
     const q4 = `SELECT *
       FROM personalinformation
-      WHERE doyoufeelthebabysmovement = ? AND state = ?;
+      WHERE doyoufeelthebabysmovement = ? AND healthfacility = ?;
   `;
-    const yes = await connection.execute(q1, ["yes", state]);
-    const no = await connection.execute(q2, ["no", state]);
-    const dontknow = await connection.execute(q3, ["i don't know", state]);
+    const yes = await connection.execute(q1, ["yes", healthfacility]);
+    const no = await connection.execute(q2, ["no", healthfacility]);
+    const dontknow = await connection.execute(q3, [
+      "i don't know",
+      healthfacility,
+    ]);
     const notapplicable = await connection.execute(q4, [
       "not applicable",
-      state,
+      healthfacility,
     ]);
     return {
       yes: yes[0].length,
@@ -235,7 +241,7 @@ const getfirstbabymovement = async (state) => {
   }
 };
 
-const getconvulsions = async (state) => {
+const getconvulsions = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -252,9 +258,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.convulsionsduringpregnancy = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["yes", state]);
+    const result = await connection.execute(q, ["yes", healthfacility]);
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -269,8 +275,8 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.convulsionsduringpregnancy = ?
-    AND pi.state = ?`;
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
     console.log(error);
@@ -280,7 +286,7 @@ WHERE
     }
   }
 };
-const getsurgery = async (state) => {
+const getsurgery = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -297,8 +303,8 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.caesarean = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -313,8 +319,8 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.caesarean = ?
-    AND pi.state = ?`;
-    const result2 = await connection.execute(q2, ["yes", state]);
+    AND pi.healthfacility = ?`;
+    const result2 = await connection.execute(q2, ["yes", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
     console.log(error);
@@ -324,7 +330,7 @@ WHERE
     }
   }
 };
-const gettearsthroughsphincter = async (state) => {
+const gettearsthroughsphincter = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -341,8 +347,8 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.tearsthroughsphincter = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -357,8 +363,8 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.tearsthroughsphincter = ?
-    AND pi.state = ?`;
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -367,7 +373,7 @@ WHERE
     }
   }
 };
-const getpostpartiumhaemorrghage = async (state) => {
+const getpostpartiumhaemorrghage = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -384,7 +390,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.postpartiumhaemorrghage = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -399,9 +405,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.postpartiumhaemorrghage = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -410,7 +416,7 @@ WHERE
     }
   }
 };
-const getstillbirths = async (state) => {
+const getstillbirths = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -427,7 +433,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.stillbirths = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -442,9 +448,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.stillbirths = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -453,7 +459,7 @@ WHERE
     }
   }
 };
-const getprematuredeliveries = async (state) => {
+const getprematuredeliveries = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -470,7 +476,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.prematuredeliveries = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -485,9 +491,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.prematuredeliveries = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -496,7 +502,7 @@ WHERE
     }
   }
 };
-const getlowbirthbabies = async (state) => {
+const getlowbirthbabies = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -513,7 +519,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.lowbirthbabies = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -528,9 +534,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.lowbirthbabies = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -539,7 +545,7 @@ WHERE
     }
   }
 };
-const getbabieswhodied = async (state) => {
+const getbabieswhodied = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -556,7 +562,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.babieswhodied = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -571,9 +577,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.babieswhodied = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -582,7 +588,7 @@ WHERE
     }
   }
 };
-const getmiscarriages = async (state) => {
+const getmiscarriages = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -599,7 +605,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.miscarriages = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -614,9 +620,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     oh.miscarriages = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -626,7 +632,7 @@ WHERE
   }
 };
 //dailyhabits and lifestyle
-const getSmokers = async (state) => {
+const getSmokers = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -643,7 +649,7 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     dh.doyousmoke = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -658,9 +664,9 @@ JOIN
     personalinformation pi ON p.personalinformation_id = pi.id
 WHERE
     dh.doyousmoke = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
     console.log(error);
@@ -670,7 +676,7 @@ WHERE
     }
   }
 };
-const getAlcohol = async (state) => {
+const getAlcohol = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -687,7 +693,7 @@ const getAlcohol = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.doyoudrinkalcohol = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -702,9 +708,9 @@ const getAlcohol = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.doyoudrinkalcohol = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -713,7 +719,7 @@ const getAlcohol = async (state) => {
     }
   }
 };
-const getThreatened = async (state) => {
+const getThreatened = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -730,7 +736,7 @@ const getThreatened = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.threatenedyourlife = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -745,9 +751,9 @@ const getThreatened = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.threatenedyourlife = ?
-    AND pi.state = ?`;
-    const result = await connection.execute(q, ["yes", state]);
-    const result2 = await connection.execute(q2, ["no", state]);
+    AND pi.healthfacility = ?`;
+    const result = await connection.execute(q, ["yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["no", healthfacility]);
     return { yes: result[0].length, no: result2[0].length };
   } catch (error) {
   } finally {
@@ -756,7 +762,7 @@ const getThreatened = async (state) => {
     }
   }
 };
-const whodoyoulivewith = async (state) => {
+const whodoyoulivewith = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -773,7 +779,7 @@ const whodoyoulivewith = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.whodoyoulivewith = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -788,7 +794,7 @@ const whodoyoulivewith = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.whodoyoulivewith = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q3 = `SELECT
     pi.*,
     fv.*,
@@ -803,7 +809,7 @@ const whodoyoulivewith = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.whodoyoulivewith = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q4 = `SELECT
     pi.*,
     fv.*,
@@ -818,7 +824,7 @@ const whodoyoulivewith = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.whodoyoulivewith = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q5 = `SELECT
     pi.*,
     fv.*,
@@ -833,12 +839,12 @@ const whodoyoulivewith = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.specifywhodoyoulivewith IS NOT NULL
-    AND pi.state = ? AND specifywhodoyoulivewith <> '';`;
-    const result = await connection.execute(q, ["Partner", state]);
-    const result2 = await connection.execute(q2, ["Relative", state]);
-    const result3 = await connection.execute(q3, ["Alone", state]);
-    const result4 = await connection.execute(q4, ["Friend", state]);
-    const result5 = await connection.execute(q5, [state]);
+    AND pi.healthfacility = ? AND specifywhodoyoulivewith <> '';`;
+    const result = await connection.execute(q, ["Partner", healthfacility]);
+    const result2 = await connection.execute(q2, ["Relative", healthfacility]);
+    const result3 = await connection.execute(q3, ["Alone", healthfacility]);
+    const result4 = await connection.execute(q4, ["Friend", healthfacility]);
+    const result5 = await connection.execute(q5, [healthfacility]);
     return {
       partner: result[0].length,
       relative: result2[0].length,
@@ -854,7 +860,7 @@ const whodoyoulivewith = async (state) => {
   }
 };
 //medicalhistory
-const getcough = async (state) => {
+const getcough = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -871,7 +877,7 @@ const getcough = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.cough = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -886,10 +892,10 @@ const getcough = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.cough = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -901,7 +907,7 @@ const getcough = async (state) => {
     }
   }
 };
-const getpalpitations = async (state) => {
+const getpalpitations = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -918,7 +924,7 @@ const getpalpitations = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.palpitations = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -933,10 +939,10 @@ const getpalpitations = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.palpitations = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -948,7 +954,7 @@ const getpalpitations = async (state) => {
     }
   }
 };
-const getdifficultybreathing = async (state) => {
+const getdifficultybreathing = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -965,7 +971,7 @@ const getdifficultybreathing = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.difficultybreathing = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -980,10 +986,10 @@ const getdifficultybreathing = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.difficultybreathing = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -995,7 +1001,7 @@ const getdifficultybreathing = async (state) => {
     }
   }
 };
-const getswellingoffeet = async (state) => {
+const getswellingoffeet = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1012,7 +1018,7 @@ const getswellingoffeet = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.swellingfeet = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1027,10 +1033,10 @@ const getswellingoffeet = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.swellingfeet = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1042,7 +1048,7 @@ const getswellingoffeet = async (state) => {
     }
   }
 };
-const getchestpain = async (state) => {
+const getchestpain = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1059,7 +1065,7 @@ const getchestpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severechestpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1074,10 +1080,10 @@ const getchestpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severechestpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1089,7 +1095,7 @@ const getchestpain = async (state) => {
     }
   }
 };
-const getepigastricpain = async (state) => {
+const getepigastricpain = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1106,7 +1112,7 @@ const getepigastricpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeepigastricpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1121,10 +1127,10 @@ const getepigastricpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeepigastricpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1136,7 +1142,7 @@ const getepigastricpain = async (state) => {
     }
   }
 };
-const getseveretiredness = async (state) => {
+const getseveretiredness = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1153,7 +1159,7 @@ const getseveretiredness = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severetiredness = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1168,10 +1174,10 @@ const getseveretiredness = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severetiredness = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1183,7 +1189,7 @@ const getseveretiredness = async (state) => {
     }
   }
 };
-const getsevereabdominalpain = async (state) => {
+const getsevereabdominalpain = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1200,7 +1206,7 @@ const getsevereabdominalpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeabdominalpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1215,10 +1221,10 @@ const getsevereabdominalpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeabdominalpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1230,7 +1236,7 @@ const getsevereabdominalpain = async (state) => {
     }
   }
 };
-const getpersistentvomiting = async (state) => {
+const getpersistentvomiting = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1247,7 +1253,7 @@ const getpersistentvomiting = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.persistentvomiting = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1262,10 +1268,10 @@ const getpersistentvomiting = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.persistentvomiting = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1277,7 +1283,7 @@ const getpersistentvomiting = async (state) => {
     }
   }
 };
-const getseverediarrhoea = async (state) => {
+const getseverediarrhoea = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1294,7 +1300,7 @@ const getseverediarrhoea = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severediarrhoea = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1309,10 +1315,10 @@ const getseverediarrhoea = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severediarrhoea = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1325,7 +1331,7 @@ const getseverediarrhoea = async (state) => {
   }
 };
 //urinary
-const getpainwithurination = async (state) => {
+const getpainwithurination = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1342,7 +1348,7 @@ const getpainwithurination = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.painwithurination = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1357,10 +1363,10 @@ const getpainwithurination = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.painwithurination = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1372,7 +1378,7 @@ const getpainwithurination = async (state) => {
     }
   }
 };
-const getsevereflankpain = async (state) => {
+const getsevereflankpain = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1389,7 +1395,7 @@ const getsevereflankpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeflankpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1404,10 +1410,10 @@ const getsevereflankpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severeflankpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1419,7 +1425,7 @@ const getsevereflankpain = async (state) => {
     }
   }
 };
-const getbloodinurine = async (state) => {
+const getbloodinurine = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1436,7 +1442,7 @@ const getbloodinurine = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.bloodinurine = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1451,10 +1457,10 @@ const getbloodinurine = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.bloodinurine = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1467,7 +1473,7 @@ const getbloodinurine = async (state) => {
   }
 };
 //gynaelogical
-const getvaginaldischarge = async (state) => {
+const getvaginaldischarge = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1484,7 +1490,7 @@ const getvaginaldischarge = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.vaginaldischarge = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1499,10 +1505,10 @@ const getvaginaldischarge = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.vaginaldischarge = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1514,7 +1520,7 @@ const getvaginaldischarge = async (state) => {
     }
   }
 };
-const getdeeppelvicpain = async (state) => {
+const getdeeppelvicpain = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1531,7 +1537,7 @@ const getdeeppelvicpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.deeppelvicpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1546,10 +1552,10 @@ const getdeeppelvicpain = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.deeppelvicpain = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1561,7 +1567,7 @@ const getdeeppelvicpain = async (state) => {
     }
   }
 };
-const getsyphilis = async (state) => {
+const getsyphilis = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1578,7 +1584,7 @@ const getsyphilis = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.syphilis = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1593,10 +1599,10 @@ const getsyphilis = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.syphilis = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1608,7 +1614,7 @@ const getsyphilis = async (state) => {
     }
   }
 };
-const getpersistentdrycough = async (state) => {
+const getpersistentdrycough = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1625,7 +1631,7 @@ const getpersistentdrycough = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.persistentdrycough = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1640,10 +1646,10 @@ const getpersistentdrycough = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.persistentdrycough = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1655,7 +1661,7 @@ const getpersistentdrycough = async (state) => {
     }
   }
 };
-const getprogressiveweightloss = async (state) => {
+const getprogressiveweightloss = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1672,7 +1678,7 @@ const getprogressiveweightloss = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.progressiveweightloss = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1687,10 +1693,10 @@ const getprogressiveweightloss = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.progressiveweightloss = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1702,7 +1708,7 @@ const getprogressiveweightloss = async (state) => {
     }
   }
 };
-const getnightsweats = async (state) => {
+const getnightsweats = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1719,7 +1725,7 @@ const getnightsweats = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.nightsweats = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1734,10 +1740,10 @@ const getnightsweats = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.nightsweats = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1749,7 +1755,7 @@ const getnightsweats = async (state) => {
     }
   }
 };
-const getdiagnosedwithtuberculosis = async (state) => {
+const getdiagnosedwithtuberculosis = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1766,7 +1772,7 @@ const getdiagnosedwithtuberculosis = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.diagnosedwithtuberculosis = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1781,10 +1787,10 @@ const getdiagnosedwithtuberculosis = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.diagnosedwithtuberculosis = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1796,7 +1802,7 @@ const getdiagnosedwithtuberculosis = async (state) => {
     }
   }
 };
-const gettreatedTBpreviously = async (state) => {
+const gettreatedTBpreviously = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1813,7 +1819,7 @@ const gettreatedTBpreviously = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.treatedTBpreviously = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1828,10 +1834,10 @@ const gettreatedTBpreviously = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.treatedTBpreviously = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1844,7 +1850,7 @@ const gettreatedTBpreviously = async (state) => {
   }
 };
 //pastmedicalhistory
-const getheartdisease = async (state) => {
+const getheartdisease = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1861,7 +1867,7 @@ const getheartdisease = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.heartdisease = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1876,10 +1882,10 @@ const getheartdisease = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.heartdisease = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1891,7 +1897,7 @@ const getheartdisease = async (state) => {
     }
   }
 };
-const getanaemia = async (state) => {
+const getanaemia = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1908,7 +1914,7 @@ const getanaemia = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.anaemia = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1923,10 +1929,10 @@ const getanaemia = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.anaemia = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1938,7 +1944,7 @@ const getanaemia = async (state) => {
     }
   }
 };
-const getkidneydisease = async (state) => {
+const getkidneydisease = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -1955,7 +1961,7 @@ const getkidneydisease = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.kidneydisease = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -1970,10 +1976,10 @@ const getkidneydisease = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.kidneydisease = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -1985,7 +1991,7 @@ const getkidneydisease = async (state) => {
     }
   }
 };
-const getsicklecell = async (state) => {
+const getsicklecell = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2002,7 +2008,7 @@ const getsicklecell = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.sicklecell = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2017,10 +2023,10 @@ const getsicklecell = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.sicklecell = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2032,7 +2038,7 @@ const getsicklecell = async (state) => {
     }
   }
 };
-const getdiabetes = async (state) => {
+const getdiabetes = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2049,7 +2055,7 @@ const getdiabetes = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.diabetes = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2064,10 +2070,10 @@ const getdiabetes = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.diabetes = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2079,7 +2085,7 @@ const getdiabetes = async (state) => {
     }
   }
 };
-const getgoitre = async (state) => {
+const getgoitre = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2096,7 +2102,7 @@ const getgoitre = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.goitre = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2111,10 +2117,10 @@ const getgoitre = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.goitre = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2126,7 +2132,7 @@ const getgoitre = async (state) => {
     }
   }
 };
-const gethivaids = async (state) => {
+const gethivaids = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2143,7 +2149,7 @@ const gethivaids = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.hivaids = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2158,10 +2164,10 @@ const gethivaids = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.hivaids = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2173,7 +2179,7 @@ const gethivaids = async (state) => {
     }
   }
 };
-const getotherseriouschronicillnesses = async (state) => {
+const getotherseriouschronicillnesses = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2190,7 +2196,7 @@ const getotherseriouschronicillnesses = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.otherseriouschronicillnesses = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2205,10 +2211,10 @@ const getotherseriouschronicillnesses = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.otherseriouschronicillnesses = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2220,7 +2226,7 @@ const getotherseriouschronicillnesses = async (state) => {
     }
   }
 };
-const gethadsurgery = async (state) => {
+const gethadsurgery = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2237,7 +2243,7 @@ const gethadsurgery = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.hadsurgery = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2252,10 +2258,10 @@ const gethadsurgery = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       pmh.hadsurgery = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2268,7 +2274,7 @@ const gethadsurgery = async (state) => {
   }
 };
 //drug history
-const getherbalremedies = async (state) => {
+const getherbalremedies = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2285,7 +2291,7 @@ const getherbalremedies = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.herbalremedies = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2300,10 +2306,10 @@ const getherbalremedies = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.herbalremedies = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2315,7 +2321,7 @@ const getherbalremedies = async (state) => {
     }
   }
 };
-const getotcdrugs = async (state) => {
+const getotcdrugs = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2332,7 +2338,7 @@ const getotcdrugs = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.otcdrugs = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2347,10 +2353,10 @@ const getotcdrugs = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.otcdrugs = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2362,7 +2368,7 @@ const getotcdrugs = async (state) => {
     }
   }
 };
-const getvitamins = async (state) => {
+const getvitamins = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2379,7 +2385,7 @@ const getvitamins = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.vitamins = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECd
     pi.*,
     fv.*,
@@ -2394,10 +2400,10 @@ const getvitamins = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.vitamins = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2409,7 +2415,7 @@ const getvitamins = async (state) => {
     }
   }
 };
-const getdietarysupplements = async (state) => {
+const getdietarysupplements = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2426,7 +2432,7 @@ const getdietarysupplements = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.dietarysupplements = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2441,10 +2447,10 @@ const getdietarysupplements = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.dietarysupplements = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2456,7 +2462,7 @@ const getdietarysupplements = async (state) => {
     }
   }
 };
-const gettetanus = async (state) => {
+const gettetanus = async (healthfacility) => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -2473,7 +2479,7 @@ const gettetanus = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.tetanus = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
     const q2 = `SELECT
     pi.*,
     fv.*,
@@ -2488,10 +2494,10 @@ const gettetanus = async (state) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       dh.tetanus = ?
-    AND pi.state = ?`;
+    AND pi.healthfacility = ?`;
 
-    const result = await connection.execute(q, ["Yes", state]);
-    const result2 = await connection.execute(q2, ["No", state]);
+    const result = await connection.execute(q, ["Yes", healthfacility]);
+    const result2 = await connection.execute(q2, ["No", healthfacility]);
     return {
       yes: result[0].length,
       no: result2[0].length,
@@ -2504,73 +2510,83 @@ const gettetanus = async (state) => {
   }
 };
 
-const stategeneraldata = async (req, res) => {
-  const { state } = req.query;
+const healthfacilitygeneraldata = async (req, res) => {
+  const { healthfacility } = req.query;
   try {
     //personalinformation
-    const edd = await getedd2(state);
-    const firstbabymovement = await getfirstbabymovement(state);
-    const parity = await getparity(state);
-    const babysmovement = await getbabysmovement(state);
-    const graviditygreaterthan8result = await graviditygreaterthan8(state);
-    const graviditylessthan8result = await graviditylessthan8(state);
-    //obstetric
-    const convulsionsduringpregnancy = await getconvulsions(state);
-    const caesarean = await getsurgery(state);
-    const tearsthroughsphincter = await gettearsthroughsphincter(state);
-    const postpartiumhaemorrghage = await getpostpartiumhaemorrghage(state);
-    const stillbirths = await getstillbirths(state);
-    const prematuredeliveries = await getprematuredeliveries(state);
-    const lowbirthbabies = await getlowbirthbabies(state);
-    const babieswhodied = await getbabieswhodied(state);
-    const miscarriages = await getmiscarriages(state);
-    //dailyhabitsandlifestyle
-    const doyousmoke = await getSmokers(state);
-    const alcohol = await getAlcohol(state);
-    const threatened = await getThreatened(state);
-    const livewith = await whodoyoulivewith(state);
-    //medicalhistory
-    const cough = await getcough(state);
-    const palpitations = await getpalpitations(state);
-    const difficultybreathing = await getdifficultybreathing(state);
-    const swellingfeet = await getswellingoffeet(state);
-    const chestpain = await getchestpain(state);
-    const epigastricpain = await getepigastricpain(state);
-    const severetiredness = await getseveretiredness(state);
-    const severeabdominalpain = await getsevereabdominalpain(state);
-    const persistentvomiting = await getpersistentvomiting(state);
-    const severediarrhoea = await getseverediarrhoea(state);
-    //urinary
-    const painwithurination = await getpainwithurination(state);
-    const severeflankpain = await getsevereflankpain(state);
-    const bloodinurine = await getbloodinurine(state);
-    //gynaecological
-    const vaginaldischarge = await getvaginaldischarge(state);
-    const deeppelvicpain = await getdeeppelvicpain(state);
-    const syphilis = await getsyphilis(state);
-    const persistentdrycough = await getpersistentdrycough(state);
-    const progressiveweightloss = await getprogressiveweightloss(state);
-    const nightsweats = await getnightsweats(state);
-    const diagnosedwithtuberculosis = await getdiagnosedwithtuberculosis(state);
-    const treatedTBpreviously = await gettreatedTBpreviously(state);
-    //pastmedicalhistory
-    const heartdisease = await getheartdisease(state);
-    const anaemia = await getanaemia(state);
-    const kidneydisease = await getkidneydisease(state);
-    const sicklecell = await getsicklecell(state);
-    const diabetes = await getdiabetes(state);
-    const goitre = await getgoitre(state);
-    const hivaids = await gethivaids(state);
-    const otherseriouschronicillnesses = await getotherseriouschronicillnesses(
-      state
+    const edd = await getedd2(healthfacility);
+    const firstbabymovement = await getfirstbabymovement(healthfacility);
+    const parity = await getparity(healthfacility);
+    const babysmovement = await getbabysmovement(healthfacility);
+    const graviditygreaterthan8result = await graviditygreaterthan8(
+      healthfacility
     );
-    const hadsurgery = await gethadsurgery(state);
+    const graviditylessthan8result = await graviditylessthan8(healthfacility);
+    //obstetric
+    const convulsionsduringpregnancy = await getconvulsions(healthfacility);
+    const caesarean = await getsurgery(healthfacility);
+    const tearsthroughsphincter = await gettearsthroughsphincter(
+      healthfacility
+    );
+    const postpartiumhaemorrghage = await getpostpartiumhaemorrghage(
+      healthfacility
+    );
+    const stillbirths = await getstillbirths(healthfacility);
+    const prematuredeliveries = await getprematuredeliveries(healthfacility);
+    const lowbirthbabies = await getlowbirthbabies(healthfacility);
+    const babieswhodied = await getbabieswhodied(healthfacility);
+    const miscarriages = await getmiscarriages(healthfacility);
+    //dailyhabitsandlifestyle
+    const doyousmoke = await getSmokers(healthfacility);
+    const alcohol = await getAlcohol(healthfacility);
+    const threatened = await getThreatened(healthfacility);
+    const livewith = await whodoyoulivewith(healthfacility);
+    //medicalhistory
+    const cough = await getcough(healthfacility);
+    const palpitations = await getpalpitations(healthfacility);
+    const difficultybreathing = await getdifficultybreathing(healthfacility);
+    const swellingfeet = await getswellingoffeet(healthfacility);
+    const chestpain = await getchestpain(healthfacility);
+    const epigastricpain = await getepigastricpain(healthfacility);
+    const severetiredness = await getseveretiredness(healthfacility);
+    const severeabdominalpain = await getsevereabdominalpain(healthfacility);
+    const persistentvomiting = await getpersistentvomiting(healthfacility);
+    const severediarrhoea = await getseverediarrhoea(healthfacility);
+    //urinary
+    const painwithurination = await getpainwithurination(healthfacility);
+    const severeflankpain = await getsevereflankpain(healthfacility);
+    const bloodinurine = await getbloodinurine(healthfacility);
+    //gynaecological
+    const vaginaldischarge = await getvaginaldischarge(healthfacility);
+    const deeppelvicpain = await getdeeppelvicpain(healthfacility);
+    const syphilis = await getsyphilis(healthfacility);
+    const persistentdrycough = await getpersistentdrycough(healthfacility);
+    const progressiveweightloss = await getprogressiveweightloss(
+      healthfacility
+    );
+    const nightsweats = await getnightsweats(healthfacility);
+    const diagnosedwithtuberculosis = await getdiagnosedwithtuberculosis(
+      healthfacility
+    );
+    const treatedTBpreviously = await gettreatedTBpreviously(healthfacility);
+    //pastmedicalhistory
+    const heartdisease = await getheartdisease(healthfacility);
+    const anaemia = await getanaemia(healthfacility);
+    const kidneydisease = await getkidneydisease(healthfacility);
+    const sicklecell = await getsicklecell(healthfacility);
+    const diabetes = await getdiabetes(healthfacility);
+    const goitre = await getgoitre(healthfacility);
+    const hivaids = await gethivaids(healthfacility);
+    const otherseriouschronicillnesses = await getotherseriouschronicillnesses(
+      healthfacility
+    );
+    const hadsurgery = await gethadsurgery(healthfacility);
     //drughistory
-    const herbalremedies = await getherbalremedies(state);
-    const otcdrugs = await getotcdrugs(state);
-    const vitamins = await getvitamins(state);
-    const dietarysupplements = await getdietarysupplements(state);
-    const tetanus = await gettetanus(state);
+    const herbalremedies = await getherbalremedies(healthfacility);
+    const otcdrugs = await getotcdrugs(healthfacility);
+    const vitamins = await getvitamins(healthfacility);
+    const dietarysupplements = await getdietarysupplements(healthfacility);
+    const tetanus = await gettetanus(healthfacility);
 
     res.status(200).json({
       edd,
@@ -2636,6 +2652,6 @@ const stategeneraldata = async (req, res) => {
 };
 
 module.exports = {
-  stategeneraldata,
+  healthfacilitygeneraldata,
   numberofwomenwith4visits,
 };

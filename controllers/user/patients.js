@@ -35,10 +35,16 @@ const createPatient = async (req, res, next) => {
     doyouknowdateoffirstbabymovement,
     healthpersonnel_id,
     firstvisit_date,
-    doyou,
+    doyousmoke,
+    doyoudrinkalcohol,
+    othersubstances,
+    doyounone,
     whodoyoulivewith,
     specifywhodoyoulivewith,
-    didanyoneever,
+    stoppedfromleavingthehouse,
+    threatenedyourlife,
+    abusedphysically,
+    didanyoneevernone,
     convulsionsduringpregnancy,
     caesarean,
     tearsthroughsphincter,
@@ -260,18 +266,30 @@ const createPatient = async (req, res, next) => {
     const q = `
     INSERT INTO dailyhabitsandlifestyle (
       firstvisit_id,
-      doyou,
+      doyousmoke,
+      doyoudrinkalcohol,
+      othersubstances,
+      doyounone,
       whodoyoulivewith,
       specifywhodoyoulivewith,
-      didanyoneever
+      stoppedfromleavingthehouse,
+      threatenedyourlife,
+      abusedphysically,
+      didanyoneevernone
       ) 
-    VALUES (?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
     const values = [
       firstvisit_id,
-      doyou,
+      doyousmoke,
+      doyoudrinkalcohol,
+      othersubstances,
+      doyounone,
       whodoyoulivewith,
       specifywhodoyoulivewith,
-      didanyoneever,
+      stoppedfromleavingthehouse,
+      threatenedyourlife,
+      abusedphysically,
+      didanyoneevernone,
     ];
     const result = await connection.execute(q, values);
     return result;
@@ -771,12 +789,12 @@ LEFT JOIN
 WHERE
   fv.patient_id = ?`;
   const patientreturnvisitquery = `SELECT * from returnvisit WHERE patient_id = ?`;
-  const getpatientlastvisit = `SELECT GREATEST(
-    (SELECT firstvisit_date FROM firstvisit WHERE patient_id = ?),
-    COALESCE((SELECT returnvisit_date FROM returnvisit WHERE patient_id = ?), '1900-01-01')
-) AS lastvisit;
-
-
+  const getpatientlastvisit = `SELECT MAX(visit_date) AS lastvisit
+  FROM (
+      SELECT firstvisit_date AS visit_date FROM firstvisit WHERE patient_id = ?
+      UNION
+      SELECT returnvisit_date AS visit_date FROM returnvisit WHERE patient_id = ?
+  ) AS all_dates;
 `;
   const record = async () => {
     const result = await connection.execute(patientRecordQuery(id));
@@ -1661,8 +1679,7 @@ const createdeliveryreport = async (req, res) => {
     healthpersonnel_id,
     firstname,
     lastname,
-    gendermale,
-    genderfemale,
+    deliverydata,
     numberofchildren,
     deliverydate,
     deliverytime,
@@ -1671,8 +1688,7 @@ const createdeliveryreport = async (req, res) => {
     healthpersonnel_id,
     firstname,
     lastname,
-    gendermale,
-    genderfemale,
+    deliverydata,
     numberofchildren,
     deliverydate,
     deliverytime,
@@ -1682,8 +1698,7 @@ const createdeliveryreport = async (req, res) => {
       healthpersonnel_id,
       firstname,
       lastname,
-      gendermale,
-      genderfemale,
+      deliverydata,
       numberofchildren,
       deliverydate,
       deliverytime
