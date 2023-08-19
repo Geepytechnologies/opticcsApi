@@ -851,10 +851,16 @@ const getPatientRecordWithVisits = async (req, res) => {
       JSON_OBJECT(
           'id', fv.id,
           'dailyhabitsandlifestyle', JSON_OBJECT(
-            'doyou',dhal.doyou,
+            'doyousmoke',dhal.doyousmoke,
+            'doyoudrinkalcohol',dhal.doyoudrinkalcohol,
+            'othersubstances',dhal.othersubstances,
+            'doyounone',dhal.doyounone,
             'whodoyoulivewith',dhal.whodoyoulivewith,
             'specifywhodoyoulivewith',dhal.specifywhodoyoulivewith,
-            'didanyoneever',dhal.didanyoneever
+            'stoppedfromleavingthehouse',dhal.stoppedfromleavingthehouse,
+            'threatenedyourlife',dhal.threatenedyourlife,
+            'abusedphysically',dhal.abusedphysically,
+            'didanyoneevernone',dhal.didanyoneevernone
           ),
           'medicalhistory', JSON_OBJECT(
             'fever',mh.fever,
@@ -1057,35 +1063,36 @@ GROUP BY p.id;
 };
 
 const getAllPatients = async (req, res) => {
-  const connection = await db.getConnection();
+  let connection;
 
   try {
-    const record = async () => {
-      const q = `SELECT patients.*, personalinformation.*,healthpersonnel.state,healthpersonnel.lga,healthpersonnel.healthfacility
+    connection = await db.getConnection();
+
+    const q = `
+      SELECT patients.*, personalinformation.*,
+             healthpersonnel.state, healthpersonnel.lga, healthpersonnel.healthfacility
       FROM patients
       LEFT JOIN healthpersonnel ON patients.healthpersonnel_id = healthpersonnel.id
       INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
-      `;
-      const result = await connection.execute(q);
-      return result[0];
-    };
+    `;
 
-    const users = await record();
+    const [result] = await connection.execute(q);
 
-    res
-      .status(200)
-      .json({ statusCode: "200", message: "successful", result: users });
+    res.status(200).json({ statusCode: 200, message: "successful", result });
   } catch (err) {
-    connection.release();
     console.error("Error acquiring connection from pool:", err);
     res
       .status(500)
-      .json({ statusCode: "500", error: "Database connection or query error" });
+      .json({ statusCode: 500, error: "Database connection or query error" });
   } finally {
     if (connection) {
       connection.release();
     }
   }
+};
+
+module.exports = {
+  getAllPatients,
 };
 
 const createPatientEveryVisit = async (req, res, next) => {
