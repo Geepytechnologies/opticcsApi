@@ -1078,12 +1078,12 @@ const getAllPatients = async (req, res) => {
 
     const [result] = await connection.execute(q);
 
-    res.status(200).json({ statusCode: 200, message: "successful", result });
+    res.status(200).json({ statusCode: "200", message: "successful", result });
   } catch (err) {
     console.error("Error acquiring connection from pool:", err);
     res
       .status(500)
-      .json({ statusCode: 500, error: "Database connection or query error" });
+      .json({ statusCode: "500", error: "Database connection or query error" });
   } finally {
     if (connection) {
       connection.release();
