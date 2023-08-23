@@ -215,6 +215,10 @@ const createPatient = async (req, res, next) => {
     irregularitiesyes,
     heartrate,
     bmi,
+    observation,
+    percussion,
+    palpationchest,
+    auscultationchest,
   } = req.body;
 
   const personalRecord = async () => {
@@ -642,6 +646,10 @@ const createPatient = async (req, res, next) => {
       irregularitiesyes,
       heartrate,
       bmi,
+      observation,
+      percussion,
+      palpationchest,
+      auscultationchest,
     ];
     const q = `INSERT INTO physicalexamination (
       firstvisit_id,
@@ -675,9 +683,13 @@ const createPatient = async (req, res, next) => {
       fistulasyes,
       irregularitiesyes,
       heartrate,
-      bmi
+      bmi,
+      observation,
+      percussion,
+      palpationchest,
+      auscultationchest
     ) 
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     return result;
   };
@@ -1172,6 +1184,32 @@ const createPatientEveryVisit = async (req, res, next) => {
     wakeuptourinate,
     problemmedication,
     bmi,
+    sclera,
+    conjuctiva,
+    chill,
+    bloodpressdia,
+    bloodpresssis,
+    chestpaindiscuss,
+    epigastricpaindiscuss,
+    severetireddisuss,
+    severediarrhoeadiscuss,
+    swellingfeetdiscuss,
+    sputrumcolor,
+    sputrum,
+    lmp,
+    lmpdate,
+    edd,
+    ega,
+    laborstarted,
+    selectedbabymovement,
+    selectedfirstbabymovement,
+    selectedfirstbabymovementdate,
+    observelookpatient,
+    documentpercussion,
+    palpatediscuss,
+    auscultationdiscuss,
+    breast,
+    breastdiscuss,
   } = req.body;
 
   try {
@@ -1250,6 +1288,32 @@ const createPatientEveryVisit = async (req, res, next) => {
       wakeuptourinate,
       problemmedication,
       bmi,
+      sclera,
+      conjuctiva,
+      chill,
+      bloodpressdia,
+      bloodpresssis,
+      chestpaindiscuss,
+      epigastricpaindiscuss,
+      severetireddisuss,
+      severediarrhoeadiscuss,
+      swellingfeetdiscuss,
+      sputrumcolor,
+      sputrum,
+      lmp,
+      lmpdate,
+      edd,
+      ega,
+      laborstarted,
+      selectedbabymovement,
+      selectedfirstbabymovement,
+      selectedfirstbabymovementdate,
+      observelookpatient,
+      documentpercussion,
+      palpatediscuss,
+      auscultationdiscuss,
+      breast,
+      breastdiscuss,
     ];
 
     const connection = await db.getConnection();
@@ -1327,8 +1391,34 @@ const createPatientEveryVisit = async (req, res, next) => {
         pregnancydiscuss,
         wakeuptourinate,
         problemmedication,
-        bmi
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        bmi,
+        sclera,
+        conjuctiva,
+        chill,
+        bloodpressdia,
+        bloodpresssis,
+        chestpaindiscuss,
+        epigastricpaindiscuss,
+        severetireddisuss,
+        severediarrhoeadiscuss,
+        swellingfeetdiscuss,
+        sputrumcolor,
+        sputrum,
+        lmp,
+        lmpdate,
+        edd,
+        ega,
+        laborstarted,
+        selectedbabymovement,
+        selectedfirstbabymovement,
+        selectedfirstbabymovementdate,
+        observelookpatient,
+        documentpercussion,
+        palpatediscuss,
+        auscultationdiscuss,
+        breast,
+        breastdiscuss
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const returnvisitid = result[0];
 
@@ -1495,6 +1585,26 @@ const createTest = async (req, res) => {
     respiratoryrate,
     bodypressure,
     malariarapid,
+    leukocytes,
+    nitrites,
+    urobilinogen,
+    protein,
+    pH,
+    blood,
+    specificgravity,
+    ketones,
+    bilirubin,
+    glucoseUrinary,
+    neutrophils,
+    lymphocytes,
+    monocytes,
+    eosinophils,
+    basophils,
+    Haematocrit,
+    mch,
+    reticulocytecount,
+    hbsag,
+    hcv,
   } = req.body;
   const values = [
     healthpersonnel_id,
@@ -1515,6 +1625,26 @@ const createTest = async (req, res) => {
     respiratoryrate,
     bodypressure,
     malariarapid,
+    leukocytes,
+    nitrites,
+    urobilinogen,
+    protein,
+    pH,
+    blood,
+    specificgravity,
+    ketones,
+    bilirubin,
+    glucoseUrinary,
+    neutrophils,
+    lymphocytes,
+    monocytes,
+    eosinophils,
+    basophils,
+    Haematocrit,
+    mch,
+    reticulocytecount,
+    hbsag,
+    hcv,
   ];
   try {
     const q = `INSERT INTO testresult (
@@ -1535,8 +1665,28 @@ const createTest = async (req, res) => {
       heartrate,
       respiratoryrate,
       bodypressure,
-      malariarapid
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      malariarapid,
+      leukocytes,
+      nitrites,
+      urobilinogen,
+      protein,
+      pH,
+      blood,
+      specificgravity,
+      ketones,
+      bilirubin,
+      glucoseUrinary,
+      neutrophils,
+      lymphocytes,
+      monocytes,
+      eosinophils,
+      basophils,
+      Haematocrit,
+      mch,
+      reticulocytecount,
+      hbsag,
+      hcv
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM testresult WHERE id = ?`;

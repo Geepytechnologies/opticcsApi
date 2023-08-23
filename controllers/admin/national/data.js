@@ -228,7 +228,7 @@ const getfirstbabymovement = async () => {
     }
   }
 };
-
+//obstetrichistory
 const getconvulsions = async () => {
   const connection = await db.getConnection();
   try {
@@ -364,6 +364,57 @@ const getmiscarriages = async () => {
     }
   }
 };
+const getbreastfedbefore = async () => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
+    const q2 = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
+    const result = await connection.execute(q, ["Yes"]);
+    const result2 = await connection.execute(q2, ["No"]);
+    return { yes: result[0].length, no: result2[0].length };
+  } catch (error) {
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getbreastfeedingduration = async () => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
+    const q2 = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
+    const q3 = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
+    const result = await connection.execute(q, ["< 6 months"]);
+    const result2 = await connection.execute(q2, ["6 months"]);
+    const result3 = await connection.execute(q3, ["> 6 months"]);
+    return {
+      less: result[0].length,
+      equal: result2[0].length,
+      greater: result3[0].length,
+    };
+  } catch (error) {
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getbreastfeedingproblems = async () => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
+    const q2 = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
+    const result = await connection.execute(q, ["Yes"]);
+    const result2 = await connection.execute(q2, ["No"]);
+    return { yes: result[0].length, no: result2[0].length };
+  } catch (error) {
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 //dailyhabits and lifestyle
 const getSmokers = async () => {
@@ -486,6 +537,7 @@ const getcough = async () => {
     }
   }
 };
+
 const getpalpitations = async () => {
   const connection = await db.getConnection();
   try {
@@ -894,6 +946,53 @@ const getseverediarrhoea = async () => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severediarrhoea = ?
+    `;
+
+    const result = await connection.execute(q, ["Yes"]);
+    const result2 = await connection.execute(q2, ["No"]);
+    return {
+      yes: result[0].length,
+      no: result2[0].length,
+    };
+  } catch (error) {
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getdizziness = async () => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ?
+    `;
+    const q2 = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ?
     `;
 
     const result = await connection.execute(q, ["Yes"]);
@@ -2108,6 +2207,9 @@ const nationalgeneraldata = async (req, res) => {
     const lowbirthbabies = await getlowbirthbabies();
     const babieswhodied = await getbabieswhodied();
     const miscarriages = await getmiscarriages();
+    const breastfedbefore = await getbreastfedbefore();
+    const breastfeedingduration = await getbreastfeedingduration();
+    const breastfeedingproblems = await getbreastfeedingproblems();
     //dailyhabitsandlifestyle
     const doyousmoke = await getSmokers();
     const alcohol = await getAlcohol();
@@ -2124,6 +2226,7 @@ const nationalgeneraldata = async (req, res) => {
     const severeabdominalpain = await getsevereabdominalpain();
     const persistentvomiting = await getpersistentvomiting();
     const severediarrhoea = await getseverediarrhoea();
+    const dizziness = await getdizziness();
     //urinary
     const painwithurination = await getpainwithurination();
     const severeflankpain = await getsevereflankpain();
@@ -2170,6 +2273,9 @@ const nationalgeneraldata = async (req, res) => {
       lowbirthbabies,
       babieswhodied,
       miscarriages,
+      breastfedbefore,
+      breastfeedingduration,
+      breastfeedingproblems,
       doyousmoke,
       alcohol,
       threatened,
@@ -2184,6 +2290,7 @@ const nationalgeneraldata = async (req, res) => {
       severeabdominalpain,
       persistentvomiting,
       severediarrhoea,
+      dizziness,
       painwithurination,
       severeflankpain,
       bloodinurine,
