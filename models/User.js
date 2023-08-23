@@ -396,13 +396,14 @@
   laborstarted TEXT,
   selectedbabymovement TEXT,
   selectedfirstbabymovement TEXT,
-  selectedfirstbabymovementdate TEXT,
+  selectedfirstbabymovementdate DATE,
   observelookpatient TEXT,
   documentpercussion TEXT,
   palpatediscuss TEXT,
   auscultationdiscuss TEXT,
   breast TEXT,
   breastdiscuss TEXT,
+  severabdodisuss TEXT,
   createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
 )`;
