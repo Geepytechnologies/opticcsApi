@@ -2324,9 +2324,34 @@ const nationalgeneraldata = async (req, res) => {
   }
 };
 
+const getvisitdates = async (req, res) => {
+  let connection;
+  const { id } = req.params;
+  try {
+    connection = await db.getConnection();
+    const q = `SELECT firstvisit_date
+    FROM firstvisit
+    WHERE patient_id = ?`;
+    const q2 = `SELECT returnvisit_date
+    FROM returnvisit
+    WHERE patient_id = ?
+    `;
+    const [firstvisit] = await connection.execute(q, [id]);
+    const [returnvisit] = await connection.execute(q2, [id]);
+    res.status(200).json({ firstvisit, returnvisit });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 //return visit
 
 module.exports = {
   nationalgeneraldata,
   numberofwomenwith4visits,
+  getvisitdates,
 };
