@@ -1319,7 +1319,7 @@ const createPatientEveryVisit = async (req, res, next) => {
     ];
 
     const connection = await db.getConnection();
-
+    console.log(req.body);
     const q = `INSERT INTO returnvisit (
         patient_id,
         returnvisit_date,
