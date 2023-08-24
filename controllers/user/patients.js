@@ -1708,7 +1708,7 @@ const createTest = async (req, res) => {
     const result2 = await connection.execute(q2, [testresultid]);
     res
       .status(200)
-      .json({ status: "200", message: "successful", result: result2[0] });
+      .json({ statusCode: "200", message: "successful", result: result2[0] });
   } catch (error) {
     if (connection) {
       connection.rollback();
