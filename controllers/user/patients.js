@@ -1874,7 +1874,7 @@ const createdeliveryreport = async (req, res) => {
       numberofchildren,
       deliverydate,
       deliverytime
-      ) VALUES (?,?,?,?,?,?,?,?)`;
+      ) VALUES (?,?,?,?,?,?,?)`;
     const result = await connection.execute(q, values);
     const testresultid = result[0].insertId;
     const q2 = `SELECT * FROM deliveryreport WHERE id = ?`;

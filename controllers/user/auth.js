@@ -78,12 +78,10 @@ const retryOtp = async (req, res) => {
         error: "error retrying OTP.",
       });
     }
-    res
-      .status(response.statusCode)
-      .json({
-        statusCode: response.statusCode.toString(),
-        result: JSON.parse(body),
-      });
+    res.status(response.statusCode).json({
+      statusCode: response.statusCode.toString(),
+      result: JSON.parse(body),
+    });
   });
 };
 
