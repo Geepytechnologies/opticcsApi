@@ -58,7 +58,7 @@ const createLgaUserAccount = async (req, res, next) => {
   const connection = await db.getConnection();
   try {
     const q = `INSERT INTO lgadmin (lga, state, staffname, staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
     const result = await connection.execute(q, values);
     res
       .status(201)
