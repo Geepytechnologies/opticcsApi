@@ -625,6 +625,7 @@ WHERE
     }
   }
 };
+
 //dailyhabits and lifestyle
 const getSmokers = async (state) => {
   const connection = await db.getConnection();
@@ -1310,6 +1311,55 @@ const getseverediarrhoea = async (state) => {
     WHERE
       mh.severediarrhoea = ?
     AND pi.state = ?`;
+
+    const result = await connection.execute(q, ["Yes", state]);
+    const result2 = await connection.execute(q2, ["No", state]);
+    return {
+      yes: result[0].length,
+      no: result2[0].length,
+    };
+  } catch (error) {
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getdizziness = async (state) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ?
+      AND pi.state = ?
+    `;
+    const q2 = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ?
+      AND pi.state = ?
+    `;
 
     const result = await connection.execute(q, ["Yes", state]);
     const result2 = await connection.execute(q2, ["No", state]);
@@ -2540,6 +2590,8 @@ const stategeneraldata = async (req, res) => {
     const severeabdominalpain = await getsevereabdominalpain(state);
     const persistentvomiting = await getpersistentvomiting(state);
     const severediarrhoea = await getseverediarrhoea(state);
+    const dizziness = await getdizziness(state);
+
     //urinary
     const painwithurination = await getpainwithurination(state);
     const severeflankpain = await getsevereflankpain(state);
@@ -2602,6 +2654,7 @@ const stategeneraldata = async (req, res) => {
       severeabdominalpain,
       persistentvomiting,
       severediarrhoea,
+      dizziness,
       painwithurination,
       severeflankpain,
       bloodinurine,
@@ -2635,7 +2688,680 @@ const stategeneraldata = async (req, res) => {
   }
 };
 
+const statereturnvisitdata = async (req, res) => {
+  const { state } = req.query;
+
+  const getfeverreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.fever = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.fever = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getheadachereturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.headache = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.headache = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getcoughreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.cough = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.cough = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getpalpitationsreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.palpitation = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.palpitation = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getseveretirednessreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severetirednesss = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severetirednesss = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getdifficultylyingflatreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.difficultylyingflat = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.difficultylyingflat = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getdizzinessreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.dizziness = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.dizziness = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getconvulsionsreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.convulsions = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.convulsions = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getabdominalpainreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severeabdominalpain = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severeabdominalpain = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getpainwithurinationreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.urinarypain = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.urinarypain = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getbloodinurinereturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.bloodinurine = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.bloodinurine = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getvaginaldischargereturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.vaginaldischarge = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.vaginaldischarge = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getdeeppelvicpainreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.painduringsex = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.painduringsex = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getsyphilisreturn = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.syphillis = ? AND pi.state = ?
+      `;
+      const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.syphillis = ? AND pi.state = ?
+      `;
+
+      const result = await connection.execute(q, ["Yes", state]);
+      const result2 = await connection.execute(q2, ["No", state]);
+      return {
+        yes: result[0].length,
+        no: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  try {
+    const fever = await getfeverreturn(state);
+    const headache = await getheadachereturn(state);
+    const cough = await getcoughreturn(state);
+    const palpitations = await getpalpitationsreturn(state);
+    const severetiredness = await getseveretirednessreturn(state);
+    const difficultylyingflat = await getdifficultylyingflatreturn(state);
+    const dizziness = await getdizzinessreturn(state);
+    const convulsionsduringpregnancy = await getconvulsionsreturn(state);
+    const abdominalpain = await getabdominalpainreturn(state);
+    const painwithurination = await getpainwithurinationreturn(state);
+    const bloodinurine = await getbloodinurinereturn(state);
+    const vaginaldischarge = await getvaginaldischargereturn(state);
+    const deeppelvicpain = await getdeeppelvicpainreturn(state);
+    const syphilis = await getsyphilisreturn(state);
+
+    res.status(200).json({
+      fever,
+      headache,
+      cough,
+      palpitations,
+      severetiredness,
+      difficultylyingflat,
+      dizziness,
+      convulsionsduringpregnancy,
+      abdominalpain,
+      painwithurination,
+      bloodinurine,
+      vaginaldischarge,
+      deeppelvicpain,
+      syphilis,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  } finally {
+  }
+};
+
+const statescheduledata = async (req, res) => {
+  const { state } = req.query;
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      pi.state = ?`;
+    const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.missed = ? AND pi.state = ?`;
+    const q3 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.completed = ? AND pi.state = ?`;
+    const [number] = await connection.execute(q, [state]);
+    const [missed] = await connection.execute(q2, [1, state]);
+    const [completed] = await connection.execute(q3, [1, state]);
+
+    res.status(200).json({
+      number: number.length,
+      missed: missed.length,
+      completed: completed.length,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   stategeneraldata,
   numberofwomenwith4visits,
+  statereturnvisitdata,
+  statescheduledata,
 };

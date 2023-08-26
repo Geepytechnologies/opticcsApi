@@ -8,6 +8,8 @@ const {
   getbabysmovement,
   nationalgeneraldata,
   getvisitdates,
+  nationalreturnvisitdata,
+  nationalscheduledata,
 } = require("../../../controllers/admin/national/data");
 
 const router = express.Router();
@@ -16,6 +18,10 @@ router.get("/find/4visits", numberofwomenwith4visits);
 
 router.get("/general", nationalgeneraldata);
 
+router.get("/general/return", nationalreturnvisitdata);
+
 router.get("/visitdates/:id", getvisitdates);
+
+router.get("/schedule", nationalscheduledata);
 
 module.exports = router;

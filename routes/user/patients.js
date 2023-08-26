@@ -23,6 +23,8 @@ const {
   getrequestedtests,
   getATestByAUser,
   getAllTests,
+  getAllPatientstate,
+  getAllPatientlga,
 } = require("../../controllers/user/patients");
 const { verifyToken } = require("../../middlewares/verifyToken");
 const router = express.Router();
@@ -72,6 +74,10 @@ router.get("/find/firstvisit/:id", getPatientFirstVisit);
 router.get("/find/returnvisit/:id", getPatientReturnVisit);
 
 router.get("/find", getAllPatients);
+
+router.get("/state/find", getAllPatientstate);
+
+router.get("/lga/find", getAllPatientlga);
 
 router.get("/datanumbers/find", datanumbers);
 

@@ -1081,8 +1081,7 @@ const getAllPatients = async (req, res) => {
     connection = await db.getConnection();
 
     const q = `
-      SELECT patients.*, personalinformation.*,
-             healthpersonnel.state, healthpersonnel.lga, healthpersonnel.healthfacility
+      SELECT patients.*, personalinformation.*,healthpersonnel.state, healthpersonnel.lga, healthpersonnel.healthfacility
       FROM patients
       LEFT JOIN healthpersonnel ON patients.healthpersonnel_id = healthpersonnel.id
       INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
@@ -1102,9 +1101,63 @@ const getAllPatients = async (req, res) => {
     }
   }
 };
+const getAllPatientstate = async (req, res) => {
+  const { state } = req.query;
+  let connection;
 
-module.exports = {
-  getAllPatients,
+  try {
+    connection = await db.getConnection();
+
+    const q = `
+      SELECT patients.*, personalinformation.*,healthpersonnel.state, healthpersonnel.lga, healthpersonnel.healthfacility
+      FROM patients
+      LEFT JOIN healthpersonnel ON patients.healthpersonnel_id = healthpersonnel.id
+      INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
+      WHERE healthpersonnel.state = ?
+    `;
+
+    const [result] = await connection.execute(q, [state]);
+
+    res.status(200).json({ statusCode: "200", message: "successful", result });
+  } catch (err) {
+    console.error("Error acquiring connection from pool:", err);
+    res
+      .status(500)
+      .json({ statusCode: "500", error: "Database connection or query error" });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllPatientlga = async (req, res) => {
+  const { lga } = req.query;
+  let connection;
+
+  try {
+    connection = await db.getConnection();
+
+    const q = `
+      SELECT patients.*, personalinformation.*,healthpersonnel.state, healthpersonnel.lga, healthpersonnel.healthfacility
+      FROM patients
+      LEFT JOIN healthpersonnel ON patients.healthpersonnel_id = healthpersonnel.id
+      INNER JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
+      WHERE healthpersonnel.lga = ?
+    `;
+
+    const [result] = await connection.execute(q, [lga]);
+
+    res.status(200).json({ statusCode: "200", message: "successful", result });
+  } catch (err) {
+    console.error("Error acquiring connection from pool:", err);
+    res
+      .status(500)
+      .json({ statusCode: "500", error: "Database connection or query error" });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 };
 
 const createPatientEveryVisit = async (req, res, next) => {
@@ -2099,6 +2152,8 @@ module.exports = {
   getPatientFirstVisit,
   getPatientReturnVisit,
   getAllPatients,
+  getAllPatientstate,
+  getAllPatientlga,
   getAllPatientsAndHealthworker,
   getPatientPersonalinfo,
   createTest,
