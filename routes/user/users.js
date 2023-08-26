@@ -23,6 +23,7 @@ const {
   patientscheduledvisitremindersms,
   patientscheduledvisitmissedsms,
   getMissedSchedulewithWorker,
+  getAPatientSchedule,
 } = require("../../controllers/user/users.js");
 const {
   verifyToken,
@@ -52,6 +53,8 @@ router.post("/schedule/:id", verifyToken, createHealthworkerSchedule);
 router.get("/schedule/find", verifyToken, getAllHealthworkersSchedule);
 
 router.get("/schedule/find/all", getAllSchedule);
+
+router.get("/schedule/find/patient/all", getAPatientSchedule);
 
 router.get("/schedule/find/completed", verifyToken, getAllCompletedSchedule);
 router.get("/schedule/find/upcoming", verifyToken, getAllUpcomingSchedule);

@@ -736,6 +736,23 @@ const getAllCompletedSchedule = async (req, res) => {
     }
   }
 };
+const getAPatientSchedule = async (req, res) => {
+  const connection = await db.getConnection();
+  const { patientid } = req.query;
+  try {
+    const q = `SELECT * FROM schedule WHERE patient_id = ?`;
+    const result = await connection.execute(q, [patientid]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getAllMissedSchedule = async (req, res) => {
   const connection = await db.getConnection();
   const userid = req.user.id;
@@ -931,6 +948,7 @@ module.exports = {
   getAllMissedSchedule,
   getAllFlaggedSchedule,
   getAllUpcomingSchedule,
+  getAPatientSchedule,
   getMissedSchedulewithWorker,
   createDeliveryReport,
   createATest,
