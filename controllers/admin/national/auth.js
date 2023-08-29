@@ -55,9 +55,9 @@ const signin = async (req, res, next) => {
 
     // Creates Secure Cookie with refresh token
     res.cookie("nationaltoken", refreshToken, {
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: "None",
+      httpOnly: false,
+      secure: true,
+      sameSite: "None",
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
@@ -187,9 +187,9 @@ const signout = async (req, res, next) => {
     const foundUser = foundUserResult[0];
     if (!foundUser) {
       res.clearCookie("nationaltoken", {
-        // httpOnly: true,
-        // sameSite: "None",
-        // secure: true,
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
       });
       return res.sendStatus(204);
     }
@@ -205,9 +205,9 @@ const signout = async (req, res, next) => {
     console.log({ updatedUser: updatedUser });
 
     res.clearCookie("nationaltoken", {
-      // httpOnly: true,
-      // sameSite: "None",
-      // secure: true,
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
     });
     res.sendStatus(204);
   } catch (error) {
