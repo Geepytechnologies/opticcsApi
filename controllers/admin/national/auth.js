@@ -138,7 +138,7 @@ const signin = async (req, res, next) => {
       httpOnly: false,
       secure: true,
       sameSite: "None",
-      domain: ".vercel.app",
+      domain: process.env.ORIGIN,
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
