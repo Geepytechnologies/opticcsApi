@@ -46,7 +46,7 @@ app.post("/sendotp2", (req, res) => {
 });
 
 const corsOptions = {
-  origin: process.env.ORIGIN,
+  origin: /\.vercel\.app$/,
   credentials: true, // enable cookies and other credentials
   exposedHeaders: ["Set-Cookie"],
 };
