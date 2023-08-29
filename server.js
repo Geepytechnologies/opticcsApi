@@ -48,6 +48,7 @@ app.post("/sendotp2", (req, res) => {
 const corsOptions = {
   origin: process.env.ORIGIN,
   credentials: true, // enable cookies and other credentials
+  exposedHeaders: ["Set-Cookie"],
 };
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
