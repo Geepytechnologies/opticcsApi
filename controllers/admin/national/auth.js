@@ -256,6 +256,7 @@ const handleRefreshToken = async (req, res) => {
   const existingRefresh = async (refreshToken) => {
     const q = `SELECT * FROM nationaladmin WHERE refreshToken = ?`;
     const result = await connection.execute(q, [refreshToken]);
+    console.log({ userwithrefresh: result[0] });
     return result[0];
   };
 
@@ -266,6 +267,7 @@ const handleRefreshToken = async (req, res) => {
 
   try {
     const foundUser = await existingRefresh(refreshToken);
+    console.log({ founduser: foundUser });
     if (!foundUser.length) {
       return res.status(403).json("User not Found");
     }
