@@ -138,7 +138,7 @@ const signin = async (req, res, next) => {
       httpOnly: false,
       secure: true,
       sameSite: "None",
-      domain: process.env.ORIGIN,
+      domain: ".railway.app",
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
