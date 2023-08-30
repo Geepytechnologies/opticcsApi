@@ -3,7 +3,7 @@ const db = require("../../../config/db");
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT p.id AS patient_id
+    const q = `SELECT COUNT(*) AS patient_count
       FROM patients p
       LEFT JOIN (
           SELECT patient_id, COUNT(*) AS first_visit_count
@@ -2972,13 +2972,11 @@ const nationalscheduledata = async (req, res) => {
     const [missed] = await connection.execute(q2, [1]);
     const [completed] = await connection.execute(q3, [1]);
 
-    res
-      .status(200)
-      .json({
-        number: number.length,
-        missed: missed.length,
-        completed: completed.length,
-      });
+    res.status(200).json({
+      number: number.length,
+      missed: missed.length,
+      completed: completed.length,
+    });
   } catch (error) {
     res.status(500).json(error);
   } finally {

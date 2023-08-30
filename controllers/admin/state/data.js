@@ -2,22 +2,57 @@ const db = require("../../../config/db");
 
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
+  const { state } = req.query;
   try {
-    const q = `SELECT p.id AS patient_id
-      FROM patients p
-      LEFT JOIN (
-          SELECT patient_id, COUNT(*) AS first_visit_count
-          FROM firstvisit
-          GROUP BY patient_id
-      ) fv ON p.id = fv.patient_id
-      LEFT JOIN (
-          SELECT patient_id, COUNT(*) AS return_visit_count
-          FROM returnvisit
-          GROUP BY patient_id
-      ) ev ON p.id = ev.patient_id
-      WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4;    
+    const q = `SELECT COUNT(*) AS patient_count
+    FROM patients p
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS first_visit_count
+        FROM firstvisit
+        GROUP BY patient_id
+    ) fv ON p.id = fv.patient_id
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS return_visit_count
+        FROM returnvisit
+        GROUP BY patient_id
+    ) ev ON p.id = ev.patient_id
+    LEFT JOIN healthpersonnel hp ON p.healthpersonnel_id = hp.id
+    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4
+    AND hp.state = ?
+        
       `;
-    const result = await connection.execute(q);
+    const result = await connection.execute(q, [state]);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const numberofwomentestedformalaria = async (req, res) => {
+  const connection = await db.getConnection();
+  const { state } = req.query;
+  try {
+    const q = `SELECT COUNT(*) AS patient_count
+    FROM patients p
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS first_visit_count
+        FROM firstvisit
+        GROUP BY patient_id
+    ) fv ON p.id = fv.patient_id
+    LEFT JOIN (
+        SELECT patient_id, COUNT(*) AS return_visit_count
+        FROM returnvisit
+        GROUP BY patient_id
+    ) ev ON p.id = ev.patient_id
+    LEFT JOIN healthpersonnel hp ON p.healthpersonnel_id = hp.id
+    WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4
+    AND hp.state = ?
+        
+      `;
+    const result = await connection.execute(q, [state]);
     res.status(200).json(result[0]);
   } catch (error) {
     res.status(500).json(error);

@@ -117,7 +117,7 @@ const signin = async (req, res, next) => {
       { id: user[0].id },
       process.env.ACCESS_SECRET,
       {
-        expiresIn: "5m",
+        expiresIn: "30m",
       }
     );
 
@@ -126,7 +126,7 @@ const signin = async (req, res, next) => {
       { id: user[0].id },
       process.env.REFRESH_SECRET,
       {
-        expiresIn: "30m",
+        expiresIn: "5d",
       }
     );
 
@@ -138,8 +138,8 @@ const signin = async (req, res, next) => {
       httpOnly: false,
       secure: true,
       sameSite: "None",
-      domain: ".vercel.app",
-      maxAge: 10 * 24 * 60 * 60 * 1000,
+      // domain: ".vercel.app",
+      maxAge: 6 * 24 * 60 * 60 * 1000,
     });
 
     const { password, refreshtoken, ...others } = user[0];
@@ -257,18 +257,15 @@ const handleRefreshToken = async (req, res) => {
   const existingRefresh = async (refreshToken) => {
     const q = `SELECT * FROM nationaladmin WHERE refreshToken = ?`;
     const result = await connection.execute(q, [refreshToken]);
-    console.log({ userwithrefresh: result[0] });
     return result[0];
   };
 
   const cookies = req.cookies;
-  console.log({ cookiesfromrefresh: cookies });
   if (!cookies?.nationaltoken) return res.sendStatus(401);
   const refreshToken = cookies.nationaltoken;
 
   try {
     const foundUser = await existingRefresh(refreshToken);
-    console.log({ founduser: foundUser });
     if (!foundUser.length) {
       return res.status(403).json("User not Found");
     }
@@ -282,7 +279,7 @@ const handleRefreshToken = async (req, res) => {
           { id: user.id },
           process.env.ACCESS_SECRET,
           {
-            expiresIn: "5m",
+            expiresIn: "30m",
           }
         );
         const { password, refreshToken, ...others } = foundUser[0];
@@ -330,16 +327,13 @@ const signout = async (req, res, next) => {
       req.user.id,
     ]);
     const updatedUser = updatedUserResult[0];
-    console.log({ updatedUser: updatedUser });
 
     res.clearCookie("nationaltoken", {
-      httpOnly: true,
       sameSite: "None",
       secure: true,
     });
     res.sendStatus(204);
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing out", err: error });

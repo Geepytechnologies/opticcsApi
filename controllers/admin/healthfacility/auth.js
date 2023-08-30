@@ -146,23 +146,32 @@ const handleRefreshToken = async (req, res) => {
     const result = await connection.execute(q, [refreshToken]);
     return result[0];
   };
+
   const cookies = req.cookies;
-  if (!cookies?.nationaltoken) return res.sendStatus(401);
-  const refreshToken = cookies.nationaltoken;
+  if (!cookies?.healthtoken) return res.sendStatus(401);
+  const refreshToken = cookies.healthtoken;
+
   try {
     const foundUser = await existingRefresh(refreshToken);
     if (!foundUser.length) {
       return res.status(403).json("User not Found");
     }
-    // evaluate jwt
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
-      if (err || foundUser[0]?.id !== user.id) return res.sendStatus(403);
-      const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_SECRET, {
-        expiresIn: "5m",
-      });
-      const { password, refreshtoken, ...others } = foundUser[0];
 
-      res.json({ accessToken, others: others });
+    // Verify JWT
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
+      if (err || foundUser[0]?.id !== user.id) {
+        return res.sendStatus(403);
+      } else {
+        const accessToken = jwt.sign(
+          { id: user.id },
+          process.env.ACCESS_SECRET,
+          {
+            expiresIn: "30m",
+          }
+        );
+        const { password, refreshToken, ...others } = foundUser[0];
+        return res.json({ accessToken, others });
+      }
     });
   } catch (err) {
     res.status(500).json({ message: "error refreshing token", error: err });
