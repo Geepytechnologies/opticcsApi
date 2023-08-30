@@ -78,6 +78,14 @@ app.use("/api/admin/users", adminUserRoute);
 app.use("/api/refresh", refreshTokenRoute);
 
 app.get("/", (req, res) => {
+  const token = "geepy";
+  res.cookie("nationaltoken", token, {
+    httpOnly: false,
+    secure: true,
+    sameSite: "None",
+    // domain: ".vercel.app",
+    maxAge: 10 * 24 * 60 * 60 * 1000,
+  });
   res.send("Home page");
 });
 app.get("/test", (req, res) => {
