@@ -6,8 +6,9 @@ step1: CREATE TABLE sessions (
     user_id INT REFERENCES healthpersonnel(id),
     session_status Text,
     session_data JSON,
-    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    end_time DATETIME
+    start_time DATETIME,
+    end_time DATETIME,
+    createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 

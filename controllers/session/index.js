@@ -1,12 +1,14 @@
 const db = require("../../config/db");
 
-const startSession = async (user_id) => {
+const startSession = async (user_id, start_time, start_date) => {
   const sessiondata = {
     firstvisit: [],
     returnvisit: [],
   };
-  const q = `INSERT INTO sessions (user_id, session_status, session_data)
+  const q = `INSERT INTO sessions (user_id, start_time,start_date, session_status, session_data)
   VALUES (
+      ?,
+      ?,
       ?,
       'active',
       ?
@@ -17,7 +19,12 @@ const startSession = async (user_id) => {
   `;
   let connection = await db.getConnection();
   try {
-    const result = await connection.execute(q, [user_id, sessiondata]);
+    const result = await connection.execute(q, [
+      user_id,
+      start_time,
+      start_date,
+      sessiondata,
+    ]);
     const updateuser = await connection.execute(updateuserquery, [
       result[0].insertId,
       user_id,
@@ -138,9 +145,11 @@ const startSessionRequest = async (req, res) => {
     firstvisit: [],
     returnvisit: [],
   };
-  const { user_id } = req.body;
-  const q = `INSERT INTO sessions (user_id, session_status, session_data)
+  const { user_id, start_time, start_date } = req.body;
+  const q = `INSERT INTO sessions (user_id, start_time,start_date, session_status, session_data)
   VALUES (
+      ?,
+      ?,
       ?,
       'active',
       ?
@@ -150,7 +159,12 @@ const startSessionRequest = async (req, res) => {
   WHERE id = ?`;
   let connection = await db.getConnection();
   try {
-    const result = await connection.execute(q, [user_id, sessiondata]);
+    const result = await connection.execute(q, [
+      user_id,
+      start_time,
+      start_date,
+      sessiondata,
+    ]);
     const updateuser = await connection.execute(updateuserquery, [
       result[0].insertId,
       user_id,
@@ -168,53 +182,63 @@ const startSessionRequest = async (req, res) => {
   }
 };
 
-// const endSession = async (req, res) => {
-//   const { end_time, user_id } = req.body;
-//   const q = `UPDATE sessions
-//   SET
-//       session_status = 'completed',
-//       end_time = ?
-//   WHERE id = ?`;
-//   const updateuserquery = `UPDATE healthpersonnel
-//   SET currentsession = ?
-//   WHERE id = ?`;
-//   const getuser = `
-//     SELECT * FROM healthpersonnel
-//     WHERE id = ?
-//   `;
-//   let connection = await db.getConnection();
-//   try {
-//     const getUsercall = await connection.execute(getuser, [user_id]);
-//     const result = getUsercall[0];
-//     const user = result[0];
-//     const updatesession = await connection.execute(q, [
-//       end_time,
-//       user.currentsession,
-//     ]);
-//     const updateuser = await connection.execute(updateuserquery, [
-//       null,
-//       user_id,
-//     ]);
-
-//     res
-//       .status(200)
-//       .json({ statusCode: "200", message: "successful", result: result[0] });
-//   } catch (error) {
-//     res.status(500).json(error);
-//   } finally {
-//     if (connection) {
-//       connection.release();
-//     }
-//   }
-// };
 const endSession = async (req, res) => {
+  const { end_time, end_date, user_id } = req.body;
+  const q = `UPDATE sessions
+  SET
+      session_status = 'completed',
+      end_time = ?,
+      end_date = ?
+  WHERE id = ?`;
+  const updateuserquery = `UPDATE healthpersonnel
+  SET currentsession = ?
+  WHERE id = ?`;
+  const getuser = `
+    SELECT * FROM healthpersonnel
+    WHERE id = ?
+  `;
+  let connection = await db.getConnection();
   try {
-    const response = updateSessionFirstvisit(13, 1);
+    const getUsercall = await connection.execute(getuser, [user_id]);
+    const result = getUsercall[0];
+    const user = result[0];
+    const updatesession = await connection.execute(q, [
+      end_time,
+      end_date,
+      user.currentsession,
+    ]);
+    const updateuser = await connection.execute(updateuserquery, [
+      null,
+      user_id,
+    ]);
+
     res
       .status(200)
-      .json({ statusCode: "200", message: "successful", result: response });
+      .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
     res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getAllsessions = async (req, res) => {
+  const connection = await db.getConnection();
+  const { start_date } = req.body;
+  const q = `SELECT * FROM sessions WHERE start_date = ?`;
+  try {
+    const result = await connection.execute(q, [start_date]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -226,4 +250,5 @@ module.exports = {
   startSession,
   getCurrentusersession,
   getCurrentusersessionrequest,
+  getAllsessions,
 };
