@@ -16,6 +16,7 @@ const adminHealthfacilityAccountsRoute = require("./routes/admin/healthfacility/
 const adminHealthfacilityDataRoute = require("./routes/admin/healthfacility/data");
 const userRoute = require("./routes/user/users");
 const refreshTokenRoute = require("./routes/admin/refreshToken");
+const sessionRoute = require("./routes/session/index");
 const { createUserQuery } = require("./queries/user/user");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -76,6 +77,7 @@ app.use("/api/admin/healthfacility", adminHealthfacilityAccountsRoute);
 app.use("/api/admin/healthfacility/data", adminHealthfacilityDataRoute);
 app.use("/api/admin/users", adminUserRoute);
 app.use("/api/refresh", refreshTokenRoute);
+app.use("/api/session", sessionRoute);
 
 app.get("/", (req, res) => {
   const token = "geepy";

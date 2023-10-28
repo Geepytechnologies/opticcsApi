@@ -31,7 +31,7 @@ const router = express.Router();
 
 router.post("/create", createPatient);
 
-router.post("/create/return", createPatientEveryVisit);
+router.post("/create/return", verifyToken, createPatientEveryVisit);
 
 router.post("/test", createTest);
 

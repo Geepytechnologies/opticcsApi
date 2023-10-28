@@ -13,6 +13,7 @@ const {
 } = require("../../queries/user/user.js");
 const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
 const request = require("request");
+const { startSession } = require("../session/index.js");
 
 const sendOtp = async (req, res) => {
   const { name, mobile_number } = req.body;
@@ -173,6 +174,7 @@ const signin = async (req, res, next) => {
 
     const { password, ...others } = user;
 
+    startSession(others[0].id);
     res.status(200).json({
       statusCode: "200",
       message: "successful",
