@@ -226,14 +226,229 @@ const endSession = async (req, res) => {
 
 const getAllsessions = async (req, res) => {
   const connection = await db.getConnection();
-  const { start_date } = req.body;
-  const q = `SELECT * FROM sessions WHERE start_date = ?`;
+  const { start_date } = req.query;
+  const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+  WHERE start_date = ?;`;
   try {
     const result = await connection.execute(q, [start_date]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllsessionsState = async (req, res) => {
+  const connection = await db.getConnection();
+  const { start_date, state } = req.query;
+  const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+  WHERE start_date = ? AND healthpersonnel.state = ? `;
+  try {
+    const result = await connection.execute(q, [start_date, state]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllsessionsLga = async (req, res) => {
+  const connection = await db.getConnection();
+  const { start_date, lga } = req.query;
+  const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+  WHERE start_date = ? AND healthpersonnel.lga = ? `;
+  try {
+    const result = await connection.execute(q, [start_date, lga]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllsessionshf = async (req, res) => {
+  const connection = await db.getConnection();
+  const { start_date, healthfacility } = req.query;
+  const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+  WHERE start_date = ? AND healthpersonnel.healthfacility = ? `;
+  try {
+    const result = await connection.execute(q, [start_date, healthfacility]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getsessiongraph = async (req, res) => {
+  const connection = await db.getConnection();
+
+  const q = `SELECT
+  JSON_OBJECT(
+      'JANUARY', SUM(MONTH(start_date) = 1),
+      'FEBRUARY', SUM(MONTH(start_date) = 2),
+      'MARCH', SUM(MONTH(start_date) = 3),
+      'APRIL', SUM(MONTH(start_date) = 4),
+      'MAY', SUM(MONTH(start_date) = 5),
+      'JUNE', SUM(MONTH(start_date) = 6),
+      'JULY', SUM(MONTH(start_date) = 7),
+      'AUGUST', SUM(MONTH(start_date) = 8),
+      'SEPTEMBER', SUM(MONTH(start_date) = 9),
+      'OCTOBER', SUM(MONTH(start_date) = 10),
+      'NOVEMBER', SUM(MONTH(start_date) = 11),
+      'DECEMBER', SUM(MONTH(start_date) = 12)
+  ) AS count
+FROM sessions
+
+`;
+  try {
+    const [result] = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getsessiongraphstate = async (req, res) => {
+  const connection = await db.getConnection();
+  const { state } = req.query;
+
+  const q = `SELECT
+  JSON_OBJECT(
+      'JANUARY', SUM(MONTH(start_date) = 1),
+      'FEBRUARY', SUM(MONTH(start_date) = 2),
+      'MARCH', SUM(MONTH(start_date) = 3),
+      'APRIL', SUM(MONTH(start_date) = 4),
+      'MAY', SUM(MONTH(start_date) = 5),
+      'JUNE', SUM(MONTH(start_date) = 6),
+      'JULY', SUM(MONTH(start_date) = 7),
+      'AUGUST', SUM(MONTH(start_date) = 8),
+      'SEPTEMBER', SUM(MONTH(start_date) = 9),
+      'OCTOBER', SUM(MONTH(start_date) = 10),
+      'NOVEMBER', SUM(MONTH(start_date) = 11),
+      'DECEMBER', SUM(MONTH(start_date) = 12)
+  ) AS count
+FROM sessions
+INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+WHERE healthpersonnel.state = ? 
+
+
+`;
+  try {
+    const [result] = await connection.execute(q, [state]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getsessiongraphlga = async (req, res) => {
+  const connection = await db.getConnection();
+  const { lga } = req.query;
+
+  const q = `SELECT
+  JSON_OBJECT(
+      'JANUARY', SUM(MONTH(start_date) = 1),
+      'FEBRUARY', SUM(MONTH(start_date) = 2),
+      'MARCH', SUM(MONTH(start_date) = 3),
+      'APRIL', SUM(MONTH(start_date) = 4),
+      'MAY', SUM(MONTH(start_date) = 5),
+      'JUNE', SUM(MONTH(start_date) = 6),
+      'JULY', SUM(MONTH(start_date) = 7),
+      'AUGUST', SUM(MONTH(start_date) = 8),
+      'SEPTEMBER', SUM(MONTH(start_date) = 9),
+      'OCTOBER', SUM(MONTH(start_date) = 10),
+      'NOVEMBER', SUM(MONTH(start_date) = 11),
+      'DECEMBER', SUM(MONTH(start_date) = 12)
+  ) AS count
+FROM sessions
+INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+WHERE healthpersonnel.lga = ? 
+
+
+`;
+  try {
+    const [result] = await connection.execute(q, [lga]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getsessiongraphhealthfacility = async (req, res) => {
+  const connection = await db.getConnection();
+  const { healthfacility } = req.query;
+
+  const q = `SELECT
+  JSON_OBJECT(
+      'JANUARY', SUM(MONTH(start_date) = 1),
+      'FEBRUARY', SUM(MONTH(start_date) = 2),
+      'MARCH', SUM(MONTH(start_date) = 3),
+      'APRIL', SUM(MONTH(start_date) = 4),
+      'MAY', SUM(MONTH(start_date) = 5),
+      'JUNE', SUM(MONTH(start_date) = 6),
+      'JULY', SUM(MONTH(start_date) = 7),
+      'AUGUST', SUM(MONTH(start_date) = 8),
+      'SEPTEMBER', SUM(MONTH(start_date) = 9),
+      'OCTOBER', SUM(MONTH(start_date) = 10),
+      'NOVEMBER', SUM(MONTH(start_date) = 11),
+      'DECEMBER', SUM(MONTH(start_date) = 12)
+  ) AS count
+FROM sessions
+INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+WHERE healthpersonnel.healthfacility = ? 
+
+
+`;
+  try {
+    const [result] = await connection.execute(q, [healthfacility]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -251,4 +466,11 @@ module.exports = {
   getCurrentusersession,
   getCurrentusersessionrequest,
   getAllsessions,
+  getAllsessionsState,
+  getAllsessionsLga,
+  getAllsessionshf,
+  getsessiongraph,
+  getsessiongraphstate,
+  getsessiongraphlga,
+  getsessiongraphhealthfacility,
 };
