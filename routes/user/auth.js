@@ -12,6 +12,7 @@ const {
   sendPasswordresetOtp,
   confirmpasswordresetOtp,
   retrypasswordresetOtp,
+  resetpassword,
 } = require("../../controllers/user/auth");
 
 router.post("/signup", signup);
@@ -30,7 +31,7 @@ router.get("/password/retryOtp", retrypasswordresetOtp);
 
 router.put("/changepassword", changepassword);
 
-router.post("/forgotpassword", forgotpassword);
+router.post("/resetpassword", resetpassword);
 
 router.post("/signin", signin);
 
