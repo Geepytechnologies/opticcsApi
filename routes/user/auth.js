@@ -9,15 +9,24 @@ const {
   confirmOtp,
   sendOtp,
   retryOtp,
+  sendPasswordresetOtp,
+  confirmpasswordresetOtp,
+  retrypasswordresetOtp,
 } = require("../../controllers/user/auth");
 
 router.post("/signup", signup);
 
 router.post("/sendOtp", sendOtp);
 
-router.post("/confirmOtp", confirmOtp);
+router.post("/password/sendOtp", sendPasswordresetOtp);
 
-router.post("/retryOtp", retryOtp);
+router.get("/confirmOtp", confirmOtp);
+
+router.get("/password/confirmOtp", confirmpasswordresetOtp);
+
+router.get("/retryOtp", retryOtp);
+
+router.get("/password/retryOtp", retrypasswordresetOtp);
 
 router.put("/changepassword", changepassword);
 
