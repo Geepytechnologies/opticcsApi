@@ -96,6 +96,7 @@ const sendPasswordresetOtp = async (req, res) => {
     `;
       const userresult = await connection.execute(q, [mobile_number]);
       const user = userresult[0];
+      // console.log({ usr: user });
       if (!user.length) return { statusCode: "404", message: "User not found" };
       if (user.length) return { statusCode: "200", message: "User exists" };
     } catch (error) {
@@ -342,7 +343,7 @@ const resetpassword = async (req, res, next) => {
         SET password = ?
         WHERE phone = ?
           `;
-    const result = await connection.query(q, [password, req.body.phone]);
+    const result = await connection.query(q, [password, req.query.phone]);
     return result[0];
   };
   try {
