@@ -273,6 +273,7 @@ const signin = async (req, res, next) => {
       result: { others: others[0], accessToken },
     });
   } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });

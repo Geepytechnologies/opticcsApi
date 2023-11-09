@@ -4,6 +4,7 @@ const startSession = async (user_id, start_time, start_date) => {
   const sessiondata = {
     firstvisit: [],
     returnvisit: [],
+    schedule: [],
   };
   const q = `INSERT INTO sessions (user_id, start_time,start_date, session_status, session_data)
   VALUES (
@@ -139,11 +140,38 @@ WHERE id = ?`;
     }
   }
 };
+const updateSessionSchedule = async (schedule_id, user_id) => {
+  const q = `UPDATE sessions
+SET session_data = JSON_ARRAY_APPEND(
+    session_data,
+    '$.schedule',
+    ?
+)
+WHERE id = ?`;
+  const getschedule = `SELECT * FROM schedule where id = ?`;
+
+  const connection = await db.getConnection();
+  try {
+    const usersession = await getCurrentusersession(user_id);
+    const schedule = await connection.execute(getschedule, [schedule_id]);
+    const time = schedule[0][0].createdat;
+    const result = await connection.execute(q, [time, usersession.session]);
+    return { status: "successful", message: result[0] };
+  } catch (error) {
+    console.log(error);
+    return { status: "error", message: error };
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 const startSessionRequest = async (req, res) => {
   const sessiondata = {
     firstvisit: [],
     returnvisit: [],
+    schedule: [],
   };
   const { user_id, start_time, start_date } = req.body;
   const q = `INSERT INTO sessions (user_id, start_time,start_date, session_status, session_data)
@@ -473,4 +501,5 @@ module.exports = {
   getsessiongraphstate,
   getsessiongraphlga,
   getsessiongraphhealthfacility,
+  updateSessionSchedule,
 };

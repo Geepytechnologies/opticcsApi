@@ -7,6 +7,7 @@ const {
   createPatientFirstvisitObstetricQuery,
 } = require("../../queries/user/user");
 const request = require("request");
+const { updateSessionSchedule } = require("../session");
 
 // send users a message
 const patientscheduledvisitsms = async (req, res) => {
@@ -199,11 +200,14 @@ const createASchedule = async (req, res, next) => {
   VALUES ('${id}', '${schedule_name}', '${schedule_state}', '${schedule_lga}', '${schedule_dateFrom}','${schedule_dateTo}','${schedule_completed}','${schedule_confirmed}')`;
   try {
     const result = await connection.execute(q);
-    connection.release();
+    //session
+    await updateSessionSchedule(result[0].insertId, healthpersonnel_id);
     res.status(201).json(result[0]);
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    connection.release();
   }
 };
 const createATest = async (req, res, next) => {
@@ -255,7 +259,6 @@ const createDeliveryReport = async (req, res, next) => {
   VALUES ('${id}', '${deliveryReport_patientID}', '${gender}', '${NoOfChildren}', '${deliveryDate}','${deliveryTime}')`;
   try {
     const result = await connection.execute(q);
-    connection.release();
     res.status(201).json(result[0]);
     db.query(q, (err, result) => {
       if (err) return res.json(err);
@@ -264,6 +267,8 @@ const createDeliveryReport = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    connection.release();
   }
 };
 
