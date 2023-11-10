@@ -1,6 +1,161 @@
 const db = require("../../../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const request = require("request");
+
+// const sendPasswordresetOtp = async (req, res) => {
+//   const { mobile_number } = req.body;
+//   const checkuserExists = async () => {
+//     const connection = await db.getConnection();
+//     try {
+//       const q = `
+//       SELECT * FROM nationaladmin
+//       WHERE phone = ?
+//     `;
+//       const userresult = await connection.execute(q, [mobile_number]);
+//       const user = userresult[0];
+//       if (!user.length) return { statusCode: 404, message: "User not found" };
+//       if (user.length) return { statusCode: 200, message: "User exists" };
+//     } catch (error) {
+//       throw new Error(error);
+//     } finally {
+//       connection.release();
+//     }
+//   };
+//   const options = {
+//     method: "POST",
+//     url: `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGPASSWORDTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`,
+//     headers: {
+//       accept: "application/json",
+//       "content-type": "application/json",
+//       authkey: process.env.MSGAUTHKEY,
+//     },
+//     // body: { name: name },
+//     json: true,
+//   };
+//   const userExists = await checkuserExists();
+//   if (userExists.statusCode == 200) {
+//     request(options, (error, response, body) => {
+//       if (error) {
+//         return res
+//           .status(response.statusCode)
+//           .json({ error: "An error occurred while sending OTP." });
+//       }
+//       res.status(response.statusCode).json({
+//         statusCode: response.statusCode.toString(),
+//         result: body,
+//       });
+//     });
+//   } else {
+//     res.status(userExists.statusCode).json(userExists);
+//   }
+// };
+
+const sendPasswordresetOtp = async (req, res) => {
+  const { mobile_number } = req.body;
+
+  const checkUserExists = async () => {
+    const connection = await db.getConnection();
+    try {
+      const q = `
+        SELECT * FROM nationaladmin
+        WHERE phone = ?
+      `;
+      const userResult = await connection.execute(q, [mobile_number]);
+      const user = userResult[0];
+
+      if (!user.length) return { statusCode: 404, message: "User not found" };
+      if (user.length) return { statusCode: 200, message: "User exists" };
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      connection.release();
+    }
+  };
+
+  const userExists = await checkUserExists();
+
+  if (userExists.statusCode === 200) {
+    try {
+      const response = await fetch(
+        `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGPASSWORDTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`,
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "content-type": "application/json",
+            authkey: process.env.MSGAUTHKEY,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return res
+          .status(response.status)
+          .json({ error: "An error occurred while sending OTP." });
+      }
+
+      const body = await response.json();
+
+      res.status(response.status).json({
+        statusCode: response.status.toString(),
+        result: body,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while sending OTP." });
+    }
+  } else {
+    res.status(userExists.statusCode).json(userExists);
+  }
+};
+
+const confirmpasswordresetOtp = async (req, res) => {
+  const { otp, mobile_number } = req.body;
+
+  const options = {
+    method: "GET",
+    url: `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`,
+    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+  };
+  try {
+    request(options, (error, response, body) => {
+      if (error) {
+        return res.status(response.statusCode).json({
+          statusCode: response.statusCode.toString(),
+          error: "Error confirming OTP.",
+        });
+      }
+      res.status(response.statusCode).json({
+        statusCode: response.statusCode.toString(),
+        result: JSON.parse(body),
+      });
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+const retrypasswordresetOtp = async (req, res) => {
+  const { mobile_number, type } = req.body;
+
+  const options = {
+    method: "GET",
+    url: `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`,
+    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      return res.status(response.statusCode).json({
+        statusCode: response.statusCode.toString(),
+        error: "error retrying OTP.",
+      });
+    }
+    res.status(response.statusCode).json({
+      statusCode: response.statusCode.toString(),
+      result: JSON.parse(body),
+    });
+  });
+};
 
 // const signin = async (req, res, next) => {
 //   const connection = await db.getConnection();
@@ -95,7 +250,7 @@ const signin = async (req, res, next) => {
     try {
       await connection.execute(q, [refreshToken, userid]);
     } catch (err) {
-      throw err; // Handle error appropriately
+      throw err;
     }
   };
 
@@ -165,8 +320,52 @@ const signin = async (req, res, next) => {
 
 const resetpassword = async (req, res, next) => {
   const connection = await db.getConnection();
+  const updateUser = async (password) => {
+    const q = `
+        UPDATE nationaladmin
+        SET password = ?
+        WHERE phone = ?
+          `;
+    const result = await connection.query(q, [password, req.body.phone]);
+    return result[0];
+  };
+  try {
+    const phonequery = `
+    SELECT * FROM nationaladmin
+    WHERE phone = ?
+  `;
+    const userResult = await connection.execute(phonequery, [req.body.phone]);
+    const user = userResult[0];
+    if (!user.length)
+      return res
+        .status(404)
+        .json({ statusCode: "404", message: "User not found" });
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedpassword = bcrypt.hashSync(req.body.password, salt);
+    const newusercredentials = await updateUser(hashedpassword);
+
+    res.status(201).json({
+      statusCode: "201",
+      message: "Changed password successfully",
+      result: newusercredentials,
+    });
+  } catch (err) {
+    res.status(500).json({
+      statusCode: "500",
+      message: "Error changing password",
+      error: err,
+    });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const changepassword = async (req, res, next) => {
+  const connection = await db.getConnection();
   const { oldpassword, newpassword } = req.body;
-  console.log(req.user.id);
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(newpassword, salt);
 
@@ -185,7 +384,6 @@ const resetpassword = async (req, res, next) => {
 
   try {
     const user = await existinguserid();
-    console.log(user);
     if (!user.length)
       return res
         .status(404)
@@ -344,4 +542,13 @@ const signout = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, signout, handleRefreshToken, resetpassword };
+module.exports = {
+  signin,
+  signout,
+  handleRefreshToken,
+  resetpassword,
+  changepassword,
+  sendPasswordresetOtp,
+  confirmpasswordresetOtp,
+  retrypasswordresetOtp,
+};
