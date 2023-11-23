@@ -53,12 +53,12 @@ const confirmOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
+        statusCode: response.statusCode,
         error: "Error confirming OTP.",
       });
     }
     res.status(response.statusCode).json({
-      statusCode: response.statusCode.toString(),
+      statusCode: response.statusCode,
       result: JSON.parse(body),
     });
   });
@@ -75,12 +75,12 @@ const retryOtp = async (req, res) => {
   request(options, (error, response, body) => {
     if (error) {
       return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
+        statusCode: response.statusCode,
         error: "error retrying OTP.",
       });
     }
     res.status(response.statusCode).json({
-      statusCode: response.statusCode.toString(),
+      statusCode: response.statusCode,
       result: JSON.parse(body),
     });
   });
@@ -125,7 +125,7 @@ const sendPasswordresetOtp = async (req, res) => {
           .json({ error: "An error occurred while sending OTP." });
       }
       res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
+        statusCode: response.statusCode,
         result: body,
       });
     });
