@@ -125,7 +125,7 @@ const sendPasswordresetOtp = async (req, res) => {
           .json({ error: "An error occurred while sending OTP." });
       }
       res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
+        statusCode: response.statusCode,
         result: body,
       });
     });
