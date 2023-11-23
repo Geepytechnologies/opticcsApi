@@ -123,6 +123,10 @@ const getAllUsers = async (req, res, next) => {
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (err) {
     res.status(500).json({ statusCode: "500", error: err });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -138,6 +142,10 @@ const getUserByPhone = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const getUsersPatients = async (req, res, next) => {
@@ -152,6 +160,10 @@ const getUsersPatients = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -168,14 +180,24 @@ const sendAMessageToWorker = async (req, res, next) => {
     message_status_delivered,
     message
     ) 
-  VALUES ('${id}', '${message_from}', '${message_date}', '${message_status_delivered}','${message}')`;
+  VALUES (?, ?, ?, ?,?)`;
   try {
-    const result = await connection.execute(q);
+    const result = await connection.execute(q, [
+      id,
+      message_from,
+      message_date,
+      message_status_delivered,
+      message,
+    ]);
     connection.release();
     res.status(200).json(result[0]);
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const createASchedule = async (req, res, next) => {
@@ -197,9 +219,18 @@ const createASchedule = async (req, res, next) => {
     schedule_state,
     schedule_lga,schedule_dateFrom,schedule_dateTo,schedule_completed,schedule_confirmed
     ) 
-  VALUES ('${id}', '${schedule_name}', '${schedule_state}', '${schedule_lga}', '${schedule_dateFrom}','${schedule_dateTo}','${schedule_completed}','${schedule_confirmed}')`;
+  VALUES (?, ?, ?, ?, ?,?,?,?)`;
   try {
-    const result = await connection.execute(q);
+    const result = await connection.execute(q, [
+      id,
+      schedule_name,
+      schedule_state,
+      schedule_lga,
+      schedule_dateFrom,
+      schedule_dateTo,
+      schedule_completed,
+      schedule_confirmed,
+    ]);
     //session
     await updateSessionSchedule(result[0].insertId, healthpersonnel_id);
     res.status(201).json(result[0]);
@@ -207,7 +238,9 @@ const createASchedule = async (req, res, next) => {
     res.status(500).json(err);
     next(err);
   } finally {
-    connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const createATest = async (req, res, next) => {
@@ -228,14 +261,26 @@ const createATest = async (req, res, next) => {
     Test_ANCbooking,
     Test_date,Test_time,Test_completed,Test_result
     ) 
-  VALUES ('${id}', '${Test_patientID}', '${Test_ANCbooking}', '${Test_date}', '${Test_time}','${Test_completed}','${Test_result}')`;
+  VALUES (?, ?, ?, ?, ?,?,?)`;
   try {
-    const result = await connection.execute(q);
+    const result = await connection.execute(q, [
+      id,
+      Test_patientID,
+      Test_ANCbooking,
+      Test_date,
+      Test_time,
+      Test_completed,
+      Test_result,
+    ]);
     connection.release();
     res.status(201).json(result[0]);
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -256,9 +301,16 @@ const createDeliveryReport = async (req, res, next) => {
     gender,
     NoOfChildren,deliveryDate,deliveryTime
     ) 
-  VALUES ('${id}', '${deliveryReport_patientID}', '${gender}', '${NoOfChildren}', '${deliveryDate}','${deliveryTime}')`;
+  VALUES (?, ?, ?, ?, ?,?)`;
   try {
-    const result = await connection.execute(q);
+    const result = await connection.execute(q, [
+      id,
+      deliveryReport_patientID,
+      gender,
+      NoOfChildren,
+      deliveryDate,
+      deliveryTime,
+    ]);
     res.status(201).json(result[0]);
     db.query(q, (err, result) => {
       if (err) return res.json(err);
@@ -268,7 +320,9 @@ const createDeliveryReport = async (req, res, next) => {
     res.status(500).json(err);
     next(err);
   } finally {
-    connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -313,6 +367,10 @@ const createPatientFirstvisitPersonalInfo = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
     next(err);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const createPatientFirstvisitDailyhabits = async (req, res, next) => {
@@ -359,7 +417,6 @@ const createPatientFirstvisitDailyhabits = async (req, res, next) => {
     next(err);
   }
 };
-//i stopped here in the editing
 const createPatientFirstvisitObstetric = (req, res, next) => {
   const {
     firstVisit_id,
@@ -857,15 +914,32 @@ const updateHealthworkerScheduleCompleted = async (req, res, next) => {
   const connection = await db.getConnection();
   const userid = req.user.id;
   const { id } = req.params;
-  const { completed, upcoming, missed, flagged, datefrom, dateto } = req.body;
-  console.log({ updatescheduleparameters: req.body, id: id });
-  const values = [completed, upcoming, missed, flagged, datefrom, dateto, id];
+  const {
+    completed = null,
+    upcoming = null,
+    missed = null,
+    missedsms = null,
+    flagged = null,
+    datefrom = null,
+    dateto = null,
+  } = req.body;
+  const values = [
+    completed,
+    upcoming,
+    missed,
+    missedsms,
+    flagged,
+    datefrom,
+    dateto,
+    id,
+  ];
   try {
     const q = `UPDATE schedule
     SET
       completed = IFNULL(?, completed),
       upcoming = IFNULL(?, upcoming),
       missed = IFNULL(?, missed),
+      missedsms = IFNULL(?, missedsms),
       flagged = IFNULL(?, flagged),
       datefrom = IFNULL(?, datefrom), 
       dateto = IFNULL(?, dateto)

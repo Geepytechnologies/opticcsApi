@@ -38,6 +38,10 @@ const createHealthfacilityAccount = async (req, res, next) => {
       message: "can't create state account",
       error: err,
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const createHealthfacilityUserAccount = async (req, res, next) => {

@@ -21,7 +21,8 @@ const { createUserQuery } = require("./queries/user/user");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const request = require("request");
-// require("./services/missedschedule");
+require("./services/missedschedule");
+require("./services/reminderschedule");
 
 app.post("/sendotp2", (req, res) => {
   const options = {

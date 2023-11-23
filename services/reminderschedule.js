@@ -8,7 +8,7 @@ const initializeStorage = async () => {
 
 initializeStorage();
 
-const patientscheduledvisitmissedsms = async (
+const patientscheduledvisitremindersms = async (
   mobile_number,
   firstname,
   lastname,
@@ -16,8 +16,8 @@ const patientscheduledvisitmissedsms = async (
   healthfacilityname
 ) => {
   const url = "https://control.msg91.com/api/v5/flow/";
-  const authkey = process.env.MSGAUTHKEY;
-  const template_id = "64d6923ed6fc05311c3659f2";
+  const authkey = "394982AVwwiRgqf64d2116bP1";
+  const template_id = "64d691aad6fc052a1473dc42";
 
   const body = JSON.stringify({
     template_id,
@@ -44,7 +44,6 @@ const patientscheduledvisitmissedsms = async (
     });
 
     const result = await response.json();
-    console.log({ smsres: result });
 
     if (!response.ok) {
       throw new Error(
@@ -65,11 +64,10 @@ const updateSchedule = async (id) => {
   const connection = await db.getConnection();
   try {
     const q = `UPDATE schedule
-    SET
-      missed = true,
-      missedsms = true
-    WHERE id = ?;
-    `;
+      SET
+        remindersms = true
+      WHERE id = ?;
+      `;
     const result = await connection.execute(q, [id]);
     return { statusCode: "200", message: "successful", result: result[0] };
   } catch (error) {
@@ -81,7 +79,7 @@ const updateSchedule = async (id) => {
   }
 };
 
-const getMissedSchedules = async () => {
+const getCloseSchedules = async () => {
   const connection = await db.getConnection();
   try {
     const q = `SELECT
@@ -93,12 +91,14 @@ const getMissedSchedules = async () => {
     schedule
   LEFT JOIN
     healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id
-  WHERE schedule.missedsms = false AND 
-  schedule.dateto < CURDATE();;      
+  WHERE schedule.remindersms = false AND 
+    DATE(schedule.datefrom) = DATE_SUB(CURDATE(), INTERVAL 1 DAY);      
     `;
     const result = await connection.execute(q);
+    console.log(result[0]);
     return { statusCode: "200", message: "successful", result: result[0] };
   } catch (error) {
+    console.log(error);
     return { statusCode: "500", message: "error getting schedule", error };
   } finally {
     if (connection) {
@@ -120,10 +120,10 @@ const formatDate = (date) => {
 };
 const sendSms = async () => {
   try {
-    const response = await getMissedSchedules();
+    const response = await getCloseSchedules();
     const users = response.result;
     for (const item of users) {
-      await patientscheduledvisitmissedsms(
+      await patientscheduledvisitremindersms(
         item.phone,
         item.firstname,
         item.lastname,
@@ -141,14 +141,14 @@ const sendSms = async () => {
 const task = cron.schedule("* * * * * *", async () => {
   // Check the last execution time
   const lastExecutionTime =
-    (await storage.getItem("missedlastExecutionTime")) || 0;
+    (await storage.getItem("reminderlastExecutionTime")) || 0;
   const currentTime = new Date().getTime();
 
   if (currentTime - lastExecutionTime >= 60 * 60 * 1000) {
     console.log("Running the job at..." + new Date());
     await sendSms();
 
-    await storage.setItem("missedlastExecutionTime", currentTime);
+    await storage.setItem("reminderlastExecutionTime", currentTime);
   } else {
     console.log("Not time to run the job yet." + new Date());
   }
