@@ -9,10 +9,11 @@ const db = mysql.createPool({
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  connectionLimit: 30, // Adjust the limit based on your application's needs
+  waitForConnections: true,
+  connectionLimit: 100,
+  queueLimit: 0,
 });
 
-// No need for db.connect() as connection is managed by the db
 (async () => {
   try {
     await db.query("SELECT 1");
@@ -23,5 +24,3 @@ const db = mysql.createPool({
 })();
 
 module.exports = db;
-
-// module.exports = db;

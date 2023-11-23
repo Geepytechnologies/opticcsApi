@@ -17,165 +17,212 @@ const { startSession } = require("../session/index.js");
 
 const sendOtp = async (req, res) => {
   const { name, mobile_number } = req.body;
-  const options = {
-    method: "POST",
-    url: `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`,
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      authkey: process.env.MSGAUTHKEY,
-    },
-    body: { name: name },
-    json: true,
-  };
+  const url = `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`;
 
-  request(options, (error, response, body) => {
-    if (error) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        authkey: process.env.MSGAUTHKEY,
+      },
+      body: JSON.stringify({ name: name }),
+    });
+
+    const body = await response.json();
+
+    if (!response.ok) {
       return res
-        .status(response.statusCode)
+        .status(response.status)
         .json({ error: "An error occurred while sending OTP." });
     }
-    res.status(response.statusCode).json({
-      statusCode: response.statusCode.toString(),
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
       result: body,
     });
-  });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
+
 const confirmOtp = async (req, res) => {
   const { otp, mobile_number } = req.body;
 
-  const options = {
-    method: "GET",
-    url: `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`,
-    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+  const url = `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`;
+  const headers = {
+    accept: "application/json",
+    authkey: process.env.MSGAUTHKEY,
   };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
-        error: "Error confirming OTP.",
-      });
-    }
-    res.status(response.statusCode).json({
-      statusCode: response.statusCode,
-      result: JSON.parse(body),
+  try {
+    const response = await fetch(url, { method: "GET", headers });
+    const result = await response.json();
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: result,
     });
-  });
+  } catch (error) {
+    res.status(500).json({
+      statusCode: "500",
+      error: "Error confirming OTP.",
+    });
+  }
 };
+
 const retryOtp = async (req, res) => {
   const { mobile_number, type } = req.body;
 
-  const options = {
-    method: "GET",
-    url: `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`,
-    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+  const url = `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`;
+  const headers = {
+    accept: "application/json",
+    authkey: process.env.MSGAUTHKEY,
   };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode,
-        error: "error retrying OTP.",
+  try {
+    const response = await fetch(url, { method: "GET", headers });
+    const body = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        statusCode: response.status,
+        error: "Error retrying OTP.",
       });
     }
-    res.status(response.statusCode).json({
-      statusCode: response.statusCode,
-      result: JSON.parse(body),
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
     });
-  });
+  } catch (error) {
+    res.status(500).json({
+      statusCode: "500",
+      error: "Error retrying OTP.",
+    });
+  }
 };
+
 const sendPasswordresetOtp = async (req, res) => {
   const { mobile_number } = req.body;
+
   const checkuserExists = async () => {
     const connection = await db.getConnection();
     try {
       const q = `
-      SELECT * FROM healthpersonnel
-      WHERE phone = ?
-    `;
+        SELECT * FROM healthpersonnel
+        WHERE phone = ?
+      `;
       const userresult = await connection.execute(q, [mobile_number]);
       const user = userresult[0];
-      // console.log({ usr: user });
+
       if (!user.length) return { statusCode: "404", message: "User not found" };
       if (user.length) return { statusCode: "200", message: "User exists" };
     } catch (error) {
       throw new Error(error);
     } finally {
-      connection.release();
+      if (connection) {
+        connection.release();
+      }
     }
   };
-  const options = {
-    method: "POST",
-    url: `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGPASSWORDTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`,
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      authkey: process.env.MSGAUTHKEY,
-    },
-    // body: { name: name },
-    json: true,
-  };
+
   const userExists = await checkuserExists();
-  if (userExists.statusCode == "200") {
-    request(options, (error, response, body) => {
-      if (error) {
-        return res
-          .status(response.statusCode)
-          .json({ error: "An error occurred while sending OTP." });
-      }
-      res.status(response.statusCode).json({
-        statusCode: response.statusCode,
+
+  if (userExists.statusCode === "200") {
+    const otpOptions = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        authkey: process.env.MSGAUTHKEY,
+      },
+      body: JSON.stringify({
+        template_id: process.env.MSGPASSWORDTEMPLATEID,
+        mobile: mobile_number,
+        otp_length: 6,
+        otp_expiry: 5,
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        "https://control.msg91.com/api/v5/otp",
+        otpOptions
+      );
+
+      const body = await response.json();
+
+      res.status(response.status).json({
+        statusCode: response.status,
         result: body,
       });
-    });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while sending OTP." });
+    }
   } else {
-    res.status(userExists.statusCode).json(userExists);
+    res.status(+userExists.statusCode).json(userExists);
   }
 };
+
 const confirmpasswordresetOtp = async (req, res) => {
   const { otp, mobile_number } = req.body;
 
+  const url = `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`;
+
   const options = {
     method: "GET",
-    url: `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`,
-    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+    headers: {
+      accept: "application/json",
+      authkey: process.env.MSGAUTHKEY,
+    },
   };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
-        error: "Error confirming OTP.",
-      });
-    }
-    res.status(response.statusCode).json({
-      statusCode: response.statusCode.toString(),
-      result: JSON.parse(body),
+  try {
+    const response = await fetch(url, options);
+    const body = await response.json();
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
     });
-  });
+  } catch (error) {
+    res.status(500).json({
+      statusCode: "500",
+      error: "Error confirming OTP.",
+    });
+  }
 };
+
 const retrypasswordresetOtp = async (req, res) => {
   const { mobile_number, type } = req.body;
 
+  const url = `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`;
+
   const options = {
     method: "GET",
-    url: `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`,
-    headers: { accept: "application/json", authkey: process.env.MSGAUTHKEY },
+    headers: {
+      accept: "application/json",
+      authkey: process.env.MSGAUTHKEY,
+    },
   };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
-        error: "error retrying OTP.",
-      });
-    }
-    res.status(response.statusCode).json({
-      statusCode: response.statusCode.toString(),
-      result: JSON.parse(body),
+  try {
+    const response = await fetch(url, options);
+    const body = await response.json();
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
     });
-  });
+  } catch (error) {
+    res.status(500).json({
+      statusCode: "500",
+      error: "Error retrying OTP.",
+    });
+  }
 };
 
 const signup = async (req, res, next) => {
