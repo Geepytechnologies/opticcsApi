@@ -21,7 +21,7 @@ router.post("/sendOtp", sendOtp);
 
 router.post("/password/sendOtp", sendPasswordresetOtp);
 
-router.get("/confirmOtp", confirmOtp);
+router.post("/confirmOtp", confirmOtp);
 
 router.get("/password/confirmOtp", confirmpasswordresetOtp);
 

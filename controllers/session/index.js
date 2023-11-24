@@ -100,6 +100,7 @@ WHERE id = ?`;
   try {
     const usersession = await getCurrentusersession(user_id);
     const firstvisit = await connection.execute(getfirstvisit, [firstvisit_id]);
+    console.log(firstvisit);
     const time = firstvisit[0][0].createdat;
     const result = await connection.execute(q, [time, usersession.session]);
     return { status: "successful", message: result[0] };
