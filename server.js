@@ -21,6 +21,7 @@ const { createUserQuery } = require("./queries/user/user");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const request = require("request");
+const logger = require("./logger");
 require("./services/missedschedule");
 require("./services/reminderschedule");
 
@@ -111,5 +112,5 @@ app.get("/liveuser", async (req, res) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log("Backend server is running");
+  logger.info("Backend server is running");
 });

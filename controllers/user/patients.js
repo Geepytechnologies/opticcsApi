@@ -1544,8 +1544,60 @@ const getAllPatientsAndHealthworker = async (req, res) => {
       GROUP BY patient_id
     ) AS last_visits ON p.id = last_visits.patient_id;
     `;
+    const q2 = `SELECT COUNT(*) AS patient_count FROM patients;
+    `;
 
     const result = await connection.execute(q);
+    const [result2] = await connection.execute(q2);
+    res.status(200).json({
+      statusCode: "200",
+      result: result[0],
+      count: result2[0].patient_count,
+    });
+  } catch (error) {
+    if (connection) {
+      connection.rollback();
+    }
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllPatientsAndHealthworkerpaginated = async (req, res) => {
+  const connection = await db.getConnection();
+  const { queryid } = req.query;
+  try {
+    const q = `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+FROM
+    patients p
+LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+        SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+        UNION ALL
+        SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+) AS last_visits ON p.id = last_visits.patient_id
+WHERE
+    p.id > ?
+ORDER BY
+    p.id
+LIMIT 10;
+
+    `;
+
+    const result = await connection.execute(q, [queryid]);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
     if (connection) {
@@ -2161,6 +2213,7 @@ module.exports = {
   getAllPatientstate,
   getAllPatientlga,
   getAllPatientsAndHealthworker,
+  getAllPatientsAndHealthworkerpaginated,
   getPatientPersonalinfo,
   createTest,
   updateTest,

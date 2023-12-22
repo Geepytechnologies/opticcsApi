@@ -25,6 +25,7 @@ const {
   getAllTests,
   getAllPatientstate,
   getAllPatientlga,
+  getAllPatientsAndHealthworkerpaginated,
 } = require("../../controllers/user/patients");
 const { verifyToken } = require("../../middlewares/verifyToken");
 const router = express.Router();
@@ -82,6 +83,8 @@ router.get("/lga/find", getAllPatientlga);
 router.get("/datanumbers/find", datanumbers);
 
 router.get("/findwithworkers", getAllPatientsAndHealthworker);
+
+router.get("/findwithworkerspaginated", getAllPatientsAndHealthworkerpaginated);
 
 router.get("/find/personal/:id", getPatientPersonalinfo);
 

@@ -1,6 +1,7 @@
 const mysql = require("mysql2/promise");
 const path = require("path");
 const fs = require("fs");
+const logger = require("../logger");
 const certificatePath = "../opticcs-ca-certificate.crt";
 
 const db = mysql.createPool({
@@ -17,9 +18,9 @@ const db = mysql.createPool({
 (async () => {
   try {
     await db.query("SELECT 1");
-    console.log("Connected to MySQL pool!");
+    logger.info("Connected to MySQL pool!");
   } catch (error) {
-    console.error("Failed to connect to MySQL:", error.message);
+    logger.error("Failed to connect to MySQL:", error.message);
   }
 })();
 
