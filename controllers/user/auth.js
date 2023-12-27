@@ -14,6 +14,7 @@ const {
 const sdk = require("api")("@sendchamp/v1.0#1bxhir2hkyyg62rn");
 const request = require("request");
 const { startSession } = require("../session/index.js");
+const logger = require("../../logger/index.js");
 
 const sendOtp = async (req, res) => {
   const { name, mobile_number } = req.body;
@@ -272,6 +273,8 @@ const signup = async (req, res, next) => {
       .status(201)
       .json({ statusCode: "201", message: "successful", result: newuser });
   } catch (err) {
+    connection.release();
+
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing up", error: err });
@@ -320,7 +323,9 @@ const signin = async (req, res, next) => {
       result: { others: others[0], accessToken },
     });
   } catch (err) {
-    console.log(err);
+    connection.release();
+
+    logger.error(err);
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
@@ -372,6 +377,8 @@ const changepassword = async (req, res, next) => {
       result: newusercredentials,
     });
   } catch (err) {
+    connection.release();
+
     res.status(500).json({
       statusCode: "500",
       message: "Error changing password",
@@ -416,6 +423,8 @@ const resetpassword = async (req, res, next) => {
       result: newusercredentials,
     });
   } catch (err) {
+    connection.release();
+
     res.status(500).json({
       statusCode: "500",
       message: "Error changing password",

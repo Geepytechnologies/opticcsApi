@@ -1,4 +1,5 @@
 const db = require("../../config/db");
+const logger = require("../../logger");
 
 const startSession = async (user_id, start_time, start_date) => {
   const sessiondata = {
@@ -32,6 +33,8 @@ const startSession = async (user_id, start_time, start_date) => {
     ]);
     return { statusCode: "200", message: "successful", result: result[0] };
   } catch (error) {
+    connection.release();
+    logger.error(error);
     return { statusCode: "500", message: "error", result: error };
   } finally {
     if (connection) {
@@ -53,6 +56,7 @@ const getCurrentusersession = async (user_id) => {
     const session = user.currentsession;
     return { statusCode: "200", message: "successful", session: session };
   } catch (error) {
+    connection.release();
     return { statusCode: "500", message: "error", result: error };
   } finally {
     if (connection) {
@@ -76,6 +80,7 @@ const getCurrentusersessionrequest = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", session: session });
   } catch (error) {
+    connection.release();
     res
       .status(500)
       .json({ statusCode: "500", message: "error", result: error });
@@ -95,17 +100,21 @@ SET session_data = JSON_ARRAY_APPEND(
 )
 WHERE id = ?`;
 
-  const getfirstvisit = `SELECT * FROM firstvisit where id = ?`;
-  const connection = await db.getConnection();
+  const q2 = `SELECT * FROM firstvisit where id = ?`;
   try {
+    const connection = await db.getConnection();
+    logger.info(firstvisit_id);
     const usersession = await getCurrentusersession(user_id);
-    const firstvisit = await connection.execute(getfirstvisit, [firstvisit_id]);
-    console.log(firstvisit);
-    const time = firstvisit[0][0].createdat;
+    const firstvisitresult = await connection.execute(q2, [firstvisit_id]);
+    console.log({ first: firstvisitresult });
+    const time = firstvisitresult[0][0].createdat;
+    logger.warn(time);
     const result = await connection.execute(q, [time, usersession.session]);
+    logger.info(result[0]);
     return { status: "successful", message: result[0] };
   } catch (error) {
-    console.log(error);
+    connection.release();
+    logger.error(error);
     return { status: "error", message: error };
   } finally {
     if (connection) {
@@ -133,6 +142,7 @@ WHERE id = ?`;
     const result = await connection.execute(q, [time, usersession.session]);
     return { status: "successful", message: result[0] };
   } catch (error) {
+    connection.release();
     console.log(error);
     return { status: "error", message: error };
   } finally {
@@ -159,6 +169,7 @@ WHERE id = ?`;
     const result = await connection.execute(q, [time, usersession.session]);
     return { status: "successful", message: result[0] };
   } catch (error) {
+    connection.release();
     console.log(error);
     return { status: "error", message: error };
   } finally {
@@ -203,6 +214,8 @@ const startSessionRequest = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -245,6 +258,8 @@ const endSession = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -266,6 +281,8 @@ const getAllsessions = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -286,6 +303,8 @@ const getAllsessionsState = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -306,6 +325,8 @@ const getAllsessionsLga = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -326,6 +347,8 @@ const getAllsessionshf = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -361,6 +384,8 @@ FROM sessions
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -399,6 +424,8 @@ WHERE healthpersonnel.state = ?
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     console.log(error);
     res.status(500).json(error);
   } finally {
@@ -438,6 +465,8 @@ WHERE healthpersonnel.lga = ?
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     console.log(error);
     res.status(500).json(error);
   } finally {
@@ -477,6 +506,8 @@ WHERE healthpersonnel.healthfacility = ?
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    connection.release();
+
     console.log(error);
     res.status(500).json(error);
   } finally {
