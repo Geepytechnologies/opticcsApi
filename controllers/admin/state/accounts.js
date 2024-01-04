@@ -1,25 +1,57 @@
 const db = require("../../../config/db");
 const bcrypt = require("bcryptjs");
+const logger = require("../../../logger");
 
 const createStateAccount = async (req, res, next) => {
   const { state, boardname, stateid, officeaddress, phone, email } = req.body;
   const values = [state, boardname, stateid, officeaddress, phone, email];
+  const connection = await db.getConnection();
+
+  const checkIfStateAccountExists = async () => {
+    const q = `SELECT * FROM stateaccount WHERE state = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [state]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
-    const connection = await db.getConnection();
     const q = `INSERT INTO stateaccount (state, boardname, stateid, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?)`;
-    const result = await connection.execute(q, values);
-    connection.release();
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
+    const stateExists = await checkIfStateAccountExists();
+    if (stateExists) {
+      res.status(409).json("state account already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+    }
+    // connection.release();
   } catch (err) {
-    console.error(err);
+    connection.release();
+    logger.error(err);
     res.status(500).json({
       statusCode: "500",
       message: "can't create state account",
       error: err,
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const createStateUserAccount = async (req, res, next) => {
@@ -49,20 +81,46 @@ const createStateUserAccount = async (req, res, next) => {
     hashedpassword,
     accountType,
   ];
+  const connection = await db.getConnection();
+
+  const checkIfStateUserAccountExists = async () => {
+    const q = `SELECT * FROM stateadmin WHERE userid = ? AND password = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [userid, hashedpassword]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
-    const connection = await db.getConnection();
     const q = `INSERT INTO stateadmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
-    const result = await connection.execute(q, values);
-    connection.release();
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
+    const checkuser = checkIfStateUserAccountExists();
+    if (checkuser) {
+      res.status(409).json("User already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      connection.release();
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+    }
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(500).json({
       statusCode: "500",
-      message: "can't create state account",
+      message: "can't create state user account",
       error: err,
     });
   }
@@ -78,6 +136,7 @@ const getAllStates = async (req, res) => {
       .json({ statusCode: "200", message: "successful", result: result[0] });
     connection.release();
   } catch (error) {
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {

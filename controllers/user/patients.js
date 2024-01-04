@@ -1689,6 +1689,58 @@ const getPatientReturnVisit = async (req, res) => {
     }
   }
 };
+const getAllPatientReturnVisit = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM returnvisit; 
+  `;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
+const getAllPatientFirstVisits = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT
+    fv.*,
+    dhal.*,
+    oh.*,mh.*,pmh.*,dh.*,fh.*,pe.*
+  FROM
+    firstvisit fv
+  LEFT JOIN
+    dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
+  LEFT JOIN
+    obstetrichistory oh ON fv.id = oh.firstvisit_id
+  LEFT JOIN
+    medicalhistory mh ON fv.id = mh.firstvisit_id
+  LEFT JOIN
+    pastmedicalhistory pmh ON fv.id = pmh.firstvisit_id
+  LEFT JOIN
+    drughistory dh ON fv.id = dh.firstvisit_id
+  LEFT JOIN
+    familyhistory fh ON fv.id = fh.firstvisit_id
+  LEFT JOIN
+    physicalexamination pe ON fv.id = pe.firstvisit_id; 
+  `;
+    const result = await connection.execute(q);
+    res.status(200).json({ statusCode: "200", result: result[0] });
+  } catch (error) {
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 const createTest = async (req, res) => {
   const connection = await db.getConnection();
@@ -2229,4 +2281,6 @@ module.exports = {
   getAllDeliveryreports,
   getAllDeliveryreportsByAWorker,
   datanumbers,
+  getAllPatientFirstVisits,
+  getAllPatientReturnVisit,
 };

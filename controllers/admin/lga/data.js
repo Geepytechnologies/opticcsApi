@@ -3353,9 +3353,27 @@ const lgascheduledata = async (req, res) => {
     }
   }
 };
+//get all lga's
+const getAllLga = async (req, res) => {
+  const q = `SELECT * FROM lgaccount WHERE state = ?`;
+  const { state } = req.query;
+  const connection = await db.getConnection();
+  try {
+    const [result] = await connection.execute(q, [state]);
+    res.status(200).json(result);
+  } catch (error) {
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 module.exports = {
   lgageneraldata,
   numberofwomenwith4visits,
   lgareturnvisitdata,
   lgascheduledata,
+  getAllLga,
 };

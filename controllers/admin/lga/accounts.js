@@ -6,15 +6,42 @@ const createLgaAccount = async (req, res, next) => {
     req.body;
   const values = [lga, boardname, state, lgaID, officeaddress, phone, email];
   const connection = await db.getConnection();
+
+  const checkIfLgaAccountExists = async (req, res) => {
+    const q = `SELECT * FROM lgaccount WHERE lga = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [lga]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
     const q = `INSERT INTO lgaccount (lga, boardname,state, lgaID, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?,?)`;
-    const result = await connection.execute(q, values);
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
-    connection.release();
+    const accountExists = await checkIfLgaAccountExists();
+    if (accountExists) {
+      res.status(409).json("LGA already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+      connection.release();
+    }
   } catch (err) {
+    connection.release();
     res.status(500).json({
       statusCode: "500",
       message: "can't create state account",
@@ -56,15 +83,41 @@ const createLgaUserAccount = async (req, res, next) => {
     accountType,
   ];
   const connection = await db.getConnection();
+  const checkIfStateUserAccountExists = async () => {
+    const q = `SELECT * FROM lgadmin WHERE userid = ? AND password = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [userid, hashedpassword]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
     const q = `INSERT INTO lgadmin (lga, state, staffname, staffid, gender, cadre, phone, email,userid ,password,accountType)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
-    const result = await connection.execute(q, values);
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
-    connection.release();
+    const accountExists = await checkIfStateUserAccountExists();
+    if (accountExists) {
+      res.status(409).json("LGA account already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+      connection.release();
+    }
   } catch (err) {
+    connection.release();
     res.status(500).json({
       statusCode: "500",
       message: "can't create state account",
@@ -85,6 +138,7 @@ const getLgaAccounts = async (req, res, next) => {
     res.status(200).json(result[0]);
     connection.release();
   } catch (error) {
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -100,6 +154,7 @@ const getLgaUserAccounts = async (req, res, next) => {
     res.status(200).json(result[0]);
     connection.release();
   } catch (error) {
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {

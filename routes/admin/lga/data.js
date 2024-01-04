@@ -4,6 +4,7 @@ const {
   lgageneraldata,
   lgareturnvisitdata,
   lgascheduledata,
+  getAllLga,
 } = require("../../../controllers/admin/lga/data");
 
 const router = express.Router();
@@ -11,6 +12,8 @@ const router = express.Router();
 router.get("/find/4visits", numberofwomenwith4visits);
 
 router.get("/general", lgageneraldata);
+
+router.get("/find/lga", getAllLga);
 
 router.get("/schedule", lgascheduledata);
 

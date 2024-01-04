@@ -3393,10 +3393,27 @@ const statescheduledata = async (req, res) => {
     }
   }
 };
+//get all states
+const getAllStates = async (req, res) => {
+  const q = `SELECT state FROM stateaccount`;
+  const connection = await db.getConnection();
+  try {
+    const [result] = await connection.execute(q);
+    res.status(200).json(result);
+  } catch (error) {
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 module.exports = {
   stategeneraldata,
   numberofwomenwith4visits,
   statereturnvisitdata,
   statescheduledata,
+  getAllStates,
 };

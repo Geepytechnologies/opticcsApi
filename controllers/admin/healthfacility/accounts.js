@@ -1,5 +1,6 @@
 const db = require("../../../config/db");
 const bcrypt = require("bcryptjs");
+const logger = require("../../../logger");
 
 const createHealthfacilityAccount = async (req, res, next) => {
   const {
@@ -22,20 +23,47 @@ const createHealthfacilityAccount = async (req, res, next) => {
     phone,
     email,
   ];
+  const connection = await db.getConnection();
+
+  const checkIfAccountExists = async (req, res) => {
+    const q = `SELECT * FROM healthfacilityaccount WHERE healthfacilityID = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [healthfacilityID]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
-    const connection = await db.getConnection();
     const q = `INSERT INTO healthfacilityaccount (ward, healthfacilityname, lga, state, healthfacilityID, officeaddress, phone, email)
       VALUES (?, ?, ?, ?, ?, ?,?,?)`;
-    const result = await connection.execute(q, values);
-    connection.release();
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
+    const accountExists = await checkIfAccountExists();
+    if (accountExists) {
+      res.status(409).json("healthfacility with ID already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      connection.release();
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+    }
   } catch (err) {
-    console.error(err);
+    connection.release();
+    logger.error(err);
     res.status(500).json({
       statusCode: "500",
-      message: "can't create state account",
+      message: "can't create healthfacility account",
       error: err,
     });
   } finally {
@@ -75,20 +103,45 @@ const createHealthfacilityUserAccount = async (req, res, next) => {
     hashedpassword,
     healthfacilityid,
   ];
+  const connection = await db.getConnection();
+  const checkIfAccountExists = async (req, res) => {
+    const q = `SELECT * FROM healthfacilityadmin WHERE userid = ? AND password = ?`;
+    try {
+      let checked;
+      const result = await connection.execute(q, [userid, hashedpassword]);
+      if (result[0].length) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+      return checked;
+    } catch (error) {
+      connection.release();
+      throw new Error(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
   try {
-    const connection = await db.getConnection();
     const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacilityid)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
-    const result = await connection.execute(q, values);
-    connection.release();
-    res
-      .status(201)
-      .json({ statusCode: "201", message: "successful", result: result[0] });
+    const accountExists = await checkIfAccountExists();
+    if (accountExists) {
+      res.status(409).json("healthfacility user already exists");
+    } else {
+      const result = await connection.execute(q, values);
+      connection.release();
+      res
+        .status(201)
+        .json({ statusCode: "201", message: "successful", result: result[0] });
+    }
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(500).json({
       statusCode: "500",
-      message: "can't create state account",
+      message: "can't create healthfacility user account",
       error: err,
     });
   }
