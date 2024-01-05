@@ -2,6 +2,9 @@ const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, label, printf, colorize } = format;
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
+  if (typeof message === "object") {
+    message = JSON.stringify(message, null, 3);
+  }
   return `${timestamp} [${level}] ${message}`;
 });
 const customColors = {
