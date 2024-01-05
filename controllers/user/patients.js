@@ -747,7 +747,7 @@ WHERE
     const firstvisitcreation = await createfirstvisit(patientID);
     const firstvisitID = firstvisitcreation[0].insertId;
     //session
-    await updateSessionFirstvisit(firstvisitID, healthpersonnel_id);
+    // await updateSessionFirstvisit(firstvisitID, healthpersonnel_id);
     await createpastmedicalHistory(firstvisitID);
     await createfamilyHistory(firstvisitID);
     await createdailyhabit(firstvisitID);
@@ -1495,7 +1495,7 @@ const createPatientEveryVisit = async (req, res, next) => {
     const result = await connection.execute(q, values);
     const returnvisitid = result[0];
 
-    await updateSessionReturnvisit(returnvisitid, healthpersonnel_id);
+    // await updateSessionReturnvisit(returnvisitid, healthpersonnel_id);
 
     await connection.commit();
 
