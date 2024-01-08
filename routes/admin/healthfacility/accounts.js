@@ -5,6 +5,7 @@ const {
   verifyHealthWorker,
   getHealthfacilityAccounts,
   getHealthfacilityUserAccounts,
+  getHealthfacilityAccountsFiltered,
 } = require("../../../controllers/admin/healthfacility/accounts");
 const {
   signin,
@@ -21,6 +22,8 @@ const router = express.Router();
 router.post("/", createHealthfacilityAccount);
 
 router.get("/find", getHealthfacilityAccounts);
+
+router.get("/find/filtered", getHealthfacilityAccountsFiltered);
 
 router.get("/find/users", getHealthfacilityUserAccounts);
 

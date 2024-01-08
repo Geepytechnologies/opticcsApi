@@ -148,9 +148,10 @@ const getLgaAccounts = async (req, res, next) => {
 };
 const getLgaUserAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
+  const { state } = req.query;
   try {
-    const q = `SELECT * FROM lgadmin`;
-    const result = await connection.execute(q);
+    const q = `SELECT * FROM lgadmin WHERE state = ?`;
+    const result = await connection.execute(q, [state]);
     res.status(200).json(result[0]);
     connection.release();
   } catch (error) {

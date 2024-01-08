@@ -1,6 +1,7 @@
 // This is a combined controller for the patients
 
 const db = require("../../config/db");
+const logger = require("../../logger");
 const {
   createPatientPersonalInfoQuery,
   patientRecordQuery,
@@ -225,6 +226,23 @@ const createPatient = async (req, res, next) => {
     auscultationchest,
   } = req.body;
 
+  const checkIfPatientWithPhoneNumberExists = async () => {
+    const q = `SELECT * FROM personalinformation WHERE phone = ?`;
+    try {
+      const result = await connection.execute(q, [phone]);
+      if (result[0].length) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      logger.error({
+        method: "checkIfPatientWithPhoneNumberExists",
+        error: error,
+      });
+    }
+  };
+
   const personalRecord = async () => {
     const query = createPatientPersonalInfoQuery();
     const values = [
@@ -250,8 +268,18 @@ const createPatient = async (req, res, next) => {
       doyoufeelthebabysmovement,
       doyouknowdateoffirstbabymovement,
     ];
-    const result = await connection.execute(query, values); // Use connection.execute
-    return result;
+    const patientexists = await checkIfPatientWithPhoneNumberExists();
+    if (!patientexists) {
+      const result = await connection.execute(query, values);
+      return result;
+    } else {
+      res
+        .status(409)
+        .json({
+          statusCode: "409",
+          message: "patient with phone already exists",
+        });
+    }
   };
   const createpatient = async (personalinformation_id) => {
     const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstvisit_date, personalinformation_id)

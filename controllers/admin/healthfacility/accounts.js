@@ -170,6 +170,28 @@ const verifyHealthWorker = async (req, res) => {
   }
 };
 
+const getHealthfacilityAccountsFiltered = async (req, res, next) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM healthfacilityaccount WHERE state = ? AND lga = ?`;
+    const { state, lga } = req.query;
+    if (state !== "" && lga !== "") {
+      const result = await connection.execute(q, [state, lga]);
+      res.status(200).json(result[0]);
+      connection.release();
+    } else {
+      res.status(400).json("missing parameters");
+    }
+  } catch (error) {
+    logger.error(error);
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getHealthfacilityAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
   try {
@@ -178,6 +200,8 @@ const getHealthfacilityAccounts = async (req, res, next) => {
     res.status(200).json(result[0]);
     connection.release();
   } catch (error) {
+    logger.error(error);
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -208,4 +232,5 @@ module.exports = {
   verifyHealthWorker,
   getHealthfacilityAccounts,
   getHealthfacilityUserAccounts,
+  getHealthfacilityAccountsFiltered,
 };
