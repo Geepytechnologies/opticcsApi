@@ -13,11 +13,14 @@ const {
   confirmpasswordresetOtp,
   retrypasswordresetOtp,
   resetpassword,
+  voiceOtp,
 } = require("../../controllers/user/auth");
 
 router.post("/signup", signup);
 
 router.post("/sendOtp", sendOtp);
+
+router.post("/voiceOtp", voiceOtp);
 
 router.post("/password/sendOtp", sendPasswordresetOtp);
 

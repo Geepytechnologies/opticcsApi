@@ -18,25 +18,36 @@ const logger = require("../../logger/index.js");
 
 const sendOtp = async (req, res) => {
   const { name, mobile_number } = req.body;
-  const url = `https://control.msg91.com/api/v5/otp?template_id=${process.env.MSGTEMPLATEID}&mobile=${mobile_number}&otp_length=6&otp_expiry=5`;
+  const url = `https://api.ng.termii.com/api/sms/otp/send`;
+
+  const data = {
+    api_key: process.env.TERMIIKEY,
+    message_type: "ALPHANUMERIC",
+    to: `${mobile_number}`,
+    from: "N-Alert",
+    channel: "dnd",
+    pin_attempts: 10,
+    pin_time_to_live: 5,
+    pin_length: 6,
+    pin_placeholder: "<>",
+    message_text: `Hi ${name}, Your Opticcs Verification pin is <>. If you did not initiate this request, Please Ignore. Do not share this code with anyone.`,
+    pin_type: "NUMERIC",
+  };
 
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        authkey: process.env.MSGAUTHKEY,
+        "Content-Type": ["application/json", "application/json"],
       },
-      body: JSON.stringify({ name: name }),
+      body: JSON.stringify(data),
     });
 
     const body = await response.json();
-
     if (!response.ok) {
-      return res
-        .status(response.status)
-        .json({ error: "An error occurred while sending OTP." });
+      return res.status(response.status).json({
+        error: "An error occurred while sending OTP.",
+      });
     }
 
     res.status(response.status).json({
@@ -44,22 +55,66 @@ const sendOtp = async (req, res) => {
       result: body,
     });
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+const voiceOtp = async (req, res) => {
+  const { mobile_number } = req.body;
+  const url = `https://api.ng.termii.com/api/sms/otp/send/voice`;
+
+  const data = {
+    api_key: process.env.TERMIIKEY,
+    phone_number: `${mobile_number}`,
+    pin_attempts: 10,
+    pin_time_to_live: 5,
+    pin_length: 6,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
+
+    const body = await response.json();
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "An error occurred while sending OTP.",
+      });
+    }
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
+    });
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 };
 
 const confirmOtp = async (req, res) => {
-  const { otp, mobile_number } = req.body;
-
-  const url = `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`;
-  const headers = {
-    accept: "application/json",
-    authkey: process.env.MSGAUTHKEY,
+  const { otp, pinId } = req.body;
+  var data = {
+    api_key: process.env.TERMIIKEY,
+    pin_id: pinId,
+    pin: otp,
   };
+  const url = `https://api.ng.termii.com/api/sms/otp/verify`;
 
   try {
-    const response = await fetch(url, { method: "GET", headers });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
     const result = await response.json();
 
     res.status(response.status).json({
@@ -67,6 +122,7 @@ const confirmOtp = async (req, res) => {
       result: result,
     });
   } catch (error) {
+    logger.error(error);
     res.status(500).json({
       statusCode: "500",
       error: "Error confirming OTP.",
@@ -498,6 +554,7 @@ module.exports = {
   confirmOtp,
   retryOtp,
   sendOtp,
+  voiceOtp,
   sendPasswordresetOtp,
   confirmpasswordresetOtp,
   retrypasswordresetOtp,
