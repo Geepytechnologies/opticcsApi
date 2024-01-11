@@ -1,4 +1,5 @@
 const db = require("../../../config/db");
+const logger = require("../../../logger");
 
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
@@ -3355,14 +3356,22 @@ const lgascheduledata = async (req, res) => {
 };
 //get all lga's
 const getAllLga = async (req, res) => {
-  const q = `SELECT * FROM lgaccount WHERE state = ?`;
   const { state } = req.query;
+  const q1 = `SELECT * FROM lgaccount WHERE state = ?`;
+  const q2 = `SELECT * FROM lgaccount`;
+
   const connection = await db.getConnection();
   try {
-    const [result] = await connection.execute(q, [state]);
-    res.status(200).json(result);
+    if (state) {
+      const [result] = await connection.execute(q1, [state]);
+      res.status(200).json(result);
+    } else {
+      const [result] = await connection.execute(q2);
+      res.status(200).json(result);
+    }
   } catch (error) {
     connection.release();
+    logger.error(error);
     res.status(500).json(error);
   } finally {
     if (connection) {

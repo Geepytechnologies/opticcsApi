@@ -2055,9 +2055,11 @@ const getAllPatientFirstVisits = async (req, res) => {
     const q = `SELECT
     fv.*,
     dhal.*,
-    oh.*,mh.*,pmh.*,dh.*,fh.*,pe.*
+    oh.*,mh.*,pmh.*,dh.*,fh.*,pe.*,pi.*
   FROM
     firstvisit fv
+  LEFT JOIN
+    personalinformation pi ON fv.patient_id = pi.id
   LEFT JOIN
     dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
   LEFT JOIN
