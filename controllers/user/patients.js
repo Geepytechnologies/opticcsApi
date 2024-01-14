@@ -478,20 +478,15 @@ const createPatient = async (req, res, next) => {
       doyoufeelthebabysmovement,
       doyouknowdateoffirstbabymovement,
     ];
-    const patientexists = await checkIfPatientWithPhoneNumberExists();
 
-    //check if patient exists
+    const patientexists = await checkIfPatientWithPhoneNumberExists();
     if (!patientexists) {
       const result = await connection.execute(query, values);
       return result;
     } else {
-      res.status(409).json({
-        statusCode: "409",
-        message: "patient with phone already exists",
-      });
+      return;
     }
   };
-
   const createpatient = async (personalinformation_id) => {
     const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstvisit_date, personalinformation_id)
     VALUES (?,?, ?)`;
@@ -994,25 +989,32 @@ WHERE
     await createmedicationHistory(firstvisitID);
     await createdrugHistory(firstvisitID);
     await createphysicalexamination(firstvisitID);
+
+    await connection.commit();
+
     const newpatientrecord = await getnewlycreatedpatientrecord(patientID);
     const result = newpatientrecord[0];
 
-    await connection.commit();
     res.status(201).json({
       statusCode: "201",
       message: "successful",
       result,
     });
-    connection.release();
   } catch (error) {
     if (connection) {
-      await connection.rollback();
-      connection.release();
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("Rollback error:", rollbackError);
+      } finally {
+        connection.release();
+      }
+
+      res.status(error.statusCode || 500).json({
+        statusCode: error.statusCode || "500",
+        error: error.sqlMessage ? error.sqlMessage : error,
+      });
     }
-    res.status(500).json({
-      statusCode: "500",
-      error: error.sqlMessage ? error.sqlMessage : error,
-    });
   } finally {
     if (connection) {
       connection.release();
