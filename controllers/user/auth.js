@@ -30,7 +30,7 @@ const sendOtp = async (req, res) => {
     pin_time_to_live: 5,
     pin_length: 6,
     pin_placeholder: "<>",
-    message_text: `Hi ${name}, Your Opticcs Verification pin is <>. If you did not initiate this request, Please Ignore. Do not share this code with anyone.`,
+    message_text: `Hi ${name}, Your Opticcs authentication pin is <>. If you did not initiate this request, Please Ignore. Do not share this code with anyone.`,
     pin_type: "NUMERIC",
   };
 
