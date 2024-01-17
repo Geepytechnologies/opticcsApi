@@ -1101,6 +1101,7 @@ WHERE
     }
   }
 };
+
 const getPatientRecordWithVisits = async (req, res) => {
   const connection = await db.getConnection();
   const { id } = req.params;
@@ -1348,6 +1349,7 @@ const getAllPatients = async (req, res) => {
     }
   }
 };
+
 const getAllPatientstate = async (req, res) => {
   const { state } = req.query;
   let connection;
@@ -1513,6 +1515,7 @@ const createPatientEveryVisit = async (req, res, next) => {
     breastdiscuss,
     severabdodisuss,
   } = req.body;
+
   const mydata = {
     patient_id: patient_id,
     returnvisit_date: returnvisit_date,

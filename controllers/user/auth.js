@@ -130,40 +130,9 @@ const confirmOtp = async (req, res) => {
   }
 };
 
-const retryOtp = async (req, res) => {
-  const { mobile_number, type } = req.body;
-
-  const url = `https://control.msg91.com/api/v5/otp/retry?authkey=${process.env.MSGAUTHKEY}&retrytype=${type}&mobile=${mobile_number}`;
-  const headers = {
-    accept: "application/json",
-    authkey: process.env.MSGAUTHKEY,
-  };
-
-  try {
-    const response = await fetch(url, { method: "GET", headers });
-    const body = await response.json();
-
-    if (!response.ok) {
-      return res.status(response.status).json({
-        statusCode: response.status,
-        error: "Error retrying OTP.",
-      });
-    }
-
-    res.status(response.status).json({
-      statusCode: response.status.toString(),
-      result: body,
-    });
-  } catch (error) {
-    res.status(500).json({
-      statusCode: "500",
-      error: "Error retrying OTP.",
-    });
-  }
-};
-
 const sendPasswordresetOtp = async (req, res) => {
   const { mobile_number } = req.body;
+  const url = `https://api.ng.termii.com/api/sms/otp/send`;
 
   const checkuserExists = async () => {
     const connection = await db.getConnection();
@@ -189,28 +158,35 @@ const sendPasswordresetOtp = async (req, res) => {
   const userExists = await checkuserExists();
 
   if (userExists.statusCode === "200") {
-    const otpOptions = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        authkey: process.env.MSGAUTHKEY,
-      },
-      body: JSON.stringify({
-        template_id: process.env.MSGPASSWORDTEMPLATEID,
-        mobile: mobile_number,
-        otp_length: 6,
-        otp_expiry: 5,
-      }),
+    const data = {
+      api_key: process.env.TERMIIKEY,
+      message_type: "ALPHANUMERIC",
+      to: `${mobile_number}`,
+      from: "N-Alert",
+      channel: "dnd",
+      pin_attempts: 10,
+      pin_time_to_live: 5,
+      pin_length: 6,
+      pin_placeholder: "<>",
+      message_text: `Your Opticcs Password reset code is <>. If you did not initiate this request, Please Ignore. Do not share this code with anyone.`,
+      pin_type: "NUMERIC",
     };
 
     try {
-      const response = await fetch(
-        "https://control.msg91.com/api/v5/otp",
-        otpOptions
-      );
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": ["application/json", "application/json"],
+        },
+        body: JSON.stringify(data),
+      });
 
       const body = await response.json();
+      if (!response.ok) {
+        return res.status(response.status).json({
+          error: "An error occurred while sending OTP.",
+        });
+      }
 
       res.status(response.status).json({
         statusCode: response.status,
@@ -225,20 +201,22 @@ const sendPasswordresetOtp = async (req, res) => {
 };
 
 const confirmpasswordresetOtp = async (req, res) => {
-  const { otp, mobile_number } = req.body;
-
-  const url = `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${mobile_number}`;
-
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      authkey: process.env.MSGAUTHKEY,
-    },
+  const { otp, pinId } = req.body;
+  var data = {
+    api_key: process.env.TERMIIKEY,
+    pin_id: pinId,
+    pin: otp,
   };
+  const url = `https://api.ng.termii.com/api/sms/otp/verify`;
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
     const body = await response.json();
 
     res.status(response.status).json({
@@ -552,7 +530,6 @@ module.exports = {
   changepassword,
   resetpassword,
   confirmOtp,
-  retryOtp,
   sendOtp,
   voiceOtp,
   sendPasswordresetOtp,

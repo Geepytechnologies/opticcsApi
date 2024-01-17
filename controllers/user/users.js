@@ -13,104 +13,121 @@ const { updateSessionSchedule } = require("../session");
 const patientscheduledvisitsms = async (req, res) => {
   const { mobile_number, firstname, lastname, day, date, healthfacilityname } =
     req.body;
-  const options = {
-    method: "POST",
-    url: "https://control.msg91.com/api/v5/flow/",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      authkey: process.env.MSGAUTHKEY,
-    },
-    body: {
-      template_id: "64d69114d6fc0516725eb0d3",
-      sender: "Opticcs",
-      short_url: "1",
-      mobiles: mobile_number,
-      firstname: firstname,
-      lastname: lastname,
-      day: day,
-      date: date,
-      healthfacilityname: healthfacilityname,
-    },
-    json: true,
+  const url = `https://api.ng.termii.com/api/sms/send`;
+
+  const data = {
+    api_key: process.env.TERMIIKEY,
+    type: "plain",
+    to: `${mobile_number}`,
+    from: "opticcs",
+    channel: "generic",
+    sms: `${firstname} ${lastname} you have been scheduled for antenatal visit on ${day} ${date} at ${healthfacilityname}`,
   };
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
-        error: "An error occurred while sending Message.",
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
+
+    const body = await response.json();
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "An error occurred while sending OTP.",
       });
     }
-    res.json({ statusCode: response.statusCode.toString(), result: body });
-  });
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
+    });
+  } catch (error) {
+    logger.error("Error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
 const patientscheduledvisitremindersms = async (req, res) => {
   const { mobile_number, firstname, lastname, date, healthfacilityname } =
     req.body;
-  const options = {
-    method: "POST",
-    url: "https://control.msg91.com/api/v5/flow/",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      authkey: "394982AVwwiRgqf64d2116bP1",
-    },
-    body: {
-      template_id: "64d691aad6fc052a1473dc42",
-      sender: "Opticcs",
-      short_url: "1",
-      mobiles: mobile_number,
-      firstname: firstname,
-      lastname: lastname,
-      date: date,
-      healthfacilityname: healthfacilityname,
-    },
-    json: true,
+  const url = `https://api.ng.termii.com/api/sms/send`;
+
+  const data = {
+    api_key: process.env.TERMIIKEY,
+    type: "plain",
+    to: `${mobile_number}`,
+    from: "opticcs",
+    channel: "generic",
+    sms: `${firstname} ${lastname} this is to remind you of your scheduled antenatal visit tomorrow ${date} at ${healthfacilityname}`,
   };
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
-        error: "An error occurred while sending Message.",
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
+
+    const body = await response.json();
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "An error occurred while sending OTP.",
       });
     }
-    res.json({ statusCode: response.statusCode.toString(), result: body });
-  });
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
+    });
+  } catch (error) {
+    logger.error("Error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
 const patientscheduledvisitmissedsms = async (req, res) => {
-  const { mobile_number, firstname, lastname, day, date, healthfacilityname } =
+  const { mobile_number, firstname, lastname, date, day, healthfacilityname } =
     req.body;
-  const options = {
-    method: "POST",
-    url: "https://control.msg91.com/api/v5/flow/",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      authkey: process.env.MSGAUTHKEY,
-    },
-    body: {
-      template_id: "64d6923ed6fc05311c3659f2",
-      sender: "Opticcs",
-      short_url: "1",
-      mobiles: mobile_number,
-      firstname: firstname,
-      lastname: lastname,
-      day: day,
-      date: date,
-      healthfacilityname: healthfacilityname,
-    },
-    json: true,
+  const url = `https://api.ng.termii.com/api/sms/send`;
+
+  const data = {
+    api_key: process.env.TERMIIKEY,
+    type: "plain",
+    to: `${mobile_number}`,
+    from: "opticcs",
+    channel: "generic",
+    sms: `${firstname} ${lastname} You missed your scheduled antenatal visit on ${day}, ${date} at ${healthfacilityname}`,
   };
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.status(response.statusCode).json({
-        statusCode: response.statusCode.toString(),
-        error: "An error occurred while sending Message.",
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": ["application/json", "application/json"],
+      },
+      body: JSON.stringify(data),
+    });
+
+    const body = await response.json();
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "An error occurred while sending OTP.",
       });
     }
-    res.json({ statusCode: response.statusCode.toString(), result: body });
-  });
+
+    res.status(response.status).json({
+      statusCode: response.status.toString(),
+      result: body,
+    });
+  } catch (error) {
+    logger.error("Error:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 };
+
 // healthPersonnels
 const getAllUsers = async (req, res, next) => {
   const connection = await db.getConnection();

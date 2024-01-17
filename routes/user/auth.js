@@ -5,10 +5,8 @@ const {
   signin,
   signout,
   changepassword,
-  forgotpassword,
   confirmOtp,
   sendOtp,
-  retryOtp,
   sendPasswordresetOtp,
   confirmpasswordresetOtp,
   retrypasswordresetOtp,
@@ -27,8 +25,6 @@ router.post("/password/sendOtp", sendPasswordresetOtp);
 router.post("/confirmOtp", confirmOtp);
 
 router.get("/password/confirmOtp", confirmpasswordresetOtp);
-
-router.get("/retryOtp", retryOtp);
 
 router.get("/password/retryOtp", retrypasswordresetOtp);
 

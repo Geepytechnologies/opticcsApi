@@ -181,6 +181,7 @@ const handleRefreshToken = async (req, res) => {
     }
   }
 };
+
 const signout = async (req, res, next) => {
   const connection = await db.getConnection();
 
