@@ -189,7 +189,7 @@ const sendPasswordresetOtp = async (req, res) => {
       }
 
       res.status(response.status).json({
-        statusCode: response.status,
+        statusCode: response.status.toString(),
         result: body,
       });
     } catch (error) {
