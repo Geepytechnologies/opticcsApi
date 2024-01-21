@@ -3311,14 +3311,40 @@ const healthfacilityscheduledata = async (req, res) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       sc.completed = ? AND pi.healthfacility = ?`;
+    const q4 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.upcoming = ? AND pi.healthfacility = ?`;
+    const q5 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.flagged = ? AND pi.healthfacility = ?`;
     const [number] = await connection.execute(q, [healthfacility]);
     const [missed] = await connection.execute(q2, [1, healthfacility]);
     const [completed] = await connection.execute(q3, [1, healthfacility]);
+    const [upcoming] = await connection.execute(q4, [1, healthfacility]);
+    const [flagged] = await connection.execute(q5, [1, healthfacility]);
 
     res.status(200).json({
       number: number.length,
       missed: missed.length,
       completed: completed.length,
+      upcoming: upcoming.length,
+      flagged: flagged.length,
     });
   } catch (error) {
     res.status(500).json(error);
@@ -3329,9 +3355,105 @@ const healthfacilityscheduledata = async (req, res) => {
   }
 };
 
+//testresult
+const healthfacilitytestdata = async (req, res) => {
+  const { healthfacility } = req.query;
+
+  const gethiv = async (healthfacility) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.healthfacility = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.healthfacility = ?`;
+
+      const result = await connection.execute(q, ["+ve", healthfacility]);
+      const result2 = await connection.execute(q2, ["-ve", healthfacility]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getmalariarapid = async (healthfacility) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.healthfacility = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.healthfacility = ?`;
+
+      const result = await connection.execute(q, ["+ve", healthfacility]);
+      const result2 = await connection.execute(q2, ["-ve", healthfacility]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  try {
+    const hiv = await gethiv(healthfacility);
+    const malariarapid = await getmalariarapid(healthfacility);
+
+    res.status(200).json({
+      hiv: hiv,
+      malariarapid: malariarapid,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   healthfacilitygeneraldata,
   numberofwomenwith4visits,
   healthfacilityscheduledata,
   healthfacilityreturnvisitdata,
+  healthfacilitytestdata,
 };

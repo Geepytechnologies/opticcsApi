@@ -3337,14 +3337,40 @@ const lgascheduledata = async (req, res) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       sc.completed = ? AND pi.lga = ?`;
+    const q4 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.upcoming = ? AND pi.lga = ?`;
+    const q5 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.flagged = ? AND pi.lga = ?`;
     const [number] = await connection.execute(q, [lga]);
     const [missed] = await connection.execute(q2, [1, lga]);
     const [completed] = await connection.execute(q3, [1, lga]);
+    const [upcoming] = await connection.execute(q4, [1, lga]);
+    const [flagged] = await connection.execute(q5, [1, lga]);
 
     res.status(200).json({
       number: number.length,
       missed: missed.length,
       completed: completed.length,
+      upcoming: upcoming.length,
+      flagged: flagged.length,
     });
   } catch (error) {
     res.status(500).json(error);
@@ -3379,10 +3405,106 @@ const getAllLga = async (req, res) => {
     }
   }
 };
+
+//testresult
+const lgatestdata = async (req, res) => {
+  const { lga } = req.query;
+
+  const gethiv = async (lga) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.lga = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.lga = ?`;
+
+      const result = await connection.execute(q, ["+ve", lga]);
+      const result2 = await connection.execute(q2, ["-ve", lga]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getmalariarapid = async (lga) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.lga = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.lga = ?`;
+
+      const result = await connection.execute(q, ["+ve", lga]);
+      const result2 = await connection.execute(q2, ["-ve", lga]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  try {
+    const hiv = await gethiv(lga);
+    const malariarapid = await getmalariarapid(lga);
+
+    res.status(200).json({
+      hiv: hiv,
+      malariarapid: malariarapid,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
 module.exports = {
   lgageneraldata,
   numberofwomenwith4visits,
   lgareturnvisitdata,
   lgascheduledata,
   getAllLga,
+  lgatestdata,
 };

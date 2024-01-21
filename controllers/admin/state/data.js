@@ -181,7 +181,6 @@ const getparity = async (state) => {
     return { less: less[0].length, greater: greater[0].length };
   } catch (error) {
     connection.rollback();
-    res.status(500).json(error);
   } finally {
     if (connection) {
       connection.release();
@@ -3376,14 +3375,40 @@ const statescheduledata = async (req, res) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       sc.completed = ? AND pi.state = ?`;
+    const q4 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.upcoming = ? AND pi.state = ?`;
+    const q5 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    schedule sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.flagged = ? AND pi.state = ?`;
     const [number] = await connection.execute(q, [state]);
     const [missed] = await connection.execute(q2, [1, state]);
     const [completed] = await connection.execute(q3, [1, state]);
+    const [upcoming] = await connection.execute(q4, [1, state]);
+    const [flagged] = await connection.execute(q5, [1, state]);
 
     res.status(200).json({
       number: number.length,
       missed: missed.length,
       completed: completed.length,
+      upcoming: upcoming.length,
+      flagged: flagged.length,
     });
   } catch (error) {
     res.status(500).json(error);
@@ -3410,10 +3435,106 @@ const getAllStates = async (req, res) => {
   }
 };
 
+//testresult
+const statetestdata = async (req, res) => {
+  const { state } = req.query;
+
+  const gethiv = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.state = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.hiv = ? AND pi.state = ?`;
+
+      const result = await connection.execute(q, ["+ve", state]);
+      const result2 = await connection.execute(q2, ["-ve", state]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getmalariarapid = async (state) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.state = ?`;
+      const q2 = `SELECT
+    pi.*,
+    p.*
+    FROM
+    testresult sc
+    JOIN
+        patients p ON sc.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      sc.malariarapid = ? AND pi.state = ?`;
+
+      const result = await connection.execute(q, ["+ve", state]);
+      const result2 = await connection.execute(q2, ["-ve", state]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  try {
+    const hiv = await gethiv(state);
+    const malariarapid = await getmalariarapid(state);
+
+    res.status(200).json({
+      hiv: hiv,
+      malariarapid: malariarapid,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   stategeneraldata,
   numberofwomenwith4visits,
   statereturnvisitdata,
   statescheduledata,
   getAllStates,
+  statetestdata,
 };

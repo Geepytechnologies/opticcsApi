@@ -10,6 +10,7 @@ const {
   getvisitdates,
   nationalreturnvisitdata,
   nationalscheduledata,
+  nationaltestdata,
 } = require("../../../controllers/admin/national/data");
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.get("/general/return", nationalreturnvisitdata);
 router.get("/visitdates/:id", getvisitdates);
 
 router.get("/schedule", nationalscheduledata);
+router.get("/test", nationaltestdata);
 
 module.exports = router;

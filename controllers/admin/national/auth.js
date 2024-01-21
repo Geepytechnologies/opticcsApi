@@ -241,8 +241,16 @@ const signin = async (req, res, next) => {
 
   const existinguserid = async () => {
     const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
-    const result = await connection.execute(q, [userid]);
-    return result[0];
+    try {
+      const result = await connection.execute(q, [userid]);
+      return result[0];
+    } catch (error) {
+      connection.release();
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
   };
 
   const createRefresh = async (refreshToken) => {

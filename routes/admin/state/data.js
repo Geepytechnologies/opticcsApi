@@ -5,6 +5,7 @@ const {
   statereturnvisitdata,
   statescheduledata,
   getAllStates,
+  statetestdata,
 } = require("../../../controllers/admin/state/data");
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.get("/general", stategeneraldata);
 router.get("/find/states", getAllStates);
 
 router.get("/schedule", statescheduledata);
+router.get("/test", statetestdata);
 
 router.get("/general/return", statereturnvisitdata);
 

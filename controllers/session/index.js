@@ -359,27 +359,30 @@ const getAllsessionshf = async (req, res) => {
 
 const getsessiongraph = async (req, res) => {
   const connection = await db.getConnection();
+  const { year } = req.query;
 
-  const q = `SELECT
+  const q = `
+SELECT
   JSON_OBJECT(
-      'JANUARY', SUM(MONTH(start_date) = 1),
-      'FEBRUARY', SUM(MONTH(start_date) = 2),
-      'MARCH', SUM(MONTH(start_date) = 3),
-      'APRIL', SUM(MONTH(start_date) = 4),
-      'MAY', SUM(MONTH(start_date) = 5),
-      'JUNE', SUM(MONTH(start_date) = 6),
-      'JULY', SUM(MONTH(start_date) = 7),
-      'AUGUST', SUM(MONTH(start_date) = 8),
-      'SEPTEMBER', SUM(MONTH(start_date) = 9),
-      'OCTOBER', SUM(MONTH(start_date) = 10),
-      'NOVEMBER', SUM(MONTH(start_date) = 11),
-      'DECEMBER', SUM(MONTH(start_date) = 12)
+    'JANUARY', SUM(MONTH(start_date) = 1),
+    'FEBRUARY', SUM(MONTH(start_date) = 2),
+    'MARCH', SUM(MONTH(start_date) = 3),
+    'APRIL', SUM(MONTH(start_date) = 4),
+    'MAY', SUM(MONTH(start_date) = 5),
+    'JUNE', SUM(MONTH(start_date) = 6),
+    'JULY', SUM(MONTH(start_date) = 7),
+    'AUGUST', SUM(MONTH(start_date) = 8),
+    'SEPTEMBER', SUM(MONTH(start_date) = 9),
+    'OCTOBER', SUM(MONTH(start_date) = 10),
+    'NOVEMBER', SUM(MONTH(start_date) = 11),
+    'DECEMBER', SUM(MONTH(start_date) = 12)
   ) AS count
 FROM sessions
-
+WHERE YEAR(start_date) = ?;
 `;
+  const values = [year];
   try {
-    const [result] = await connection.execute(q);
+    const [result] = await connection.execute(q, values);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
@@ -395,31 +398,34 @@ FROM sessions
 };
 const getsessiongraphstate = async (req, res) => {
   const connection = await db.getConnection();
-  const { state } = req.query;
+  const { state, year } = req.query;
 
   const q = `SELECT
   JSON_OBJECT(
-      'JANUARY', SUM(MONTH(start_date) = 1),
-      'FEBRUARY', SUM(MONTH(start_date) = 2),
-      'MARCH', SUM(MONTH(start_date) = 3),
-      'APRIL', SUM(MONTH(start_date) = 4),
-      'MAY', SUM(MONTH(start_date) = 5),
-      'JUNE', SUM(MONTH(start_date) = 6),
-      'JULY', SUM(MONTH(start_date) = 7),
-      'AUGUST', SUM(MONTH(start_date) = 8),
-      'SEPTEMBER', SUM(MONTH(start_date) = 9),
-      'OCTOBER', SUM(MONTH(start_date) = 10),
-      'NOVEMBER', SUM(MONTH(start_date) = 11),
-      'DECEMBER', SUM(MONTH(start_date) = 12)
+    'JANUARY', SUM(MONTH(start_date) = 1),
+    'FEBRUARY', SUM(MONTH(start_date) = 2),
+    'MARCH', SUM(MONTH(start_date) = 3),
+    'APRIL', SUM(MONTH(start_date) = 4),
+    'MAY', SUM(MONTH(start_date) = 5),
+    'JUNE', SUM(MONTH(start_date) = 6),
+    'JULY', SUM(MONTH(start_date) = 7),
+    'AUGUST', SUM(MONTH(start_date) = 8),
+    'SEPTEMBER', SUM(MONTH(start_date) = 9),
+    'OCTOBER', SUM(MONTH(start_date) = 10),
+    'NOVEMBER', SUM(MONTH(start_date) = 11),
+    'DECEMBER', SUM(MONTH(start_date) = 12)
   ) AS count
 FROM sessions
 INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
-WHERE healthpersonnel.state = ? 
+WHERE YEAR(start_date) = ? 
+  AND healthpersonnel.state = ?;
+
 
 
 `;
+  const values = [year, state];
   try {
-    const [result] = await connection.execute(q, [state]);
+    const [result] = await connection.execute(q, values);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
@@ -436,31 +442,47 @@ WHERE healthpersonnel.state = ?
 };
 const getsessiongraphlga = async (req, res) => {
   const connection = await db.getConnection();
-  const { lga } = req.query;
+  const { lga, year } = req.query;
 
   const q = `SELECT
   JSON_OBJECT(
-      'JANUARY', SUM(MONTH(start_date) = 1),
-      'FEBRUARY', SUM(MONTH(start_date) = 2),
-      'MARCH', SUM(MONTH(start_date) = 3),
-      'APRIL', SUM(MONTH(start_date) = 4),
-      'MAY', SUM(MONTH(start_date) = 5),
-      'JUNE', SUM(MONTH(start_date) = 6),
-      'JULY', SUM(MONTH(start_date) = 7),
-      'AUGUST', SUM(MONTH(start_date) = 8),
-      'SEPTEMBER', SUM(MONTH(start_date) = 9),
-      'OCTOBER', SUM(MONTH(start_date) = 10),
-      'NOVEMBER', SUM(MONTH(start_date) = 11),
-      'DECEMBER', SUM(MONTH(start_date) = 12)
+    'JANUARY', SUM(MONTH(start_date) = 1 AND YEAR(start_date) = ?),
+    'FEBRUARY', SUM(MONTH(start_date) = 2 AND YEAR(start_date) = ?),
+    'MARCH', SUM(MONTH(start_date) = 3 AND YEAR(start_date) = ?),
+    'APRIL', SUM(MONTH(start_date) = 4 AND YEAR(start_date) = ?),
+    'MAY', SUM(MONTH(start_date) = 5 AND YEAR(start_date) = ?),
+    'JUNE', SUM(MONTH(start_date) = 6 AND YEAR(start_date) = ?),
+    'JULY', SUM(MONTH(start_date) = 7 AND YEAR(start_date) = ?),
+    'AUGUST', SUM(MONTH(start_date) = 8 AND YEAR(start_date) = ?),
+    'SEPTEMBER', SUM(MONTH(start_date) = 9 AND YEAR(start_date) = ?),
+    'OCTOBER', SUM(MONTH(start_date) = 10 AND YEAR(start_date) = ?),
+    'NOVEMBER', SUM(MONTH(start_date) = 11 AND YEAR(start_date) = ?),
+    'DECEMBER', SUM(MONTH(start_date) = 12 AND YEAR(start_date) = ?)
   ) AS count
-FROM sessions
+FROM sessions WHERE YEAR(start_date) = ? 
 INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
 WHERE healthpersonnel.lga = ? 
 
 
 `;
+  const values = [
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    lga,
+  ];
   try {
-    const [result] = await connection.execute(q, [lga]);
+    const [result] = await connection.execute(q, values);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
@@ -477,31 +499,47 @@ WHERE healthpersonnel.lga = ?
 };
 const getsessiongraphhealthfacility = async (req, res) => {
   const connection = await db.getConnection();
-  const { healthfacility } = req.query;
+  const { healthfacility, year } = req.query;
 
   const q = `SELECT
   JSON_OBJECT(
-      'JANUARY', SUM(MONTH(start_date) = 1),
-      'FEBRUARY', SUM(MONTH(start_date) = 2),
-      'MARCH', SUM(MONTH(start_date) = 3),
-      'APRIL', SUM(MONTH(start_date) = 4),
-      'MAY', SUM(MONTH(start_date) = 5),
-      'JUNE', SUM(MONTH(start_date) = 6),
-      'JULY', SUM(MONTH(start_date) = 7),
-      'AUGUST', SUM(MONTH(start_date) = 8),
-      'SEPTEMBER', SUM(MONTH(start_date) = 9),
-      'OCTOBER', SUM(MONTH(start_date) = 10),
-      'NOVEMBER', SUM(MONTH(start_date) = 11),
-      'DECEMBER', SUM(MONTH(start_date) = 12)
+    'JANUARY', SUM(MONTH(start_date) = 1 AND YEAR(start_date) = ?),
+    'FEBRUARY', SUM(MONTH(start_date) = 2 AND YEAR(start_date) = ?),
+    'MARCH', SUM(MONTH(start_date) = 3 AND YEAR(start_date) = ?),
+    'APRIL', SUM(MONTH(start_date) = 4 AND YEAR(start_date) = ?),
+    'MAY', SUM(MONTH(start_date) = 5 AND YEAR(start_date) = ?),
+    'JUNE', SUM(MONTH(start_date) = 6 AND YEAR(start_date) = ?),
+    'JULY', SUM(MONTH(start_date) = 7 AND YEAR(start_date) = ?),
+    'AUGUST', SUM(MONTH(start_date) = 8 AND YEAR(start_date) = ?),
+    'SEPTEMBER', SUM(MONTH(start_date) = 9 AND YEAR(start_date) = ?),
+    'OCTOBER', SUM(MONTH(start_date) = 10 AND YEAR(start_date) = ?),
+    'NOVEMBER', SUM(MONTH(start_date) = 11 AND YEAR(start_date) = ?),
+    'DECEMBER', SUM(MONTH(start_date) = 12 AND YEAR(start_date) = ?)
   ) AS count
-FROM sessions
+FROM sessions WHERE YEAR(start_date) = ?
 INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
 WHERE healthpersonnel.healthfacility = ? 
 
 
 `;
+  const values = [
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    year,
+    healthfacility,
+  ];
   try {
-    const [result] = await connection.execute(q, [healthfacility]);
+    const [result] = await connection.execute(q, values);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });

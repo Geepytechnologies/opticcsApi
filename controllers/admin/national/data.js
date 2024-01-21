@@ -147,7 +147,7 @@ const getparity = async () => {
     return { less: less[0].length, greater: greater[0].length };
   } catch (error) {
     connection.rollback();
-    res.status(500).json(error);
+    throw error;
   } finally {
     if (connection) {
       connection.release();
@@ -338,8 +338,8 @@ const getlowbirthbabies = async () => {
 const getbabieswhodied = async () => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM obstetrichistory WHERE babieswhodied   = ?`;
-    const q2 = `SELECT * FROM obstetrichistory WHERE babieswhodied   = ?`;
+    const q = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
+    const q2 = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
@@ -2190,14 +2190,15 @@ const gettetanus = async () => {
 };
 
 const nationalgeneraldata = async (req, res) => {
+  const date = req.query.date || null;
   try {
     //personalinformation
-    const edd = await getedd2();
+    const edd = await getedd2(date);
     const firstbabymovement = await getfirstbabymovement();
-    const parity = await getparity();
-    const babysmovement = await getbabysmovement();
-    const graviditygreaterthan8result = await graviditygreaterthan8();
-    const graviditylessthan8result = await graviditylessthan8();
+    const parity = await getparity(date);
+    const babysmovement = await getbabysmovement(date);
+    const graviditygreaterthan8result = await graviditygreaterthan8(date);
+    const graviditylessthan8result = await graviditylessthan8(date);
     //obstetric
     const convulsionsduringpregnancy = await getconvulsions();
     const caesarean = await getsurgery();
@@ -2968,14 +2969,20 @@ const nationalscheduledata = async (req, res) => {
     const q = `SELECT * FROM schedule;`;
     const q2 = `SELECT * FROM schedule WHERE missed = ?;`;
     const q3 = `SELECT * FROM schedule WHERE completed = ?;`;
+    const q4 = `SELECT * FROM schedule WHERE upcoming = ?;`;
+    const q5 = `SELECT * FROM schedule WHERE flagged = ?;`;
     const [number] = await connection.execute(q);
     const [missed] = await connection.execute(q2, [1]);
     const [completed] = await connection.execute(q3, [1]);
+    const [upcoming] = await connection.execute(q4, [1]);
+    const [flagged] = await connection.execute(q5, [1]);
 
     res.status(200).json({
       number: number.length,
       missed: missed.length,
       completed: completed.length,
+      upcoming: upcoming.length,
+      flagged: flagged.length,
     });
   } catch (error) {
     res.status(500).json(error);
@@ -2983,6 +2990,63 @@ const nationalscheduledata = async (req, res) => {
     if (connection) {
       connection.release();
     }
+  }
+};
+
+//testresult
+const nationaltestdata = async (req, res) => {
+  const gethiv = async () => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT * FROM testresult WHERE hiv = ?
+      `;
+      const q2 = `SELECT * FROM testresult WHERE hiv = ?
+      `;
+
+      const result = await connection.execute(q, ["+ve"]);
+      const result2 = await connection.execute(q2, ["-ve"]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  const getmalariarapid = async () => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT * FROM testresult WHERE malariarapid = ?
+      `;
+      const q2 = `SELECT * FROM testresult WHERE malariarapid = ?
+      `;
+
+      const result = await connection.execute(q, ["+ve"]);
+      const result2 = await connection.execute(q2, ["-ve"]);
+      return {
+        positive: result[0].length,
+        negative: result2[0].length,
+      };
+    } catch (error) {
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  try {
+    const hiv = await gethiv();
+    const malariarapid = await getmalariarapid();
+
+    res.status(200).json({
+      hiv: hiv,
+      malariarapid: malariarapid,
+    });
+  } catch (error) {
+    res.status(500).json(error);
   }
 };
 
@@ -2994,4 +3058,5 @@ module.exports = {
   numberofwomenwith4visits,
   getvisitdates,
   nationalscheduledata,
+  nationaltestdata,
 };
