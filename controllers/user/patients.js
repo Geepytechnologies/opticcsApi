@@ -2604,8 +2604,29 @@ const getAllSchedule = async (req, res) => {
   }
 };
 
+const deleteAPatient = async (req, res) => {
+  const { id } = req.params;
+  const connection = await db.getConnection();
+  try {
+    const q = `DELETE FROM patients WHERE id = ?`;
+    const q2 = `DELETE FROM personalinformation where id = ?`;
+    const result = await connection.execute(q, [id]);
+    const result2 = await connection.execute(q2, [id]);
+    res.status(200).json({ q1: result[0], q2: result2[0] });
+  } catch (error) {
+    logger.error(error);
+    connection.release();
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 module.exports = {
   createPatient,
+  deleteAPatient,
   getPatientRecord,
   getPatientRecordWithVisits,
   createPatientEveryVisit,

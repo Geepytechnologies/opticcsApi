@@ -1,4 +1,5 @@
 const db = require("../../../config/db");
+const logger = require("../../../logger");
 
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
@@ -2955,6 +2956,7 @@ const getvisitdates = async (req, res) => {
     const [returnvisit] = await connection.execute(q2, [id]);
     res.status(200).json({ firstvisit, returnvisit });
   } catch (error) {
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -2985,6 +2987,7 @@ const nationalscheduledata = async (req, res) => {
       flagged: flagged.length,
     });
   } catch (error) {
+    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -3010,6 +3013,8 @@ const nationaltestdata = async (req, res) => {
         negative: result2[0].length,
       };
     } catch (error) {
+      connection.release();
+      logger.error(error);
     } finally {
       if (connection) {
         connection.release();
@@ -3046,6 +3051,7 @@ const nationaltestdata = async (req, res) => {
       malariarapid: malariarapid,
     });
   } catch (error) {
+    logger.error(error);
     res.status(500).json(error);
   }
 };

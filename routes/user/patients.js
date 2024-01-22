@@ -28,6 +28,7 @@ const {
   getAllPatientsAndHealthworkerpaginated,
   getAllPatientFirstVisits,
   getAllPatientReturnVisit,
+  deleteAPatient,
 } = require("../../controllers/user/patients");
 const { verifyToken } = require("../../middlewares/verifyToken");
 const router = express.Router();
@@ -67,6 +68,7 @@ router.get(
   verifyToken,
   getAllDeliveryreportsByAWorker
 );
+router.delete("/:id", deleteAPatient);
 
 router.get("/find/:id", getPatientRecord);
 
