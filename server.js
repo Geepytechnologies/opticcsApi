@@ -93,6 +93,7 @@ app.get("/", (req, res) => {
   });
   res.send("Home page");
 });
+
 app.get("/test", (req, res) => {
   const q = `SELECT * FROM healthpersonnel`;
   db.query(q, (err, result) => {

@@ -11,8 +11,22 @@ const db = mysql.createPool({
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
   waitForConnections: true,
-  connectionLimit: 100,
+  connectionLimit: 30,
+  maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+  idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
   queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+});
+
+// Event listener for when a connection is acquired
+db.on("acquire", function (connection) {
+  console.log("Connection %d acquired", connection.threadId);
+});
+
+// Event listener for when a connection is released
+db.on("release", function (connection) {
+  console.log("Connection %d released", connection.threadId);
 });
 
 (async () => {
@@ -20,6 +34,7 @@ const db = mysql.createPool({
     await db.query("SELECT 1");
     logger.info("Connected to MySQL pool!");
   } catch (error) {
+    console.log(error.code);
     logger.error("Failed to connect to MySQL:", error.message);
   }
 })();
