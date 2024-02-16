@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const accounts_1 = require("../../../controllers/admin/state/accounts");
+const auth_1 = require("../../../controllers/admin/state/auth");
+const verifyStateAdminToken_1 = require("../../../middlewares/verifyStateAdminToken");
+const router = express_1.default.Router();
+router.post("/", accounts_1.createStateAccount);
+router.delete("/delete/:id", accounts_1.deleteState);
+router.get("/find", accounts_1.getAllStates);
+router.get("/find/users", accounts_1.getAllStateUsers);
+router.get("/refresh", auth_1.handleRefreshToken);
+router.get("/generateuser", auth_1.generatestatedetails);
+router.post("/resetpassword", verifyStateAdminToken_1.verifyStateAdminToken, auth_1.resetpassword);
+router.post("/signin", auth_1.signin);
+router.get("/signout", verifyStateAdminToken_1.verifyStateAdminToken, auth_1.signout);
+router.post("/user", accounts_1.createStateUserAccount);
+exports.default = router;

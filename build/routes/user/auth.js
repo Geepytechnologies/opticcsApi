@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+const auth_1 = require("../../controllers/user/auth");
+router.post("/signup", auth_1.signup);
+router.post("/sendOtp", auth_1.sendOtp);
+router.post("/voiceOtp", auth_1.voiceOtp);
+router.post("/password/sendOtp", auth_1.sendPasswordresetOtp);
+router.post("/confirmOtp", auth_1.confirmOtp);
+router.get("/password/confirmOtp", auth_1.confirmpasswordresetOtp);
+router.get("/password/retryOtp", auth_1.retrypasswordresetOtp);
+router.put("/changepassword", auth_1.changepassword);
+router.post("/resetpassword", auth_1.resetpassword);
+router.post("/signin", auth_1.signin);
+router.get("/signout", auth_1.signout);
+exports.default = router;

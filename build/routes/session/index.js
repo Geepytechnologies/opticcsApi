@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const session_1 = require("../../controllers/session");
+const router = express_1.default.Router();
+router.post("/start", session_1.startSessionRequest);
+router.post("/end", session_1.endSession);
+router.get("/find/user/:id", session_1.getCurrentusersessionrequest);
+router.get("/find/all", session_1.getAllsessions);
+router.get("/find/state", session_1.getAllsessionsState);
+router.get("/find/lga", session_1.getAllsessionsLga);
+router.get("/find/healthfacility", session_1.getAllsessionshf);
+router.get("/data", session_1.getsessiongraph);
+router.get("/data/state", session_1.getsessiongraphstate);
+router.get("/data/lga", session_1.getsessiongraphlga);
+router.get("/data/healthfacility", session_1.getsessiongraphhealthfacility);
+exports.default = router;

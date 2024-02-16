@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const accounts_1 = require("../../../controllers/admin/national/accounts");
+const auth_1 = require("../../../controllers/admin/national/auth");
+const { verifyToken } = require("../../../middlewares/verifyToken");
+const verifyNationalAdminToken_1 = require("../../../middlewares/verifyNationalAdminToken");
+const router = express_1.default.Router();
+router.post("/users", accounts_1.createNationalUserAccount);
+router.get("/refresh", auth_1.handleRefreshToken);
+router.post("/signin", auth_1.signin);
+router.post("/changepassword", verifyNationalAdminToken_1.verifyNationalAdminToken, auth_1.changepassword);
+router.post("/resetpassword", auth_1.resetpassword);
+router.post("/password/sendOtp", auth_1.sendPasswordresetOtp);
+router.post("/password/confirmOtp", auth_1.confirmpasswordresetOtp);
+router.post("/password/retryOtp", auth_1.retrypasswordresetOtp);
+router.get("/signout", verifyNationalAdminToken_1.verifyNationalAdminToken, auth_1.signout);
+exports.default = router;

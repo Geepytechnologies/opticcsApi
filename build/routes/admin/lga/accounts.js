@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const accounts_1 = require("../../../controllers/admin/lga/accounts");
+const auth_1 = require("../../../controllers/admin/lga/auth");
+const verifyLgAdminToken_1 = require("../../../middlewares/verifyLgAdminToken");
+const router = express_1.default.Router();
+router.post("/", accounts_1.createLgaAccount);
+router.get("/find", accounts_1.getLgaAccounts);
+router.post("/signin", auth_1.signin);
+router.get("/signout", verifyLgAdminToken_1.verifyLgAdminToken, auth_1.signout);
+router.get("/generateuser", auth_1.generatelgadetails);
+router.get("/refresh", auth_1.handleRefreshToken);
+router.post("/resetpassword", verifyLgAdminToken_1.verifyLgAdminToken, auth_1.resetpassword);
+router.post("/users", accounts_1.createLgaUserAccount);
+router.get("/users", accounts_1.getLgaUserAccounts);
+exports.default = router;
