@@ -22,7 +22,6 @@ export class HealthFacilityRepository {
       }
       return checked;
     } catch (error: any) {
-      connection.release();
       logger.error(error);
       throw new Error(error);
     } finally {
@@ -50,7 +49,6 @@ export class HealthFacilityRepository {
       }
       return checked;
     } catch (error: any) {
-      connection.release();
       throw new Error(error);
     } finally {
       if (connection) {
@@ -68,7 +66,6 @@ export class HealthFacilityRepository {
 
       return result;
     } catch (error: any) {
-      connection.release();
       logger.error(error);
       throw new Error(error);
     } finally {
@@ -89,7 +86,6 @@ export class HealthFacilityRepository {
 
       return result;
     } catch (error: any) {
-      connection.release();
       logger.error(error);
       throw new Error(error);
     } finally {
@@ -111,7 +107,6 @@ export class HealthFacilityRepository {
 
       return result;
     } catch (error: any) {
-      connection.release();
       logger.error(error);
       throw new Error(error);
     } finally {

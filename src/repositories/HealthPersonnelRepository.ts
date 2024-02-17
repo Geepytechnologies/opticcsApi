@@ -9,7 +9,6 @@ export class HealthPersonnelRepository {
       const result = await connection.execute(q, [id]);
       return result;
     } catch (error: any) {
-      connection.release();
       logger.error(error);
       throw new Error(error);
     } finally {
