@@ -1,58 +1,31 @@
-//@ts-nocheck
 import db from "../../../config/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import { NextFunction, Response, Request } from "express";
+import { HealthfacilityService } from "../../../services/healthfacility.service";
+import { HealthFacilityRepository } from "../../../repositories/HealthFacilityRepository";
+import BaseRepository from "../../../repositories/BaseRepository";
 
-// Function to generate a random string of given length
-const generateRandomString = (length: number) => {
-  return crypto
-    .randomBytes(Math.ceil(length / 2))
-    .toString("hex")
-    .slice(0, length);
-};
-// Function to generate a unique username and password
-const generateUniqueCredentials = async (callback: {
-  (err: any, data: any): void;
-  (
-    arg0: unknown,
-    arg1: { username: string; password: string } | undefined
-  ): void;
-}) => {
-  const username = generateRandomString(8);
-  const password = generateRandomString(12);
-  const connection = await db.getConnection();
+interface User {
+  id: string;
+  username: string;
+  password: string;
+  refreshtoken: string;
+  others: any;
+}
 
-  try {
-    // Check if the generated username already exists in the database
-    const [results, fields] = await connection.execute(
-      "SELECT * FROM healthfacilityadmin WHERE userid = ?",
-      [username]
-    );
-    if (Array.isArray(results)) {
-      if (results.length > 0) {
-        // If the username already exists, regenerate the credentials and call the callback recursively
-        generateUniqueCredentials(callback);
-      } else {
-        // If the username is unique, call the callback with the generated credentials
-        callback(null, { username, password });
-      }
-    }
-  } catch (err) {
-    // If there's an error during the query, call the callback with the error
-    callback(err, null);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
+interface AuthenticatedRequest extends Request {
+  user?: { id: string };
+}
 
 const generatehealthfacilitydetails = async (req: Request, res: Response) => {
   try {
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+    const hfservice = new HealthfacilityService(hfRepository);
+
     const credentials = await new Promise((resolve, reject) => {
-      generateUniqueCredentials((err, data) => {
+      hfservice.generateUniqueCredentials((err, data) => {
         if (err) {
           console.log(err);
           reject(err);
@@ -70,19 +43,22 @@ const generatehealthfacilitydetails = async (req: Request, res: Response) => {
 };
 
 const signin = async (req: Request, res: Response, next: NextFunction) => {
-  const connection = await db.getConnection();
+  const connection = await BaseRepository.getConnection();
+  const hfRepository = new HealthFacilityRepository(connection);
+
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM healthfacilityadmin WHERE userid = ?`;
-    const result = await connection.execute(q, [userid]);
+    const result = await hfRepository.getHealthfacilityUserAccountByUserID(
+      userid
+    );
     return result[0];
   };
   const createRefresh = async (refreshtoken: string) => {
-    const q = `UPDATE healthfacilityadmin
-        SET refreshtoken = ?
-        WHERE userid = ?`;
-    const result = await connection.execute(q, [refreshtoken, userid]);
+    const result = await hfRepository.UpdateUserRefreshToken(
+      refreshtoken,
+      userid
+    );
     return result[0];
   };
 
@@ -93,68 +69,64 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
         return res
           .status(404)
           .json({ statusCode: "404", message: "User not found" });
-      const isMatched = bcrypt.compareSync(req.body.password, user[0].password);
+
+      const userData = user[0] as User;
+
+      const isMatched = bcrypt.compareSync(
+        req.body.password,
+        userData.password
+      );
       if (!isMatched)
         return res
           .status(400)
           .json({ statusCode: "400", message: "wrong credentials" });
-    }
+      const accesskey = process.env.ACCESS_SECRET || "";
+      const refreshkey = process.env.REFRESH_SECRET || "";
 
-    //access Token
-    const accessToken = jwt.sign(
-      { id: user[0].id },
-      process.env.ACCESS_SECRET,
-      {
+      //access Token
+      const accessToken = jwt.sign({ id: userData.id }, accesskey, {
         expiresIn: "5m",
-      }
-    );
+      });
 
-    //refresh Token
-    const refreshToken = jwt.sign(
-      { id: user[0].id },
-      process.env.REFRESH_SECRET,
-      {
+      //refresh Token
+      const refreshToken = jwt.sign({ id: userData.id }, refreshkey, {
         expiresIn: "30m",
+      });
+      //save refresh token to the user model
+      const updatedUser = await createRefresh(refreshToken);
+      const newuser = await existinguserid();
+
+      // Creates Secure Cookie with refresh token
+      res.cookie("healthtoken", refreshToken, {
+        // httpOnly: false,
+        // secure: true,
+        // sameSite: "None",
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+      });
+
+      if (Array.isArray(newuser)) {
+        const { password, refreshtoken, ...others } = newuser[0] as User;
+        res.status(200).json({
+          statusCode: "200",
+          message: "successful",
+          result: { others: others, accessToken },
+        });
       }
-    );
-
-    //save refresh token to the user model
-    const updatedUser = await createRefresh(refreshToken);
-    const newuser = await existinguserid();
-
-    // Creates Secure Cookie with refresh token
-    res.cookie("healthtoken", refreshToken, {
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: "None",
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-    });
-
-    const { password, refreshtoken, ...others } = newuser[0];
-
-    res.status(200).json({
-      statusCode: "200",
-      message: "successful",
-      result: { others: others, accessToken },
-    });
+    }
   } catch (err) {
-    connection.rollback();
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
     next(err);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
 const handleRefreshToken = async (req: Request, res: Response) => {
-  const connection = await db.getConnection();
+  const connection = await BaseRepository.getConnection();
+  const hfRepository = new HealthFacilityRepository(connection);
+
   const existingRefresh = async (refreshToken: string) => {
-    const q = `SELECT * FROM healthfacilityadmin WHERE refreshToken = ?`;
-    const result = await connection.execute(q, [refreshToken]);
+    const result = await hfRepository.getUserWithRefreshToken(refreshToken);
     return result[0];
   };
 
@@ -164,49 +136,53 @@ const handleRefreshToken = async (req: Request, res: Response) => {
 
   try {
     const foundUser = await existingRefresh(refreshToken);
-    if (!foundUser.length) {
+    if (Array.isArray(foundUser) && foundUser.length === 0) {
       return res.status(403).json("User not Found");
     }
 
+    const refreshSecret = process.env.REFRESH_SECRET || "";
+    const accessSecret = process.env.ACCESS_SECRET || "";
     // Verify JWT
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
-      if (err || foundUser[0]?.id !== user.id) {
+    jwt.verify(refreshToken, refreshSecret, (err: any, user: any) => {
+      if (
+        err ||
+        !Array.isArray(foundUser) ||
+        foundUser.length === 0 ||
+        !("id" in foundUser[0]) ||
+        foundUser[0]?.id !== user.id
+      ) {
         return res.sendStatus(403);
       } else {
-        const accessToken = jwt.sign(
-          { id: user.id },
-          process.env.ACCESS_SECRET,
-          {
-            expiresIn: "30m",
-          }
-        );
+        const accessToken = jwt.sign({ id: user.id }, accessSecret, {
+          expiresIn: "30m",
+        });
         const { password, refreshToken, ...others } = foundUser[0];
         return res.json({ accessToken, others });
       }
     });
   } catch (err) {
     res.status(500).json({ message: "error refreshing token", error: err });
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
-const signout = async (req, res, next) => {
-  const connection = await db.getConnection();
-
+const signout = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   // On client, also delete the accessToken
   try {
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
     const cookies = req.cookies;
     if (!cookies?.healthtoken) return res.sendStatus(204); //No content
     const refreshtoken = cookies.healthtoken;
 
     // Is refreshToken in db?
-    const existingrefreshQuery = ` SELECT * FROM healthfacilityadmin WHERE refreshtoken = ?`;
-    const foundUserResult = await connection.execute(existingrefreshQuery, [
-      refreshtoken,
-    ]);
+    const foundUserResult = await hfRepository.getUserWithRefreshToken(
+      refreshtoken
+    );
     const foundUser = foundUserResult[0];
     if (!foundUser) {
       res.clearCookie("healthtoken", {
@@ -219,12 +195,14 @@ const signout = async (req, res, next) => {
 
     const updateRefreshQuery = `UPDATE healthfacilityadmin
      SET refreshtoken = ? WHERE id = ?`;
-
-    const updatedUserResult = await connection.execute(updateRefreshQuery, [
-      null,
-      req.user.id,
-    ]);
-    const updatedUser = updatedUserResult[0];
+    const userId = req.user && req.user.id;
+    if (userId) {
+      const updatedUserResult = await hfRepository.UpdateUserRefreshToken(
+        null,
+        userId
+      );
+      const updatedUser = updatedUserResult[0];
+    }
 
     res.clearCookie("healthtoken", {
       // httpOnly: true,
@@ -236,43 +214,54 @@ const signout = async (req, res, next) => {
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing out", err: error });
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
-const resetpassword = async (req, res, next) => {
-  const connection = await db.getConnection();
+const resetpassword = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const connection = await BaseRepository.getConnection();
+  const hfRepository = new HealthFacilityRepository(connection);
+
   const { oldpassword, newpassword } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(newpassword, salt);
+  const userId = req.user && req.user.id;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM healthfacilityadmin WHERE id = ?`;
-    const result = await connection.execute(q, [req.user.id]);
-    return result[0];
+    if (userId) {
+      const result = await hfRepository.getHealthfacilityUserAccountByID(
+        userId
+      );
+      return result[0];
+    }
   };
   const createNewpassword = async () => {
-    const q = `UPDATE healthfacilityadmin
-        SET password = ?
-        WHERE id = ?`;
-    const result = await connection.execute(q, [hashedpassword, req.user.id]);
-    return result[0];
+    if (userId) {
+      const result = await hfRepository.UpdateUserPassword(
+        hashedpassword,
+        userId
+      );
+      return result[0];
+    }
   };
 
   try {
     const user = await existinguserid();
-    if (!user.length)
-      return res
-        .status(404)
-        .json({ statusCode: "404", message: "User not found" });
-    const isMatched = bcrypt.compareSync(oldpassword, user[0].password);
-    if (!isMatched)
-      return res
-        .status(400)
-        .json({ statusCode: "400", message: "Wrong password" });
+    if (Array.isArray(user)) {
+      if (!user.length)
+        return res
+          .status(404)
+          .json({ statusCode: "404", message: "User not found" });
+      const userData = user[0] as User;
+      const isMatched = bcrypt.compareSync(oldpassword, userData.password);
+      if (!isMatched)
+        return res
+          .status(400)
+          .json({ statusCode: "400", message: "Wrong password" });
+    }
 
     //save new password to the user model
     const newuser = await createNewpassword();
@@ -282,17 +271,12 @@ const resetpassword = async (req, res, next) => {
       message: "password Changed",
     });
   } catch (err) {
-    connection.rollback();
     res.status(500).json({
       statusCode: "500",
       message: "Error Resetting password",
       error: err,
     });
     next(err);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 

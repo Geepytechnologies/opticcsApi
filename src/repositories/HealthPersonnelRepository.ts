@@ -1,19 +1,23 @@
-import db from "../config/db";
+import { PoolConnection } from "mysql2/promise";
 import logger from "../logger";
 
 export class HealthPersonnelRepository {
-  static async updateHealthpersonnelverification(id: string) {
-    const connection = await db.getConnection();
+  private connection: PoolConnection;
+
+  constructor(connection: PoolConnection) {
+    this.connection = connection;
+  }
+  async updateHealthpersonnelverification(id: string) {
     const q = `UPDATE healthpersonnel SET verified = 1 WHERE id = ?`;
     try {
-      const result = await connection.execute(q, [id]);
+      const result = await this.connection.execute(q, [id]);
       return result;
     } catch (error: any) {
       logger.error(error);
       throw new Error(error);
     } finally {
-      if (connection) {
-        connection.release();
+      if (this.connection) {
+        this.connection.release();
       }
     }
   }

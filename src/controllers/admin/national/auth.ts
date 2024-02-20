@@ -3,6 +3,8 @@ import db from "../../../config/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import request from "request";
+import { NationalRepository } from "../../../repositories/NationalRepository";
+import BaseRepository from "../../../repositories/BaseRepository";
 
 // const sendPasswordresetOtp = async (req, res) => {
 //   const { mobile_number } = req.body;
@@ -237,27 +239,20 @@ const retrypasswordresetOtp = async (req, res) => {
 //   }
 // };
 const signin = async (req, res, next) => {
-  const connection = await db.getConnection();
+  const connection = await BaseRepository.getConnection();
+  const nationalrepository = new NationalRepository(connection);
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
     try {
-      const result = await connection.execute(q, [userid]);
+      const result = await nationalrepository.getNationalAdminByUserID(userid);
       return result[0];
-    } catch (error) {
-      connection.release();
-    } finally {
-      if (connection) {
-        connection.release();
-      }
-    }
+    } catch (error) {}
   };
 
   const createRefresh = async (refreshToken) => {
-    const q = `UPDATE nationaladmin SET refreshtoken = ? WHERE userid = ?`;
     try {
-      await connection.execute(q, [refreshToken, userid]);
+      await nationalrepository.createRefresh(refreshToken, userid);
     } catch (err) {
       throw err;
     }
@@ -320,10 +315,6 @@ const signin = async (req, res, next) => {
       error: err.message || "Internal server error",
     });
     next(err);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 

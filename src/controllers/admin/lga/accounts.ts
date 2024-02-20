@@ -39,10 +39,8 @@ const createLgaAccount = async (req, res, next) => {
       res
         .status(201)
         .json({ statusCode: "201", message: "successful", result: result[0] });
-      connection.release();
     }
   } catch (err) {
-    connection.release();
     res.status(500).json({
       statusCode: "500",
       message: "can't create state account",
@@ -96,7 +94,6 @@ const createLgaUserAccount = async (req, res, next) => {
       }
       return checked;
     } catch (error) {
-      connection.release();
       throw new Error(error);
     } finally {
       if (connection) {
@@ -115,10 +112,8 @@ const createLgaUserAccount = async (req, res, next) => {
       res
         .status(201)
         .json({ statusCode: "201", message: "successful", result: result[0] });
-      connection.release();
     }
   } catch (err) {
-    connection.release();
     res.status(500).json({
       statusCode: "500",
       message: "can't create state account",
@@ -137,9 +132,7 @@ const getLgaAccounts = async (req, res, next) => {
     const q = `SELECT * FROM lgaccount`;
     const result = await connection.execute(q);
     res.status(200).json(result[0]);
-    connection.release();
   } catch (error) {
-    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {
@@ -154,9 +147,7 @@ const getLgaUserAccounts = async (req, res, next) => {
     const q = `SELECT * FROM lgadmin WHERE state = ?`;
     const result = await connection.execute(q, [state]);
     res.status(200).json(result[0]);
-    connection.release();
   } catch (error) {
-    connection.release();
     res.status(500).json(error);
   } finally {
     if (connection) {

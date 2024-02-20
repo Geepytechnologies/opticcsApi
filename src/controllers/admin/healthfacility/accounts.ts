@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import { HealthFacilityRepository } from "../../../repositories/HealthFacilityRepository";
 import { healthfacilityvalidation } from "../../../validations/healthfacility";
 import { HealthPersonnelRepository } from "../../../repositories/HealthPersonnelRepository";
+import BaseRepository from "../../../repositories/BaseRepository";
 
 const createHealthfacilityAccount = async (
   req: Request,
@@ -41,15 +42,16 @@ const createHealthfacilityAccount = async (
     });
   }
   try {
-    const accountExists = await HealthFacilityRepository.checkIfAccountExists(
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
+    const accountExists = await hfRepository.checkIfAccountExists(
       healthfacilityID
     );
     if (accountExists) {
       res.status(409).json("healthfacility with ID already exists");
     } else {
-      const result = await HealthFacilityRepository.createHealthFacilityAccount(
-        values
-      );
+      const result = await hfRepository.createHealthFacilityAccount(values);
       res
         .status(201)
         .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -108,16 +110,17 @@ const createHealthfacilityUserAccount = async (
     });
   }
   try {
-    const accountExists =
-      await HealthFacilityRepository.checkIfUserAccountExists(
-        userid,
-        hashedpassword
-      );
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
+    const accountExists = await hfRepository.checkIfUserAccountExists(
+      userid,
+      hashedpassword
+    );
     if (accountExists) {
       res.status(409).json("healthfacility user already exists");
     } else {
-      const result =
-        await HealthFacilityRepository.createHealthFacilityUserAccount(values);
+      const result = await hfRepository.createHealthFacilityUserAccount(values);
       res
         .status(201)
         .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -135,8 +138,10 @@ const createHealthfacilityUserAccount = async (
 const verifyHealthWorker = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
-    const result =
-      await HealthPersonnelRepository.updateHealthpersonnelverification(id);
+    const connection = await BaseRepository.getConnection();
+    const hpRepository = new HealthPersonnelRepository(connection);
+
+    const result = await hpRepository.updateHealthpersonnelverification(id);
     res
       .status(201)
       .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -165,9 +170,12 @@ const getHealthfacilityAccountsFiltered = async (
     });
   }
   try {
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
     const { state, lga } = req.query;
     const result =
-      await HealthFacilityRepository.getHealthFacilityUserAccountUsingStateAndLga(
+      await hfRepository.getHealthFacilityUserAccountUsingStateAndLga(
         //@ts-ignore
         state,
         lga
@@ -184,20 +192,15 @@ const getHealthfacilityAccounts = async (
   res: Response,
   next: NextFunction
 ) => {
-  const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM healthfacilityaccount`;
-    const result = await connection.execute(q);
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
+    const result = await hfRepository.getHealthFacilityAccounts();
     res.status(200).json(result[0]);
-    connection.release();
   } catch (error) {
     logger.error(error);
-    connection.release();
     res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
@@ -206,18 +209,13 @@ const getHealthfacilityUserAccounts = async (
   res: Response,
   next: NextFunction
 ) => {
-  const connection = await db.getConnection();
   try {
-    const q = `SELECT * FROM healthfacilityadmin`;
-    const result = await connection.execute(q);
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+    const result = await hfRepository.getHealthfacilityUserAccounts();
     res.status(200).json(result[0]);
-    connection.release();
   } catch (error) {
     res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
