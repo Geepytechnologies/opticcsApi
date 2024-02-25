@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import morgan from "morgan";
 
 require("dotenv").config();
 import db from "./config/db";
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());

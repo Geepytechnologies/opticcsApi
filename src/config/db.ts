@@ -1,6 +1,8 @@
 import mysql, { Pool } from "mysql2/promise";
 import logger from "../logger";
 
+const connectionsInUse = new Set();
+
 const db: Pool = mysql.createPool({
   host: process.env.MYSQLHOST || "localhost",
   port: Number(process.env.MYSQLPORT) || 3306,
@@ -8,7 +10,7 @@ const db: Pool = mysql.createPool({
   password: process.env.MYSQLPASSWORD || "",
   database: process.env.MYSQLDATABASE || "your_database_name",
   waitForConnections: true,
-  connectionLimit: 30,
+  connectionLimit: 100,
   //maxIdle: 30, // max idle connections, the default value is the same as `connectionLimit`
   //idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
   //queueLimit: 0,
@@ -18,12 +20,18 @@ const db: Pool = mysql.createPool({
 
 // Event listener for when a connection is acquired
 db.on("acquire", function (connection) {
-  console.log("Connection %d acquired", connection.threadId);
+  connectionsInUse.add(connection.threadId);
+  console.log(
+    `Connection ${connection.threadId} acquired. Connections in use: ${connectionsInUse.size}`
+  );
 });
 
 // Event listener for when a connection is released
 db.on("release", function (connection) {
-  console.log("Connection %d released", connection.threadId);
+  connectionsInUse.delete(connection.threadId);
+  console.log(
+    `Connection ${connection.threadId} released. Connections in use: ${connectionsInUse.size}`
+  );
 });
 
 (async () => {
