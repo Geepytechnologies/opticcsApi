@@ -37,7 +37,7 @@ db.on("release", function (connection) {
 (async () => {
   try {
     await db.query("SELECT 1");
-    logger.info("Connected to MySQL pool!");
+    logger.info("Connected to MySQL pool! new config");
   } catch (error: any) {
     logger.error("Failed to connect to MySQL:", error.message);
   }
