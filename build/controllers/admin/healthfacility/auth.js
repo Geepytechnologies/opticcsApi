@@ -24,51 +24,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetpassword = exports.generatehealthfacilitydetails = exports.handleRefreshToken = exports.signout = exports.signin = void 0;
-//@ts-nocheck
-const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const crypto_1 = __importDefault(require("crypto"));
-// Function to generate a random string of given length
-const generateRandomString = (length) => {
-    return crypto_1.default
-        .randomBytes(Math.ceil(length / 2))
-        .toString("hex")
-        .slice(0, length);
-};
-// Function to generate a unique username and password
-const generateUniqueCredentials = (callback) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = generateRandomString(8);
-    const password = generateRandomString(12);
-    const connection = yield db_1.default.getConnection();
-    try {
-        // Check if the generated username already exists in the database
-        const [results, fields] = yield connection.execute("SELECT * FROM healthfacilityadmin WHERE userid = ?", [username]);
-        if (Array.isArray(results)) {
-            if (results.length > 0) {
-                // If the username already exists, regenerate the credentials and call the callback recursively
-                generateUniqueCredentials(callback);
-            }
-            else {
-                // If the username is unique, call the callback with the generated credentials
-                callback(null, { username, password });
-            }
-        }
-    }
-    catch (err) {
-        // If there's an error during the query, call the callback with the error
-        callback(err, null);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-});
+const healthfacility_service_1 = require("../../../services/healthfacility.service");
+const HealthFacilityRepository_1 = require("../../../repositories/HealthFacilityRepository");
+const BaseRepository_1 = __importDefault(require("../../../repositories/BaseRepository"));
 const generatehealthfacilitydetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const hfservice = new healthfacility_service_1.HealthfacilityService(hfRepository);
         const credentials = yield new Promise((resolve, reject) => {
-            generateUniqueCredentials((err, data) => {
+            hfservice.generateUniqueCredentials((err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -88,18 +55,15 @@ const generatehealthfacilitydetails = (req, res) => __awaiter(void 0, void 0, vo
 });
 exports.generatehealthfacilitydetails = generatehealthfacilitydetails;
 const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+    const connection = yield BaseRepository_1.default.getConnection();
+    const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
     const { userid } = req.body;
     const existinguserid = () => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `SELECT * FROM healthfacilityadmin WHERE userid = ?`;
-        const result = yield connection.execute(q, [userid]);
+        const result = yield hfRepository.getHealthfacilityUserAccountByUserID(userid);
         return result[0];
     });
     const createRefresh = (refreshtoken) => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `UPDATE healthfacilityadmin
-        SET refreshtoken = ?
-        WHERE userid = ?`;
-        const result = yield connection.execute(q, [refreshtoken, userid]);
+        const result = yield hfRepository.UpdateUserRefreshToken(refreshtoken, userid);
         return result[0];
     });
     try {
@@ -109,56 +73,55 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
                 return res
                     .status(404)
                     .json({ statusCode: "404", message: "User not found" });
-            const isMatched = bcryptjs_1.default.compareSync(req.body.password, user[0].password);
+            const userData = user[0];
+            const isMatched = bcryptjs_1.default.compareSync(req.body.password, userData.password);
             if (!isMatched)
                 return res
                     .status(400)
                     .json({ statusCode: "400", message: "wrong credentials" });
+            const accesskey = process.env.ACCESS_SECRET || "";
+            const refreshkey = process.env.REFRESH_SECRET || "";
+            //access Token
+            const accessToken = jsonwebtoken_1.default.sign({ id: userData.id }, accesskey, {
+                expiresIn: "5m",
+            });
+            //refresh Token
+            const refreshToken = jsonwebtoken_1.default.sign({ id: userData.id }, refreshkey, {
+                expiresIn: "30m",
+            });
+            //save refresh token to the user model
+            const updatedUser = yield createRefresh(refreshToken);
+            const newuser = yield existinguserid();
+            // Creates Secure Cookie with refresh token
+            res.cookie("healthtoken", refreshToken, {
+                // httpOnly: false,
+                // secure: true,
+                // sameSite: "None",
+                maxAge: 10 * 24 * 60 * 60 * 1000,
+            });
+            if (Array.isArray(newuser)) {
+                const _a = newuser[0], { password, refreshtoken } = _a, others = __rest(_a, ["password", "refreshtoken"]);
+                res.status(200).json({
+                    statusCode: "200",
+                    message: "successful",
+                    result: { others: others, accessToken },
+                });
+            }
         }
-        //access Token
-        const accessToken = jsonwebtoken_1.default.sign({ id: user[0].id }, process.env.ACCESS_SECRET, {
-            expiresIn: "5m",
-        });
-        //refresh Token
-        const refreshToken = jsonwebtoken_1.default.sign({ id: user[0].id }, process.env.REFRESH_SECRET, {
-            expiresIn: "30m",
-        });
-        //save refresh token to the user model
-        const updatedUser = yield createRefresh(refreshToken);
-        const newuser = yield existinguserid();
-        // Creates Secure Cookie with refresh token
-        res.cookie("healthtoken", refreshToken, {
-            // httpOnly: false,
-            // secure: true,
-            // sameSite: "None",
-            maxAge: 10 * 24 * 60 * 60 * 1000,
-        });
-        const _a = newuser[0], { password, refreshtoken } = _a, others = __rest(_a, ["password", "refreshtoken"]);
-        res.status(200).json({
-            statusCode: "200",
-            message: "successful",
-            result: { others: others, accessToken },
-        });
     }
     catch (err) {
-        connection.rollback();
         res
             .status(500)
             .json({ statusCode: "500", message: "Error signing in", error: err });
         next(err);
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
 exports.signin = signin;
 const handleRefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+    const connection = yield BaseRepository_1.default.getConnection();
+    const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
     const existingRefresh = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `SELECT * FROM healthfacilityadmin WHERE refreshToken = ?`;
-        const result = yield connection.execute(q, [refreshToken]);
+        const result = yield hfRepository.getUserWithRefreshToken(refreshToken);
         return result[0];
     });
     const cookies = req.cookies;
@@ -167,17 +130,23 @@ const handleRefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, funct
     const refreshToken = cookies.healthtoken;
     try {
         const foundUser = yield existingRefresh(refreshToken);
-        if (!foundUser.length) {
+        if (Array.isArray(foundUser) && foundUser.length === 0) {
             return res.status(403).json("User not Found");
         }
+        const refreshSecret = process.env.REFRESH_SECRET || "";
+        const accessSecret = process.env.ACCESS_SECRET || "";
         // Verify JWT
-        jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
+        jsonwebtoken_1.default.verify(refreshToken, refreshSecret, (err, user) => {
             var _a;
-            if (err || ((_a = foundUser[0]) === null || _a === void 0 ? void 0 : _a.id) !== user.id) {
+            if (err ||
+                !Array.isArray(foundUser) ||
+                foundUser.length === 0 ||
+                !("id" in foundUser[0]) ||
+                ((_a = foundUser[0]) === null || _a === void 0 ? void 0 : _a.id) !== user.id) {
                 return res.sendStatus(403);
             }
             else {
-                const accessToken = jsonwebtoken_1.default.sign({ id: user.id }, process.env.ACCESS_SECRET, {
+                const accessToken = jsonwebtoken_1.default.sign({ id: user.id }, accessSecret, {
                     expiresIn: "30m",
                 });
                 const _b = foundUser[0], { password, refreshToken } = _b, others = __rest(_b, ["password", "refreshToken"]);
@@ -188,26 +157,19 @@ const handleRefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (err) {
         res.status(500).json({ message: "error refreshing token", error: err });
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
 exports.handleRefreshToken = handleRefreshToken;
 const signout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
     // On client, also delete the accessToken
     try {
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
         const cookies = req.cookies;
         if (!(cookies === null || cookies === void 0 ? void 0 : cookies.healthtoken))
             return res.sendStatus(204); //No content
         const refreshtoken = cookies.healthtoken;
         // Is refreshToken in db?
-        const existingrefreshQuery = ` SELECT * FROM healthfacilityadmin WHERE refreshtoken = ?`;
-        const foundUserResult = yield connection.execute(existingrefreshQuery, [
-            refreshtoken,
-        ]);
+        const foundUserResult = yield hfRepository.getUserWithRefreshToken(refreshtoken);
         const foundUser = foundUserResult[0];
         if (!foundUser) {
             res.clearCookie("healthtoken", {
@@ -219,11 +181,11 @@ const signout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         const updateRefreshQuery = `UPDATE healthfacilityadmin
      SET refreshtoken = ? WHERE id = ?`;
-        const updatedUserResult = yield connection.execute(updateRefreshQuery, [
-            null,
-            req.user.id,
-        ]);
-        const updatedUser = updatedUserResult[0];
+        const userId = req.user && req.user.id;
+        if (userId) {
+            const updatedUserResult = yield hfRepository.UpdateUserRefreshToken(null, userId);
+            const updatedUser = updatedUserResult[0];
+        }
         res.clearCookie("healthtoken", {
         // httpOnly: true,
         // sameSite: "None",
@@ -236,41 +198,41 @@ const signout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
             .status(500)
             .json({ statusCode: "500", message: "Error signing out", err: error });
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
 exports.signout = signout;
 const resetpassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+    const connection = yield BaseRepository_1.default.getConnection();
+    const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
     const { oldpassword, newpassword } = req.body;
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(newpassword, salt);
+    const userId = req.user && req.user.id;
     const existinguserid = () => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `SELECT * FROM healthfacilityadmin WHERE id = ?`;
-        const result = yield connection.execute(q, [req.user.id]);
-        return result[0];
+        if (userId) {
+            const result = yield hfRepository.getHealthfacilityUserAccountByID(userId);
+            return result[0];
+        }
     });
     const createNewpassword = () => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `UPDATE healthfacilityadmin
-        SET password = ?
-        WHERE id = ?`;
-        const result = yield connection.execute(q, [hashedpassword, req.user.id]);
-        return result[0];
+        if (userId) {
+            const result = yield hfRepository.UpdateUserPassword(hashedpassword, userId);
+            return result[0];
+        }
     });
     try {
         const user = yield existinguserid();
-        if (!user.length)
-            return res
-                .status(404)
-                .json({ statusCode: "404", message: "User not found" });
-        const isMatched = bcryptjs_1.default.compareSync(oldpassword, user[0].password);
-        if (!isMatched)
-            return res
-                .status(400)
-                .json({ statusCode: "400", message: "Wrong password" });
+        if (Array.isArray(user)) {
+            if (!user.length)
+                return res
+                    .status(404)
+                    .json({ statusCode: "404", message: "User not found" });
+            const userData = user[0];
+            const isMatched = bcryptjs_1.default.compareSync(oldpassword, userData.password);
+            if (!isMatched)
+                return res
+                    .status(400)
+                    .json({ statusCode: "400", message: "Wrong password" });
+        }
         //save new password to the user model
         const newuser = yield createNewpassword();
         res.status(201).json({
@@ -279,18 +241,12 @@ const resetpassword = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (err) {
-        connection.rollback();
         res.status(500).json({
             statusCode: "500",
             message: "Error Resetting password",
             error: err,
         });
         next(err);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
     }
 });
 exports.resetpassword = resetpassword;

@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getHealthfacilityAccountsFiltered = exports.getHealthfacilityUserAccounts = exports.getHealthfacilityAccounts = exports.verifyHealthWorker = exports.createHealthfacilityUserAccount = exports.createHealthfacilityAccount = void 0;
-const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = __importDefault(require("../../../logger"));
 const HealthFacilityRepository_1 = require("../../../repositories/HealthFacilityRepository");
 const healthfacility_1 = require("../../../validations/healthfacility");
 const HealthPersonnelRepository_1 = require("../../../repositories/HealthPersonnelRepository");
+const BaseRepository_1 = __importDefault(require("../../../repositories/BaseRepository"));
 const createHealthfacilityAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { ward, state, lga, healthfacilityname, healthfacilityID, officeaddress, phone, email, } = req.body;
     const values = [
@@ -40,12 +40,14 @@ const createHealthfacilityAccount = (req, res, next) => __awaiter(void 0, void 0
         });
     }
     try {
-        const accountExists = yield HealthFacilityRepository_1.HealthFacilityRepository.checkIfAccountExists(healthfacilityID);
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const accountExists = yield hfRepository.checkIfAccountExists(healthfacilityID);
         if (accountExists) {
             res.status(409).json("healthfacility with ID already exists");
         }
         else {
-            const result = yield HealthFacilityRepository_1.HealthFacilityRepository.createHealthFacilityAccount(values);
+            const result = yield hfRepository.createHealthFacilityAccount(values);
             res
                 .status(201)
                 .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -88,12 +90,14 @@ const createHealthfacilityUserAccount = (req, res, next) => __awaiter(void 0, vo
         });
     }
     try {
-        const accountExists = yield HealthFacilityRepository_1.HealthFacilityRepository.checkIfUserAccountExists(userid, hashedpassword);
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const accountExists = yield hfRepository.checkIfUserAccountExists(userid, hashedpassword);
         if (accountExists) {
             res.status(409).json("healthfacility user already exists");
         }
         else {
-            const result = yield HealthFacilityRepository_1.HealthFacilityRepository.createHealthFacilityUserAccount(values);
+            const result = yield hfRepository.createHealthFacilityUserAccount(values);
             res
                 .status(201)
                 .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -112,7 +116,9 @@ exports.createHealthfacilityUserAccount = createHealthfacilityUserAccount;
 const verifyHealthWorker = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     try {
-        const result = yield HealthPersonnelRepository_1.HealthPersonnelRepository.updateHealthpersonnelverification(id);
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hpRepository = new HealthPersonnelRepository_1.HealthPersonnelRepository(connection);
+        const result = yield hpRepository.updateHealthpersonnelverification(id);
         res
             .status(201)
             .json({ statusCode: "201", message: "successful", result: result[0] });
@@ -136,8 +142,10 @@ const getHealthfacilityAccountsFiltered = (req, res, next) => __awaiter(void 0, 
         });
     }
     try {
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
         const { state, lga } = req.query;
-        const result = yield HealthFacilityRepository_1.HealthFacilityRepository.getHealthFacilityUserAccountUsingStateAndLga(
+        const result = yield hfRepository.getHealthFacilityUserAccountUsingStateAndLga(
         //@ts-ignore
         state, lga);
         res.status(200).json(result[0]);
@@ -149,40 +157,27 @@ const getHealthfacilityAccountsFiltered = (req, res, next) => __awaiter(void 0, 
 });
 exports.getHealthfacilityAccountsFiltered = getHealthfacilityAccountsFiltered;
 const getHealthfacilityAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
     try {
-        const q = `SELECT * FROM healthfacilityaccount`;
-        const result = yield connection.execute(q);
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const result = yield hfRepository.getHealthFacilityAccounts();
         res.status(200).json(result[0]);
-        connection.release();
     }
     catch (error) {
         logger_1.default.error(error);
-        connection.release();
         res.status(500).json(error);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
     }
 });
 exports.getHealthfacilityAccounts = getHealthfacilityAccounts;
 const getHealthfacilityUserAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
     try {
-        const q = `SELECT * FROM healthfacilityadmin`;
-        const result = yield connection.execute(q);
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const result = yield hfRepository.getHealthfacilityUserAccounts();
         res.status(200).json(result[0]);
-        connection.release();
     }
     catch (error) {
         res.status(500).json(error);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
     }
 });
 exports.getHealthfacilityUserAccounts = getHealthfacilityUserAccounts;

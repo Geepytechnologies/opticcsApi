@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const morgan_1 = __importDefault(require("morgan"));
 require("dotenv").config();
 const db_1 = __importDefault(require("./config/db"));
 const app = (0, express_1.default)();
@@ -34,8 +35,8 @@ const index_1 = __importDefault(require("./routes/session/index"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const logger_1 = __importDefault(require("./logger"));
-require("./services/missedschedule");
-require("./services/reminderschedule");
+// require("./services/missedschedule");
+// require("./services/reminderschedule");
 // app.post("/sendotp2", (req: Request, res: Response) => {
 //   const options = {
 //     method: "POST",
@@ -72,6 +73,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
+app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
@@ -120,5 +122,5 @@ app.get("/liveuser", (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    logger_1.default.info("Backend server is running");
+    logger_1.default.info("Backend server is up and running");
 });

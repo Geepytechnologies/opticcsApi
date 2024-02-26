@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_1 = __importDefault(require("mysql2/promise"));
 const logger_1 = __importDefault(require("../logger"));
+const connectionsInUse = new Set();
 const db = promise_1.default.createPool({
     host: process.env.MYSQLHOST || "localhost",
     port: Number(process.env.MYSQLPORT) || 3306,
@@ -21,8 +22,8 @@ const db = promise_1.default.createPool({
     password: process.env.MYSQLPASSWORD || "",
     database: process.env.MYSQLDATABASE || "your_database_name",
     waitForConnections: true,
-    connectionLimit: 30,
-    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+    connectionLimit: 60,
+    maxIdle: 60, // max idle connections, the default value is the same as `connectionLimit`
     idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
     queueLimit: 0,
     enableKeepAlive: true,
@@ -30,16 +31,18 @@ const db = promise_1.default.createPool({
 });
 // Event listener for when a connection is acquired
 db.on("acquire", function (connection) {
-    console.log("Connection %d acquired", connection.threadId);
+    connectionsInUse.add(connection.threadId);
+    console.log(`Connection ${connection.threadId} acquired. Connections in use: ${connectionsInUse.size}`);
 });
 // Event listener for when a connection is released
 db.on("release", function (connection) {
-    console.log("Connection %d released", connection.threadId);
+    connectionsInUse.delete(connection.threadId);
+    console.log(`Connection ${connection.threadId} released. Connections in use: ${connectionsInUse.size}`);
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield db.query("SELECT 1");
-        logger_1.default.info("Connected to MySQL pool!");
+        logger_1.default.info("Connected to MySQL pool! new config");
     }
     catch (error) {
         logger_1.default.error("Failed to connect to MySQL:", error.message);

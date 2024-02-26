@@ -12,29 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HealthPersonnelRepository = void 0;
+const db_1 = __importDefault(require("../config/db"));
 const logger_1 = __importDefault(require("../logger"));
-class HealthPersonnelRepository {
-    constructor(connection) {
-        this.connection = connection;
-    }
-    updateHealthpersonnelverification(id) {
+class BaseRepository {
+    static getConnection() {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = `UPDATE healthpersonnel SET verified = 1 WHERE id = ?`;
             try {
-                const result = yield this.connection.execute(q, [id]);
-                return result;
+                const connection = yield db_1.default.getConnection();
+                return connection;
             }
             catch (error) {
-                logger_1.default.error(error);
-                throw new Error(error);
+                logger_1.default.error("Error getting database connection:", error);
+                throw new Error("Failed to get database connection");
             }
-            finally {
-                if (this.connection) {
-                    this.connection.release();
-                }
+        });
+    }
+    static releaseConnection(connection) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (connection) {
+                connection.release();
             }
         });
     }
 }
-exports.HealthPersonnelRepository = HealthPersonnelRepository;
+exports.default = BaseRepository;

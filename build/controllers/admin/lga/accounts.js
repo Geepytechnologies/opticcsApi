@@ -55,11 +55,9 @@ const createLgaAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             res
                 .status(201)
                 .json({ statusCode: "201", message: "successful", result: result[0] });
-            connection.release();
         }
     }
     catch (err) {
-        connection.release();
         res.status(500).json({
             statusCode: "500",
             message: "can't create state account",
@@ -105,7 +103,6 @@ const createLgaUserAccount = (req, res, next) => __awaiter(void 0, void 0, void 
             return checked;
         }
         catch (error) {
-            connection.release();
             throw new Error(error);
         }
         finally {
@@ -126,11 +123,9 @@ const createLgaUserAccount = (req, res, next) => __awaiter(void 0, void 0, void 
             res
                 .status(201)
                 .json({ statusCode: "201", message: "successful", result: result[0] });
-            connection.release();
         }
     }
     catch (err) {
-        connection.release();
         res.status(500).json({
             statusCode: "500",
             message: "can't create state account",
@@ -150,10 +145,8 @@ const getLgaAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const q = `SELECT * FROM lgaccount`;
         const result = yield connection.execute(q);
         res.status(200).json(result[0]);
-        connection.release();
     }
     catch (error) {
-        connection.release();
         res.status(500).json(error);
     }
     finally {
@@ -170,10 +163,8 @@ const getLgaUserAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0,
         const q = `SELECT * FROM lgadmin WHERE state = ?`;
         const result = yield connection.execute(q, [state]);
         res.status(200).json(result[0]);
-        connection.release();
     }
     catch (error) {
-        connection.release();
         res.status(500).json(error);
     }
     finally {

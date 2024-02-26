@@ -29,6 +29,8 @@ const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const request_1 = __importDefault(require("request"));
+const NationalRepository_1 = require("../../../repositories/NationalRepository");
+const BaseRepository_1 = __importDefault(require("../../../repositories/BaseRepository"));
 // const sendPasswordresetOtp = async (req, res) => {
 //   const { mobile_number } = req.body;
 //   const checkuserExists = async () => {
@@ -248,27 +250,19 @@ exports.retrypasswordresetOtp = retrypasswordresetOtp;
 //   }
 // };
 const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+    const connection = yield BaseRepository_1.default.getConnection();
+    const nationalrepository = new NationalRepository_1.NationalRepository(connection);
     const { userid } = req.body;
     const existinguserid = () => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
         try {
-            const result = yield connection.execute(q, [userid]);
+            const result = yield nationalrepository.getNationalAdminByUserID(userid);
             return result[0];
         }
-        catch (error) {
-            connection.release();
-        }
-        finally {
-            if (connection) {
-                connection.release();
-            }
-        }
+        catch (error) { }
     });
     const createRefresh = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `UPDATE nationaladmin SET refreshtoken = ? WHERE userid = ?`;
         try {
-            yield connection.execute(q, [refreshToken, userid]);
+            yield nationalrepository.createRefresh(refreshToken, userid);
         }
         catch (err) {
             throw err;
@@ -317,11 +311,6 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             error: err.message || "Internal server error",
         });
         next(err);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
     }
 });
 exports.signin = signin;

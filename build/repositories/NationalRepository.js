@@ -12,24 +12,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HealthPersonnelRepository = void 0;
+exports.NationalRepository = void 0;
 const logger_1 = __importDefault(require("../logger"));
-class HealthPersonnelRepository {
+class NationalRepository {
     constructor(connection) {
         this.connection = connection;
     }
-    updateHealthpersonnelverification(id) {
+    getNationalAdminByUserID(userID) {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = `UPDATE healthpersonnel SET verified = 1 WHERE id = ?`;
+            const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
             try {
-                const result = yield this.connection.execute(q, [id]);
+                console.log("im using %d for gnauid", this.connection.threadId);
+                const result = yield this.connection.execute(q, [userID]);
                 return result;
             }
             catch (error) {
                 logger_1.default.error(error);
-                throw new Error(error);
             }
             finally {
+                console.log("i released %d in gnauid", this.connection.threadId);
+                if (this.connection) {
+                    this.connection.release();
+                }
+            }
+        });
+    }
+    createRefresh(refreshToken, userID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `UPDATE nationaladmin SET refreshtoken = ? WHERE userid = ?`;
+            try {
+                console.log("im using %d for refresh", this.connection.threadId);
+                yield this.connection.execute(q, [refreshToken, userID]);
+            }
+            catch (error) {
+                logger_1.default.error(error);
+            }
+            finally {
+                console.log("i released %d in refresh", this.connection.threadId);
                 if (this.connection) {
                     this.connection.release();
                 }
@@ -37,4 +56,4 @@ class HealthPersonnelRepository {
         });
     }
 }
-exports.HealthPersonnelRepository = HealthPersonnelRepository;
+exports.NationalRepository = NationalRepository;
