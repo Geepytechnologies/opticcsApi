@@ -115,5 +115,5 @@ app.get("/liveuser", async (req, res) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  logger.info("Backend server is running");
+  logger.info("Backend server is up and running");
 });
