@@ -46,8 +46,7 @@ const numberofwomenwith4visits = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.numberofwomenwith4visits = numberofwomenwith4visits;
-const graviditygreaterthan8 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const graviditygreaterthan8 = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT *
     FROM personalinformation
@@ -58,14 +57,8 @@ const graviditygreaterthan8 = () => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         console.log(error);
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
-const graviditylessthan8 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const graviditylessthan8 = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT *
     FROM personalinformation
@@ -75,11 +68,6 @@ const graviditylessthan8 = () => __awaiter(void 0, void 0, void 0, function* () 
     }
     catch (error) {
         console.log(error);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
     }
 });
 const getedd = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -110,14 +98,8 @@ const getedd = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json(error);
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
-const getedd2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getedd2 = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT 
     quarters.quarter,
@@ -151,14 +133,8 @@ const getedd2 = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         console.log({ edd_error: error });
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
-const getparity = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getparity = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q1 = `SELECT *
       FROM personalinformation
@@ -173,17 +149,10 @@ const getparity = () => __awaiter(void 0, void 0, void 0, function* () {
         return { less: less[0].length, greater: greater[0].length };
     }
     catch (error) {
-        connection.rollback();
         throw error;
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
-const getbabysmovement = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbabysmovement = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q1 = `SELECT *
       FROM personalinformation
@@ -215,14 +184,8 @@ const getbabysmovement = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         connection.rollback();
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
-const getfirstbabymovement = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getfirstbabymovement = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q1 = `SELECT *
       FROM personalinformation
@@ -254,15 +217,9 @@ const getfirstbabymovement = () => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         connection.rollback();
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 });
 //obstetrichistory
-const getconvulsions = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getconvulsions = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE convulsionsduringpregnancy = ?`;
         const result = yield connection.execute(q, ["yes"]);
@@ -270,16 +227,9 @@ const getconvulsions = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["yes"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getsurgery = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getsurgery = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE caesarean  = ?`;
         const result = yield connection.execute(q, ["yes"]);
@@ -287,16 +237,9 @@ const getsurgery = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["yes"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const gettearsthroughsphincter = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const gettearsthroughsphincter = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter = ?`;
         const result = yield connection.execute(q, ["yes"]);
@@ -304,16 +247,9 @@ const gettearsthroughsphincter = () => __awaiter(void 0, void 0, void 0, functio
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getpostpartiumhaemorrghage = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getpostpartiumhaemorrghage = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
@@ -321,16 +257,9 @@ const getpostpartiumhaemorrghage = () => __awaiter(void 0, void 0, void 0, funct
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getstillbirths = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getstillbirths = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE stillbirths   = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE stillbirths   = ?`;
@@ -338,16 +267,9 @@ const getstillbirths = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getprematuredeliveries = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getprematuredeliveries = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE prematuredeliveries   = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE prematuredeliveries   = ?`;
@@ -355,16 +277,9 @@ const getprematuredeliveries = () => __awaiter(void 0, void 0, void 0, function*
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getlowbirthbabies = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getlowbirthbabies = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE lowbirthbabies   = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE lowbirthbabies   = ?`;
@@ -372,16 +287,9 @@ const getlowbirthbabies = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getbabieswhodied = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbabieswhodied = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
@@ -389,16 +297,9 @@ const getbabieswhodied = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getmiscarriages = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getmiscarriages = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM obstetrichistory WHERE miscarriages   = ?`;
         const q2 = `SELECT * FROM obstetrichistory WHERE miscarriages   = ?`;
@@ -406,16 +307,9 @@ const getmiscarriages = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getbreastfedbefore = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbreastfedbefore = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
         const q2 = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
@@ -423,16 +317,9 @@ const getbreastfedbefore = () => __awaiter(void 0, void 0, void 0, function* () 
         const result2 = yield connection.execute(q2, ["No"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getbreastfeedingduration = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbreastfeedingduration = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
         const q2 = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
@@ -446,16 +333,9 @@ const getbreastfeedingduration = () => __awaiter(void 0, void 0, void 0, functio
             greater: result3[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getbreastfeedingproblems = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbreastfeedingproblems = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
         const q2 = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
@@ -463,17 +343,10 @@ const getbreastfeedingproblems = () => __awaiter(void 0, void 0, void 0, functio
         const result2 = yield connection.execute(q2, ["No"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //dailyhabits and lifestyle
-const getSmokers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getSmokers = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM dailyhabitsandlifestyle WHERE doyousmoke   = ?`;
         const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE doyousmoke   = ?`;
@@ -481,16 +354,9 @@ const getSmokers = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getAlcohol = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getAlcohol = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM dailyhabitsandlifestyle WHERE doyoudrinkalcohol   = ?`;
         const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE doyoudrinkalcohol   = ?`;
@@ -498,16 +364,9 @@ const getAlcohol = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getThreatened = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getThreatened = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM dailyhabitsandlifestyle WHERE threatenedyourlife   = ?`;
         const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE threatenedyourlife   = ?`;
@@ -515,16 +374,9 @@ const getThreatened = () => __awaiter(void 0, void 0, void 0, function* () {
         const result2 = yield connection.execute(q2, ["no"]);
         return { yes: result[0].length, no: result2[0].length };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const whodoyoulivewith = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const whodoyoulivewith = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT * FROM dailyhabitsandlifestyle WHERE whodoyoulivewith   = ?`;
         const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE whodoyoulivewith   = ?`;
@@ -544,17 +396,10 @@ const whodoyoulivewith = () => __awaiter(void 0, void 0, void 0, function* () {
             others: result5[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //medicalhistory
-const getcough = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getcough = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -593,16 +438,9 @@ const getcough = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getpalpitations = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getpalpitations = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -641,16 +479,9 @@ const getpalpitations = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdifficultybreathing = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdifficultybreathing = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -689,16 +520,9 @@ const getdifficultybreathing = () => __awaiter(void 0, void 0, void 0, function*
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getswellingoffeet = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getswellingoffeet = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -737,16 +561,9 @@ const getswellingoffeet = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getchestpain = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getchestpain = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -785,16 +602,9 @@ const getchestpain = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getepigastricpain = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getepigastricpain = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -833,16 +643,9 @@ const getepigastricpain = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getseveretiredness = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getseveretiredness = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -881,16 +684,9 @@ const getseveretiredness = () => __awaiter(void 0, void 0, void 0, function* () 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getsevereabdominalpain = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getsevereabdominalpain = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -929,16 +725,9 @@ const getsevereabdominalpain = () => __awaiter(void 0, void 0, void 0, function*
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getpersistentvomiting = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getpersistentvomiting = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -977,16 +766,9 @@ const getpersistentvomiting = () => __awaiter(void 0, void 0, void 0, function* 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getseverediarrhoea = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getseverediarrhoea = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1025,16 +807,9 @@ const getseverediarrhoea = () => __awaiter(void 0, void 0, void 0, function* () 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdizziness = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdizziness = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1073,17 +848,10 @@ const getdizziness = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //urinary
-const getpainwithurination = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getpainwithurination = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1122,16 +890,9 @@ const getpainwithurination = () => __awaiter(void 0, void 0, void 0, function* (
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getsevereflankpain = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getsevereflankpain = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1170,16 +931,9 @@ const getsevereflankpain = () => __awaiter(void 0, void 0, void 0, function* () 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getbloodinurine = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getbloodinurine = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1218,17 +972,10 @@ const getbloodinurine = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //gynaelogical
-const getvaginaldischarge = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getvaginaldischarge = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1267,16 +1014,9 @@ const getvaginaldischarge = () => __awaiter(void 0, void 0, void 0, function* ()
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdeeppelvicpain = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdeeppelvicpain = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1315,16 +1055,9 @@ const getdeeppelvicpain = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getsyphilis = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getsyphilis = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1363,16 +1096,9 @@ const getsyphilis = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getpersistentdrycough = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getpersistentdrycough = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1411,16 +1137,9 @@ const getpersistentdrycough = () => __awaiter(void 0, void 0, void 0, function* 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getprogressiveweightloss = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getprogressiveweightloss = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1459,16 +1178,9 @@ const getprogressiveweightloss = () => __awaiter(void 0, void 0, void 0, functio
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getnightsweats = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getnightsweats = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1507,16 +1219,9 @@ const getnightsweats = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdiagnosedwithtuberculosis = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdiagnosedwithtuberculosis = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1555,16 +1260,9 @@ const getdiagnosedwithtuberculosis = () => __awaiter(void 0, void 0, void 0, fun
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const gettreatedTBpreviously = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const gettreatedTBpreviously = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1603,17 +1301,10 @@ const gettreatedTBpreviously = () => __awaiter(void 0, void 0, void 0, function*
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //pastmedicalhistory
-const getheartdisease = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getheartdisease = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1652,16 +1343,9 @@ const getheartdisease = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getanaemia = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getanaemia = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1700,16 +1384,9 @@ const getanaemia = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getkidneydisease = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getkidneydisease = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1748,16 +1425,9 @@ const getkidneydisease = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getsicklecell = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getsicklecell = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1796,16 +1466,9 @@ const getsicklecell = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdiabetes = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdiabetes = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1844,16 +1507,9 @@ const getdiabetes = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getgoitre = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getgoitre = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1892,16 +1548,9 @@ const getgoitre = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const gethivaids = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const gethivaids = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1940,16 +1589,9 @@ const gethivaids = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getotherseriouschronicillnesses = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getotherseriouschronicillnesses = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -1988,16 +1630,9 @@ const getotherseriouschronicillnesses = () => __awaiter(void 0, void 0, void 0, 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const gethadsurgery = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const gethadsurgery = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2036,17 +1671,10 @@ const gethadsurgery = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 //drug history
-const getherbalremedies = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getherbalremedies = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2085,16 +1713,9 @@ const getherbalremedies = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getotcdrugs = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getotcdrugs = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2133,16 +1754,9 @@ const getotcdrugs = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getvitamins = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getvitamins = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2181,16 +1795,9 @@ const getvitamins = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const getdietarysupplements = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const getdietarysupplements = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2229,16 +1836,9 @@ const getdietarysupplements = () => __awaiter(void 0, void 0, void 0, function* 
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
-const gettetanus = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = yield db_1.default.getConnection();
+const gettetanus = (connection) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const q = `SELECT
     pi.*,
@@ -2277,83 +1877,78 @@ const gettetanus = () => __awaiter(void 0, void 0, void 0, function* () {
             no: result2[0].length,
         };
     }
-    catch (error) {
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    catch (error) { }
 });
 const nationalgeneraldata = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const date = req.query.date || null;
+    const connection = yield db_1.default.getConnection();
     try {
         //personalinformation
-        const edd = yield getedd2(date);
-        const firstbabymovement = yield getfirstbabymovement();
-        const parity = yield getparity(date);
-        const babysmovement = yield getbabysmovement(date);
-        const graviditygreaterthan8result = yield graviditygreaterthan8(date);
-        const graviditylessthan8result = yield graviditylessthan8(date);
+        const edd = yield getedd2(connection);
+        const firstbabymovement = yield getfirstbabymovement(connection);
+        const parity = yield getparity(connection);
+        const babysmovement = yield getbabysmovement(connection);
+        const graviditygreaterthan8result = yield graviditygreaterthan8(connection);
+        const graviditylessthan8result = yield graviditylessthan8(connection);
         //obstetric
-        const convulsionsduringpregnancy = yield getconvulsions();
-        const caesarean = yield getsurgery();
-        const tearsthroughsphincter = yield gettearsthroughsphincter();
-        const postpartiumhaemorrghage = yield getpostpartiumhaemorrghage();
-        const stillbirths = yield getstillbirths();
-        const prematuredeliveries = yield getprematuredeliveries();
-        const lowbirthbabies = yield getlowbirthbabies();
-        const babieswhodied = yield getbabieswhodied();
-        const miscarriages = yield getmiscarriages();
-        const breastfedbefore = yield getbreastfedbefore();
-        const breastfeedingduration = yield getbreastfeedingduration();
-        const breastfeedingproblems = yield getbreastfeedingproblems();
+        const convulsionsduringpregnancy = yield getconvulsions(connection);
+        const caesarean = yield getsurgery(connection);
+        const tearsthroughsphincter = yield gettearsthroughsphincter(connection);
+        const postpartiumhaemorrghage = yield getpostpartiumhaemorrghage(connection);
+        const stillbirths = yield getstillbirths(connection);
+        const prematuredeliveries = yield getprematuredeliveries(connection);
+        const lowbirthbabies = yield getlowbirthbabies(connection);
+        const babieswhodied = yield getbabieswhodied(connection);
+        const miscarriages = yield getmiscarriages(connection);
+        const breastfedbefore = yield getbreastfedbefore(connection);
+        const breastfeedingduration = yield getbreastfeedingduration(connection);
+        const breastfeedingproblems = yield getbreastfeedingproblems(connection);
         //dailyhabitsandlifestyle
-        const doyousmoke = yield getSmokers();
-        const alcohol = yield getAlcohol();
-        const threatened = yield getThreatened();
-        const livewith = yield whodoyoulivewith();
+        const doyousmoke = yield getSmokers(connection);
+        const alcohol = yield getAlcohol(connection);
+        const threatened = yield getThreatened(connection);
+        const livewith = yield whodoyoulivewith(connection);
         //medicalhistory
-        const cough = yield getcough();
-        const palpitations = yield getpalpitations();
-        const difficultybreathing = yield getdifficultybreathing();
-        const swellingfeet = yield getswellingoffeet();
-        const chestpain = yield getchestpain();
-        const epigastricpain = yield getepigastricpain();
-        const severetiredness = yield getseveretiredness();
-        const severeabdominalpain = yield getsevereabdominalpain();
-        const persistentvomiting = yield getpersistentvomiting();
-        const severediarrhoea = yield getseverediarrhoea();
-        const dizziness = yield getdizziness();
+        const cough = yield getcough(connection);
+        const palpitations = yield getpalpitations(connection);
+        const difficultybreathing = yield getdifficultybreathing(connection);
+        const swellingfeet = yield getswellingoffeet(connection);
+        const chestpain = yield getchestpain(connection);
+        const epigastricpain = yield getepigastricpain(connection);
+        const severetiredness = yield getseveretiredness(connection);
+        const severeabdominalpain = yield getsevereabdominalpain(connection);
+        const persistentvomiting = yield getpersistentvomiting(connection);
+        const severediarrhoea = yield getseverediarrhoea(connection);
+        const dizziness = yield getdizziness(connection);
         //urinary
-        const painwithurination = yield getpainwithurination();
-        const severeflankpain = yield getsevereflankpain();
-        const bloodinurine = yield getbloodinurine();
+        const painwithurination = yield getpainwithurination(connection);
+        const severeflankpain = yield getsevereflankpain(connection);
+        const bloodinurine = yield getbloodinurine(connection);
         //gynaecological
-        const vaginaldischarge = yield getvaginaldischarge();
-        const deeppelvicpain = yield getdeeppelvicpain();
-        const syphilis = yield getsyphilis();
-        const persistentdrycough = yield getpersistentdrycough();
-        const progressiveweightloss = yield getprogressiveweightloss();
-        const nightsweats = yield getnightsweats();
-        const diagnosedwithtuberculosis = yield getdiagnosedwithtuberculosis();
-        const treatedTBpreviously = yield gettreatedTBpreviously();
+        const vaginaldischarge = yield getvaginaldischarge(connection);
+        const deeppelvicpain = yield getdeeppelvicpain(connection);
+        const syphilis = yield getsyphilis(connection);
+        const persistentdrycough = yield getpersistentdrycough(connection);
+        const progressiveweightloss = yield getprogressiveweightloss(connection);
+        const nightsweats = yield getnightsweats(connection);
+        const diagnosedwithtuberculosis = yield getdiagnosedwithtuberculosis(connection);
+        const treatedTBpreviously = yield gettreatedTBpreviously(connection);
         //pastmedicalhistory
-        const heartdisease = yield getheartdisease();
-        const anaemia = yield getanaemia();
-        const kidneydisease = yield getkidneydisease();
-        const sicklecell = yield getsicklecell();
-        const diabetes = yield getdiabetes();
-        const goitre = yield getgoitre();
-        const hivaids = yield gethivaids();
-        const otherseriouschronicillnesses = yield getotherseriouschronicillnesses();
-        const hadsurgery = yield gethadsurgery();
+        const heartdisease = yield getheartdisease(connection);
+        const anaemia = yield getanaemia(connection);
+        const kidneydisease = yield getkidneydisease(connection);
+        const sicklecell = yield getsicklecell(connection);
+        const diabetes = yield getdiabetes(connection);
+        const goitre = yield getgoitre(connection);
+        const hivaids = yield gethivaids(connection);
+        const otherseriouschronicillnesses = yield getotherseriouschronicillnesses(connection);
+        const hadsurgery = yield gethadsurgery(connection);
         //drughistory
-        const herbalremedies = yield getherbalremedies();
-        const otcdrugs = yield getotcdrugs();
-        const vitamins = yield getvitamins();
-        const dietarysupplements = yield getdietarysupplements();
-        const tetanus = yield gettetanus();
+        const herbalremedies = yield getherbalremedies(connection);
+        const otcdrugs = yield getotcdrugs(connection);
+        const vitamins = yield getvitamins(connection);
+        const dietarysupplements = yield getdietarysupplements(connection);
+        const tetanus = yield gettetanus(connection);
         res.status(200).json({
             edd,
             convulsionsduringpregnancy,
@@ -2420,6 +2015,9 @@ const nationalgeneraldata = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).json(error);
     }
     finally {
+        if (connection) {
+            connection.release();
+        }
     }
 });
 exports.nationalgeneraldata = nationalgeneraldata;

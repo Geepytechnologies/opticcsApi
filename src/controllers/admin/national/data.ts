@@ -30,8 +30,7 @@ const numberofwomenwith4visits = async (req, res) => {
   }
 };
 
-const graviditygreaterthan8 = async () => {
-  const connection = await db.getConnection();
+const graviditygreaterthan8 = async (connection) => {
   try {
     const q = `SELECT *
     FROM personalinformation
@@ -40,14 +39,9 @@ const graviditygreaterthan8 = async () => {
     return result[0].length;
   } catch (error) {
     console.log(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
-const graviditylessthan8 = async () => {
-  const connection = await db.getConnection();
+const graviditylessthan8 = async (connection) => {
   try {
     const q = `SELECT *
     FROM personalinformation
@@ -56,10 +50,6 @@ const graviditylessthan8 = async () => {
     return result[0].length;
   } catch (error) {
     console.log(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 const getedd = async (req, res) => {
@@ -88,14 +78,9 @@ const getedd = async (req, res) => {
     res.status(200).json(result[0]);
   } catch (error) {
     res.status(500).json(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
-const getedd2 = async () => {
-  const connection = await db.getConnection();
+const getedd2 = async (connection) => {
   try {
     const q = `SELECT 
     quarters.quarter,
@@ -127,14 +112,9 @@ const getedd2 = async () => {
     return result[0];
   } catch (error) {
     console.log({ edd_error: error });
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
-const getparity = async () => {
-  const connection = await db.getConnection();
+const getparity = async (connection) => {
   try {
     const q1 = `SELECT *
       FROM personalinformation
@@ -148,17 +128,11 @@ const getparity = async () => {
     const greater = await connection.execute(q2);
     return { less: less[0].length, greater: greater[0].length };
   } catch (error) {
-    connection.rollback();
     throw error;
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 
-const getbabysmovement = async () => {
-  const connection = await db.getConnection();
+const getbabysmovement = async (connection) => {
   try {
     const q1 = `SELECT *
       FROM personalinformation
@@ -188,14 +162,9 @@ const getbabysmovement = async () => {
     };
   } catch (error) {
     connection.rollback();
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
-const getfirstbabymovement = async () => {
-  const connection = await db.getConnection();
+const getfirstbabymovement = async (connection) => {
   try {
     const q1 = `SELECT *
       FROM personalinformation
@@ -225,165 +194,100 @@ const getfirstbabymovement = async () => {
     };
   } catch (error) {
     connection.rollback();
-  } finally {
-    if (connection) {
-      connection.release();
-    }
   }
 };
 //obstetrichistory
-const getconvulsions = async () => {
-  const connection = await db.getConnection();
+const getconvulsions = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE convulsionsduringpregnancy = ?`;
     const result = await connection.execute(q, ["yes"]);
     const q2 = `SELECT * FROM obstetrichistory WHERE convulsionsduringpregnancy = ?`;
     const result2 = await connection.execute(q2, ["yes"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getsurgery = async () => {
-  const connection = await db.getConnection();
+const getsurgery = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE caesarean  = ?`;
     const result = await connection.execute(q, ["yes"]);
     const q2 = `SELECT * FROM obstetrichistory WHERE caesarean  = ?`;
     const result2 = await connection.execute(q2, ["yes"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const gettearsthroughsphincter = async () => {
-  const connection = await db.getConnection();
+const gettearsthroughsphincter = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter = ?`;
     const result = await connection.execute(q, ["yes"]);
     const q2 = `SELECT * FROM obstetrichistory WHERE tearsthroughsphincter = ?`;
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getpostpartiumhaemorrghage = async () => {
-  const connection = await db.getConnection();
+const getpostpartiumhaemorrghage = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE postpartiumhaemorrghage   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getstillbirths = async () => {
-  const connection = await db.getConnection();
+const getstillbirths = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE stillbirths   = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE stillbirths   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getprematuredeliveries = async () => {
-  const connection = await db.getConnection();
+const getprematuredeliveries = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE prematuredeliveries   = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE prematuredeliveries   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getlowbirthbabies = async () => {
-  const connection = await db.getConnection();
+const getlowbirthbabies = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE lowbirthbabies   = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE lowbirthbabies   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getbabieswhodied = async () => {
-  const connection = await db.getConnection();
+const getbabieswhodied = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE babieswhodied = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getmiscarriages = async () => {
-  const connection = await db.getConnection();
+const getmiscarriages = async (connection) => {
   try {
     const q = `SELECT * FROM obstetrichistory WHERE miscarriages   = ?`;
     const q2 = `SELECT * FROM obstetrichistory WHERE miscarriages   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getbreastfedbefore = async () => {
-  const connection = await db.getConnection();
+const getbreastfedbefore = async (connection) => {
   try {
     const q = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
     const q2 = `SELECT * FROM familyhistory WHERE haveyoubreastfedbefore   = ?`;
     const result = await connection.execute(q, ["Yes"]);
     const result2 = await connection.execute(q2, ["No"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getbreastfeedingduration = async () => {
-  const connection = await db.getConnection();
+const getbreastfeedingduration = async (connection) => {
   try {
     const q = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
     const q2 = `SELECT * FROM familyhistory WHERE breastfeedingduration   = ?`;
@@ -396,77 +300,47 @@ const getbreastfeedingduration = async () => {
       equal: result2[0].length,
       greater: result3[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getbreastfeedingproblems = async () => {
-  const connection = await db.getConnection();
+const getbreastfeedingproblems = async (connection) => {
   try {
     const q = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
     const q2 = `SELECT * FROM familyhistory WHERE breastfeedingproblems   = ?`;
     const result = await connection.execute(q, ["Yes"]);
     const result2 = await connection.execute(q2, ["No"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 
 //dailyhabits and lifestyle
-const getSmokers = async () => {
-  const connection = await db.getConnection();
+const getSmokers = async (connection) => {
   try {
     const q = `SELECT * FROM dailyhabitsandlifestyle WHERE doyousmoke   = ?`;
     const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE doyousmoke   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getAlcohol = async () => {
-  const connection = await db.getConnection();
+const getAlcohol = async (connection) => {
   try {
     const q = `SELECT * FROM dailyhabitsandlifestyle WHERE doyoudrinkalcohol   = ?`;
     const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE doyoudrinkalcohol   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getThreatened = async () => {
-  const connection = await db.getConnection();
+const getThreatened = async (connection) => {
   try {
     const q = `SELECT * FROM dailyhabitsandlifestyle WHERE threatenedyourlife   = ?`;
     const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE threatenedyourlife   = ?`;
     const result = await connection.execute(q, ["yes"]);
     const result2 = await connection.execute(q2, ["no"]);
     return { yes: result[0].length, no: result2[0].length };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const whodoyoulivewith = async () => {
-  const connection = await db.getConnection();
+const whodoyoulivewith = async (connection) => {
   try {
     const q = `SELECT * FROM dailyhabitsandlifestyle WHERE whodoyoulivewith   = ?`;
     const q2 = `SELECT * FROM dailyhabitsandlifestyle WHERE whodoyoulivewith   = ?`;
@@ -485,16 +359,10 @@ const whodoyoulivewith = async () => {
       friend: result4[0].length,
       others: result5[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 //medicalhistory
-const getcough = async () => {
-  const connection = await db.getConnection();
+const getcough = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -533,16 +401,10 @@ const getcough = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 
-const getpalpitations = async () => {
-  const connection = await db.getConnection();
+const getpalpitations = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -581,15 +443,9 @@ const getpalpitations = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdifficultybreathing = async () => {
-  const connection = await db.getConnection();
+const getdifficultybreathing = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -628,15 +484,9 @@ const getdifficultybreathing = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getswellingoffeet = async () => {
-  const connection = await db.getConnection();
+const getswellingoffeet = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -675,15 +525,9 @@ const getswellingoffeet = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getchestpain = async () => {
-  const connection = await db.getConnection();
+const getchestpain = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -722,15 +566,9 @@ const getchestpain = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getepigastricpain = async () => {
-  const connection = await db.getConnection();
+const getepigastricpain = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -769,15 +607,9 @@ const getepigastricpain = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getseveretiredness = async () => {
-  const connection = await db.getConnection();
+const getseveretiredness = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -816,15 +648,9 @@ const getseveretiredness = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getsevereabdominalpain = async () => {
-  const connection = await db.getConnection();
+const getsevereabdominalpain = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -863,15 +689,9 @@ const getsevereabdominalpain = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getpersistentvomiting = async () => {
-  const connection = await db.getConnection();
+const getpersistentvomiting = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -910,15 +730,9 @@ const getpersistentvomiting = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getseverediarrhoea = async () => {
-  const connection = await db.getConnection();
+const getseverediarrhoea = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -957,15 +771,9 @@ const getseverediarrhoea = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdizziness = async () => {
-  const connection = await db.getConnection();
+const getdizziness = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1004,16 +812,10 @@ const getdizziness = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 //urinary
-const getpainwithurination = async () => {
-  const connection = await db.getConnection();
+const getpainwithurination = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1052,15 +854,9 @@ const getpainwithurination = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getsevereflankpain = async () => {
-  const connection = await db.getConnection();
+const getsevereflankpain = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1099,15 +895,9 @@ const getsevereflankpain = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getbloodinurine = async () => {
-  const connection = await db.getConnection();
+const getbloodinurine = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1146,16 +936,10 @@ const getbloodinurine = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 //gynaelogical
-const getvaginaldischarge = async () => {
-  const connection = await db.getConnection();
+const getvaginaldischarge = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1194,15 +978,9 @@ const getvaginaldischarge = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdeeppelvicpain = async () => {
-  const connection = await db.getConnection();
+const getdeeppelvicpain = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1241,15 +1019,9 @@ const getdeeppelvicpain = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getsyphilis = async () => {
-  const connection = await db.getConnection();
+const getsyphilis = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1288,15 +1060,9 @@ const getsyphilis = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getpersistentdrycough = async () => {
-  const connection = await db.getConnection();
+const getpersistentdrycough = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1335,15 +1101,9 @@ const getpersistentdrycough = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getprogressiveweightloss = async () => {
-  const connection = await db.getConnection();
+const getprogressiveweightloss = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1382,15 +1142,9 @@ const getprogressiveweightloss = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getnightsweats = async () => {
-  const connection = await db.getConnection();
+const getnightsweats = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1429,15 +1183,9 @@ const getnightsweats = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdiagnosedwithtuberculosis = async () => {
-  const connection = await db.getConnection();
+const getdiagnosedwithtuberculosis = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1476,15 +1224,9 @@ const getdiagnosedwithtuberculosis = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const gettreatedTBpreviously = async () => {
-  const connection = await db.getConnection();
+const gettreatedTBpreviously = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1523,16 +1265,10 @@ const gettreatedTBpreviously = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 //pastmedicalhistory
-const getheartdisease = async () => {
-  const connection = await db.getConnection();
+const getheartdisease = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1571,15 +1307,9 @@ const getheartdisease = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getanaemia = async () => {
-  const connection = await db.getConnection();
+const getanaemia = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1618,15 +1348,9 @@ const getanaemia = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getkidneydisease = async () => {
-  const connection = await db.getConnection();
+const getkidneydisease = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1665,15 +1389,9 @@ const getkidneydisease = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getsicklecell = async () => {
-  const connection = await db.getConnection();
+const getsicklecell = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1712,15 +1430,9 @@ const getsicklecell = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdiabetes = async () => {
-  const connection = await db.getConnection();
+const getdiabetes = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1759,15 +1471,9 @@ const getdiabetes = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getgoitre = async () => {
-  const connection = await db.getConnection();
+const getgoitre = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1806,15 +1512,9 @@ const getgoitre = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const gethivaids = async () => {
-  const connection = await db.getConnection();
+const gethivaids = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1853,15 +1553,9 @@ const gethivaids = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getotherseriouschronicillnesses = async () => {
-  const connection = await db.getConnection();
+const getotherseriouschronicillnesses = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1900,15 +1594,9 @@ const getotherseriouschronicillnesses = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const gethadsurgery = async () => {
-  const connection = await db.getConnection();
+const gethadsurgery = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1947,16 +1635,10 @@ const gethadsurgery = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 //drug history
-const getherbalremedies = async () => {
-  const connection = await db.getConnection();
+const getherbalremedies = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -1995,15 +1677,9 @@ const getherbalremedies = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getotcdrugs = async () => {
-  const connection = await db.getConnection();
+const getotcdrugs = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -2042,15 +1718,9 @@ const getotcdrugs = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getvitamins = async () => {
-  const connection = await db.getConnection();
+const getvitamins = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -2089,15 +1759,9 @@ const getvitamins = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const getdietarysupplements = async () => {
-  const connection = await db.getConnection();
+const getdietarysupplements = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -2136,15 +1800,9 @@ const getdietarysupplements = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
-const gettetanus = async () => {
-  const connection = await db.getConnection();
+const gettetanus = async (connection) => {
   try {
     const q = `SELECT
     pi.*,
@@ -2183,84 +1841,86 @@ const gettetanus = async () => {
       yes: result[0].length,
       no: result2[0].length,
     };
-  } catch (error) {
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
+  } catch (error) {}
 };
 
 const nationalgeneraldata = async (req, res) => {
   const date = req.query.date || null;
+  const connection = await db.getConnection();
+
   try {
     //personalinformation
-    const edd = await getedd2(date);
-    const firstbabymovement = await getfirstbabymovement();
-    const parity = await getparity(date);
-    const babysmovement = await getbabysmovement(date);
-    const graviditygreaterthan8result = await graviditygreaterthan8(date);
-    const graviditylessthan8result = await graviditylessthan8(date);
+    const edd = await getedd2(connection);
+    const firstbabymovement = await getfirstbabymovement(connection);
+    const parity = await getparity(connection);
+    const babysmovement = await getbabysmovement(connection);
+    const graviditygreaterthan8result = await graviditygreaterthan8(connection);
+    const graviditylessthan8result = await graviditylessthan8(connection);
     //obstetric
-    const convulsionsduringpregnancy = await getconvulsions();
-    const caesarean = await getsurgery();
-    const tearsthroughsphincter = await gettearsthroughsphincter();
-    const postpartiumhaemorrghage = await getpostpartiumhaemorrghage();
-    const stillbirths = await getstillbirths();
-    const prematuredeliveries = await getprematuredeliveries();
-    const lowbirthbabies = await getlowbirthbabies();
-    const babieswhodied = await getbabieswhodied();
-    const miscarriages = await getmiscarriages();
-    const breastfedbefore = await getbreastfedbefore();
-    const breastfeedingduration = await getbreastfeedingduration();
-    const breastfeedingproblems = await getbreastfeedingproblems();
+    const convulsionsduringpregnancy = await getconvulsions(connection);
+    const caesarean = await getsurgery(connection);
+    const tearsthroughsphincter = await gettearsthroughsphincter(connection);
+    const postpartiumhaemorrghage = await getpostpartiumhaemorrghage(
+      connection
+    );
+    const stillbirths = await getstillbirths(connection);
+    const prematuredeliveries = await getprematuredeliveries(connection);
+    const lowbirthbabies = await getlowbirthbabies(connection);
+    const babieswhodied = await getbabieswhodied(connection);
+    const miscarriages = await getmiscarriages(connection);
+    const breastfedbefore = await getbreastfedbefore(connection);
+    const breastfeedingduration = await getbreastfeedingduration(connection);
+    const breastfeedingproblems = await getbreastfeedingproblems(connection);
     //dailyhabitsandlifestyle
-    const doyousmoke = await getSmokers();
-    const alcohol = await getAlcohol();
-    const threatened = await getThreatened();
-    const livewith = await whodoyoulivewith();
+    const doyousmoke = await getSmokers(connection);
+    const alcohol = await getAlcohol(connection);
+    const threatened = await getThreatened(connection);
+    const livewith = await whodoyoulivewith(connection);
     //medicalhistory
-    const cough = await getcough();
-    const palpitations = await getpalpitations();
-    const difficultybreathing = await getdifficultybreathing();
-    const swellingfeet = await getswellingoffeet();
-    const chestpain = await getchestpain();
-    const epigastricpain = await getepigastricpain();
-    const severetiredness = await getseveretiredness();
-    const severeabdominalpain = await getsevereabdominalpain();
-    const persistentvomiting = await getpersistentvomiting();
-    const severediarrhoea = await getseverediarrhoea();
-    const dizziness = await getdizziness();
+    const cough = await getcough(connection);
+    const palpitations = await getpalpitations(connection);
+    const difficultybreathing = await getdifficultybreathing(connection);
+    const swellingfeet = await getswellingoffeet(connection);
+    const chestpain = await getchestpain(connection);
+    const epigastricpain = await getepigastricpain(connection);
+    const severetiredness = await getseveretiredness(connection);
+    const severeabdominalpain = await getsevereabdominalpain(connection);
+    const persistentvomiting = await getpersistentvomiting(connection);
+    const severediarrhoea = await getseverediarrhoea(connection);
+    const dizziness = await getdizziness(connection);
     //urinary
-    const painwithurination = await getpainwithurination();
-    const severeflankpain = await getsevereflankpain();
-    const bloodinurine = await getbloodinurine();
+    const painwithurination = await getpainwithurination(connection);
+    const severeflankpain = await getsevereflankpain(connection);
+    const bloodinurine = await getbloodinurine(connection);
     //gynaecological
-    const vaginaldischarge = await getvaginaldischarge();
-    const deeppelvicpain = await getdeeppelvicpain();
-    const syphilis = await getsyphilis();
-    const persistentdrycough = await getpersistentdrycough();
-    const progressiveweightloss = await getprogressiveweightloss();
-    const nightsweats = await getnightsweats();
-    const diagnosedwithtuberculosis = await getdiagnosedwithtuberculosis();
-    const treatedTBpreviously = await gettreatedTBpreviously();
+    const vaginaldischarge = await getvaginaldischarge(connection);
+    const deeppelvicpain = await getdeeppelvicpain(connection);
+    const syphilis = await getsyphilis(connection);
+    const persistentdrycough = await getpersistentdrycough(connection);
+    const progressiveweightloss = await getprogressiveweightloss(connection);
+    const nightsweats = await getnightsweats(connection);
+    const diagnosedwithtuberculosis = await getdiagnosedwithtuberculosis(
+      connection
+    );
+    const treatedTBpreviously = await gettreatedTBpreviously(connection);
     //pastmedicalhistory
-    const heartdisease = await getheartdisease();
-    const anaemia = await getanaemia();
-    const kidneydisease = await getkidneydisease();
-    const sicklecell = await getsicklecell();
-    const diabetes = await getdiabetes();
-    const goitre = await getgoitre();
-    const hivaids = await gethivaids();
-    const otherseriouschronicillnesses =
-      await getotherseriouschronicillnesses();
-    const hadsurgery = await gethadsurgery();
+    const heartdisease = await getheartdisease(connection);
+    const anaemia = await getanaemia(connection);
+    const kidneydisease = await getkidneydisease(connection);
+    const sicklecell = await getsicklecell(connection);
+    const diabetes = await getdiabetes(connection);
+    const goitre = await getgoitre(connection);
+    const hivaids = await gethivaids(connection);
+    const otherseriouschronicillnesses = await getotherseriouschronicillnesses(
+      connection
+    );
+    const hadsurgery = await gethadsurgery(connection);
     //drughistory
-    const herbalremedies = await getherbalremedies();
-    const otcdrugs = await getotcdrugs();
-    const vitamins = await getvitamins();
-    const dietarysupplements = await getdietarysupplements();
-    const tetanus = await gettetanus();
+    const herbalremedies = await getherbalremedies(connection);
+    const otcdrugs = await getotcdrugs(connection);
+    const vitamins = await getvitamins(connection);
+    const dietarysupplements = await getdietarysupplements(connection);
+    const tetanus = await gettetanus(connection);
     res.status(200).json({
       edd,
       convulsionsduringpregnancy,
@@ -2325,6 +1985,9 @@ const nationalgeneraldata = async (req, res) => {
     console.log(error);
     res.status(500).json(error);
   } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 const nationalreturnvisitdata = async (req, res) => {

@@ -11,14 +11,11 @@ export class NationalRepository {
   async getNationalAdminByUserID(userID: string) {
     const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
     try {
-      console.log("im using %d for gnauid", this.connection.threadId);
-
       const result = await this.connection.execute(q, [userID]);
       return result;
     } catch (error: any) {
       logger.error(error);
     } finally {
-      console.log("i released %d in gnauid", this.connection.threadId);
       if (this.connection) {
         this.connection.release();
       }

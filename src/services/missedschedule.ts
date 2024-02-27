@@ -146,9 +146,11 @@ const task = cron.schedule("* * * * * *", async () => {
     (await storage.getItem("missedlastExecutionTime")) || 0;
   const currentTime = new Date().getTime();
 
+  // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
+
   if (currentTime - lastExecutionTime >= 60 * 60 * 1000) {
-    console.log("Running the job at..." + new Date());
-    await sendSms();
+    console.log("Running the job of missed at..." + new Date());
+    // await sendSms();
 
     await storage.setItem("missedlastExecutionTime", currentTime);
   } else {
@@ -156,4 +158,4 @@ const task = cron.schedule("* * * * * *", async () => {
   }
 });
 
-task.stop();
+// task.stop();

@@ -22,7 +22,6 @@ class NationalRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const q = `SELECT * FROM nationaladmin WHERE userid = ?`;
             try {
-                console.log("im using %d for gnauid", this.connection.threadId);
                 const result = yield this.connection.execute(q, [userID]);
                 return result;
             }
@@ -30,7 +29,6 @@ class NationalRepository {
                 logger_1.default.error(error);
             }
             finally {
-                console.log("i released %d in gnauid", this.connection.threadId);
                 if (this.connection) {
                     this.connection.release();
                 }

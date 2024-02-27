@@ -134,13 +134,14 @@ const task = node_cron_1.default.schedule("* * * * * *", () => __awaiter(void 0,
     // Check the last execution time
     const lastExecutionTime = (yield node_persist_1.default.getItem("missedlastExecutionTime")) || 0;
     const currentTime = new Date().getTime();
+    // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
     if (currentTime - lastExecutionTime >= 60 * 60 * 1000) {
-        console.log("Running the job at..." + new Date());
-        yield sendSms();
+        console.log("Running the job of missed at..." + new Date());
+        // await sendSms();
         yield node_persist_1.default.setItem("missedlastExecutionTime", currentTime);
     }
     else {
         console.log("Not time to run the job yet." + new Date());
     }
 }));
-task.stop();
+// task.stop();

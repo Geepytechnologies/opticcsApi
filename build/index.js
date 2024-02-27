@@ -35,8 +35,8 @@ const index_1 = __importDefault(require("./routes/session/index"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const logger_1 = __importDefault(require("./logger"));
-// require("./services/missedschedule");
-// require("./services/reminderschedule");
+require("./services/missedschedule");
+require("./services/reminderschedule");
 // app.post("/sendotp2", (req: Request, res: Response) => {
 //   const options = {
 //     method: "POST",
