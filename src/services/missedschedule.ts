@@ -154,7 +154,7 @@ const task = cron.schedule("* * * * * *", async () => {
 
     await storage.setItem("missedlastExecutionTime", currentTime);
   } else {
-    console.log("Not time to run the job yet." + new Date());
+    // console.log("Not time to run the job yet." + new Date());
   }
 });
 

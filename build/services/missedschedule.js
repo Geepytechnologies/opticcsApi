@@ -141,7 +141,7 @@ const task = node_cron_1.default.schedule("* * * * * *", () => __awaiter(void 0,
         yield node_persist_1.default.setItem("missedlastExecutionTime", currentTime);
     }
     else {
-        console.log("Not time to run the job yet." + new Date());
+        // console.log("Not time to run the job yet." + new Date());
     }
 }));
 // task.stop();
