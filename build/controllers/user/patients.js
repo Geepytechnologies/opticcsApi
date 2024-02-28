@@ -280,7 +280,7 @@ const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             return result;
         }
         else {
-            return;
+            throw new Error(`Patient with phone number ${phone} already exists`);
         }
     });
     const createpatient = (personalinformation_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -764,6 +764,7 @@ WHERE
     try {
         yield connection.beginTransaction();
         const createdrecord = yield personalRecord();
+        console.log("createdrecord: ", createdrecord);
         const personalInformation_id = createdrecord[0].insertId;
         const patientcreate = yield createpatient(personalInformation_id);
         const patientID = patientcreate[0].insertId;
@@ -790,18 +791,24 @@ WHERE
     }
     catch (error) {
         console.log("error from creating patient", error);
+        const errorResponse = {
+            statusCode: error.statusCode || 500,
+            error: Object.assign({}, error), // Convert error to a plain object
+        };
+        // res.status(500).json(error.message);
         if (connection) {
             try {
                 yield connection.rollback();
+                logger_1.default.warn("creating patient connection rolled back");
             }
             catch (rollbackError) {
                 console.error("Rollback error:", rollbackError);
             }
-            res.status(error.statusCode || 500).json({
-                statusCode: error.statusCode || "500",
-                error: error.sqlMessage ? error.sqlMessage : error,
-            });
         }
+        res.status(500).json({
+            statusCode: error.statusCode || 500,
+            error: error.message,
+        });
     }
     finally {
         if (connection) {
@@ -876,7 +883,7 @@ WHERE
         }
     }
     catch (err) {
-        console.log(err);
+        console.log("the error: ", err);
         res.status(500).json(err);
     }
     finally {

@@ -481,7 +481,7 @@ const createPatient = async (req, res, next) => {
       const result = await connection.execute(query, values);
       return result;
     } else {
-      return;
+      throw new Error(`Patient with phone number ${phone} already exists`);
     }
   };
   const createpatient = async (personalinformation_id) => {
@@ -972,6 +972,7 @@ WHERE
   try {
     await connection.beginTransaction();
     const createdrecord = await personalRecord();
+    console.log("createdrecord: ", createdrecord);
     const personalInformation_id = createdrecord[0].insertId;
     const patientcreate = await createpatient(personalInformation_id);
     const patientID = patientcreate[0].insertId;
@@ -999,18 +1000,23 @@ WHERE
     });
   } catch (error) {
     console.log("error from creating patient", error);
+    const errorResponse = {
+      statusCode: error.statusCode || 500,
+      error: { ...error }, // Convert error to a plain object
+    };
+    // res.status(500).json(error.message);
     if (connection) {
       try {
         await connection.rollback();
+        logger.warn("creating patient connection rolled back");
       } catch (rollbackError) {
         console.error("Rollback error:", rollbackError);
       }
-
-      res.status(error.statusCode || 500).json({
-        statusCode: error.statusCode || "500",
-        error: error.sqlMessage ? error.sqlMessage : error,
-      });
     }
+    res.status(500).json({
+      statusCode: error.statusCode || 500,
+      error: error.message,
+    });
   } finally {
     if (connection) {
       connection.release();
@@ -1089,7 +1095,7 @@ WHERE
       });
     }
   } catch (err) {
-    console.log(err);
+    console.log("the error: ", err);
     res.status(500).json(err);
   } finally {
     if (connection) {
