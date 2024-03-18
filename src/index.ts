@@ -23,8 +23,8 @@ import { createUserQuery } from "./queries/user/user";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import logger from "./logger";
-require("./services/missedschedule");
-require("./services/reminderschedule");
+// require("./services/missedschedule");
+// require("./services/reminderschedule");
 
 // app.post("/sendotp2", (req: Request, res: Response) => {
 //   const options = {
@@ -64,6 +64,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
+app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(corsOptions));
