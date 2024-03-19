@@ -21,216 +21,9 @@ const user_1 = require("../../queries/user/user");
 const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     // Replacing the individual db.query with pool.query for connection pooling
-    const { hospitalnumber, firstname, middlename, surname, phone, address, state, dateofbirth, lga, healthfacility, gravidity, parity, alive, lmpknown, lmp, edd, ega, laborstarted, firstbabymovement, doyoufeelthebabysmovement, doyouknowdateoffirstbabymovement, healthpersonnel_id, firstvisit_date, doyousmoke, doyoudrinkalcohol, othersubstances, doyounone, whodoyoulivewith, specifywhodoyoulivewith, stoppedfromleavingthehouse, threatenedyourlife, abusedphysically, didanyoneevernone, convulsionsduringpregnancy, caesarean, tearsthroughsphincter, postpartiumhaemorrghage, stillbirths, prematuredeliveries, lowbirthbabies, babieswhodied, miscarriages, otherinputobstetrichistory, yearofpregnancy, carriedtoterm, modeofdelivery, weightofbaby, sexofbaby, babycriedafterbirth, complicationsafterdelivery, specifycomplicationsafterdelivery, breastfedexclusively, fever, chills, headaches, dizziness, convulsions, weakness, blurryvision, cough, difficultybreathing, severechestpain, severeepigastricpain, pepticulcerpatient, severetiredness, severeabdominalpain, persistentvomiting, severediarrhoea, painwithurination, severeflankpain, bloodinurine, increasedurination, noticedantsaroundplaceurinated, increasedthirst, vaginaldischarge, deeppelvicpain, syphilis, syphilistreatment, feveryes, chillsyes, headachesyes, dizzinessyes, convulsionsyes, weaknessyes, blurryvisionyes, coughyes, persistentdrycough, persistentdrycoughyes, progressiveweightloss, progressiveweightlossyes, nightsweats, nightsweatsyes, diagnosedwithtuberculosis, diagnosedwithtuberculosisyes, treatedTBpreviously, treatedTBpreviouslyyes, difficultybreathingyes, severechestpainyes, severeepigastricpainyes, palpitations, palpitationyes, swellingfeet, swellingfeetyes, difficultytosleep, difficultytosleepyes, pepticulcerpatientyes, severetirednessyes, severeabdominalpainyes, persistentvomitingyes, severediarrhoeayes, painwithurinationyes, severeflankpainyes, bloodinurineyes, increasedurinationyes, increasedthirstyes, vaginaldischargeyes, deeppelvicpainyes, syphilisyes, patienthaschildren, haveyoubreastfedbefore, breastfeedingduration, breastfeedingproblems, breastfeedingproblemsmoredetails, babylessthanayear, stillbreastfeeding, camewithachildunder5years, hasunvaccinatedchildren, familyepilepsy, familyepilepsyyes, familyhypertension, familyhypertensionyes, familyasthma, familyasthmayes, familydiabetes, familydiabetesyes, familysicklecell, familysicklecellyes, hypertension, heartdisease, anaemia, kidneydisease, sicklecell, diabetes, goitre, hivaids, hivaidstreatment, covid19, otherseriouschronicillnesses, specifyseriouschronicillnesses, hadsurgery, specifyhadsurgery, hypertensionyes, heartdiseaseyes, anaemiayes, kidneydiseaseyes, sicklecellyes, diabetesyes, goitreyes, hivaidsyes, covid19yes, historyofallergy, allergies, herbalremedies, vitamins, otcdrugs, dietarysupplements, typeofdietarysupplement, otherdrugs, tetanus, tetanusdoses, lasttetanusdose, covidvaccination, conjunctiva, sclera, bloodpressure, respiratoryrate, temperature, pulserate, abdomenScars, fromcaesareansection, fundalheight, measurefundalheightweek, measurefundalheightcentimeter, presentation, descent, positionoffoetus, breastexamination, abnormalbreastexamination, genitalexamination, swelling, discharge, tenderness, ulcers, fistulas, irregularities, swellingyes, dischargeyes, tendernessyes, ulcersyes, fistulasyes, irregularitiesyes, heartrate, bmi, observation, percussion, palpationchest, auscultationchest, } = req.body;
-    // logger.info({
-    //   hospitalnumber: hospitalnumber,
-    //   firstname: firstname,
-    //   middlename: middlename,
-    //   surname: surname,
-    //   phone: phone,
-    //   address: address,
-    //   state: state,
-    //   dateofbirth: dateofbirth,
-    //   lga: lga,
-    //   healthfacility: healthfacility,
-    //   gravidity: gravidity,
-    //   parity: parity,
-    //   alive: alive,
-    //   lmpknown: lmpknown,
-    //   lmp: lmp,
-    //   edd: edd,
-    //   ega: ega,
-    //   laborstarted: laborstarted,
-    //   firstbabymovement: firstbabymovement,
-    //   doyoufeelthebabysmovement: doyoufeelthebabysmovement,
-    //   doyouknowdateoffirstbabymovement: doyouknowdateoffirstbabymovement,
-    //   healthpersonnel_id: healthpersonnel_id,
-    //   firstvisit_date: firstvisit_date,
-    //   doyousmoke: doyousmoke,
-    //   doyoudrinkalcohol: doyoudrinkalcohol,
-    //   othersubstances: othersubstances,
-    //   doyounone: doyounone,
-    //   whodoyoulivewith: whodoyoulivewith,
-    //   specifywhodoyoulivewith: specifywhodoyoulivewith,
-    //   stoppedfromleavingthehouse: stoppedfromleavingthehouse,
-    //   threatenedyourlife: threatenedyourlife,
-    //   abusedphysically: abusedphysically,
-    //   didanyoneevernone: didanyoneevernone,
-    //   convulsionsduringpregnancy: convulsionsduringpregnancy,
-    //   caesarean: caesarean,
-    //   tearsthroughsphincter: tearsthroughsphincter,
-    //   postpartiumhaemorrghage: postpartiumhaemorrghage,
-    //   stillbirths: stillbirths,
-    //   prematuredeliveries: prematuredeliveries,
-    //   lowbirthbabies: lowbirthbabies,
-    //   babieswhodied: babieswhodied,
-    //   miscarriages: miscarriages,
-    //   otherinputobstetrichistory: otherinputobstetrichistory,
-    //   yearofpregnancy: yearofpregnancy,
-    //   carriedtoterm: carriedtoterm,
-    //   modeofdelivery: modeofdelivery,
-    //   weightofbaby: weightofbaby,
-    //   sexofbaby: sexofbaby,
-    //   babycriedafterbirth: babycriedafterbirth,
-    //   complicationsafterdelivery: complicationsafterdelivery,
-    //   specifycomplicationsafterdelivery: specifycomplicationsafterdelivery,
-    //   breastfedexclusively: breastfedexclusively,
-    //   fever: fever,
-    //   chills: chills,
-    //   headaches: headaches,
-    //   dizziness: dizziness,
-    //   convulsions: convulsions,
-    //   weakness: weakness,
-    //   blurryvision: blurryvision,
-    //   cough: cough,
-    //   difficultybreathing: difficultybreathing,
-    //   severechestpain: severechestpain,
-    //   severeepigastricpain: severeepigastricpain,
-    //   pepticulcerpatient: pepticulcerpatient,
-    //   severetiredness: severetiredness,
-    //   severeabdominalpain: severeabdominalpain,
-    //   persistentvomiting: persistentvomiting,
-    //   severediarrhoea: severediarrhoea,
-    //   painwithurination: painwithurination,
-    //   severeflankpain: severeflankpain,
-    //   bloodinurine: bloodinurine,
-    //   increasedurination: increasedurination,
-    //   noticedantsaroundplaceurinated: noticedantsaroundplaceurinated,
-    //   increasedthirst: increasedthirst,
-    //   vaginaldischarge: vaginaldischarge,
-    //   deeppelvicpain: deeppelvicpain,
-    //   syphilis: syphilis,
-    //   syphilistreatment: syphilistreatment,
-    //   feveryes: feveryes,
-    //   chillsyes: chillsyes,
-    //   headachesyes: headachesyes,
-    //   dizzinessyes: dizzinessyes,
-    //   convulsionsyes: convulsionsyes,
-    //   weaknessyes: weaknessyes,
-    //   blurryvisionyes: blurryvisionyes,
-    //   coughyes: coughyes,
-    //   persistentdrycough: persistentdrycough,
-    //   persistentdrycoughyes: persistentdrycoughyes,
-    //   progressiveweightloss: progressiveweightloss,
-    //   progressiveweightlossyes: progressiveweightlossyes,
-    //   nightsweats: nightsweats,
-    //   nightsweatsyes: nightsweatsyes,
-    //   diagnosedwithtuberculosis: diagnosedwithtuberculosis,
-    //   diagnosedwithtuberculosisyes: diagnosedwithtuberculosisyes,
-    //   treatedTBpreviously: treatedTBpreviously,
-    //   treatedTBpreviouslyyes: treatedTBpreviouslyyes,
-    //   difficultybreathingyes: difficultybreathingyes,
-    //   severechestpainyes: severechestpainyes,
-    //   severeepigastricpainyes: severeepigastricpainyes,
-    //   palpitations: palpitations,
-    //   palpitationyes: palpitationyes,
-    //   swellingfeet: swellingfeet,
-    //   swellingfeetyes: swellingfeetyes,
-    //   difficultytosleep: difficultytosleep,
-    //   difficultytosleepyes: difficultytosleepyes,
-    //   pepticulcerpatientyes: pepticulcerpatientyes,
-    //   severetirednessyes: severetirednessyes,
-    //   severeabdominalpainyes: severeabdominalpainyes,
-    //   persistentvomitingyes: persistentvomitingyes,
-    //   severediarrhoeayes: severediarrhoeayes,
-    //   painwithurinationyes: painwithurinationyes,
-    //   severeflankpainyes: severeflankpainyes,
-    //   bloodinurineyes: bloodinurineyes,
-    //   increasedurinationyes: increasedurinationyes,
-    //   increasedthirstyes: increasedthirstyes,
-    //   vaginaldischargeyes: vaginaldischargeyes,
-    //   deeppelvicpainyes: deeppelvicpainyes,
-    //   syphilisyes: syphilisyes,
-    //   patienthaschildren: patienthaschildren,
-    //   haveyoubreastfedbefore: haveyoubreastfedbefore,
-    //   breastfeedingduration: breastfeedingduration,
-    //   breastfeedingproblems: breastfeedingproblems,
-    //   breastfeedingproblemsmoredetails: breastfeedingproblemsmoredetails,
-    //   babylessthanayear: babylessthanayear,
-    //   stillbreastfeeding: stillbreastfeeding,
-    //   camewithachildunder5years: camewithachildunder5years,
-    //   hasunvaccinatedchildren: hasunvaccinatedchildren,
-    //   familyepilepsy: familyepilepsy,
-    //   familyepilepsyyes: familyepilepsyyes,
-    //   familyhypertension: familyhypertension,
-    //   familyhypertensionyes: familyhypertensionyes,
-    //   familyasthma: familyasthma,
-    //   familyasthmayes: familyasthmayes,
-    //   familydiabetes: familydiabetes,
-    //   familydiabetesyes: familydiabetesyes,
-    //   familysicklecell: familysicklecell,
-    //   familysicklecellyes: familysicklecellyes,
-    //   hypertension: hypertension,
-    //   heartdisease: heartdisease,
-    //   anaemia: anaemia,
-    //   kidneydisease: kidneydisease,
-    //   sicklecell: sicklecell,
-    //   diabetes: diabetes,
-    //   goitre: goitre,
-    //   hivaids: hivaids,
-    //   hivaidstreatment: hivaidstreatment,
-    //   covid19: covid19,
-    //   otherseriouschronicillnesses: otherseriouschronicillnesses,
-    //   specifyseriouschronicillnesses: specifyseriouschronicillnesses,
-    //   hadsurgery: hadsurgery,
-    //   specifyhadsurgery: specifyhadsurgery,
-    //   hypertensionyes: hypertensionyes,
-    //   heartdiseaseyes: heartdiseaseyes,
-    //   anaemiayes: anaemiayes,
-    //   kidneydiseaseyes: kidneydiseaseyes,
-    //   sicklecellyes: sicklecellyes,
-    //   diabetesyes: diabetesyes,
-    //   goitreyes: goitreyes,
-    //   hivaidsyes: hivaidsyes,
-    //   covid19yes: covid19yes,
-    //   historyofallergy: historyofallergy,
-    //   allergies: allergies,
-    //   herbalremedies: herbalremedies,
-    //   vitamins: vitamins,
-    //   otcdrugs: otcdrugs,
-    //   dietarysupplements: dietarysupplements,
-    //   typeofdietarysupplement: typeofdietarysupplement,
-    //   otherdrugs: otherdrugs,
-    //   tetanus: tetanus,
-    //   tetanusdoses: tetanusdoses,
-    //   lasttetanusdose: lasttetanusdose,
-    //   covidvaccination: covidvaccination,
-    //   conjunctiva: conjunctiva,
-    //   sclera: sclera,
-    //   bloodpressure: bloodpressure,
-    //   respiratoryrate: respiratoryrate,
-    //   temperature: temperature,
-    //   pulserate: pulserate,
-    //   abdomenScars: abdomenScars,
-    //   fromcaesareansection: fromcaesareansection,
-    //   fundalheight: fundalheight,
-    //   measurefundalheightweek: measurefundalheightweek,
-    //   measurefundalheightcentimeter: measurefundalheightcentimeter,
-    //   presentation: presentation,
-    //   descent: descent,
-    //   positionoffoetus: positionoffoetus,
-    //   breastexamination: breastexamination,
-    //   abnormalbreastexamination: abnormalbreastexamination,
-    //   genitalexamination: genitalexamination,
-    //   swelling: swelling,
-    //   discharge: discharge,
-    //   tenderness: tenderness,
-    //   ulcers: ulcers,
-    //   fistulas: fistulas,
-    //   irregularities: irregularities,
-    //   swellingyes: swellingyes,
-    //   dischargeyes: dischargeyes,
-    //   tendernessyes: tendernessyes,
-    //   ulcersyes: ulcersyes,
-    //   fistulasyes: fistulasyes,
-    //   irregularitiesyes: irregularitiesyes,
-    //   heartrate: heartrate,
-    //   bmi: bmi,
-    //   observation: observation,
-    //   percussion: percussion,
-    //   palpationchest: palpationchest,
-    //   auscultationchest: auscultationchest,
-    // });
+    const { hospitalnumber, firstname, middlename, surname, phone, address, state, dateofbirth, lga, healthfacility, gravidity, parity, alive, lmpknown, lmp, edd, ega, laborstarted, firstbabymovement, doyoufeelthebabysmovement, doyouknowdateoffirstbabymovement, healthpersonnel_id, firstvisit_date, doyousmoke, doyoudrinkalcohol, othersubstances, doyounone, whodoyoulivewith, specifywhodoyoulivewith, stoppedfromleavingthehouse, threatenedyourlife, abusedphysically, didanyoneevernone, convulsionsduringpregnancy, caesarean, tearsthroughsphincter, postpartiumhaemorrghage, stillbirths, prematuredeliveries, lowbirthbabies, babieswhodied, miscarriages, otherinputobstetrichistory, yearofpregnancy, carriedtoterm, modeofdelivery, weightofbaby, sexofbaby, babycriedafterbirth, complicationsafterdelivery, specifycomplicationsafterdelivery, breastfedexclusively, fever, chills, headaches, dizziness, convulsions, weakness, blurryvision, cough, difficultybreathing, severechestpain, severeepigastricpain, pepticulcerpatient, severetiredness, severeabdominalpain, persistentvomiting, severediarrhoea, painwithurination, severeflankpain, bloodinurine, increasedurination, noticedantsaroundplaceurinated, increasedthirst, vaginaldischarge, deeppelvicpain, syphilis, syphilistreatment, feveryes, chillsyes, headachesyes, dizzinessyes, convulsionsyes, weaknessyes, blurryvisionyes, coughyes, persistentdrycough, persistentdrycoughyes, progressiveweightloss, progressiveweightlossyes, nightsweats, nightsweatsyes, diagnosedwithtuberculosis, diagnosedwithtuberculosisyes, treatedTBpreviously, treatedTBpreviouslyyes, difficultybreathingyes, severechestpainyes, severeepigastricpainyes, palpitations, palpitationyes, swellingfeet, swellingfeetyes, difficultytosleep, difficultytosleepyes, pepticulcerpatientyes, severetirednessyes, severeabdominalpainyes, persistentvomitingyes, severediarrhoeayes, painwithurinationyes, severeflankpainyes, bloodinurineyes, increasedurinationyes, increasedthirstyes, vaginaldischargeyes, deeppelvicpainyes, syphilisyes, patienthaschildren, haveyoubreastfedbefore, breastfeedingduration, breastfeedingproblems, breastfeedingproblemsmoredetails, babylessthanayear, stillbreastfeeding, camewithachildunder5years, hasunvaccinatedchildren, familyepilepsy, familyepilepsyyes, familyhypertension, familyhypertensionyes, familyasthma, familyasthmayes, familydiabetes, familydiabetesyes, familysicklecell, familysicklecellyes, hypertension, heartdisease, anaemia, kidneydisease, sicklecell, diabetes, goitre, hivaids, hivaidstreatment, covid19, otherseriouschronicillnesses, specifyseriouschronicillnesses, hadsurgery, specifyhadsurgery, hypertensionyes, heartdiseaseyes, anaemiayes, kidneydiseaseyes, sicklecellyes, diabetesyes, goitreyes, hivaidsyes, covid19yes, historyofallergy, allergies, herbalremedies, vitamins, otcdrugs, dietarysupplements, typeofdietarysupplement, otherdrugs, tetanus, tetanusdoses, lasttetanusdose, covidvaccination, conjunctiva, sclera, bloodpressure, respiratoryrate, temperature, pulserate, abdomenScars, fromcaesareansection, fundalheight, measurefundalheightweek, measurefundalheightcentimeter, presentation, descent, positionoffoetus, breastexamination, abnormalbreastexamination, genitalexamination, swelling, discharge, tenderness, ulcers, fistulas, irregularities, swellingyes, dischargeyes, tendernessyes, ulcersyes, fistulasyes, irregularitiesyes, heartrate, bmi, observation, percussion, palpationchest, auscultationchest, 
+    //new
+    wakinguptopassurine, lastmonthseenperiod, } = req.body;
     const checkIfPatientWithPhoneNumberExists = () => __awaiter(void 0, void 0, void 0, function* () {
         const q = `SELECT * FROM personalinformation WHERE phone = ?`;
         try {
@@ -273,6 +66,7 @@ const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             firstbabymovement,
             doyoufeelthebabysmovement,
             doyouknowdateoffirstbabymovement,
+            lastmonthseenperiod,
         ];
         const patientexists = yield checkIfPatientWithPhoneNumberExists();
         if (!patientexists) {
@@ -426,6 +220,8 @@ const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             vaginaldischargeyes,
             deeppelvicpainyes,
             syphilisyes,
+            //new
+            wakinguptopassurine,
         ];
         const q = `INSERT INTO medicalhistory (
       firstVisit_id,
@@ -494,9 +290,10 @@ const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, func
       increasedthirstyes,
       vaginaldischargeyes,
       deeppelvicpainyes,
-      syphilisyes
+      syphilisyes,
+      wakinguptopassurine
       ) 
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
         const result = yield connection.execute(q, values);
         return result;
     });
@@ -1200,7 +997,9 @@ exports.getAllPatientlga = getAllPatientlga;
 const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const healthpersonnel_id = req.user.id;
-    const { patient_id, returnvisit_date, state, lga, healthfacility, fever, headache, dizziness, convulsions, weakness, blurryvision, cough, difficultybreathing, palpitation, swellingoffeet, severechestpain, severeepigastricpain, pepticulcerpatient, severetirednesss, difficultylyingflat, severeabdominalpain, vomiting, diarrhoea, urinarypain, severeflankpain, bloodinurine, increasedurination, antsaroundurine, increasedthirst, vaginaldischarge, painduringsex, syphillis, receivedcaresincelastvisit, whoprovidedthecare, whatcarewasprovided, outcomeofthecare, takingprescribeddrugs, problemtakingdrugs, followadvice, reactionorsideeffects, anythingrelatedtopregnancy, pink, palepink, whiteincolour, white, tinge, deepyellow, dirtywhite, bloodpressure, respiratoryrate, temperature, pulserate, abdomenScars, palpateAndEstimatefundusdocumentation, distancebtwtopdffundus, cmfromtopfundusdocumentation, cmfromuppersymphysis, presentation, descent, positionoffoetus, persisitentdrycough, unexplainedweightloss, nightsweats, diagnosedwithtuberculosis, treatedfortuberculosis, heartrate, complaint, stategenobser, generalwellchoice, syphillistreatment, pregnancydiscuss, wakeuptourinate, problemmedication, bmi, sclera, conjuctiva, chill, bloodpressdia, bloodpresssis, chestpaindiscuss, epigastricpaindiscuss, severetireddisuss, severediarrhoeadiscuss, swellingfeetdiscuss, sputrumcolor, sputrum, lmp, lmpdate, edd, ega, laborstarted, selectedbabymovement, selectedfirstbabymovement, selectedfirstbabymovementdate, observelookpatient, documentpercussion, palpatediscuss, auscultationdiscuss, breast, breastdiscuss, severabdodisuss, } = req.body;
+    const { patient_id, returnvisit_date, state, lga, healthfacility, fever, headache, dizziness, convulsions, weakness, blurryvision, cough, difficultybreathing, palpitation, swellingoffeet, severechestpain, severeepigastricpain, pepticulcerpatient, severetirednesss, difficultylyingflat, severeabdominalpain, vomiting, diarrhoea, urinarypain, severeflankpain, bloodinurine, increasedurination, antsaroundurine, increasedthirst, vaginaldischarge, painduringsex, syphillis, receivedcaresincelastvisit, whoprovidedthecare, whatcarewasprovided, outcomeofthecare, takingprescribeddrugs, problemtakingdrugs, followadvice, reactionorsideeffects, anythingrelatedtopregnancy, pink, palepink, whiteincolour, white, tinge, deepyellow, dirtywhite, bloodpressure, respiratoryrate, temperature, pulserate, abdomenScars, palpateAndEstimatefundusdocumentation, distancebtwtopdffundus, cmfromtopfundusdocumentation, cmfromuppersymphysis, presentation, descent, positionoffoetus, persisitentdrycough, unexplainedweightloss, nightsweats, diagnosedwithtuberculosis, treatedfortuberculosis, heartrate, complaint, stategenobser, generalwellchoice, syphillistreatment, pregnancydiscuss, wakeuptourinate, problemmedication, bmi, sclera, conjuctiva, chill, bloodpressdia, bloodpresssis, chestpaindiscuss, epigastricpaindiscuss, severetireddisuss, severediarrhoeadiscuss, swellingfeetdiscuss, sputrumcolor, sputrum, lmp, lmpdate, edd, ega, laborstarted, selectedbabymovement, selectedfirstbabymovement, selectedfirstbabymovementdate, observelookpatient, documentpercussion, palpatediscuss, auscultationdiscuss, breast, breastdiscuss, severabdodisuss, 
+    //new
+    missedAncVisit, contactedByPHC, whoContacted, urinaryGen, comeWithUnderFiveChildren, testedFverMalaria, getAppropriateTreatMalariaFever, recieveImmunizationAge, screenedMalnutrition, underFiveCovidVaccinated, } = req.body;
     const mydata = {
         patient_id: patient_id,
         returnvisit_date: returnvisit_date,
@@ -1408,6 +1207,17 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
             breast,
             breastdiscuss,
             severabdodisuss,
+            //new
+            missedAncVisit,
+            contactedByPHC,
+            whoContacted,
+            urinaryGen,
+            comeWithUnderFiveChildren,
+            testedFverMalaria,
+            getAppropriateTreatMalariaFever,
+            recieveImmunizationAge,
+            screenedMalnutrition,
+            underFiveCovidVaccinated,
         ];
         const q = `INSERT INTO returnvisit (
         patient_id,
@@ -1510,7 +1320,17 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
         auscultationdiscuss,
         breast,
         breastdiscuss,
-        severabdodisuss
+        severabdodisuss,
+        missedAncVisit,
+        contactedByPHC,
+        whoContacted,
+        urinaryGen,
+        comeWithUnderFiveChildren,
+        testedFverMalaria,
+        getAppropriateTreatMalariaFever,
+        recieveImmunizationAge,
+        screenedMalnutrition,
+        underFiveCovidVaccinated
       ) VALUES (
         ?,?,?,?,?,?,?,?,?,?,
         ?,?,?,?,?,?,?,?,?,?,
@@ -1522,7 +1342,7 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
         ?,?,?,?,?,?,?,?,?,?,
         ?,?,?,?,?,?,?,?,?,?,
         ?,?,?,?,?,?,?,?,?,?,
-        ?)`;
+        ?,?,?,?,?,?,?,?,?,?,?)`;
         const result = yield connection.execute(q, values);
         const returnvisitid = result[0];
         // await updateSessionReturnvisit(returnvisitid, healthpersonnel_id);
@@ -1551,6 +1371,9 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
 });
 exports.createPatientEveryVisit = createPatientEveryVisit;
 const getAllPatientsAndHealthworker = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = req.query.page || 1;
+    const pageSize = 20;
+    const offset = (page - 1) * pageSize;
     const connection = yield db_1.default.getConnection();
     try {
         const q = `SELECT
@@ -1572,7 +1395,8 @@ const getAllPatientsAndHealthworker = (req, res) => __awaiter(void 0, void 0, vo
         SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
       ) AS combined_visits
       GROUP BY patient_id
-    ) AS last_visits ON p.id = last_visits.patient_id;
+    ) AS last_visits ON p.id = last_visits.patient_id ORDER BY
+    p.id DESC LIMIT ${pageSize} OFFSET ${offset};
     `;
         const q2 = `SELECT COUNT(*) AS patient_count FROM patients;
     `;
@@ -2020,7 +1844,9 @@ const updateTest = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.updateTest = updateTest;
 const createdeliveryreport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
-    const { healthpersonnel_id, firstname, lastname, deliverydata, numberofchildren, deliverydate, deliverytime, } = req.body;
+    const { healthpersonnel_id, firstname, lastname, deliverydata, numberofchildren, deliverydate, deliverytime, 
+    //new
+    deliverAtHealthFacility, givenPostPartum, attendAncVisit, } = req.body;
     const values = [
         healthpersonnel_id,
         firstname,
@@ -2029,6 +1855,9 @@ const createdeliveryreport = (req, res) => __awaiter(void 0, void 0, void 0, fun
         numberofchildren,
         deliverydate,
         deliverytime,
+        deliverAtHealthFacility,
+        givenPostPartum,
+        attendAncVisit,
     ];
     try {
         const q = `INSERT INTO deliveryreport (
@@ -2038,8 +1867,10 @@ const createdeliveryreport = (req, res) => __awaiter(void 0, void 0, void 0, fun
       deliverydata,
       numberofchildren,
       deliverydate,
-      deliverytime
-      ) VALUES (?,?,?,?,?,?,?)`;
+      deliverytime,deliverAtHealthFacility,
+      givenPostPartum,
+      attendAncVisit
+      ) VALUES (?,?,?,?,?,?,?,?,?,?)`;
         const result = yield connection.execute(q, values);
         const testresultid = result[0].insertId;
         const q2 = `SELECT * FROM deliveryreport WHERE id = ?`;

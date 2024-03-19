@@ -71,10 +71,11 @@ function createPatientPersonalInfoQuery() {
     laborstarted,
     firstbabymovement,
     doyoufeelthebabysmovement,
-    doyouknowdateoffirstbabymovement
+    doyouknowdateoffirstbabymovement,
+    lastmonthseenperiod
   ) 
   VALUES (
-    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
   )`;
 }
 exports.createPatientPersonalInfoQuery = createPatientPersonalInfoQuery;
