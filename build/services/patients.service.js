@@ -23,10 +23,12 @@ class PatientService {
             try {
                 const result = yield this.patientRepo.checkifpatientwithphonenumberexists(phone);
                 if (Array.isArray(result[0])) {
-                    return true;
-                }
-                else {
-                    return false;
+                    if (result[0].length) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
                 }
             }
             catch (error) {
@@ -49,8 +51,102 @@ class PatientService {
             }
         });
     }
-    createPatientFirstvisit() {
-        return __awaiter(this, void 0, void 0, function* () { });
+    createpatient(data, personalinformation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createpatient(data, personalinformation_id);
+            return result;
+        });
+    }
+    createfirstvisitdata(data, patient_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createfirstvisit(data, patient_id);
+            return result;
+        });
+    }
+    createdailyhabit(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createdailyhabit(data, firstvisit_id);
+            return result;
+        });
+    }
+    createobstetric(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createobstetric(data, firstvisit_id);
+            return result;
+        });
+    }
+    createmedicationHistory(data, firstVisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createmedicalhistory(data, firstVisit_id);
+            return result;
+        });
+    }
+    createpastmedicalHistory(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createpastmedicalhistory(data, firstvisit_id);
+            return result;
+        });
+    }
+    createfamilyHistory(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createfamilyhistory(data, firstvisit_id);
+            return result;
+        });
+    }
+    createdrugHistory(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createdrughistory(data, firstvisit_id);
+            return result;
+        });
+    }
+    createphysicalexamination(data, firstvisit_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.createphysicalexamination(data, firstvisit_id);
+            return result;
+        });
+    }
+    getnewlycreatedpatientrecord(patient_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.patientRepo.getnewlycreatedpatientrecord(patient_id);
+            return result;
+        });
+    }
+    createPatientFirstvisit(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const createdrecord = yield this.personalRecord(data);
+                const personalInformation_id = createdrecord[0].insertId;
+                const patientcreate = yield this.createpatient(data, personalInformation_id);
+                const patientID = patientcreate[0].insertId;
+                const firstvisitcreation = yield this.createfirstvisitdata(data, patientID);
+                const firstvisitID = firstvisitcreation[0].insertId;
+                yield this.createpastmedicalHistory(data, firstvisitID);
+                yield this.createfamilyHistory(data, firstvisitID);
+                yield this.createdailyhabit(data, firstvisitID);
+                yield this.createobstetric(data, firstvisitID);
+                yield this.createmedicationHistory(data, firstvisitID);
+                yield this.createdrugHistory(data, firstvisitID);
+                yield this.createphysicalexamination(data, firstvisitID);
+                return patientID;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    createPatientReturnvisit(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const patientexists = yield this.patientRepo.checkIfPatientRecordExistsInReturnvisit(data.patient_id);
+            const anc = patientexists.lastanc;
+            if (patientexists.value) {
+                const result = yield this.patientRepo.createReturnVisitWithANC(data, anc);
+                return result;
+            }
+            else {
+                const result = yield this.patientRepo.createReturnVisit(data);
+                return result;
+            }
+        });
     }
 }
 exports.PatientService = PatientService;

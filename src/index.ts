@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import express, { Request, Response } from "express";
 import morgan from "morgan";
 
@@ -103,6 +105,39 @@ app.get("/test", (req, res) => {
     if (err) return res.json(err);
     return res.json(result);
   });
+});
+app.get("/updateanc", async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT patient_id, COUNT(*) as num_occurrences FROM returnvisit GROUP BY patient_id`;
+    const result = await connection.execute(q);
+    if (Array.isArray(result[0])) {
+      result[0].forEach((r) => {
+        //@ts-ignore
+
+        const { patient_id, num_occurrences, anc } = r;
+        const getancs = async () => {
+          const q3 = `select anc, id from returnvisit where patient_id = ?`;
+          const ancs = await connection.execute(q3, [patient_id]);
+          ancs[0].forEach((a, index) => {
+            if (index !== 0) {
+              const q2 = `UPDATE returnvisit SET anc = ? WHERE patient_id = ? AND id = ?`;
+              const updatedresult = connection.execute(q2, [
+                index + 1,
+                patient_id,
+                a.id,
+              ]);
+            }
+          });
+        };
+        getancs();
+      });
+    }
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+    console.log(error);
+  }
 });
 app.get("/liveuser", async (req, res) => {
   try {

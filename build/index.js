@@ -1,4 +1,5 @@
 "use strict";
+//@ts-nocheck
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -112,6 +113,39 @@ app.get("/test", (req, res) => {
         return res.json(result);
     });
 });
+app.get("/updateanc", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    try {
+        const q = `SELECT patient_id, COUNT(*) as num_occurrences FROM returnvisit GROUP BY patient_id`;
+        const result = yield connection.execute(q);
+        if (Array.isArray(result[0])) {
+            result[0].forEach((r) => {
+                //@ts-ignore
+                const { patient_id, num_occurrences, anc } = r;
+                const getancs = () => __awaiter(void 0, void 0, void 0, function* () {
+                    const q3 = `select anc, id from returnvisit where patient_id = ?`;
+                    const ancs = yield connection.execute(q3, [patient_id]);
+                    ancs[0].forEach((a, index) => {
+                        if (index !== 0) {
+                            const q2 = `UPDATE returnvisit SET anc = ? WHERE patient_id = ? AND id = ?`;
+                            const updatedresult = connection.execute(q2, [
+                                index + 1,
+                                patient_id,
+                                a.id,
+                            ]);
+                        }
+                    });
+                });
+                getancs();
+            });
+        }
+        res.status(200).json(result[0]);
+    }
+    catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
+}));
 app.get("/liveuser", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const connection = yield db_1.default.getConnection();

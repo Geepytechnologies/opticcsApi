@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  createPatient,
+  // createPatient,
   getPatientRecord,
   createPatientEveryVisit,
   getAllPatients,
@@ -30,12 +30,18 @@ import {
   getAllPatientReturnVisit,
   deleteAPatient,
 } from "../../controllers/user/patients";
+import PatientController from "../../controllers/user/patients2";
 import { verifyToken } from "../../middlewares/verifyToken";
+
 const router = express.Router();
 
-router.post("/create", createPatient);
+router.post("/create", PatientController.createpatient);
 
-router.post("/create/return", verifyToken, createPatientEveryVisit);
+router.post(
+  "/create/return",
+  verifyToken,
+  PatientController.createPatientEveryVisit
+);
 
 router.post("/test", createTest);
 
