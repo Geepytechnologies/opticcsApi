@@ -1607,6 +1607,9 @@ const createPatientEveryVisit = async (req, res, next) => {
 
 const getAllPatientsAndHealthworker = async (req, res) => {
   const page = req.query.page || 1;
+  const state = req.query.state;
+  const lga = req.query.lga;
+  const healthfacility = req.query.healthfacility;
   const pageSize = 20;
   const offset = (page - 1) * pageSize;
   const connection = await db.getConnection();

@@ -585,5 +585,131 @@ WHERE
       ?,?,?,?,?,?,?,?,?,?,
       ?,?,?,?,?,?,?,?,?,?,?,?)`;
     }
+    static deleteAPatient() {
+        return `DELETE patients, personalinformation
+    FROM patients
+    JOIN personalinformation ON patients.personalinformation_id = personalinformation.id
+    WHERE patients.id = ?;
+    `;
+    }
+    static getfirstvisit() {
+        return `SELECT
+    fv.*,
+    dhal.*,
+    oh.*,mh.*,pmh.*,dh.*,fh.*,pe.*
+  FROM
+    firstvisit fv
+  LEFT JOIN
+    dailyhabitsandlifestyle dhal ON fv.id = dhal.firstvisit_id
+  LEFT JOIN
+    obstetrichistory oh ON fv.id = oh.firstvisit_id
+  LEFT JOIN
+    medicalhistory mh ON fv.id = mh.firstvisit_id
+  LEFT JOIN
+    pastmedicalhistory pmh ON fv.id = pmh.firstvisit_id
+  LEFT JOIN
+    drughistory dh ON fv.id = dh.firstvisit_id
+  LEFT JOIN
+    familyhistory fh ON fv.id = fh.firstvisit_id
+  LEFT JOIN
+    physicalexamination pe ON fv.id = pe.firstvisit_id
+  WHERE
+    fv.patient_id = ?`;
+    }
+    static patientRecord() {
+        return ``;
+    }
+    static getPatientsWithHealthworker(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByState(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByLga(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.lga = ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.healthfacility = ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
 }
 exports.Patientqueries = Patientqueries;

@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.healthfacilitytestdata = exports.healthfacilityreturnvisitdata = exports.healthfacilityscheduledata = exports.numberofwomenwith4visits = exports.healthfacilitygeneraldata = void 0;
+exports.getAllHealthfacility = exports.healthfacilitytestdata = exports.healthfacilityreturnvisitdata = exports.healthfacilityscheduledata = exports.numberofwomenwith4visits = exports.healthfacilitygeneraldata = void 0;
 //@ts-nocheck
 const db_1 = __importDefault(require("../../../config/db"));
+const logger_1 = __importDefault(require("../../../logger"));
 const numberofwomenwith4visits = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { healthfacility } = req.query;
@@ -3540,3 +3541,31 @@ const healthfacilitytestdata = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.healthfacilitytestdata = healthfacilitytestdata;
+//get all health facilities
+const getAllHealthfacility = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { healthfacility } = req.query;
+    const q1 = `SELECT * FROM healthfacilityaccount WHERE healthfacilityname = ?`;
+    const q2 = `SELECT * FROM healthfacilityaccount`;
+    const connection = yield db_1.default.getConnection();
+    try {
+        if (healthfacility) {
+            const [result] = yield connection.execute(q1, [healthfacility]);
+            res.status(200).json(result);
+        }
+        else {
+            const [result] = yield connection.execute(q2);
+            res.status(200).json(result);
+        }
+    }
+    catch (error) {
+        connection.release();
+        logger_1.default.error(error);
+        res.status(500).json(error);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.getAllHealthfacility = getAllHealthfacility;

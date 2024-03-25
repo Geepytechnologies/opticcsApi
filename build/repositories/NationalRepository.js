@@ -16,6 +16,386 @@ exports.NationalRepository = void 0;
 const logger_1 = __importDefault(require("../logger"));
 class NationalRepository {
     constructor(connection) {
+        this.getfeverreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.fever = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.fever = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getheadachereturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.headache = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.headache = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getcoughreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.cough = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.cough = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getpalpitationsreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.palpitation = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.palpitation = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getseveretirednessreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severetirednesss = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severetirednesss = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getdifficultylyingflatreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.difficultylyingflat = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.difficultylyingflat = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getdizzinessreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.dizziness = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.dizziness = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getconvulsionsreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.convulsions = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.convulsions = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getabdominalpainreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severeabdominalpain = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.severeabdominalpain = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+        this.getpainwithurinationreturn = (anc) => __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.urinarypain = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.urinarypain = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
         this.connection = connection;
     }
     getNationalAdminByUserID(userID) {
@@ -50,6 +430,166 @@ class NationalRepository {
                 if (this.connection) {
                     this.connection.release();
                 }
+            }
+        });
+    }
+    getbloodinurinereturn(anc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.bloodinurine = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.bloodinurine = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getvaginaldischargereturn(anc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.vaginaldischarge = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.vaginaldischarge = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getdeeppelvicpainreturn(anc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.painduringsex = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.painduringsex = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getsyphilisreturn(anc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = anc || 2;
+            try {
+                const q = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.syphillis = ? AND rv.anc = ?
+      `;
+                const q2 = `SELECT
+      pi.*,
+      p.*
+      FROM
+      returnvisit rv
+      JOIN
+          patients p ON rv.patient_id = p.id
+      JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      WHERE
+        rv.syphillis = ? AND rv.anc = ?
+      `;
+                const result = yield this.connection.execute(q, ["Yes", query]);
+                const result2 = yield this.connection.execute(q2, ["No", query]);
+                return {
+                    yes: result[0].length,
+                    no: result2[0].length,
+                };
+            }
+            catch (error) {
+                throw new Error(error);
             }
         });
     }

@@ -1,5 +1,6 @@
 //@ts-nocheck
 import db from "../../../config/db";
+import logger from "../../../logger";
 
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
@@ -3451,10 +3452,37 @@ const healthfacilitytestdata = async (req, res) => {
   }
 };
 
+//get all health facilities
+const getAllHealthfacility = async (req, res) => {
+  const { healthfacility } = req.query;
+  const q1 = `SELECT * FROM healthfacilityaccount WHERE healthfacilityname = ?`;
+  const q2 = `SELECT * FROM healthfacilityaccount`;
+
+  const connection = await db.getConnection();
+  try {
+    if (healthfacility) {
+      const [result] = await connection.execute(q1, [healthfacility]);
+      res.status(200).json(result);
+    } else {
+      const [result] = await connection.execute(q2);
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    connection.release();
+    logger.error(error);
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 export {
   healthfacilitygeneraldata,
   numberofwomenwith4visits,
   healthfacilityscheduledata,
   healthfacilityreturnvisitdata,
   healthfacilitytestdata,
+  getAllHealthfacility,
 };

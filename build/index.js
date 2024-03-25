@@ -60,9 +60,12 @@ const logger_1 = __importDefault(require("./logger"));
 //     res.status(500).json(error);
 //   }
 // });
+// const client = createClient()
+//   .on("error", (err) => console.log("Redis Client Error", err))
+//   .connect();
 const corsOptions = {
-    origin: process.env.ORIGIN,
-    credentials: true, // enable cookies and other credentials
+    origin: [process.env.ORIGIN, "127.0.0.1:6379"],
+    credentials: true,
     exposedHeaders: ["Set-Cookie"],
 };
 // app.use((req, res, next) => {
@@ -70,7 +73,10 @@ const corsOptions = {
 //   next();
 // });
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", process.env.ORIGIN); // Replace with your Vercel app URL
+    res.header("Access-Control-Allow-Origin", [
+        process.env.ORIGIN,
+        "http://127.0.0.1:6379",
+    ]); // Replace with your Vercel app URL
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });

@@ -626,4 +626,89 @@ export class patientRepository {
       throw new Error(err);
     }
   }
+  async deleteAPatient(id: string) {
+    const q = Patientqueries.deleteAPatient();
+    try {
+      const result = await this.connection.execute(q, [id]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getFirstvisit(patient_id: string) {
+    const q = Patientqueries.getfirstvisit();
+    try {
+      const result = await this.connection.execute(q, [patient_id]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getPatientsWithHealthworker(pageSize: number, offset: number) {
+    const q = Patientqueries.getPatientsWithHealthworker(pageSize, offset);
+    try {
+      const [result] = await this.connection.execute(q);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getPatientsWithHealthworkerFilteredByState(
+    pageSize: number,
+    offset: number,
+    state: string
+  ) {
+    const q = Patientqueries.getPatientsWithHealthworkerFilteredByState(
+      pageSize,
+      offset
+    );
+    try {
+      const [result] = await this.connection.execute(q, [state]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getPatientsWithHealthworkerFilteredByLga(
+    pageSize: number,
+    offset: number,
+    lga: string
+  ) {
+    const q = Patientqueries.getPatientsWithHealthworkerFilteredByLga(
+      pageSize,
+      offset
+    );
+    try {
+      const [result] = await this.connection.execute(q, [lga]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getPatientsWithHealthworkerFilteredByHealthfacility(
+    pageSize: number,
+    offset: number,
+    healthfacility: string
+  ) {
+    const q =
+      Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacility(
+        pageSize,
+        offset
+      );
+    try {
+      const [result] = await this.connection.execute(q, [healthfacility]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getPatientCount() {
+    const q = Patientqueries.getPatientCount();
+    try {
+      const [result]: any = await this.connection.execute(q);
+      return result[0].patient_count;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
 }

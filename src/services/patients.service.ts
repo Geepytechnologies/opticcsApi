@@ -40,61 +40,6 @@ export class PatientService {
       throw new Error(`Patient with phone number ${data.phone} already exists`);
     }
   }
-  async createpatient(data: firstvisitDTO, personalinformation_id: string) {
-    const result = await this.patientRepo.createpatient(
-      data,
-      personalinformation_id
-    );
-    return result;
-  }
-  async createfirstvisitdata(data: firstvisitDTO, patient_id: string) {
-    const result = await this.patientRepo.createfirstvisit(data, patient_id);
-    return result;
-  }
-  async createdailyhabit(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createdailyhabit(data, firstvisit_id);
-    return result;
-  }
-  async createobstetric(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createobstetric(data, firstvisit_id);
-    return result;
-  }
-  async createmedicationHistory(data: firstvisitDTO, firstVisit_id: string) {
-    const result = await this.patientRepo.createmedicalhistory(
-      data,
-      firstVisit_id
-    );
-    return result;
-  }
-
-  async createpastmedicalHistory(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createpastmedicalhistory(
-      data,
-      firstvisit_id
-    );
-    return result;
-  }
-  async createfamilyHistory(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createfamilyhistory(
-      data,
-      firstvisit_id
-    );
-    return result;
-  }
-  async createdrugHistory(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createdrughistory(
-      data,
-      firstvisit_id
-    );
-    return result;
-  }
-  async createphysicalexamination(data: firstvisitDTO, firstvisit_id: string) {
-    const result = await this.patientRepo.createphysicalexamination(
-      data,
-      firstvisit_id
-    );
-    return result;
-  }
   async getnewlycreatedpatientrecord(patient_id: string) {
     const result = await this.patientRepo.getnewlycreatedpatientrecord(
       patient_id
@@ -106,24 +51,24 @@ export class PatientService {
     try {
       const createdrecord: any = await this.personalRecord(data);
       const personalInformation_id = createdrecord[0].insertId;
-      const patientcreate: any = await this.createpatient(
+      const patientcreate: any = await this.patientRepo.createpatient(
         data,
         personalInformation_id
       );
       const patientID = patientcreate[0].insertId;
-      const firstvisitcreation: any = await this.createfirstvisitdata(
+      const firstvisitcreation: any = await this.patientRepo.createfirstvisit(
         data,
         patientID
       );
       const firstvisitID = firstvisitcreation[0].insertId;
 
-      await this.createpastmedicalHistory(data, firstvisitID);
-      await this.createfamilyHistory(data, firstvisitID);
-      await this.createdailyhabit(data, firstvisitID);
-      await this.createobstetric(data, firstvisitID);
-      await this.createmedicationHistory(data, firstvisitID);
-      await this.createdrugHistory(data, firstvisitID);
-      await this.createphysicalexamination(data, firstvisitID);
+      await this.patientRepo.createmedicalhistory(data, firstvisitID);
+      await this.patientRepo.createfamilyhistory(data, firstvisitID);
+      await this.patientRepo.createdailyhabit(data, firstvisitID);
+      await this.patientRepo.createobstetric(data, firstvisitID);
+      await this.patientRepo.createmedicalhistory(data, firstvisitID);
+      await this.patientRepo.createdrughistory(data, firstvisitID);
+      await this.patientRepo.createphysicalexamination(data, firstvisitID);
 
       return patientID;
     } catch (error: any) {
@@ -144,6 +89,77 @@ export class PatientService {
     } else {
       const result = await this.patientRepo.createReturnVisit(data);
       return result;
+    }
+  }
+
+  async deleteAPatient(id: string) {
+    try {
+      const result = await this.patientRepo.deleteAPatient(id);
+      return result;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async getPatientRecord(id: string) {
+    try {
+      const result = await this.patientRepo.deleteAPatient(id);
+      return result;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async getAllPatientsAndHealthworker(
+    query: any,
+    pageSize: number,
+    offset: number
+  ) {
+    const state = query.state;
+    const lga = query.lga;
+    const healthfacility = query.healthfacility;
+    console.log(state);
+    try {
+      if (state && state !== "") {
+        console.log("i ran");
+        const result =
+          await this.patientRepo.getPatientsWithHealthworkerFilteredByState(
+            pageSize,
+            offset,
+            state
+          );
+        return result;
+      } else if (lga && lga !== "") {
+        const result =
+          await this.patientRepo.getPatientsWithHealthworkerFilteredByLga(
+            pageSize,
+            offset,
+            lga
+          );
+        return result;
+      } else if (healthfacility && healthfacility !== "") {
+        const result =
+          await this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacility(
+            pageSize,
+            offset,
+            healthfacility
+          );
+        return result;
+      } else {
+        const result = await this.patientRepo.getPatientsWithHealthworker(
+          pageSize,
+          offset
+        );
+        return result;
+      }
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async getPatientCount() {
+    try {
+      const result = await this.patientRepo.getPatientCount();
+      return result;
+    } catch (error: any) {
+      throw new Error(error);
     }
   }
 }

@@ -95,7 +95,7 @@ router.get("/lga/find", getAllPatientlga);
 
 router.get("/datanumbers/find", datanumbers);
 
-router.get("/findwithworkers", getAllPatientsAndHealthworker);
+router.get("/findwithworkers", PatientController.getAllPatientsAndHealthworker);
 
 router.get("/findwithworkerspaginated", getAllPatientsAndHealthworkerpaginated);
 

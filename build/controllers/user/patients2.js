@@ -91,6 +91,51 @@ class PatientController {
                 }
             }
         });
+        this.deleteAPatient = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const connection = yield db_1.default.getConnection();
+            const patientRepo = new PatientRepository_1.patientRepository(connection);
+            const patientservice = new patients_service_1.PatientService(patientRepo);
+            try {
+                const result = yield patientservice.deleteAPatient(id);
+                res.status(200).json(result[0]);
+            }
+            catch (error) {
+                logger_1.default.error(error);
+                res.status(500).json(error);
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.getAllPatientsAndHealthworker = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const page = req.query.page || 1;
+            const pageSize = 20;
+            const offset = (page - 1) * pageSize;
+            const connection = yield db_1.default.getConnection();
+            const patientRepo = new PatientRepository_1.patientRepository(connection);
+            const patientservice = new patients_service_1.PatientService(patientRepo);
+            try {
+                const result = yield patientservice.getAllPatientsAndHealthworker(req.query, pageSize, offset);
+                const count = yield patientservice.getPatientCount();
+                res.status(200).json({
+                    statusCode: "200",
+                    result: result,
+                    count: count,
+                });
+            }
+            catch (error) {
+                console.log(error);
+                res.status(500).json(error);
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
     }
 }
 exports.default = new PatientController();

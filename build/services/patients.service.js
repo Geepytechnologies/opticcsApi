@@ -51,60 +51,6 @@ class PatientService {
             }
         });
     }
-    createpatient(data, personalinformation_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createpatient(data, personalinformation_id);
-            return result;
-        });
-    }
-    createfirstvisitdata(data, patient_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createfirstvisit(data, patient_id);
-            return result;
-        });
-    }
-    createdailyhabit(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createdailyhabit(data, firstvisit_id);
-            return result;
-        });
-    }
-    createobstetric(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createobstetric(data, firstvisit_id);
-            return result;
-        });
-    }
-    createmedicationHistory(data, firstVisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createmedicalhistory(data, firstVisit_id);
-            return result;
-        });
-    }
-    createpastmedicalHistory(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createpastmedicalhistory(data, firstvisit_id);
-            return result;
-        });
-    }
-    createfamilyHistory(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createfamilyhistory(data, firstvisit_id);
-            return result;
-        });
-    }
-    createdrugHistory(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createdrughistory(data, firstvisit_id);
-            return result;
-        });
-    }
-    createphysicalexamination(data, firstvisit_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.createphysicalexamination(data, firstvisit_id);
-            return result;
-        });
-    }
     getnewlycreatedpatientrecord(patient_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.patientRepo.getnewlycreatedpatientrecord(patient_id);
@@ -116,17 +62,17 @@ class PatientService {
             try {
                 const createdrecord = yield this.personalRecord(data);
                 const personalInformation_id = createdrecord[0].insertId;
-                const patientcreate = yield this.createpatient(data, personalInformation_id);
+                const patientcreate = yield this.patientRepo.createpatient(data, personalInformation_id);
                 const patientID = patientcreate[0].insertId;
-                const firstvisitcreation = yield this.createfirstvisitdata(data, patientID);
+                const firstvisitcreation = yield this.patientRepo.createfirstvisit(data, patientID);
                 const firstvisitID = firstvisitcreation[0].insertId;
-                yield this.createpastmedicalHistory(data, firstvisitID);
-                yield this.createfamilyHistory(data, firstvisitID);
-                yield this.createdailyhabit(data, firstvisitID);
-                yield this.createobstetric(data, firstvisitID);
-                yield this.createmedicationHistory(data, firstvisitID);
-                yield this.createdrugHistory(data, firstvisitID);
-                yield this.createphysicalexamination(data, firstvisitID);
+                yield this.patientRepo.createmedicalhistory(data, firstvisitID);
+                yield this.patientRepo.createfamilyhistory(data, firstvisitID);
+                yield this.patientRepo.createdailyhabit(data, firstvisitID);
+                yield this.patientRepo.createobstetric(data, firstvisitID);
+                yield this.patientRepo.createmedicalhistory(data, firstvisitID);
+                yield this.patientRepo.createdrughistory(data, firstvisitID);
+                yield this.patientRepo.createphysicalexamination(data, firstvisitID);
                 return patientID;
             }
             catch (error) {
@@ -145,6 +91,69 @@ class PatientService {
             else {
                 const result = yield this.patientRepo.createReturnVisit(data);
                 return result;
+            }
+        });
+    }
+    deleteAPatient(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.patientRepo.deleteAPatient(id);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getPatientRecord(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.patientRepo.deleteAPatient(id);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getAllPatientsAndHealthworker(query, pageSize, offset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const state = query.state;
+            const lga = query.lga;
+            const healthfacility = query.healthfacility;
+            console.log(state);
+            try {
+                if (state && state !== "") {
+                    console.log("i ran");
+                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByState(pageSize, offset, state);
+                    return result;
+                }
+                else if (lga && lga !== "") {
+                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLga(pageSize, offset, lga);
+                    return result;
+                }
+                else if (healthfacility && healthfacility !== "") {
+                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, healthfacility);
+                    return result;
+                }
+                else {
+                    const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
+                    return result;
+                }
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    getPatientCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.patientRepo.getPatientCount();
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
             }
         });
     }

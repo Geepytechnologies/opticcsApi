@@ -80,6 +80,52 @@ class PatientController {
       }
     }
   };
+  deleteAPatient = async (req: any, res: Response) => {
+    const { id } = req.params;
+    const connection = await db.getConnection();
+    const patientRepo = new patientRepository(connection);
+    const patientservice = new PatientService(patientRepo);
+    try {
+      const result = await patientservice.deleteAPatient(id);
+      res.status(200).json(result[0]);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).json(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  getAllPatientsAndHealthworker = async (req: any, res: Response) => {
+    const page = req.query.page || 1;
+    const pageSize = 20;
+    const offset = (page - 1) * pageSize;
+    const connection = await db.getConnection();
+    const patientRepo = new patientRepository(connection);
+    const patientservice = new PatientService(patientRepo);
+    try {
+      const result = await patientservice.getAllPatientsAndHealthworker(
+        req.query,
+        pageSize,
+        offset
+      );
+
+      const count = await patientservice.getPatientCount();
+      res.status(200).json({
+        statusCode: "200",
+        result: result,
+        count: count,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
 }
 
 export default new PatientController();

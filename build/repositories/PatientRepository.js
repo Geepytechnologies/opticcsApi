@@ -668,5 +668,89 @@ class patientRepository {
             }
         });
     }
+    deleteAPatient(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.deleteAPatient();
+            try {
+                const result = yield this.connection.execute(q, [id]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getFirstvisit(patient_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getfirstvisit();
+            try {
+                const result = yield this.connection.execute(q, [patient_id]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworker(pageSize, offset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworker(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByState(pageSize, offset, state) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByState(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [state]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByLga(pageSize, offset, lga) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByLga(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [lga]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, healthfacility) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [healthfacility]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientCount();
+            try {
+                const [result] = yield this.connection.execute(q);
+                return result[0].patient_count;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
 }
 exports.patientRepository = patientRepository;

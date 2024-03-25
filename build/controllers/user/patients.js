@@ -1281,6 +1281,9 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
 exports.createPatientEveryVisit = createPatientEveryVisit;
 const getAllPatientsAndHealthworker = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const page = req.query.page || 1;
+    const state = req.query.state;
+    const lga = req.query.lga;
+    const healthfacility = req.query.healthfacility;
     const pageSize = 20;
     const offset = (page - 1) * pageSize;
     const connection = yield db_1.default.getConnection();

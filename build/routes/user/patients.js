@@ -35,7 +35,7 @@ router.get("/find", patients_1.getAllPatients);
 router.get("/state/find", patients_1.getAllPatientstate);
 router.get("/lga/find", patients_1.getAllPatientlga);
 router.get("/datanumbers/find", patients_1.datanumbers);
-router.get("/findwithworkers", patients_1.getAllPatientsAndHealthworker);
+router.get("/findwithworkers", patients2_1.default.getAllPatientsAndHealthworker);
 router.get("/findwithworkerspaginated", patients_1.getAllPatientsAndHealthworkerpaginated);
 router.get("/find/personal/:id", patients_1.getPatientPersonalinfo);
 exports.default = router;

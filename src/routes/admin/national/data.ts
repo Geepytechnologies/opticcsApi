@@ -1,24 +1,18 @@
 import express from "express";
-import {
-  numberofwomenwith4visits,
-  nationalgeneraldata,
-  getvisitdates,
-  nationalreturnvisitdata,
-  nationalscheduledata,
-  nationaltestdata,
-} from "../../../controllers/admin/national/data";
+import NationalDataController from "../../../controllers/admin/national/data";
 
 const router = express.Router();
 
-router.get("/find/4visits", numberofwomenwith4visits);
+router.get("/find/4visits", NationalDataController.numberofwomenwith4visits);
 
-router.get("/general", nationalgeneraldata);
+router.get("/general", NationalDataController.nationalgeneraldata);
 
-router.get("/general/return", nationalreturnvisitdata);
+router.get("/general/return", NationalDataController.nationalreturnvisitdata);
 
-router.get("/visitdates/:id", getvisitdates);
+router.get("/visitdates/:id", NationalDataController.getvisitdates);
 
-router.get("/schedule", nationalscheduledata);
-router.get("/test", nationaltestdata);
+router.get("/schedule", NationalDataController.nationalscheduledata);
+
+router.get("/test", NationalDataController.nationaltestdata);
 
 export default router;
