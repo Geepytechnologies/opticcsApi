@@ -16,6 +16,8 @@ const db_1 = __importDefault(require("../../../config/db"));
 const logger_1 = __importDefault(require("../../../logger"));
 const NationalRepository_1 = require("../../../repositories/NationalRepository");
 const national_service_1 = require("../../../services/national.service");
+const patients_service_1 = require("../../../services/patients.service");
+const PatientRepository_1 = require("../../../repositories/PatientRepository");
 class NationalDataController {
     constructor() {
         this.nationalreturnvisitdata = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -39,24 +41,24 @@ class NationalDataController {
             }
         });
         this.numberofwomenwith4visits = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const state = req.query.state || "";
+            const lga = req.query.lga || "";
+            const healthfacility = req.query.healthfacility || "";
+            const from = req.query.from || "";
+            const to = req.query.to || "";
+            console.log({
+                state: state,
+                lga: lga,
+                healthfacility: healthfacility,
+                from: from,
+                to: to,
+            });
             const connection = yield db_1.default.getConnection();
+            const patientRepo = new PatientRepository_1.patientRepository(connection);
+            const patientservice = new patients_service_1.PatientService(patientRepo);
             try {
-                const q = `SELECT COUNT(*) AS patient_count
-        FROM patients p
-        LEFT JOIN (
-            SELECT patient_id, COUNT(*) AS first_visit_count
-            FROM firstvisit
-            GROUP BY patient_id
-        ) fv ON p.id = fv.patient_id
-        LEFT JOIN (
-            SELECT patient_id, COUNT(*) AS return_visit_count
-            FROM returnvisit
-            GROUP BY patient_id
-        ) ev ON p.id = ev.patient_id
-        WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4;    
-        `;
-                const result = yield connection.execute(q);
-                res.status(200).json(result[0]);
+                const result = yield patientservice.numberofwomenwith4visits(state, lga, healthfacility, from, to);
+                res.status(200).json(result);
             }
             catch (error) {
                 res.status(500).json(error);

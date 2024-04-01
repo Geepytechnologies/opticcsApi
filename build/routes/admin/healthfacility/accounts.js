@@ -8,6 +8,47 @@ const accounts_1 = require("../../../controllers/admin/healthfacility/accounts")
 const auth_1 = require("../../../controllers/admin/healthfacility/auth");
 const verifyHealthfacilityAdminToken_1 = require("../../../middlewares/verifyHealthfacilityAdminToken");
 const router = express_1.default.Router();
+/**
+ * @swagger
+ * tags:
+ *   name: Healthfacility
+ *   description: Operations related to healthfacility
+ */
+/**
+ * @openapi
+ * /api/admin/healthfacility:
+ *   post:
+ *     description: create healthfacility account
+ *     tags: [Healthfacility]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ward:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               lga:
+ *                 type: string
+ *               healthfacilityname:
+ *                 type: string
+ *               healthfacilityID:
+ *                 type: string
+ *               officeaddress:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Returns new object.
+ *       500:
+ *          description: Server error
+ */
 router.post("/", accounts_1.createHealthfacilityAccount);
 router.get("/find", accounts_1.getHealthfacilityAccounts);
 router.get("/find/filtered", accounts_1.getHealthfacilityAccountsFiltered);

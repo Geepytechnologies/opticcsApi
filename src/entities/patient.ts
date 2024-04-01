@@ -437,3 +437,56 @@ export interface returnvisitwithancDTO {
   underFiveCovidVaccinated: string;
   anc: number;
 }
+
+export interface deliveryReportDTO {
+  healthpersonnel_id: string;
+  firstname: string;
+  lastname: string;
+  deliverydata: string;
+  numberofchildren: string;
+  deliverydate: string;
+  deliverytime: string;
+  deliverAtHealthFacility: string;
+  givenPostPartum: string;
+  attendAncVisit: string;
+}
+export interface TestresultDTO {
+  healthpersonnel_id: string;
+  requestedtest_id: string;
+  hb: string;
+  wcc: string;
+  rcc: string;
+  pcv: string;
+  mcv: string;
+  platelet: string;
+  glucose: string;
+  hiv: string;
+  hepatitis: string;
+  patient_id: string;
+  rdt: string;
+  bodytemp: string;
+  heartrate: string;
+  respiratoryrate: string;
+  bodypressure: string;
+  malariarapid: string;
+  leukocytes: string;
+  nitrites: string;
+  urobilinogen: string;
+  protein: string;
+  pH: string;
+  blood: string;
+  specificgravity: string;
+  ketones: string;
+  bilirubin: string;
+  glucoseUrinary: string;
+  neutrophils: string;
+  lymphocytes: string;
+  monocytes: string;
+  eosinophils: string;
+  basophils: string;
+  Haematocrit: string;
+  mch: string;
+  reticulocytecount: string;
+  hbsag: string;
+  hcv: string;
+}

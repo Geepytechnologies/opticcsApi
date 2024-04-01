@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PatientService = void 0;
 const logger_1 = __importDefault(require("../logger"));
+const patients_1 = require("../utils/patients");
 class PatientService {
     constructor(patientRepository) {
         this.patientRepo = patientRepository;
@@ -118,28 +119,95 @@ class PatientService {
     }
     getAllPatientsAndHealthworker(query, pageSize, offset) {
         return __awaiter(this, void 0, void 0, function* () {
-            const state = query.state;
-            const lga = query.lga;
-            const healthfacility = query.healthfacility;
+            const state = query.state || "";
+            const lga = query.lga || "";
+            const healthfacility = query.healthfacility || "";
+            const from = query.from || "";
+            const to = query.to || "";
             console.log(state);
+            console.log(lga);
+            console.log(healthfacility);
             try {
-                if (state && state !== "") {
-                    console.log("i ran");
-                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByState(pageSize, offset, state);
-                    return result;
+                if (patients_1.Patientconditions.allStates(state, lga, healthfacility)) {
+                    logger_1.default.warn("state");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByStatewithdate(pageSize, offset, state, from, to);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByStateCountwithdate(state, from, to);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
+                    else {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByState(pageSize, offset, state);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByStateCount(state);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
                 }
-                else if (lga && lga !== "") {
-                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLga(pageSize, offset, lga);
-                    return result;
+                //::: lga ::://
+                if (patients_1.Patientconditions.allLga(state, lga)) {
+                    logger_1.default.warn("lga");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLgawithdate(pageSize, offset, state, lga, from, to);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLgaCountwithdate(state, lga, from, to);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
+                    else {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLga(pageSize, offset, state, lga);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLgaCount(state, lga);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
                 }
-                else if (healthfacility && healthfacility !== "") {
-                    const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, healthfacility);
-                    return result;
+                if (patients_1.Patientconditions.allHealthFacility(state, lga, healthfacility)) {
+                    logger_1.default.warn("healthfacility");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacilitywithdate(pageSize, offset, state, lga, healthfacility, from, to);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacilityCountwithdate(state, lga, healthfacility, from, to);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
+                    else {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, state, lga, healthfacility);
+                        const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacilityCount(state, lga, healthfacility);
+                        const data = { result: result, count: count.total_count };
+                        return data;
+                    }
                 }
-                else {
-                    const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
-                    return result;
+                if (patients_1.Patientconditions.national1(state, lga, healthfacility)) {
+                    logger_1.default.warn("general");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerwithdate(pageSize, offset, from, to);
+                        const result2 = yield this.patientRepo.getPatientCountwithdate(from, to);
+                        const data = { result: result, count: result2 };
+                        return data;
+                    }
+                    else {
+                        const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
+                        const result2 = yield this.patientRepo.getPatientCount();
+                        const data = { result: result, count: result2 };
+                        return data;
+                    }
                 }
+                if (patients_1.Patientconditions.national2(state, lga, healthfacility)) {
+                    logger_1.default.warn("general");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        const result = yield this.patientRepo.getPatientsWithHealthworkerwithdate(pageSize, offset, from, to);
+                        const result2 = yield this.patientRepo.getPatientCountwithdate(from, to);
+                        const data = { result: result, count: result2 };
+                        return data;
+                    }
+                    else {
+                        const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
+                        const result2 = yield this.patientRepo.getPatientCount();
+                        const data = { result: result, count: result2 };
+                        return data;
+                    }
+                }
+                const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
+                const result2 = yield this.patientRepo.getPatientCount();
+                const data = { result: result, count: result2 };
+                return data;
             }
             catch (error) {
                 throw new Error(error);
@@ -150,6 +218,76 @@ class PatientService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield this.patientRepo.getPatientCount();
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visits(state, lga, healthfacility, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result;
+                if (state == "" && lga == "" && healthfacility == "") {
+                    //general
+                    logger_1.default.warn("general");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        result = yield this.patientRepo.numberofwomenwith4visitswithdate(from, to);
+                    }
+                    else {
+                        result = yield this.patientRepo.numberofwomenwith4visits();
+                    }
+                }
+                if (state == "all" && lga == "" && healthfacility == "") {
+                    //general
+                    logger_1.default.warn("general");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        result = yield this.patientRepo.numberofwomenwith4visitswithdate(from, to);
+                    }
+                    else {
+                        result = yield this.patientRepo.numberofwomenwith4visits();
+                    }
+                }
+                if (state !== "all" &&
+                    state !== "" &&
+                    (lga == "all" || lga == "") &&
+                    healthfacility == "") {
+                    //state
+                    logger_1.default.warn("state");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        result =
+                            yield this.patientRepo.numberofwomenwith4visitsforstatewithdate(state, from, to);
+                    }
+                    else {
+                        result = yield this.patientRepo.numberofwomenwith4visitsforstate(state);
+                    }
+                }
+                if (state !== "" &&
+                    lga !== "" &&
+                    (healthfacility == "all" || healthfacility == "")) {
+                    //lga
+                    logger_1.default.warn("lga");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        result =
+                            yield this.patientRepo.numberofwomenwith4visitsforlgawithdate(state, lga, from, to);
+                    }
+                    else {
+                        result = yield this.patientRepo.numberofwomenwith4visitsforlga(state, lga);
+                    }
+                }
+                if (state !== "" && lga !== "" && healthfacility !== "") {
+                    //healthfacility
+                    logger_1.default.warn("healthfacility");
+                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        result =
+                            yield this.patientRepo.numberofwomenwith4visitsforhealthfacilitywithdate(state, healthfacility, from, to);
+                    }
+                    else {
+                        result =
+                            yield this.patientRepo.numberofwomenwith4visitsforhealthfacility(state, healthfacility);
+                    }
+                }
                 return result;
             }
             catch (error) {

@@ -21,6 +21,7 @@ const app = (0, express_1.default)();
 const auth_1 = __importDefault(require("./routes/user/auth"));
 const patients_1 = __importDefault(require("./routes/user/patients"));
 const adminAuth_1 = __importDefault(require("./routes/admin/adminAuth"));
+const indicator_1 = __importDefault(require("./routes/admin/indicator"));
 const users_1 = __importDefault(require("./routes/admin/users"));
 const accounts_1 = __importDefault(require("./routes/admin/state/accounts"));
 const accounts_2 = __importDefault(require("./routes/admin/national/accounts"));
@@ -36,6 +37,8 @@ const index_1 = __importDefault(require("./routes/session/index"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const logger_1 = __importDefault(require("./logger"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 // require("./services/missedschedule");
 // require("./services/reminderschedule");
 // app.post("/sendotp2", (req: Request, res: Response) => {
@@ -63,6 +66,49 @@ const logger_1 = __importDefault(require("./logger"));
 // const client = createClient()
 //   .on("error", (err) => console.log("Redis Client Error", err))
 //   .connect();
+const adminOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Opticcs Admin",
+            version: "1.0.0",
+            description: "API documentation for the Opticcs Admin App",
+        },
+    },
+    // Paths to files containing OpenAPI annotations
+    apis: ["./src/routes/admin/**/*.ts", "./src/routes/admin/*.ts"],
+};
+const userOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Opticcs User",
+            version: "1.0.0",
+            description: "API documentation for the Opticcs User App",
+        },
+    },
+    // Paths to files containing OpenAPI annotations
+    apis: ["./src/routes/user/**/*.ts"],
+};
+const swaggerSpecAdmin = (0, swagger_jsdoc_1.default)(adminOptions);
+const swaggerSpecUser = (0, swagger_jsdoc_1.default)(userOptions);
+app.use("/api-docs/admin", swagger_ui_express_1.default.serve, (req, res, next) => {
+    if (req.baseUrl === "/api-docs/admin") {
+        swagger_ui_express_1.default.setup(swaggerSpecAdmin)(req, res, next);
+    }
+    else {
+        next();
+    }
+});
+// Serve Swagger UI for user documentation
+app.use("/api-docs/user", swagger_ui_express_1.default.serve, (req, res, next) => {
+    if (req.baseUrl === "/api-docs/user") {
+        swagger_ui_express_1.default.setup(swaggerSpecUser)(req, res, next);
+    }
+    else {
+        next();
+    }
+});
 const corsOptions = {
     origin: [process.env.ORIGIN, "127.0.0.1:6379"],
     credentials: true,
@@ -89,6 +135,7 @@ app.use("/api/admin/auth", adminAuth_1.default);
 app.use("/api/auth", auth_1.default);
 app.use("/api/users", users_2.default);
 app.use("/api/patients", patients_1.default);
+app.use("/api/admin/indicators", indicator_1.default);
 app.use("/api/admin/state", accounts_1.default);
 app.use("/api/admin/state/data", data_2.default);
 app.use("/api/admin/national", accounts_2.default);

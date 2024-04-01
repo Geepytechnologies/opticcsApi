@@ -3,6 +3,10 @@ import db from "../../config/db";
 import logger from "../../logger";
 import { PatientService } from "../../services/patients.service";
 import { patientRepository } from "../../repositories/PatientRepository";
+import { DeliveryreportRepository } from "../../repositories/DeliveryreportRepository";
+import { DeliveryreportService } from "../../services/deliveryreport.service";
+import { TestresultRepository } from "../../repositories/TestresultRepository";
+import { TestresultService } from "../../services/testresult.service";
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -111,15 +115,95 @@ class PatientController {
         offset
       );
 
-      const count = await patientservice.getPatientCount();
       res.status(200).json({
         statusCode: "200",
-        result: result,
-        count: count,
+        result: result.result,
+        count: result.count,
       });
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  createdeliveryreport = async (req: Request, res: Response) => {
+    const connection = await db.getConnection();
+    const deliveryReportRepo = new DeliveryreportRepository(connection);
+    const deliveryReportservice = new DeliveryreportService(deliveryReportRepo);
+
+    try {
+      const result = await deliveryReportservice.createdeliveryreport(req.body);
+      res.status(200).json({ statusCode: "200", result: result });
+    } catch (error) {
+      res.status(500).json({ statusCode: "500", message: error });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+
+  getAllDeliveryreports = async (req: Request, res: Response) => {
+    const connection = await db.getConnection();
+    const deliveryReportRepo = new DeliveryreportRepository(connection);
+    const deliveryReportservice = new DeliveryreportService(deliveryReportRepo);
+    try {
+      const result = await deliveryReportservice.getAllDeliveryreports();
+      res.status(200).json({ statusCode: "200", result: result });
+    } catch (error) {
+      res.status(500).json({ statusCode: "500", message: error });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  getAllDeliveryreportsByAWorker = async (req: any, res: Response) => {
+    const connection = await db.getConnection();
+    const deliveryReportRepo = new DeliveryreportRepository(connection);
+    const deliveryReportservice = new DeliveryreportService(deliveryReportRepo);
+    const { id } = req.user;
+    try {
+      const result = deliveryReportservice.getAllDeliveryreportsByAWorker(id);
+      res.status(200).json({ statusCode: "200", result: result });
+    } catch (error) {
+      res.status(500).json({ statusCode: "500", message: error });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  getAPatientsDeliveryreport = async (req: Request, res: Response) => {
+    const connection = await db.getConnection();
+    const deliveryReportRepo = new DeliveryreportRepository(connection);
+    const deliveryReportservice = new DeliveryreportService(deliveryReportRepo);
+    const patient_id: any = req.query.patient_id;
+    try {
+      const result = await deliveryReportservice.getAPatientsDeliveryreport(
+        patient_id
+      );
+      res.status(200).json({ statusCode: "200", result: result });
+    } catch (error) {
+      res.status(500).json({ statusCode: "500", message: error });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  };
+  createTest = async (req: Request, res: Response) => {
+    const connection = await db.getConnection();
+    const testResultRepo = new TestresultRepository(connection);
+    const testResultservice = new TestresultService(testResultRepo);
+    try {
+      const result = await testResultservice.createTest(req.body);
+      res.status(200).json({ statusCode: "200", result: result });
+    } catch (error) {
+      res.status(500).json({ statusCode: "500", message: error });
     } finally {
       if (connection) {
         connection.release();

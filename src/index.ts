@@ -9,6 +9,7 @@ const app = express();
 import authRoute from "./routes/user/auth";
 import patientRoute from "./routes/user/patients";
 import adminAuthRoute from "./routes/admin/adminAuth";
+import indicatorRoute from "./routes/admin/indicator";
 import adminUserRoute from "./routes/admin/users";
 import adminStateAccountsRoute from "./routes/admin/state/accounts";
 import adminNationalAccountsRoute from "./routes/admin/national/accounts";
@@ -26,6 +27,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import logger from "./logger";
 import { createClient } from "redis";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import * as path from "path";
 // require("./services/missedschedule");
 // require("./services/reminderschedule");
 
@@ -56,6 +60,49 @@ import { createClient } from "redis";
 // const client = createClient()
 //   .on("error", (err) => console.log("Redis Client Error", err))
 //   .connect();
+const adminOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Opticcs Admin",
+      version: "1.0.0",
+      description: "API documentation for the Opticcs Admin App",
+    },
+  },
+  // Paths to files containing OpenAPI annotations
+  apis: ["./src/routes/admin/**/*.ts", "./src/routes/admin/*.ts"],
+};
+const userOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Opticcs User",
+      version: "1.0.0",
+      description: "API documentation for the Opticcs User App",
+    },
+  },
+  // Paths to files containing OpenAPI annotations
+  apis: ["./src/routes/user/**/*.ts"],
+};
+
+const swaggerSpecAdmin = swaggerJsdoc(adminOptions);
+const swaggerSpecUser = swaggerJsdoc(userOptions);
+app.use("/api-docs/admin", swaggerUi.serve, (req, res, next) => {
+  if (req.baseUrl === "/api-docs/admin") {
+    swaggerUi.setup(swaggerSpecAdmin)(req, res, next);
+  } else {
+    next();
+  }
+});
+
+// Serve Swagger UI for user documentation
+app.use("/api-docs/user", swaggerUi.serve, (req, res, next) => {
+  if (req.baseUrl === "/api-docs/user") {
+    swaggerUi.setup(swaggerSpecUser)(req, res, next);
+  } else {
+    next();
+  }
+});
 
 const corsOptions = {
   origin: [process.env.ORIGIN, "127.0.0.1:6379"],
@@ -83,6 +130,7 @@ app.use("/api/admin/auth", adminAuthRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/patients", patientRoute);
+app.use("/api/admin/indicators", indicatorRoute);
 app.use("/api/admin/state", adminStateAccountsRoute);
 app.use("/api/admin/state/data", adminStateDataRoute);
 app.use("/api/admin/national", adminNationalAccountsRoute);

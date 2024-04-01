@@ -16,6 +16,10 @@ const db_1 = __importDefault(require("../../config/db"));
 const logger_1 = __importDefault(require("../../logger"));
 const patients_service_1 = require("../../services/patients.service");
 const PatientRepository_1 = require("../../repositories/PatientRepository");
+const DeliveryreportRepository_1 = require("../../repositories/DeliveryreportRepository");
+const deliveryreport_service_1 = require("../../services/deliveryreport.service");
+const TestresultRepository_1 = require("../../repositories/TestresultRepository");
+const testresult_service_1 = require("../../services/testresult.service");
 class PatientController {
     constructor() {
         this.createpatient = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -119,16 +123,102 @@ class PatientController {
             const patientservice = new patients_service_1.PatientService(patientRepo);
             try {
                 const result = yield patientservice.getAllPatientsAndHealthworker(req.query, pageSize, offset);
-                const count = yield patientservice.getPatientCount();
                 res.status(200).json({
                     statusCode: "200",
-                    result: result,
-                    count: count,
+                    result: result.result,
+                    count: result.count,
                 });
             }
             catch (error) {
                 console.log(error);
                 res.status(500).json(error);
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.createdeliveryreport = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const connection = yield db_1.default.getConnection();
+            const deliveryReportRepo = new DeliveryreportRepository_1.DeliveryreportRepository(connection);
+            const deliveryReportservice = new deliveryreport_service_1.DeliveryreportService(deliveryReportRepo);
+            try {
+                const result = yield deliveryReportservice.createdeliveryreport(req.body);
+                res.status(200).json({ statusCode: "200", result: result });
+            }
+            catch (error) {
+                res.status(500).json({ statusCode: "500", message: error });
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.getAllDeliveryreports = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const connection = yield db_1.default.getConnection();
+            const deliveryReportRepo = new DeliveryreportRepository_1.DeliveryreportRepository(connection);
+            const deliveryReportservice = new deliveryreport_service_1.DeliveryreportService(deliveryReportRepo);
+            try {
+                const result = yield deliveryReportservice.getAllDeliveryreports();
+                res.status(200).json({ statusCode: "200", result: result });
+            }
+            catch (error) {
+                res.status(500).json({ statusCode: "500", message: error });
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.getAllDeliveryreportsByAWorker = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const connection = yield db_1.default.getConnection();
+            const deliveryReportRepo = new DeliveryreportRepository_1.DeliveryreportRepository(connection);
+            const deliveryReportservice = new deliveryreport_service_1.DeliveryreportService(deliveryReportRepo);
+            const { id } = req.user;
+            try {
+                const result = deliveryReportservice.getAllDeliveryreportsByAWorker(id);
+                res.status(200).json({ statusCode: "200", result: result });
+            }
+            catch (error) {
+                res.status(500).json({ statusCode: "500", message: error });
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.getAPatientsDeliveryreport = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const connection = yield db_1.default.getConnection();
+            const deliveryReportRepo = new DeliveryreportRepository_1.DeliveryreportRepository(connection);
+            const deliveryReportservice = new deliveryreport_service_1.DeliveryreportService(deliveryReportRepo);
+            const patient_id = req.query.patient_id;
+            try {
+                const result = yield deliveryReportservice.getAPatientsDeliveryreport(patient_id);
+                res.status(200).json({ statusCode: "200", result: result });
+            }
+            catch (error) {
+                res.status(500).json({ statusCode: "500", message: error });
+            }
+            finally {
+                if (connection) {
+                    connection.release();
+                }
+            }
+        });
+        this.createTest = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const connection = yield db_1.default.getConnection();
+            const testResultRepo = new TestresultRepository_1.TestresultRepository(connection);
+            const testResultservice = new testresult_service_1.TestresultService(testResultRepo);
+            try {
+                const result = yield testResultservice.createTest(req.body);
+                res.status(200).json({ statusCode: "200", result: result });
+            }
+            catch (error) {
+                res.status(500).json({ statusCode: "500", message: error });
             }
             finally {
                 if (connection) {

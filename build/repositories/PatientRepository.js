@@ -700,6 +700,20 @@ class patientRepository {
                 return result;
             }
             catch (err) {
+                console.error("getPatientsWithHealthworker", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerwithdate(pageSize, offset, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerwithdate(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [from, to]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerwithdate", +" " + err);
                 throw new Error(err);
             }
         });
@@ -712,30 +726,170 @@ class patientRepository {
                 return result;
             }
             catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByState", +" " + err);
                 throw new Error(err);
             }
         });
     }
-    getPatientsWithHealthworkerFilteredByLga(pageSize, offset, lga) {
+    getPatientsWithHealthworkerFilteredByStateCount(state) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByStateCount();
+            try {
+                const [result] = yield this.connection.execute(q, [state]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByStateCount", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByStatewithdate(pageSize, offset, state, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByStatewithdate(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [state, from, to]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByStatewithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByStateCountwithdate(state, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByStateCountwithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [state, from, to]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByStateCountwithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByLga(pageSize, offset, state, lga) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByLga(pageSize, offset);
             try {
-                const [result] = yield this.connection.execute(q, [lga]);
+                const [result] = yield this.connection.execute(q, [state, lga]);
                 return result;
             }
             catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByLga", +" " + err);
                 throw new Error(err);
             }
         });
     }
-    getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, healthfacility) {
+    getPatientsWithHealthworkerFilteredByLgaCount(state, lga) {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset);
+            const q = patient_1.Patientqueries.getPatientsWithHealthWorkerFilteredByLgaCount();
             try {
-                const [result] = yield this.connection.execute(q, [healthfacility]);
+                const [result] = yield this.connection.execute(q, [state, lga]);
                 return result;
             }
             catch (err) {
+                console.error("getPatientsWithHealthWorkerFilteredByLgaCount", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByLgawithdate(pageSize, offset, state, lga, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByLgawithdate(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [state, lga, from, to]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByLgawithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByLgaCountwithdate(state, lga, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthWorkerFilteredByLgaCountwithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [state, lga, from, to]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthWorkerFilteredByLgaCountwithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset, state, lga, healthfacility) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    lga,
+                    healthfacility,
+                ]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByHealthfacility", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByHealthfacilityCount(state, lga, healthfacility) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacilityCount();
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    lga,
+                    healthfacility,
+                ]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByHealthfacilityCount", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByHealthfacilitywithdate(pageSize, offset, state, lga, healthfacility, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacilitywithdate(pageSize, offset);
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    lga,
+                    healthfacility,
+                    from,
+                    to,
+                ]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByHealthfacilitywithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    getPatientsWithHealthworkerFilteredByHealthfacilityCountwithdate(state, lga, healthfacility, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientsWithHealthworkerFilteredByHealthfacilityCountwithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    lga,
+                    healthfacility,
+                    from,
+                    to,
+                ]);
+                return result;
+            }
+            catch (err) {
+                console.error("getPatientsWithHealthworkerFilteredByHealthfacilityCountwithdate", +" " + err);
                 throw new Error(err);
             }
         });
@@ -748,7 +902,130 @@ class patientRepository {
                 return result[0].patient_count;
             }
             catch (err) {
+                console.error("getPatientCount", +" " + err);
                 throw new Error(err);
+            }
+        });
+    }
+    getPatientCountwithdate(from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.getPatientCountwithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [from, to]);
+                return result[0].patient_count;
+            }
+            catch (err) {
+                console.error("getPatientCountwithdate", +" " + err);
+                throw new Error(err);
+            }
+        });
+    }
+    numberofwomenwith4visits() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visits();
+            try {
+                const [result] = yield this.connection.execute(q);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitswithdate(from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitswithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [from, to]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforstate(state) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforstate();
+            try {
+                const [result] = yield this.connection.execute(q, [state]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforstatewithdate(state, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforstatewithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [state, from, to]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforlga(state, lga) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforlga();
+            try {
+                const [result] = yield this.connection.execute(q, [state, lga]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforlgawithdate(state, lga, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforlgawithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    lga,
+                    from,
+                    to,
+                ]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforhealthfacility(state, healthfacility) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforstate();
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    healthfacility,
+                ]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    numberofwomenwith4visitsforhealthfacilitywithdate(state, healthfacility, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = patient_1.Patientqueries.numberofwomenwith4visitsforhealthfacilitywithdate();
+            try {
+                const [result] = yield this.connection.execute(q, [
+                    state,
+                    healthfacility,
+                    from,
+                    to,
+                ]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
             }
         });
     }

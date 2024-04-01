@@ -16,6 +16,48 @@ import {
 } from "../../../controllers/admin/healthfacility/auth";
 import { verifyHealthfacilityAdminToken } from "../../../middlewares/verifyHealthfacilityAdminToken";
 const router = express.Router();
+/**
+ * @swagger
+ * tags:
+ *   name: Healthfacility
+ *   description: Operations related to healthfacility
+ */
+
+/**
+ * @openapi
+ * /api/admin/healthfacility:
+ *   post:
+ *     description: create healthfacility account
+ *     tags: [Healthfacility]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ward:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               lga:
+ *                 type: string
+ *               healthfacilityname:
+ *                 type: string
+ *               healthfacilityID:
+ *                 type: string
+ *               officeaddress:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Returns new object.
+ *       500:
+ *          description: Server error
+ */
 
 router.post("/", createHealthfacilityAccount);
 

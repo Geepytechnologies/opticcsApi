@@ -1,0 +1,1 @@
+IntermediateResult1A = Proportion of pregnant women who attended at least one ANC Visit and delivered at health facility.

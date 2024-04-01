@@ -29,6 +29,10 @@ class Patientqueries {
         return `SELECT COUNT(*) AS patient_count FROM patients;
         `;
     }
+    static getPatientCountwithdate() {
+        return `SELECT COUNT(*) AS patient_count FROM patients WHERE DATE(createdat) BETWEEN ? AND ?;
+        `;
+    }
     static getPatientByPhone() {
         return `SELECT * FROM personalinformation WHERE phone = ?`;
     }
@@ -642,6 +646,29 @@ WHERE
   ) AS last_visits ON p.id = last_visits.patient_id ORDER BY
   p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
     }
+    static getPatientsWithHealthworkerwithdate(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id AND DATE(p.createdat) BETWEEN ? AND ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
     static getPatientsWithHealthworkerFilteredByState(pageSize, offset) {
         return `SELECT
     p.*,
@@ -665,6 +692,77 @@ WHERE
   ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? ORDER BY
   p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
     }
+    static getPatientsWithHealthworkerFilteredByStateCount() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ?
+  ) AS subquery;
+  `;
+    }
+    static getPatientsWithHealthworkerFilteredByStatewithdate(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? AND DATE(p.createdat) BETWEEN ? AND ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByStateCountwithdate() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ? AND DATE(p.createdat) BETWEEN ? AND ?
+  ) AS subquery;
+  `;
+    }
     static getPatientsWithHealthworkerFilteredByLga(pageSize, offset) {
         return `SELECT
     p.*,
@@ -685,8 +783,79 @@ WHERE
       SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
     ) AS combined_visits
     GROUP BY patient_id
-  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.lga = ? ORDER BY
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? AND hp.lga = ? ORDER BY
   p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthWorkerFilteredByLgaCount() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ? AND hp.lga = ?
+  ) AS subquery;
+  `;
+    }
+    static getPatientsWithHealthworkerFilteredByLgawithdate(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? AND hp.lga = ? AND DATE(p.createdat) BETWEEN ? AND ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthWorkerFilteredByLgaCountwithdate() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ? AND hp.lga = ? AND DATE(p.createdat) BETWEEN ? AND ?
+  ) AS subquery;
+  `;
     }
     static getPatientsWithHealthworkerFilteredByHealthfacility(pageSize, offset) {
         return `SELECT
@@ -708,8 +877,119 @@ WHERE
       SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
     ) AS combined_visits
     GROUP BY patient_id
-  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.healthfacility = ? ORDER BY
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? AND hp.lga = ? AND hp.healthfacility = ? ORDER BY
   p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByHealthfacilityCount() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ? AND hp.lga = ? AND hp.healthfacility = ?
+  ) AS subquery;
+  `;
+    }
+    static getPatientsWithHealthworkerFilteredByHealthfacilitywithdate(pageSize, offset) {
+        return `SELECT
+    p.*,
+    hp.*,
+    pi.*,
+    last_visits.last_visit
+  FROM
+    patients p
+  LEFT JOIN
+    healthpersonnel hp ON p.healthpersonnel_id = hp.id
+  LEFT JOIN
+    personalinformation pi ON p.personalinformation_id = pi.id
+  LEFT JOIN (
+    SELECT patient_id, MAX(visit_date) AS last_visit
+    FROM (
+      SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+      UNION ALL
+      SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+    ) AS combined_visits
+    GROUP BY patient_id
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? AND hp.lga = ? AND hp.healthfacility = ? AND DATE(p.createdat) BETWEEN ? AND ? ORDER BY
+  p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    }
+    static getPatientsWithHealthworkerFilteredByHealthfacilityCountwithdate() {
+        return `SELECT COUNT(*) AS total_count FROM (
+      SELECT
+          p.*,
+          last_visits.last_visit
+      FROM
+          patients p
+      LEFT JOIN
+          healthpersonnel hp ON p.healthpersonnel_id = hp.id
+      LEFT JOIN
+          personalinformation pi ON p.personalinformation_id = pi.id
+      LEFT JOIN (
+          SELECT patient_id, MAX(visit_date) AS last_visit
+          FROM (
+              SELECT patient_id, returnvisit_date AS visit_date FROM returnvisit
+              UNION ALL
+              SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
+          ) AS combined_visits
+          GROUP BY patient_id
+      ) AS last_visits ON p.id = last_visits.patient_id
+      WHERE hp.state = ? AND hp.lga = ? AND hp.healthfacility = ? AND DATE(p.createdat) BETWEEN ? AND ?
+  ) AS subquery;
+  `;
+    }
+    static numberofwomenwith4visits() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE anc = 4;    
+    `;
+    }
+    static numberofwomenwith4visitswithdate() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE anc = 4 AND DATE(createdat) BETWEEN ? AND ?;    
+    `;
+    }
+    static numberofwomenwith4visitsforstate() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND anc = 4;    
+    `;
+    }
+    static numberofwomenwith4visitsforstatewithdate() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND anc = 4 AND DATE(createdat) BETWEEN ? AND ?;    
+    `;
+    }
+    static numberofwomenwith4visitsforlga() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND lga = ? AND anc = 4;    
+    `;
+    }
+    static numberofwomenwith4visitsforlgawithdate() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND lga = ? AND anc = 4 AND DATE(createdat) BETWEEN ? AND ?;    
+    `;
+    }
+    static numberofwomenwith4visitsforhealthfacility() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND healthfacility = ? AND anc = 4;    
+    `;
+    }
+    static numberofwomenwith4visitsforhealthfacilitywithdate() {
+        return `SELECT COUNT(*) AS count
+    FROM returnvisit WHERE state = ? AND healthfacility = ? AND anc = 4 AND DATE(createdat) BETWEEN ? AND ?;    
+    `;
     }
 }
 exports.Patientqueries = Patientqueries;

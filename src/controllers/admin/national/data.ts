@@ -4,6 +4,8 @@ import logger from "../../../logger";
 import { NationalRepository } from "../../../repositories/NationalRepository";
 import { NationalService } from "../../../services/national.service";
 import { Request, Response } from "express";
+import { PatientService } from "../../../services/patients.service";
+import { patientRepository } from "../../../repositories/PatientRepository";
 
 class NationalDataController {
   nationalreturnvisitdata = async (req: Request, res: Response) => {
@@ -24,25 +26,31 @@ class NationalDataController {
       }
     }
   };
-  numberofwomenwith4visits = async (req: Request, res: Response) => {
+  numberofwomenwith4visits = async (req: any, res: Response) => {
+    const state = req.query.state || "";
+    const lga = req.query.lga || "";
+    const healthfacility = req.query.healthfacility || "";
+    const from = req.query.from || "";
+    const to = req.query.to || "";
+    console.log({
+      state: state,
+      lga: lga,
+      healthfacility: healthfacility,
+      from: from,
+      to: to,
+    });
     const connection = await db.getConnection();
+    const patientRepo = new patientRepository(connection);
+    const patientservice = new PatientService(patientRepo);
     try {
-      const q = `SELECT COUNT(*) AS patient_count
-        FROM patients p
-        LEFT JOIN (
-            SELECT patient_id, COUNT(*) AS first_visit_count
-            FROM firstvisit
-            GROUP BY patient_id
-        ) fv ON p.id = fv.patient_id
-        LEFT JOIN (
-            SELECT patient_id, COUNT(*) AS return_visit_count
-            FROM returnvisit
-            GROUP BY patient_id
-        ) ev ON p.id = ev.patient_id
-        WHERE (COALESCE(fv.first_visit_count, 0) + COALESCE(ev.return_visit_count, 0)) > 4;    
-        `;
-      const result = await connection.execute(q);
-      res.status(200).json(result[0]);
+      const result = await patientservice.numberofwomenwith4visits(
+        state,
+        lga,
+        healthfacility,
+        from,
+        to
+      );
+      res.status(200).json(result);
     } catch (error) {
       res.status(500).json(error);
     } finally {
