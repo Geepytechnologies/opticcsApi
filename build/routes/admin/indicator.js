@@ -5,14 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
+const indicator_1 = __importDefault(require("../../controllers/admin/indicator"));
 /**
  * @openapi
- * /api/admin/indicators/find/4visits:
+ * /api/admin/indicators/intermediateresult1:
  *   get:
- *     description: Returns users with 4 visits.
+ *     description: Returns intermediateresult1 results.
  *     responses:
  *       200:
- *         description: A list of users with 4 visits.
+ *         description: intermediateresult1 results.
  */
-router.get("/find/4visits");
+router.get("/intermediateresult1", indicator_1.default.intermediateResult1);
 exports.default = router;

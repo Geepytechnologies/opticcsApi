@@ -52,7 +52,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createPersonalrecord");
     }
   }
   async createpatient(data: firstvisitDTO, personalinformation_id: string) {
@@ -66,7 +66,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ":" + "createpatient");
     }
   }
   async createfirstvisit(data: firstvisitDTO, patient_id: string) {
@@ -77,7 +77,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ":" + "createfirstvisit");
     }
   }
   async createdailyhabit(data: firstvisitDTO, firstvisit_id: string) {
@@ -100,7 +100,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createdailyhabit");
     }
   }
   async createobstetric(data: firstvisitDTO, firstvisit_id: string) {
@@ -132,7 +132,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + " :" + "createobstetric");
     }
   }
   async createmedicalhistory(data: firstvisitDTO, firstVisit_id: string) {
@@ -213,7 +213,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createmedicalhistory");
     }
   }
   async createpastmedicalhistory(data: firstvisitDTO, firstvisit_id: string) {
@@ -249,7 +249,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createpastmedicalhistory");
     }
   }
   async createfamilyhistory(data: firstvisitDTO, firstvisit_id: string) {
@@ -281,7 +281,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createfamilyhistory");
     }
   }
   async createdrughistory(data: firstvisitDTO, firstvisit_id: string) {
@@ -305,7 +305,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createdrughistory");
     }
   }
   async createphysicalexamination(data: firstvisitDTO, firstvisit_id: string) {
@@ -352,7 +352,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createphysicalexamination");
     }
   }
   async getnewlycreatedpatientrecord(patient_id: string) {
@@ -361,7 +361,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, [patient_id]);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "getnewlycreatedpatientrecord");
     }
   }
   async checkIfPatientRecordExistsInReturnvisit(patient_id: string) {
@@ -499,7 +499,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createReturnVisit");
     }
   }
   async createReturnVisitWithANC(data: returnvisitDTO, lastanc: number) {
@@ -624,7 +624,7 @@ export class patientRepository {
       const result = await this.connection.execute(q, values);
       return result;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err + ": " + "createReturnVisitWithANC");
     }
   }
   async deleteAPatient(id: string) {

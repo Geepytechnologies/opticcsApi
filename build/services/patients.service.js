@@ -60,6 +60,7 @@ class PatientService {
     }
     createPatientFirstvisit(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(data);
             try {
                 const createdrecord = yield this.personalRecord(data);
                 const personalInformation_id = createdrecord[0].insertId;

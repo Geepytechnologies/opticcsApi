@@ -1,17 +1,18 @@
 import express from "express";
 
 const router = express.Router();
+import IndicatorController from "../../controllers/admin/indicator";
 
 /**
  * @openapi
- * /api/admin/indicators/find/4visits:
+ * /api/admin/indicators/intermediateresult1:
  *   get:
- *     description: Returns users with 4 visits.
+ *     description: Returns intermediateresult1 results.
  *     responses:
  *       200:
- *         description: A list of users with 4 visits.
+ *         description: intermediateresult1 results.
  */
 
-router.get("/find/4visits");
+router.get("/intermediateresult1", IndicatorController.intermediateResult1);
 
 export default router;

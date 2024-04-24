@@ -58,7 +58,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createPersonalrecord");
             }
         });
     }
@@ -75,7 +75,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ":" + "createpatient");
             }
         });
     }
@@ -88,7 +88,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ":" + "createfirstvisit");
             }
         });
     }
@@ -113,7 +113,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createdailyhabit");
             }
         });
     }
@@ -147,7 +147,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + " :" + "createobstetric");
             }
         });
     }
@@ -230,7 +230,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createmedicalhistory");
             }
         });
     }
@@ -268,7 +268,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createpastmedicalhistory");
             }
         });
     }
@@ -302,7 +302,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createfamilyhistory");
             }
         });
     }
@@ -329,7 +329,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createdrughistory");
             }
         });
     }
@@ -379,7 +379,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createphysicalexamination");
             }
         });
     }
@@ -391,7 +391,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "getnewlycreatedpatientrecord");
             }
         });
     }
@@ -536,7 +536,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createReturnVisit");
             }
         });
     }
@@ -664,7 +664,7 @@ class patientRepository {
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createReturnVisitWithANC");
             }
         });
     }

@@ -50,6 +50,7 @@ export class PatientService {
   }
 
   async createPatientFirstvisit(data: firstvisitDTO) {
+    logger.info(data);
     try {
       const createdrecord: any = await this.personalRecord(data);
       const personalInformation_id = createdrecord[0].insertId;

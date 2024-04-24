@@ -490,3 +490,11 @@ export interface TestresultDTO {
   hbsag: string;
   hcv: string;
 }
+
+export interface ancvisitDTO {
+  healthpersonnel_id: string;
+  patient_id: string;
+  anc_number: string;
+  missed?: string;
+  attended?: string;
+}
