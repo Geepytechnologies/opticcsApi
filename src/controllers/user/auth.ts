@@ -351,6 +351,7 @@ const signin = async (req, res, next) => {
     const { password, ...others } = user;
 
     startSession(others[0].id);
+    logger.info(others[0] + "->" + "new user login");
     res.status(200).json({
       statusCode: "200",
       message: "successful",
