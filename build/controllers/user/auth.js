@@ -337,7 +337,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         });
         const { password } = user, others = __rest(user, ["password"]);
         (0, index_1.startSession)(others[0].id);
-        index_2.default.info(others[0] + "->" + "new user login");
+        index_2.default.info(others[0].id + "->" + "new user login");
         res.status(200).json({
             statusCode: "200",
             message: "successful",
