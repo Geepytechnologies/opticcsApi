@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  // createPatient,
+  createPatient,
   getPatientRecord,
   createPatientEveryVisit,
   getAllPatients,

@@ -495,6 +495,7 @@ export interface ancvisitDTO {
   healthpersonnel_id: string;
   patient_id: string;
   anc_number: string;
+  lastANC: string;
   missed?: string;
   attended?: string;
 }

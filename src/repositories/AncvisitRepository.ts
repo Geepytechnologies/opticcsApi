@@ -8,13 +8,19 @@ export class AncvisitRepository {
   constructor(connection: PoolConnection) {
     this.connection = connection;
   }
-
+  async getUserLastANC() {
+    try {
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
   async createancvisit(data: ancvisitDTO) {
     const q = AncvisitQueries.createancvisit();
     const values = [
       data.healthpersonnel_id,
       data.patient_id,
       data.anc_number,
+      data.lastANC,
       data.attended,
       data.missed,
     ];

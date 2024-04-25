@@ -3,7 +3,8 @@
     patient_id INT,
     healthpersonnel_id INT,
     anc_number INT,
+    lastANC INT,
     missed BOOLEAN DEFAULT FALSE,
     attended BOOLEAN DEFAULT FALSE,
     createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);`
+);`;

@@ -23,9 +23,12 @@ class PatientController {
       await connection.beginTransaction();
       const patientID = await patientservice.createPatientFirstvisit(req.body);
       await connection.commit();
-      const newpatientrecord =
+
+      const newpatientrecord: any =
         await patientservice.getnewlycreatedpatientrecord(patientID);
       const result = newpatientrecord[0];
+      console.log(result + " " + "newpatientrecord[0]");
+
       logger.info("Patient created successfully");
       res.status(201).json({
         statusCode: "201",

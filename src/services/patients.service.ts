@@ -43,7 +43,7 @@ export class PatientService {
     }
   }
   async getnewlycreatedpatientrecord(patient_id: string) {
-    const result = await this.patientRepo.getnewlycreatedpatientrecord(
+    const [result] = await this.patientRepo.getnewlycreatedpatientrecord(
       patient_id
     );
     return result;
