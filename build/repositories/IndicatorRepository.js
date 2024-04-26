@@ -231,57 +231,5 @@ class IndicatorRepository {
             }
         });
     }
-    // ::::: 1D ::::://
-    IntermediateResult1D() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const q = indicator_1.IndicatorQuery.IntermediateResult1D();
-            try {
-                const [result] = yield this.connection.execute(q);
-                return result;
-            }
-            catch (err) {
-                throw new Error(err);
-            }
-        });
-    }
-    StateIntermediateResult1D(state) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const q = indicator_1.IndicatorQuery.StateIntermediateResult1D();
-            try {
-                const [result] = yield this.connection.execute(q, [state]);
-                return result;
-            }
-            catch (err) {
-                throw new Error(err);
-            }
-        });
-    }
-    LgaIntermediateResult1D(state, lga) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const q = indicator_1.IndicatorQuery.IntermediateResult1D();
-            try {
-                const [result] = yield this.connection.execute(q, [state, lga]);
-                return result;
-            }
-            catch (err) {
-                throw new Error(err);
-            }
-        });
-    }
-    HealthfacilityIntermediateResult1D(state, healthfacility) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const q = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1D();
-            try {
-                const [result] = yield this.connection.execute(q, [
-                    state,
-                    healthfacility,
-                ]);
-                return result;
-            }
-            catch (err) {
-                throw new Error(err);
-            }
-        });
-    }
 }
 exports.IndicatorRepository = IndicatorRepository;

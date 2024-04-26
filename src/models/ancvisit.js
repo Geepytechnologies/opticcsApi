@@ -4,7 +4,7 @@
     healthpersonnel_id INT,
     anc_number INT,
     lastANC INT,
-    missed BOOLEAN DEFAULT FALSE,
-    attended BOOLEAN DEFAULT FALSE,
+    missed INT DEFAULT 0,
+    attended INT DEFAULT 1,
     createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`;

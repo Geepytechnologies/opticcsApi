@@ -35,7 +35,7 @@ import { verifyToken } from "../../middlewares/verifyToken";
 
 const router = express.Router();
 
-router.post("/create", PatientController.createpatient);
+router.post("/create", createPatient);
 
 router.post(
   "/create/return",

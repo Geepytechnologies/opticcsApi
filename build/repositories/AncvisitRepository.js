@@ -15,22 +15,55 @@ class AncvisitRepository {
     constructor(connection) {
         this.connection = connection;
     }
+    getUserLastANC(patient_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = ancvisit_1.AncvisitQueries.getUserLastANC();
+                const [result] = yield this.connection.execute(q, [patient_id]);
+                return result[0];
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
     createancvisit(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = ancvisit_1.AncvisitQueries.createancvisit();
             const values = [
-                data.healthpersonnel_id,
                 data.patient_id,
+                data.healthpersonnel_id,
                 data.anc_number,
-                data.attended,
+                data.lastANC,
                 data.missed,
+                data.attended,
             ];
             try {
                 const [result] = yield this.connection.execute(q, values);
                 return result;
             }
             catch (err) {
-                throw new Error(err);
+                throw new Error(err + ": " + "createancvisit");
+            }
+        });
+    }
+    updateancvisit(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = ancvisit_1.AncvisitQueries.updateancvisit();
+            const values = [
+                data.healthpersonnel_id,
+                data.anc_number,
+                data.lastANC,
+                data.missed,
+                data.attended,
+                data.patient_id,
+            ];
+            try {
+                const [result] = yield this.connection.execute(q, values);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err + ": " + "updateancvisit");
             }
         });
     }

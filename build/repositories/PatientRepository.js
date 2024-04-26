@@ -414,6 +414,23 @@ class patientRepository {
             }
         });
     }
+    checkIfPatientHasCompletedANC(patient_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = `SELECT * FROM ancvisit WHERE patient_id = ?`;
+                const [result] = yield this.connection.execute(q, [patient_id]);
+                if (result[0].anc_number == 8) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            catch (error) {
+                console.log(error + ": " + "checkIfPatientHasCompletedANC");
+            }
+        });
+    }
     createReturnVisit(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const values = [

@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PatientService = void 0;
 const logger_1 = __importDefault(require("../logger"));
 const patients_1 = require("../utils/patients");
+const AncvisitRepository_1 = require("../repositories/AncvisitRepository");
 class PatientService {
-    constructor(patientRepository) {
+    constructor(patientRepository, connection) {
         this.patientRepo = patientRepository;
+        this.ancvisitRepo = new AncvisitRepository_1.AncvisitRepository(connection);
     }
     checkIfPatientWithPhoneNumberExists(phone) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,7 +56,7 @@ class PatientService {
     }
     getnewlycreatedpatientrecord(patient_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.patientRepo.getnewlycreatedpatientrecord(patient_id);
+            const [result] = yield this.patientRepo.getnewlycreatedpatientrecord(patient_id);
             return result;
         });
     }
@@ -75,6 +77,16 @@ class PatientService {
                 yield this.patientRepo.createmedicalhistory(data, firstvisitID);
                 yield this.patientRepo.createdrughistory(data, firstvisitID);
                 yield this.patientRepo.createphysicalexamination(data, firstvisitID);
+                //creating a new ancvisit record for the first visit
+                const ancdata = {
+                    patient_id: patientID,
+                    healthpersonnel_id: data.healthpersonnel_id,
+                    anc_number: "1",
+                    lastANC: "1",
+                    missed: "0",
+                    attended: "1",
+                };
+                yield this.ancvisitRepo.createancvisit(ancdata);
                 return patientID;
             }
             catch (error) {
@@ -82,17 +94,29 @@ class PatientService {
             }
         });
     }
-    createPatientReturnvisit(data) {
+    createPatientReturnvisit(data, healthpersonnel_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const patientexists = yield this.patientRepo.checkIfPatientRecordExistsInReturnvisit(data.patient_id);
-            const anc = patientexists.lastanc;
-            if (patientexists.value) {
-                const result = yield this.patientRepo.createReturnVisitWithANC(data, anc);
+            //check if patient has completed anc
+            const patientHasCompletedANC = yield this.patientRepo.checkIfPatientHasCompletedANC(data.patient_id);
+            if (!patientHasCompletedANC) {
+                const result = yield this.patientRepo.createReturnVisit(data);
+                //get the patients last ancvisit number
+                const ancvisit = yield this.ancvisitRepo.getUserLastANC(data.patient_id);
+                //creating a new ancvisit record for the return visit
+                const currentanc = ancvisit.lastANC + 1;
+                const ancdata = {
+                    patient_id: ancvisit.patient_id,
+                    healthpersonnel_id: healthpersonnel_id,
+                    anc_number: currentanc,
+                    lastANC: currentanc,
+                    missed: ancvisit.missed,
+                    attended: ancvisit.attended + 1,
+                };
+                yield this.ancvisitRepo.updateancvisit(ancdata);
                 return result;
             }
             else {
-                const result = yield this.patientRepo.createReturnVisit(data);
-                return result;
+                throw new Error("Patient has completed ANC");
             }
         });
     }

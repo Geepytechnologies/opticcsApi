@@ -8,7 +8,7 @@ const patients_1 = require("../../controllers/user/patients");
 const patients2_1 = __importDefault(require("../../controllers/user/patients2"));
 const verifyToken_1 = require("../../middlewares/verifyToken");
 const router = express_1.default.Router();
-router.post("/create", patients2_1.default.createpatient);
+router.post("/create", patients_1.createPatient);
 router.post("/create/return", verifyToken_1.verifyToken, patients2_1.default.createPatientEveryVisit);
 router.post("/test", patients_1.createTest);
 router.post("/testoption", patients_1.createtestoptions);

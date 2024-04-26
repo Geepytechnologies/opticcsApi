@@ -379,6 +379,19 @@ export class patientRepository {
       return { value: false, lastanc: null };
     }
   }
+  async checkIfPatientHasCompletedANC(patient_id: string) {
+    try {
+      const q = `SELECT * FROM ancvisit WHERE patient_id = ?`;
+      const [result]: any = await this.connection.execute(q, [patient_id]);
+      if (result[0].anc_number == 8) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error + ": " + "checkIfPatientHasCompletedANC");
+    }
+  }
   async createReturnVisit(data: returnvisitDTO) {
     const values = [
       data.patient_id,

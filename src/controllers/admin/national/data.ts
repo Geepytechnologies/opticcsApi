@@ -42,7 +42,7 @@ class NationalDataController {
     });
     const connection = await db.getConnection();
     const patientRepo = new patientRepository(connection);
-    const patientservice = new PatientService(patientRepo);
+    const patientservice = new PatientService(patientRepo, connection);
     try {
       const result = await patientservice.numberofwomenwith4visits(
         state,

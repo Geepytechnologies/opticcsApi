@@ -55,7 +55,7 @@ class NationalDataController {
             });
             const connection = yield db_1.default.getConnection();
             const patientRepo = new PatientRepository_1.patientRepository(connection);
-            const patientservice = new patients_service_1.PatientService(patientRepo);
+            const patientservice = new patients_service_1.PatientService(patientRepo, connection);
             try {
                 const result = yield patientservice.numberofwomenwith4visits(state, lga, healthfacility, from, to);
                 res.status(200).json(result);

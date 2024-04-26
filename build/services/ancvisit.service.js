@@ -25,5 +25,16 @@ class AncvisitService {
             }
         });
     }
+    updateancvisit(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.ancvisitRepo.updateancvisit(data);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
 }
 exports.AncvisitService = AncvisitService;

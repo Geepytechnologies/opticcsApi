@@ -14,7 +14,18 @@ export class AncvisitQueries {
                 anc_number,
                 lastANC,
                 missed,
-                attended,
-              ) VALUES (?,?,?,?,?,?,?)`;
+                attended) VALUES (?,?,?,?,?,?);`;
+  }
+  static updateancvisit() {
+    return `UPDATE ancvisit
+    SET
+        healthpersonnel_id = ?,
+        anc_number = ?,
+        lastANC = ?,
+        missed = ?, 
+        attended = ?
+    WHERE
+        patient_id = ?
+    ;`;
   }
 }

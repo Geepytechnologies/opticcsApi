@@ -1,15 +1,25 @@
 import { PoolConnection, RowDataPacket } from "mysql2/promise";
 import { patientRepository } from "../repositories/PatientRepository";
 import logger from "../logger";
-import { firstvisitDTO, returnvisitDTO } from "../entities/patient";
+import {
+  ancvisitDTO,
+  firstvisitDTO,
+  returnvisitDTO,
+} from "../entities/patient";
 import { ParsedQs } from "qs";
 import { Patientconditions } from "../utils/patients";
+import { AncvisitRepository } from "../repositories/AncvisitRepository";
 
 export class PatientService {
   private patientRepo: patientRepository;
+  private ancvisitRepo: AncvisitRepository;
 
-  constructor(patientRepository: patientRepository) {
+  constructor(
+    patientRepository: patientRepository,
+    connection: PoolConnection
+  ) {
     this.patientRepo = patientRepository;
+    this.ancvisitRepo = new AncvisitRepository(connection);
   }
   async checkIfPatientWithPhoneNumberExists(phone: string) {
     try {
@@ -51,6 +61,7 @@ export class PatientService {
 
   async createPatientFirstvisit(data: firstvisitDTO) {
     logger.info(data);
+
     try {
       const createdrecord: any = await this.personalRecord(data);
       const personalInformation_id = createdrecord[0].insertId;
@@ -73,25 +84,48 @@ export class PatientService {
       await this.patientRepo.createdrughistory(data, firstvisitID);
       await this.patientRepo.createphysicalexamination(data, firstvisitID);
 
+      //creating a new ancvisit record for the first visit
+      const ancdata: ancvisitDTO = {
+        patient_id: patientID,
+        healthpersonnel_id: data.healthpersonnel_id,
+        anc_number: "1",
+        lastANC: "1",
+        missed: "0",
+        attended: "1",
+      };
+      await this.ancvisitRepo.createancvisit(ancdata);
       return patientID;
     } catch (error: any) {
       throw new Error(error);
     }
   }
 
-  async createPatientReturnvisit(data: returnvisitDTO) {
-    const patientexists =
-      await this.patientRepo.checkIfPatientRecordExistsInReturnvisit(
-        data.patient_id
-      );
-    const anc: any = patientexists.lastanc;
+  async createPatientReturnvisit(
+    data: returnvisitDTO,
+    healthpersonnel_id: string
+  ) {
+    //check if patient has completed anc
+    const patientHasCompletedANC =
+      await this.patientRepo.checkIfPatientHasCompletedANC(data.patient_id);
+    if (!patientHasCompletedANC) {
+      const result = await this.patientRepo.createReturnVisit(data);
 
-    if (patientexists.value) {
-      const result = await this.patientRepo.createReturnVisitWithANC(data, anc);
+      //get the patients last ancvisit number
+      const ancvisit = await this.ancvisitRepo.getUserLastANC(data.patient_id);
+      //creating a new ancvisit record for the return visit
+      const currentanc = ancvisit.lastANC + 1;
+      const ancdata: ancvisitDTO = {
+        patient_id: ancvisit.patient_id,
+        healthpersonnel_id: healthpersonnel_id,
+        anc_number: currentanc,
+        lastANC: currentanc,
+        missed: ancvisit.missed,
+        attended: ancvisit.attended + 1,
+      };
+      await this.ancvisitRepo.updateancvisit(ancdata);
       return result;
     } else {
-      const result = await this.patientRepo.createReturnVisit(data);
-      return result;
+      throw new Error("Patient has completed ANC");
     }
   }
 

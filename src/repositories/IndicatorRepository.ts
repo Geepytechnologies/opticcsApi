@@ -201,46 +201,46 @@ export class IndicatorRepository {
     }
   }
   // ::::: 1D ::::://
-  async IntermediateResult1D() {
-    const q = IndicatorQuery.IntermediateResult1D();
-    try {
-      const [result]: any = await this.connection.execute(q);
-      return result;
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
-  async StateIntermediateResult1D(state: string) {
-    const q = IndicatorQuery.StateIntermediateResult1D();
-    try {
-      const [result]: any = await this.connection.execute(q, [state]);
-      return result;
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
-  async LgaIntermediateResult1D(state: string, lga: string) {
-    const q = IndicatorQuery.IntermediateResult1D();
-    try {
-      const [result]: any = await this.connection.execute(q, [state, lga]);
-      return result;
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
-  async HealthfacilityIntermediateResult1D(
-    state: string,
-    healthfacility: string
-  ) {
-    const q = IndicatorQuery.HealthfacilityIntermediateResult1D();
-    try {
-      const [result]: any = await this.connection.execute(q, [
-        state,
-        healthfacility,
-      ]);
-      return result;
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
+  // async IntermediateResult1D() {
+  //   const q = IndicatorQuery.IntermediateResult1D();
+  //   try {
+  //     const [result]: any = await this.connection.execute(q);
+  //     return result;
+  //   } catch (err: any) {
+  //     throw new Error(err);
+  //   }
+  // }
+  // async StateIntermediateResult1D(state: string) {
+  //   const q = IndicatorQuery.StateIntermediateResult1D();
+  //   try {
+  //     const [result]: any = await this.connection.execute(q, [state]);
+  //     return result;
+  //   } catch (err: any) {
+  //     throw new Error(err);
+  //   }
+  // }
+  // async LgaIntermediateResult1D(state: string, lga: string) {
+  //   const q = IndicatorQuery.IntermediateResult1D();
+  //   try {
+  //     const [result]: any = await this.connection.execute(q, [state, lga]);
+  //     return result;
+  //   } catch (err: any) {
+  //     throw new Error(err);
+  //   }
+  // }
+  // async HealthfacilityIntermediateResult1D(
+  //   state: string,
+  //   healthfacility: string
+  // ) {
+  //   const q = IndicatorQuery.HealthfacilityIntermediateResult1D();
+  //   try {
+  //     const [result]: any = await this.connection.execute(q, [
+  //       state,
+  //       healthfacility,
+  //     ]);
+  //     return result;
+  //   } catch (err: any) {
+  //     throw new Error(err);
+  //   }
+  // }
 }

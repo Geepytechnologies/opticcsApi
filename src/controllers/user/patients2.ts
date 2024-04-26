@@ -18,16 +18,17 @@ class PatientController {
   createpatient = async (req: Request, res: Response) => {
     const connection = await db.getConnection();
     const patientRepo = new patientRepository(connection);
-    const patientservice = new PatientService(patientRepo);
+    const patientservice = new PatientService(patientRepo, connection);
     try {
       await connection.beginTransaction();
       const patientID = await patientservice.createPatientFirstvisit(req.body);
+      console.log(patientID, "patient creation");
       await connection.commit();
 
       const newpatientrecord: any =
         await patientservice.getnewlycreatedpatientrecord(patientID);
       const result = newpatientrecord[0];
-      console.log(result + " " + "newpatientrecord[0]");
+      console.log(result[0] + " " + "newpatientrecord[0]");
 
       logger.info("Patient created successfully");
       res.status(201).json({
@@ -63,9 +64,12 @@ class PatientController {
     const connection = await db.getConnection();
     const healthpersonnel_id = req.user.id;
     const patientRepo = new patientRepository(connection);
-    const patientservice = new PatientService(patientRepo);
+    const patientservice = new PatientService(patientRepo, connection);
     try {
-      const result = await patientservice.createPatientReturnvisit(req.body);
+      const result = await patientservice.createPatientReturnvisit(
+        req.body,
+        healthpersonnel_id
+      );
       const returnvisitid = result[0];
       res.status(201).json({
         statusCode: "201",
@@ -74,11 +78,11 @@ class PatientController {
           returnvisitid,
         },
       });
-    } catch (err) {
+    } catch (err: any) {
       res.status(500).json({
         statusCode: "500",
-        message: "Failed to create return visit for patient",
-        error: err,
+        message: err.message || "Failed to create return visit for patient",
+        error: err.message,
       });
       console.error(err);
     } finally {
@@ -91,7 +95,7 @@ class PatientController {
     const { id } = req.params;
     const connection = await db.getConnection();
     const patientRepo = new patientRepository(connection);
-    const patientservice = new PatientService(patientRepo);
+    const patientservice = new PatientService(patientRepo, connection);
     try {
       const result = await patientservice.deleteAPatient(id);
       res.status(200).json(result[0]);
@@ -110,7 +114,7 @@ class PatientController {
     const offset = (page - 1) * pageSize;
     const connection = await db.getConnection();
     const patientRepo = new patientRepository(connection);
-    const patientservice = new PatientService(patientRepo);
+    const patientservice = new PatientService(patientRepo, connection);
     try {
       const result = await patientservice.getAllPatientsAndHealthworker(
         req.query,

@@ -25,13 +25,15 @@ class PatientController {
         this.createpatient = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const connection = yield db_1.default.getConnection();
             const patientRepo = new PatientRepository_1.patientRepository(connection);
-            const patientservice = new patients_service_1.PatientService(patientRepo);
+            const patientservice = new patients_service_1.PatientService(patientRepo, connection);
             try {
                 yield connection.beginTransaction();
                 const patientID = yield patientservice.createPatientFirstvisit(req.body);
+                console.log(patientID, "patient creation");
                 yield connection.commit();
                 const newpatientrecord = yield patientservice.getnewlycreatedpatientrecord(patientID);
                 const result = newpatientrecord[0];
+                console.log(result[0] + " " + "newpatientrecord[0]");
                 logger_1.default.info("Patient created successfully");
                 res.status(201).json({
                     statusCode: "201",
@@ -69,9 +71,9 @@ class PatientController {
             const connection = yield db_1.default.getConnection();
             const healthpersonnel_id = req.user.id;
             const patientRepo = new PatientRepository_1.patientRepository(connection);
-            const patientservice = new patients_service_1.PatientService(patientRepo);
+            const patientservice = new patients_service_1.PatientService(patientRepo, connection);
             try {
-                const result = yield patientservice.createPatientReturnvisit(req.body);
+                const result = yield patientservice.createPatientReturnvisit(req.body, healthpersonnel_id);
                 const returnvisitid = result[0];
                 res.status(201).json({
                     statusCode: "201",
@@ -84,8 +86,8 @@ class PatientController {
             catch (err) {
                 res.status(500).json({
                     statusCode: "500",
-                    message: "Failed to create return visit for patient",
-                    error: err,
+                    message: err.message || "Failed to create return visit for patient",
+                    error: err.message,
                 });
                 console.error(err);
             }
@@ -99,7 +101,7 @@ class PatientController {
             const { id } = req.params;
             const connection = yield db_1.default.getConnection();
             const patientRepo = new PatientRepository_1.patientRepository(connection);
-            const patientservice = new patients_service_1.PatientService(patientRepo);
+            const patientservice = new patients_service_1.PatientService(patientRepo, connection);
             try {
                 const result = yield patientservice.deleteAPatient(id);
                 res.status(200).json(result[0]);
@@ -120,7 +122,7 @@ class PatientController {
             const offset = (page - 1) * pageSize;
             const connection = yield db_1.default.getConnection();
             const patientRepo = new PatientRepository_1.patientRepository(connection);
-            const patientservice = new patients_service_1.PatientService(patientRepo);
+            const patientservice = new patients_service_1.PatientService(patientRepo, connection);
             try {
                 const result = yield patientservice.getAllPatientsAndHealthworker(req.query, pageSize, offset);
                 res.status(200).json({
