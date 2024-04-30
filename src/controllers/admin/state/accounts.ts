@@ -80,7 +80,7 @@ const createStateUserAccount = async (req, res, next) => {
     email,
     userid,
     hashedpassword,
-    accountType,
+    null,
   ];
   const connection = await db.getConnection();
 
@@ -105,9 +105,8 @@ const createStateUserAccount = async (req, res, next) => {
     }
   };
   try {
-    const q = `INSERT INTO stateadmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
-    const checkuser = checkIfStateUserAccountExists();
+    const q = `INSERT INTO stateadmin (state, staffname, staffid, gender, cadre, phone, email, userid,password, accountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const checkuser = await checkIfStateUserAccountExists();
     if (checkuser) {
       res.status(409).json("User already exists");
     } else {
@@ -118,6 +117,7 @@ const createStateUserAccount = async (req, res, next) => {
         .json({ statusCode: "201", message: "successful", result: result[0] });
     }
   } catch (err) {
+    console.log(err);
     logger.error(err);
     res.status(500).json({
       statusCode: "500",
