@@ -89,7 +89,7 @@ const createStateUserAccount = (req, res, next) => __awaiter(void 0, void 0, voi
         email,
         userid,
         hashedpassword,
-        accountType,
+        null,
     ];
     const connection = yield db_1.default.getConnection();
     const checkIfStateUserAccountExists = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -116,9 +116,8 @@ const createStateUserAccount = (req, res, next) => __awaiter(void 0, void 0, voi
         }
     });
     try {
-        const q = `INSERT INTO stateadmin (state, staffname,staffid, gender, cadre, phone, email,userid ,password,accountType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
-        const checkuser = checkIfStateUserAccountExists();
+        const q = `INSERT INTO stateadmin (state, staffname, staffid, gender, cadre, phone, email, userid,password, accountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const checkuser = yield checkIfStateUserAccountExists();
         if (checkuser) {
             res.status(409).json("User already exists");
         }
@@ -131,6 +130,7 @@ const createStateUserAccount = (req, res, next) => __awaiter(void 0, void 0, voi
         }
     }
     catch (err) {
+        console.log(err);
         logger_1.default.error(err);
         res.status(500).json({
             statusCode: "500",
