@@ -20,6 +20,7 @@ const DeliveryreportRepository_1 = require("../../repositories/DeliveryreportRep
 const deliveryreport_service_1 = require("../../services/deliveryreport.service");
 const TestresultRepository_1 = require("../../repositories/TestresultRepository");
 const testresult_service_1 = require("../../services/testresult.service");
+const error_1 = require("../../utils/error");
 class PatientController {
     constructor() {
         this.createpatient = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -43,10 +44,13 @@ class PatientController {
             }
             catch (error) {
                 console.log("error from creating patient", error);
-                const errorResponse = {
-                    statusCode: error.statusCode || 500,
-                    error: Object.assign({}, error),
-                };
+                if (error instanceof error_1.ANCCompletionError) {
+                    res.status(500).json({
+                        statusCode: "403",
+                        error: error.message,
+                    });
+                    logger_1.default.error("ANC Completion Error:", error.message);
+                }
                 if (connection) {
                     try {
                         yield connection.rollback();

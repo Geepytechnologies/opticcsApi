@@ -14,5 +14,6 @@ import IndicatorController from "../../controllers/admin/indicator";
  */
 
 router.get("/intermediateresult1", IndicatorController.intermediateResult1);
+router.get("/intermediateresult2", IndicatorController.intermediateResult2);
 
 export default router;

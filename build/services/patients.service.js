@@ -16,6 +16,7 @@ exports.PatientService = void 0;
 const logger_1 = __importDefault(require("../logger"));
 const patients_1 = require("../utils/patients");
 const AncvisitRepository_1 = require("../repositories/AncvisitRepository");
+const error_1 = require("../utils/error");
 class PatientService {
     constructor(patientRepository, connection) {
         this.patientRepo = patientRepository;
@@ -99,11 +100,11 @@ class PatientService {
             //check if patient has completed anc
             const patientHasCompletedANC = yield this.patientRepo.checkIfPatientHasCompletedANC(data.patient_id);
             if (!patientHasCompletedANC) {
-                const result = yield this.patientRepo.createReturnVisit(data);
                 //get the patients last ancvisit number
                 const ancvisit = yield this.ancvisitRepo.getUserLastANC(data.patient_id);
                 //creating a new ancvisit record for the return visit
                 const currentanc = ancvisit.lastANC + 1;
+                const result = yield this.patientRepo.createReturnVisitWithANC(data, currentanc);
                 const ancdata = {
                     patient_id: ancvisit.patient_id,
                     healthpersonnel_id: healthpersonnel_id,
@@ -116,7 +117,7 @@ class PatientService {
                 return result;
             }
             else {
-                throw new Error("Patient has completed ANC");
+                throw new error_1.ANCCompletionError("Patient has completed ANC");
             }
         });
     }

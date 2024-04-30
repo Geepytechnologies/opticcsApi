@@ -85,7 +85,7 @@ const createStateUserAccount = async (req, res, next) => {
   const connection = await db.getConnection();
 
   const checkIfStateUserAccountExists = async () => {
-    const q = `SELECT * FROM stateadmin WHERE userid = ? AND password = ?`;
+    const q = `SELECT * FROM stateadmin WHERE userid = ?`;
     try {
       let checked;
       const result = await connection.execute(q, [userid, hashedpassword]);

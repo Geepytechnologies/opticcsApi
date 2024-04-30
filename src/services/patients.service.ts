@@ -6,9 +6,9 @@ import {
   firstvisitDTO,
   returnvisitDTO,
 } from "../entities/patient";
-import { ParsedQs } from "qs";
 import { Patientconditions } from "../utils/patients";
 import { AncvisitRepository } from "../repositories/AncvisitRepository";
+import { ANCCompletionError, CustomError } from "../utils/error";
 
 export class PatientService {
   private patientRepo: patientRepository;
@@ -108,12 +108,17 @@ export class PatientService {
     const patientHasCompletedANC =
       await this.patientRepo.checkIfPatientHasCompletedANC(data.patient_id);
     if (!patientHasCompletedANC) {
-      const result = await this.patientRepo.createReturnVisit(data);
-
       //get the patients last ancvisit number
       const ancvisit = await this.ancvisitRepo.getUserLastANC(data.patient_id);
+
       //creating a new ancvisit record for the return visit
       const currentanc = ancvisit.lastANC + 1;
+
+      const result = await this.patientRepo.createReturnVisitWithANC(
+        data,
+        currentanc
+      );
+
       const ancdata: ancvisitDTO = {
         patient_id: ancvisit.patient_id,
         healthpersonnel_id: healthpersonnel_id,
@@ -125,7 +130,7 @@ export class PatientService {
       await this.ancvisitRepo.updateancvisit(ancdata);
       return result;
     } else {
-      throw new Error("Patient has completed ANC");
+      throw new ANCCompletionError("Patient has completed ANC");
     }
   }
 

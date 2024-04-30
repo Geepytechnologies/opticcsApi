@@ -93,7 +93,7 @@ const createStateUserAccount = (req, res, next) => __awaiter(void 0, void 0, voi
     ];
     const connection = yield db_1.default.getConnection();
     const checkIfStateUserAccountExists = () => __awaiter(void 0, void 0, void 0, function* () {
-        const q = `SELECT * FROM stateadmin WHERE userid = ? AND password = ?`;
+        const q = `SELECT * FROM stateadmin WHERE userid = ?`;
         try {
             let checked;
             const result = yield connection.execute(q, [userid, hashedpassword]);

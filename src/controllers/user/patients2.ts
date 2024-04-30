@@ -7,6 +7,7 @@ import { DeliveryreportRepository } from "../../repositories/DeliveryreportRepos
 import { DeliveryreportService } from "../../services/deliveryreport.service";
 import { TestresultRepository } from "../../repositories/TestresultRepository";
 import { TestresultService } from "../../services/testresult.service";
+import { ANCCompletionError } from "../../utils/error";
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -38,10 +39,13 @@ class PatientController {
       });
     } catch (error: any) {
       console.log("error from creating patient", error);
-      const errorResponse = {
-        statusCode: error.statusCode || 500,
-        error: { ...error },
-      };
+      if (error instanceof ANCCompletionError) {
+        res.status(500).json({
+          statusCode: "403",
+          error: error.message,
+        });
+        logger.error("ANC Completion Error:", error.message);
+      }
       if (connection) {
         try {
           await connection.rollback();

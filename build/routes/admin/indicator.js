@@ -16,4 +16,5 @@ const indicator_1 = __importDefault(require("../../controllers/admin/indicator")
  *         description: intermediateresult1 results.
  */
 router.get("/intermediateresult1", indicator_1.default.intermediateResult1);
+router.get("/intermediateresult2", indicator_1.default.intermediateResult2);
 exports.default = router;
