@@ -121,8 +121,24 @@ export class HealthFacilityRepository {
       }
     }
   }
+  async getHealthFacilityAccountsForLGA(lga: string) {
+    const q = `SELECT * FROM healthfacilityaccount WHERE lga = ?`;
+
+    try {
+      const result = await this.connection.execute(q, [lga]);
+
+      return result;
+    } catch (error: any) {
+      logger.error(error);
+      throw new Error(error);
+    } finally {
+      if (this.connection) {
+        this.connection.release();
+      }
+    }
+  }
   async getHealthfacilityUserAccounts() {
-    const q = `SELECT * FROM healthfacilityadmin`;
+    const q = `SELECT * FROM healthfacilityadmin ORDER BY createdat DESC`;
 
     try {
       const result = await this.connection.execute(q);

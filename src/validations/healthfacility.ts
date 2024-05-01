@@ -9,7 +9,7 @@ export class healthfacilityvalidation {
       state: Joi.string(),
       healthfacilityID: Joi.string(),
       officeaddress: Joi.string(),
-      phone: Joi.string().trim().length(13),
+      phone: Joi.string().trim().length(11),
       email: Joi.string().trim().email(),
     });
     return schema.validate(values);
@@ -23,7 +23,7 @@ export class healthfacilityvalidation {
       cadre: Joi.string(),
       lga: Joi.string(),
       state: Joi.string(),
-      healthfacilityid: Joi.string(),
+      // healthfacilityid: Joi.string(),
       userid: Joi.string(),
       password: Joi.string(),
       phone: Joi.string().trim().length(13),

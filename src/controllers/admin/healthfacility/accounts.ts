@@ -34,15 +34,15 @@ const createHealthfacilityAccount = async (
   ];
   console.log(values);
 
-  const { error } = healthfacilityvalidation.createAccount(req.body);
-  console.log(error);
-  if (error) {
-    return res.status(400).json({
-      statusCode: "400",
-      message: error.details[0].message.toUpperCase(),
-      result: null,
-    });
-  }
+  // const { error } = healthfacilityvalidation.createAccount(req.body);
+  // console.log(error);
+  // if (error) {
+  //   return res.status(400).json({
+  //     statusCode: "400",
+  //     message: error.details[0].message.toUpperCase(),
+  //     result: null,
+  //   });
+  // }
   try {
     const connection = await BaseRepository.getConnection();
     const hfRepository = new HealthFacilityRepository(connection);
@@ -103,14 +103,14 @@ const createHealthfacilityUserAccount = async (
     hashedpassword,
     healthfacilityid,
   ];
-  const { error } = healthfacilityvalidation.createUserAccount(req.body);
-  if (error) {
-    return res.status(400).json({
-      statusCode: "400",
-      message: error.details[0].message.toUpperCase(),
-      result: null,
-    });
-  }
+  // const { error } = healthfacilityvalidation.createUserAccount(req.body);
+  // if (error) {
+  //   return res.status(400).json({
+  //     statusCode: "400",
+  //     message: error.details[0].message.toUpperCase(),
+  //     result: null,
+  //   });
+  // }
   try {
     const connection = await BaseRepository.getConnection();
     const hfRepository = new HealthFacilityRepository(connection);
@@ -205,6 +205,23 @@ const getHealthfacilityAccounts = async (
     res.status(500).json(error);
   }
 };
+const getHealthfacilityAccountsForLGA = async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const lga = req.query.lga;
+    const connection = await BaseRepository.getConnection();
+    const hfRepository = new HealthFacilityRepository(connection);
+
+    const result = await hfRepository.getHealthFacilityAccountsForLGA(lga);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json(error);
+  }
+};
 
 const getHealthfacilityUserAccounts = async (
   req: Request,
@@ -228,4 +245,5 @@ export {
   getHealthfacilityAccounts,
   getHealthfacilityUserAccounts,
   getHealthfacilityAccountsFiltered,
+  getHealthfacilityAccountsForLGA,
 };

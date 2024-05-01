@@ -6,6 +6,7 @@ import {
   getHealthfacilityAccounts,
   getHealthfacilityUserAccounts,
   getHealthfacilityAccountsFiltered,
+  getHealthfacilityAccountsForLGA,
 } from "../../../controllers/admin/healthfacility/accounts";
 import {
   signin,
@@ -62,6 +63,7 @@ const router = express.Router();
 router.post("/", createHealthfacilityAccount);
 
 router.get("/find", getHealthfacilityAccounts);
+router.get("/find/lga", getHealthfacilityAccountsForLGA);
 
 router.get("/find/filtered", getHealthfacilityAccountsFiltered);
 

@@ -143,9 +143,27 @@ class HealthFacilityRepository {
             }
         });
     }
+    getHealthFacilityAccountsForLGA(lga) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `SELECT * FROM healthfacilityaccount WHERE lga = ?`;
+            try {
+                const result = yield this.connection.execute(q, [lga]);
+                return result;
+            }
+            catch (error) {
+                logger_1.default.error(error);
+                throw new Error(error);
+            }
+            finally {
+                if (this.connection) {
+                    this.connection.release();
+                }
+            }
+        });
+    }
     getHealthfacilityUserAccounts() {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = `SELECT * FROM healthfacilityadmin`;
+            const q = `SELECT * FROM healthfacilityadmin ORDER BY createdat DESC`;
             try {
                 const result = yield this.connection.execute(q);
                 return result;

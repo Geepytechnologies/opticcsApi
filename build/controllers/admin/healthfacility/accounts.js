@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHealthfacilityAccountsFiltered = exports.getHealthfacilityUserAccounts = exports.getHealthfacilityAccounts = exports.verifyHealthWorker = exports.createHealthfacilityUserAccount = exports.createHealthfacilityAccount = void 0;
+exports.getHealthfacilityAccountsForLGA = exports.getHealthfacilityAccountsFiltered = exports.getHealthfacilityUserAccounts = exports.getHealthfacilityAccounts = exports.verifyHealthWorker = exports.createHealthfacilityUserAccount = exports.createHealthfacilityAccount = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = __importDefault(require("../../../logger"));
 const HealthFacilityRepository_1 = require("../../../repositories/HealthFacilityRepository");
@@ -32,15 +32,15 @@ const createHealthfacilityAccount = (req, res, next) => __awaiter(void 0, void 0
         email,
     ];
     console.log(values);
-    const { error } = healthfacility_1.healthfacilityvalidation.createAccount(req.body);
-    console.log(error);
-    if (error) {
-        return res.status(400).json({
-            statusCode: "400",
-            message: error.details[0].message.toUpperCase(),
-            result: null,
-        });
-    }
+    // const { error } = healthfacilityvalidation.createAccount(req.body);
+    // console.log(error);
+    // if (error) {
+    //   return res.status(400).json({
+    //     statusCode: "400",
+    //     message: error.details[0].message.toUpperCase(),
+    //     result: null,
+    //   });
+    // }
     try {
         const connection = yield BaseRepository_1.default.getConnection();
         const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
@@ -83,14 +83,14 @@ const createHealthfacilityUserAccount = (req, res, next) => __awaiter(void 0, vo
         hashedpassword,
         healthfacilityid,
     ];
-    const { error } = healthfacility_1.healthfacilityvalidation.createUserAccount(req.body);
-    if (error) {
-        return res.status(400).json({
-            statusCode: "400",
-            message: error.details[0].message.toUpperCase(),
-            result: null,
-        });
-    }
+    // const { error } = healthfacilityvalidation.createUserAccount(req.body);
+    // if (error) {
+    //   return res.status(400).json({
+    //     statusCode: "400",
+    //     message: error.details[0].message.toUpperCase(),
+    //     result: null,
+    //   });
+    // }
     try {
         const connection = yield BaseRepository_1.default.getConnection();
         const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
@@ -171,6 +171,20 @@ const getHealthfacilityAccounts = (req, res, next) => __awaiter(void 0, void 0, 
     }
 });
 exports.getHealthfacilityAccounts = getHealthfacilityAccounts;
+const getHealthfacilityAccountsForLGA = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const lga = req.query.lga;
+        const connection = yield BaseRepository_1.default.getConnection();
+        const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
+        const result = yield hfRepository.getHealthFacilityAccountsForLGA(lga);
+        res.status(200).json(result[0]);
+    }
+    catch (error) {
+        logger_1.default.error(error);
+        res.status(500).json(error);
+    }
+});
+exports.getHealthfacilityAccountsForLGA = getHealthfacilityAccountsForLGA;
 const getHealthfacilityUserAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const connection = yield BaseRepository_1.default.getConnection();

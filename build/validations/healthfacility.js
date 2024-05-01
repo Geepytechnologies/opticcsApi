@@ -16,7 +16,7 @@ healthfacilityvalidation.createAccount = (values) => {
         state: joi_1.default.string(),
         healthfacilityID: joi_1.default.string(),
         officeaddress: joi_1.default.string(),
-        phone: joi_1.default.string().trim().length(13),
+        phone: joi_1.default.string().trim().length(11),
         email: joi_1.default.string().trim().email(),
     });
     return schema.validate(values);
@@ -30,7 +30,7 @@ healthfacilityvalidation.createUserAccount = (values) => {
         cadre: joi_1.default.string(),
         lga: joi_1.default.string(),
         state: joi_1.default.string(),
-        healthfacilityid: joi_1.default.string(),
+        // healthfacilityid: Joi.string(),
         userid: joi_1.default.string(),
         password: joi_1.default.string(),
         phone: joi_1.default.string().trim().length(13),

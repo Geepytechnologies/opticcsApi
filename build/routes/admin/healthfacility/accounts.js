@@ -51,6 +51,7 @@ const router = express_1.default.Router();
  */
 router.post("/", accounts_1.createHealthfacilityAccount);
 router.get("/find", accounts_1.getHealthfacilityAccounts);
+router.get("/find/lga", accounts_1.getHealthfacilityAccountsForLGA);
 router.get("/find/filtered", accounts_1.getHealthfacilityAccountsFiltered);
 router.get("/find/users", accounts_1.getHealthfacilityUserAccounts);
 router.post("/signin", auth_1.signin);
