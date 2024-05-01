@@ -79,7 +79,7 @@ const createLgaUserAccount = async (req, res, next) => {
     email,
     userid,
     hashedpassword,
-    accountType,
+    null,
   ];
   const connection = await db.getConnection();
   const checkIfStateUserAccountExists = async () => {

@@ -86,7 +86,7 @@ const createLgaUserAccount = (req, res, next) => __awaiter(void 0, void 0, void 
         email,
         userid,
         hashedpassword,
-        accountType,
+        null,
     ];
     const connection = yield db_1.default.getConnection();
     const checkIfStateUserAccountExists = () => __awaiter(void 0, void 0, void 0, function* () {
