@@ -140,6 +140,20 @@ const getLgaAccounts = async (req, res, next) => {
     }
   }
 };
+const getLgaAccountsForState = async (req, res, next) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM lgaccount WHERE state = ?`;
+    const result = await connection.execute(q);
+    res.status(200).json(result[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getLgaUserAccounts = async (req, res, next) => {
   const connection = await db.getConnection();
   const { state } = req.query;

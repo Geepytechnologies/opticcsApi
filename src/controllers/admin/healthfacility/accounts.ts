@@ -32,8 +32,10 @@ const createHealthfacilityAccount = async (
     phone,
     email,
   ];
+  console.log(values);
 
   const { error } = healthfacilityvalidation.createAccount(req.body);
+  console.log(error);
   if (error) {
     return res.status(400).json({
       statusCode: "400",

@@ -156,6 +156,22 @@ const getLgaAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getLgaAccounts = getLgaAccounts;
+const getLgaAccountsForState = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    try {
+        const q = `SELECT * FROM lgaccount WHERE state = ?`;
+        const result = yield connection.execute(q);
+        res.status(200).json(result[0]);
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
 const getLgaUserAccounts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { state } = req.query;
