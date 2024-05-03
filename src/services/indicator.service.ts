@@ -9,6 +9,7 @@ export class IndicatorService {
     this.indicatorRepository = IndicatorRepo;
   }
   async intermediateResult1A(
+    filter: string,
     state: string,
     lga: string,
     healthfacility: string,
@@ -17,9 +18,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Awithdate(
             from,
@@ -29,26 +30,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1A();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Awithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1A();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Awithdate(
@@ -62,13 +47,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Awithdate(
@@ -84,9 +66,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 1A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Awithdate(
@@ -110,6 +92,8 @@ export class IndicatorService {
   }
   //------- 1B Proportion of pregnant women who attended at least one ANC Visit and delivered at health facility -----
   async intermediateResult1B(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -118,9 +102,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Bwithdate(
             from,
@@ -130,26 +114,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1B();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Bwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1B();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Bwithdate(
@@ -163,13 +131,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Bwithdate(
@@ -185,9 +150,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 1B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Bwithdate(
@@ -211,6 +176,8 @@ export class IndicatorService {
   }
   //------- 1C Proportion of pregnant women at ANC 1st visit less than 20 weeks -----
   async intermediateResult1C(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -219,9 +186,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Cwithdate(
             from,
@@ -231,26 +198,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1C();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Cwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1C();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Cwithdate(
@@ -264,13 +215,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Cwithdate(
@@ -286,9 +234,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 1C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Cwithdate(
@@ -312,6 +260,8 @@ export class IndicatorService {
   }
   //------- 1D Proportion of pregnant women at ANC 1st Vist less than 20 weeks that achieved 8 ANC visits -----
   async intermediateResult1D(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -320,9 +270,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Dwithdate(
             from,
@@ -332,26 +282,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1D();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Dwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1D();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Dwithdate(
@@ -365,13 +299,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Dwithdate(
@@ -387,7 +318,7 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
         logger.warn("healthfacility");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
@@ -413,6 +344,8 @@ export class IndicatorService {
   }
   //------- 1E Proportion of pregnant women who commenced ANC but missed more than one session -----
   async intermediateResult1E(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -421,9 +354,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Ewithdate(
             from,
@@ -433,26 +366,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1E();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Ewithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1E();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Ewithdate(
@@ -466,13 +383,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Ewithdate(
@@ -488,9 +402,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 1E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Ewithdate(
@@ -514,6 +428,8 @@ export class IndicatorService {
   }
   //------- 2A Proportion of pregnant women who were contacted and resumed ANC visits -----
   async intermediateResult1F(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -522,9 +438,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 1F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult1Fwithdate(
             from,
@@ -534,26 +450,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult1F();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult1Fwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult1F();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 1F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult1Fwithdate(
@@ -567,13 +467,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 1F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult1Fwithdate(
@@ -589,7 +486,7 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
         logger.warn("healthfacility");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
@@ -615,6 +512,7 @@ export class IndicatorService {
   }
   //------- 2A  -----
   async intermediateResult2A(
+    filter: string,
     state: string,
     lga: string,
     healthfacility: string,
@@ -623,9 +521,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Awithdate(
             from,
@@ -635,26 +533,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2A();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Awithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2A();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Awithdate(
@@ -668,13 +550,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Awithdate(
@@ -690,9 +569,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Awithdate(
@@ -716,6 +595,8 @@ export class IndicatorService {
   }
   //------- 2B  -----
   async intermediateResult2B(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -724,9 +605,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Bwithdate(
             from,
@@ -736,26 +617,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2B();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Bwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2B();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Bwithdate(
@@ -769,13 +634,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Bwithdate(
@@ -791,9 +653,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2B");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Bwithdate(
@@ -817,6 +679,8 @@ export class IndicatorService {
   }
   //------- 2C  -----
   async intermediateResult2C(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -825,9 +689,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Cwithdate(
             from,
@@ -837,26 +701,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2C();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Cwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2C();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Cwithdate(
@@ -870,13 +718,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Cwithdate(
@@ -892,9 +737,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2C");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Cwithdate(
@@ -918,6 +763,8 @@ export class IndicatorService {
   }
   //------- 2D  -----
   async intermediateResult2D(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -926,9 +773,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Dwithdate(
             from,
@@ -938,26 +785,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2D();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Dwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2D();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Dwithdate(
@@ -971,13 +802,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Dwithdate(
@@ -993,9 +821,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Dwithdate(
@@ -1019,6 +847,8 @@ export class IndicatorService {
   }
   //------- 2E  -----
   async intermediateResult2E(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -1027,9 +857,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Ewithdate(
             from,
@@ -1039,26 +869,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2E();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Ewithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2E();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2E");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Ewithdate(
@@ -1072,11 +886,8 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
         logger.warn("lga");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
@@ -1094,7 +905,7 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
         logger.warn("healthfacility");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
@@ -1120,6 +931,8 @@ export class IndicatorService {
   }
   //------- 2F  -----
   async intermediateResult2F(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -1128,9 +941,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Fwithdate(
             from,
@@ -1140,26 +953,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2F();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Fwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2F();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Fwithdate(
@@ -1173,13 +970,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Fwithdate(
@@ -1195,9 +989,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2F");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Fwithdate(
@@ -1221,6 +1015,8 @@ export class IndicatorService {
   }
   //------- 2G  -----
   async intermediateResult2G(
+    filter: string,
+
     state: string,
     lga: string,
     healthfacility: string,
@@ -1229,9 +1025,9 @@ export class IndicatorService {
   ) {
     try {
       let result;
-      if (state == "" && lga == "" && healthfacility == "") {
+      if (filter == "national") {
         //general
-        logger.warn("general");
+        logger.warn("national 2G");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result = await this.indicatorRepository.IntermediateResult2Gwithdate(
             from,
@@ -1241,26 +1037,10 @@ export class IndicatorService {
           result = await this.indicatorRepository.IntermediateResult2G();
         }
       }
-      if (state == "all" && lga == "" && healthfacility == "") {
-        //general
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          result = await this.indicatorRepository.IntermediateResult2Gwithdate(
-            from,
-            to
-          );
-        } else {
-          result = await this.indicatorRepository.IntermediateResult2G();
-        }
-      }
-      if (
-        state !== "all" &&
-        state !== "" &&
-        (lga == "all" || lga == "") &&
-        healthfacility == ""
-      ) {
+
+      if (filter == "state") {
         //state
-        logger.warn("state");
+        logger.warn("state 2G");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.StateIntermediateResult2Gwithdate(
@@ -1274,13 +1054,10 @@ export class IndicatorService {
           );
         }
       }
-      if (
-        state !== "" &&
-        lga !== "" &&
-        (healthfacility == "all" || healthfacility == "")
-      ) {
+
+      if (filter == "lga") {
         //lga
-        logger.warn("lga");
+        logger.warn("lga 2G");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.LgaIntermediateResult2Gwithdate(
@@ -1296,9 +1073,9 @@ export class IndicatorService {
           );
         }
       }
-      if (state !== "" && lga !== "" && healthfacility !== "") {
+      if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 2G");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult2Gwithdate(

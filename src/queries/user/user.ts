@@ -1,14 +1,14 @@
-function getExistingEmailQuery(email: string) {
+function getExistingEmailQuery() {
   return `
       SELECT * FROM healthpersonnel
-      WHERE email = '${email}'
+      WHERE email = ?
     `;
 }
 
-function getExistingUserQuery(email: any, phone: any) {
+function getExistingUserQuery() {
   return `
       SELECT * FROM healthpersonnel
-      WHERE email = :email AND phone = :phone
+      WHERE email = ? AND phone = ?
     `;
 }
 
@@ -28,16 +28,16 @@ function getAUserByEmail() {
       SELECT * FROM healthpersonnel WHERE email = :email
     `;
 }
-function getAUserByPhone(phone: any) {
+function getAUserByPhone() {
   return `
-      SELECT * FROM healthpersonnel WHERE phone = :phone
+      SELECT * FROM healthpersonnel WHERE phone = ?
     `;
 }
-function getUserPatients(id: any) {
+function getUserPatients() {
   return `
   SELECT p.*
   FROM patients p
-  WHERE p.healthpersonnel_id = :id;  
+  WHERE p.healthpersonnel_id = ?;  
     `;
 }
 function createPatientPersonalInfoQuery() {

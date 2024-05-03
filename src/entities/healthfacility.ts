@@ -21,5 +21,5 @@ export interface healthfacilityuserDTO {
   email: string;
   userid: string;
   password: string;
-  healthfacilityid: string;
+  healthfacility: string;
 }

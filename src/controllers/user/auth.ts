@@ -291,7 +291,7 @@ const signup = async (req, res, next) => {
   try {
     const phonequery = `
     SELECT * FROM healthpersonnel
-    WHERE phone = ?
+    WHERE phone = ?;
   `;
     const phoneresult = await connection.execute(phonequery, [req.body.phone]);
     const phone = phoneresult[0];

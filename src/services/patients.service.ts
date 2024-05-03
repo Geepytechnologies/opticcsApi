@@ -160,11 +160,11 @@ export class PatientService {
     const healthfacility = query.healthfacility || "";
     const from = query.from || "";
     const to = query.to || "";
-    console.log(state);
-    console.log(lga);
-    console.log(healthfacility);
+    const filter = query.filter;
+    logger.info(filter + ": " + "getAllPatientsAndHealthworker");
+
     try {
-      if (Patientconditions.allStates(state, lga, healthfacility)) {
+      if (filter == "state") {
         logger.warn("state");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           const result =
@@ -195,11 +195,13 @@ export class PatientService {
               state
             );
           const data = { result: result, count: count.total_count };
+          console.log(data);
+
           return data;
         }
       }
       //::: lga ::://
-      if (Patientconditions.allLga(state, lga)) {
+      if (filter == "lga") {
         logger.warn("lga");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           const result: any =
@@ -237,7 +239,7 @@ export class PatientService {
           return data;
         }
       }
-      if (Patientconditions.allHealthFacility(state, lga, healthfacility)) {
+      if (filter == "healthfacility") {
         logger.warn("healthfacility");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           const result: any =
@@ -279,8 +281,8 @@ export class PatientService {
           return data;
         }
       }
-      if (Patientconditions.national1(state, lga, healthfacility)) {
-        logger.warn("general");
+      if (filter == "national") {
+        logger.warn("national");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           const result: any =
             await this.patientRepo.getPatientsWithHealthworkerwithdate(
@@ -306,33 +308,7 @@ export class PatientService {
           return data;
         }
       }
-      if (Patientconditions.national2(state, lga, healthfacility)) {
-        logger.warn("general");
-        if (Patientconditions.datesAreNotEmpty(from, to)) {
-          const result: any =
-            await this.patientRepo.getPatientsWithHealthworkerwithdate(
-              pageSize,
-              offset,
-              from,
-              to
-            );
-          const result2 = await this.patientRepo.getPatientCountwithdate(
-            from,
-            to
-          );
-          const data = { result: result, count: result2 };
-          return data;
-        } else {
-          const result: any =
-            await this.patientRepo.getPatientsWithHealthworker(
-              pageSize,
-              offset
-            );
-          const result2 = await this.patientRepo.getPatientCount();
-          const data = { result: result, count: result2 };
-          return data;
-        }
-      }
+
       const result: any = await this.patientRepo.getPatientsWithHealthworker(
         pageSize,
         offset

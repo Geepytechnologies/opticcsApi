@@ -85,7 +85,7 @@ const createHealthfacilityUserAccount = async (
     email,
     userid,
     password,
-    healthfacilityid,
+    healthfacility,
   } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
@@ -101,7 +101,7 @@ const createHealthfacilityUserAccount = async (
     email,
     userid,
     hashedpassword,
-    healthfacilityid,
+    healthfacility,
   ];
   // const { error } = healthfacilityvalidation.createUserAccount(req.body);
   // if (error) {

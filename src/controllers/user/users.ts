@@ -151,15 +151,23 @@ const getAllUsers = async (req, res, next) => {
 const getUserByPhone = async (req, res, next) => {
   const connection = await db.getConnection();
   const { phone } = req.body;
+  const q = `SELECT * FROM healthpersonnel WHERE phone = ?`;
+
   try {
-    const result = await connection.execute(getAUserByPhone(phone));
-    connection.release();
-    res
-      .status(200)
-      .json({ statusCode: "200", message: "successful", result: result[0] });
+    const [result] = await connection.execute(q, [phone]);
+    if (result.length) {
+      res.status(409).json({
+        statusCode: "409",
+        message: "User already Exists",
+        result: null,
+      });
+    } else {
+      res
+        .status(200)
+        .json({ statusCode: "200", message: "successful", result: null });
+    }
   } catch (err) {
     res.status(500).json(err);
-    next(err);
   } finally {
     if (connection) {
       connection.release();
@@ -169,8 +177,9 @@ const getUserByPhone = async (req, res, next) => {
 const getUsersPatients = async (req, res, next) => {
   const connection = await db.getConnection();
   const { id } = req.params;
+  const q = getUserPatients();
   try {
-    const result = await connection.execute(getUserPatients(id));
+    const result = await connection.execute(q, [id]);
     connection.release();
     res
       .status(200)
@@ -735,9 +744,10 @@ const createPatientFirstVisit = (req, res, next) => {
 
 const getUnverifiedworkers = async (req, res) => {
   const connection = await db.getConnection();
+  const healthfacility = req.query.healthfacility;
   try {
-    const q = `SELECT * FROM healthpersonnel WHERE verified = 0`;
-    const result = await connection.execute(q);
+    const q = `SELECT * FROM healthpersonnel WHERE verified = 0 AND healthfacility = ?`;
+    const result = await connection.execute(q, [healthfacility]);
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });

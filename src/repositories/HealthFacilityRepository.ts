@@ -71,7 +71,7 @@ export class HealthFacilityRepository {
     }
   }
   async createHealthFacilityUserAccount(values: healthfacilityuserDTO[]) {
-    const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacilityid)
+    const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacility)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
     try {
       const result = await this.connection.execute(q, values);

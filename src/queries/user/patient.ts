@@ -889,7 +889,7 @@ WHERE
       SELECT patient_id, firstvisit_date AS visit_date FROM firstvisit
     ) AS combined_visits
     GROUP BY patient_id
-  ) AS last_visits ON p.id = last_visits.patient_id WHERE hp.state = ? ORDER BY
+  ) AS last_visits ON p.id = last_visits.patient_id WHERE pi.state = ? ORDER BY
   p.id DESC LIMIT ${pageSize} OFFSET ${offset};`;
   }
   static getPatientsWithHealthworkerFilteredByStateCount() {
@@ -912,7 +912,7 @@ WHERE
           ) AS combined_visits
           GROUP BY patient_id
       ) AS last_visits ON p.id = last_visits.patient_id
-      WHERE hp.state = ?
+      WHERE pi.state = ?
   ) AS subquery;
   `;
   }

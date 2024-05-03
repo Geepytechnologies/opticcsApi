@@ -3454,14 +3454,14 @@ const healthfacilitytestdata = async (req, res) => {
 
 //get all health facilities
 const getAllHealthfacility = async (req, res) => {
-  const { healthfacility } = req.query;
-  const q1 = `SELECT * FROM healthfacilityaccount WHERE healthfacilityname = ?`;
+  const { state } = req.query;
+  const q1 = `SELECT * FROM healthfacilityaccount WHERE state = ?`;
   const q2 = `SELECT * FROM healthfacilityaccount`;
 
   const connection = await db.getConnection();
   try {
-    if (healthfacility) {
-      const [result] = await connection.execute(q1, [healthfacility]);
+    if (state) {
+      const [result] = await connection.execute(q1, [state]);
       res.status(200).json(result);
     } else {
       const [result] = await connection.execute(q2);
