@@ -90,7 +90,7 @@ class HealthFacilityRepository {
     }
     createHealthFacilityUserAccount(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacilityid)
+            const q = `INSERT INTO healthfacilityadmin (ward, staffname,staffid, gender,lga, state, cadre, phone, email,userid ,password,healthfacility)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
             try {
                 const result = yield this.connection.execute(q, values);

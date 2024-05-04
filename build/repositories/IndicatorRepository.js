@@ -811,7 +811,7 @@ class IndicatorRepository {
     IntermediateResult1Ewithdate(from, to) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.IntermediateResult1ENumeratorwithdate();
-            const q2 = indicator_1.IndicatorQuery.IntermediateResult1Ddenominatorwithdate();
+            const q2 = indicator_1.IndicatorQuery.IntermediateResult1Cdenominatorwithdate();
             try {
                 const [numerator] = yield this.connection.execute(q, [from, to]);
                 const [denominator] = yield this.connection.execute(q2, [from, to]);
@@ -826,7 +826,7 @@ class IndicatorRepository {
     StateIntermediateResult1E(state) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.StateIntermediateResult1ENumerator();
-            const q2 = indicator_1.IndicatorQuery.StateIntermediateResult1Ddenominator();
+            const q2 = indicator_1.IndicatorQuery.StateIntermediateResult1Cdenominator();
             try {
                 const [numerator] = yield this.connection.execute(q, [state]);
                 const [denominator] = yield this.connection.execute(q2, [state]);
@@ -841,7 +841,7 @@ class IndicatorRepository {
     StateIntermediateResult1Ewithdate(state, from, to) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.StateIntermediateResult1ENumeratorwithdate();
-            const q2 = indicator_1.IndicatorQuery.StateIntermediateResult1Ddenominatorwithdate();
+            const q2 = indicator_1.IndicatorQuery.StateIntermediateResult1Cdenominatorwithdate();
             try {
                 const [numerator] = yield this.connection.execute(q, [
                     state,
@@ -864,7 +864,7 @@ class IndicatorRepository {
     LgaIntermediateResult1E(state, lga) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.LgaIntermediateResult1ENumerator();
-            const q2 = indicator_1.IndicatorQuery.LgaIntermediateResult1Ddenominator();
+            const q2 = indicator_1.IndicatorQuery.LgaIntermediateResult1Cdenominator();
             try {
                 const [numerator] = yield this.connection.execute(q, [state, lga]);
                 const [denominator] = yield this.connection.execute(q2, [
@@ -882,7 +882,7 @@ class IndicatorRepository {
     LgaIntermediateResult1Ewithdate(state, lga, from, to) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.LgaIntermediateResult1ENumeratorwithdate();
-            const q2 = indicator_1.IndicatorQuery.LgaIntermediateResult1Ddenominatorwithdate();
+            const q2 = indicator_1.IndicatorQuery.LgaIntermediateResult1Cdenominatorwithdate();
             try {
                 const [numerator] = yield this.connection.execute(q, [
                     state,
@@ -907,7 +907,7 @@ class IndicatorRepository {
     HealthfacilityIntermediateResult1E(state, healthfacility) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1ENumerator();
-            const q2 = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1Ddenominator();
+            const q2 = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1Cdenominator();
             try {
                 const [numerator] = yield this.connection.execute(q, [
                     state,
@@ -928,7 +928,7 @@ class IndicatorRepository {
     HealthfacilityIntermediateResult1Ewithdate(state, healthfacility, from, to) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1ENumeratorwithdate();
-            const q2 = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1Ddenominatorwithdate();
+            const q2 = indicator_1.IndicatorQuery.HealthfacilityIntermediateResult1Cdenominatorwithdate();
             try {
                 const [numerator] = yield this.connection.execute(q, [
                     state,

@@ -3543,13 +3543,13 @@ const healthfacilitytestdata = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.healthfacilitytestdata = healthfacilitytestdata;
 //get all health facilities
 const getAllHealthfacility = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { healthfacility } = req.query;
-    const q1 = `SELECT * FROM healthfacilityaccount WHERE healthfacilityname = ?`;
+    const { state } = req.query;
+    const q1 = `SELECT * FROM healthfacilityaccount WHERE state = ?`;
     const q2 = `SELECT * FROM healthfacilityaccount`;
     const connection = yield db_1.default.getConnection();
     try {
-        if (healthfacility) {
-            const [result] = yield connection.execute(q1, [healthfacility]);
+        if (state) {
+            const [result] = yield connection.execute(q1, [state]);
             res.status(200).json(result);
         }
         else {

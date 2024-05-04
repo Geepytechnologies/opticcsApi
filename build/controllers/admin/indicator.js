@@ -23,16 +23,24 @@ class IndicatorController {
             const healthfacility = req.query.healthfacility || "";
             const from = req.query.from || "";
             const to = req.query.to || "";
+            const filter = req.query.filter;
             const connection = yield db_1.default.getConnection();
             const indicatorRepo = new IndicatorRepository_1.IndicatorRepository(connection);
             const indicatorService = new indicator_service_1.IndicatorService(indicatorRepo);
+            console.log({
+                state: state,
+                la: lga,
+                healthfacility: healthfacility,
+                from: from,
+                to: to,
+            });
             try {
-                const intermediateResult1A = yield indicatorService.intermediateResult1A(state, lga, healthfacility, from, to);
-                const intermediateResult1B = yield indicatorService.intermediateResult1B(state, lga, healthfacility, from, to);
-                const intermediateResult1C = yield indicatorService.intermediateResult1C(state, lga, healthfacility, from, to);
-                const intermediateResult1D = yield indicatorService.intermediateResult1D(state, lga, healthfacility, from, to);
-                const intermediateResult1E = yield indicatorService.intermediateResult1E(state, lga, healthfacility, from, to);
-                const intermediateResult1F = yield indicatorService.intermediateResult1F(state, lga, healthfacility, from, to);
+                const intermediateResult1A = yield indicatorService.intermediateResult1A(filter, state, lga, healthfacility, from, to);
+                const intermediateResult1B = yield indicatorService.intermediateResult1B(filter, state, lga, healthfacility, from, to);
+                const intermediateResult1C = yield indicatorService.intermediateResult1C(filter, state, lga, healthfacility, from, to);
+                const intermediateResult1D = yield indicatorService.intermediateResult1D(filter, state, lga, healthfacility, from, to);
+                const intermediateResult1E = yield indicatorService.intermediateResult1E(filter, state, lga, healthfacility, from, to);
+                const intermediateResult1F = yield indicatorService.intermediateResult1F(filter, state, lga, healthfacility, from, to);
                 res.status(200).json({
                     intermediateResult1A,
                     intermediateResult1B,
@@ -58,17 +66,19 @@ class IndicatorController {
             const healthfacility = req.query.healthfacility || "";
             const from = req.query.from || "";
             const to = req.query.to || "";
+            const filter = req.query.filter;
             const connection = yield db_1.default.getConnection();
             const indicatorRepo = new IndicatorRepository_1.IndicatorRepository(connection);
             const indicatorService = new indicator_service_1.IndicatorService(indicatorRepo);
+            console.log(req.body);
             try {
-                const intermediateResult2A = yield indicatorService.intermediateResult2A(state, lga, healthfacility, from, to);
-                const intermediateResult2B = yield indicatorService.intermediateResult2B(state, lga, healthfacility, from, to);
-                const intermediateResult2C = yield indicatorService.intermediateResult2C(state, lga, healthfacility, from, to);
-                const intermediateResult2D = yield indicatorService.intermediateResult2D(state, lga, healthfacility, from, to);
-                const intermediateResult2E = yield indicatorService.intermediateResult2E(state, lga, healthfacility, from, to);
-                const intermediateResult2F = yield indicatorService.intermediateResult2F(state, lga, healthfacility, from, to);
-                const intermediateResult2G = yield indicatorService.intermediateResult2G(state, lga, healthfacility, from, to);
+                const intermediateResult2A = yield indicatorService.intermediateResult2A(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2B = yield indicatorService.intermediateResult2B(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2C = yield indicatorService.intermediateResult2C(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2D = yield indicatorService.intermediateResult2D(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2E = yield indicatorService.intermediateResult2E(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2F = yield indicatorService.intermediateResult2F(filter, state, lga, healthfacility, from, to);
+                const intermediateResult2G = yield indicatorService.intermediateResult2G(filter, state, lga, healthfacility, from, to);
                 res.status(200).json({
                     intermediateResult2A,
                     intermediateResult2B,

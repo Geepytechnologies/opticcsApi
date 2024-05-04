@@ -150,16 +150,24 @@ exports.getAllUsers = getAllUsers;
 const getUserByPhone = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { phone } = req.body;
+    const q = `SELECT * FROM healthpersonnel WHERE phone = ?`;
     try {
-        const result = yield connection.execute((0, user_1.getAUserByPhone)(phone));
-        connection.release();
-        res
-            .status(200)
-            .json({ statusCode: "200", message: "successful", result: result[0] });
+        const [result] = yield connection.execute(q, [phone]);
+        if (result.length) {
+            res.status(409).json({
+                statusCode: "409",
+                message: "User already Exists",
+                result: null,
+            });
+        }
+        else {
+            res
+                .status(200)
+                .json({ statusCode: "200", message: "successful", result: null });
+        }
     }
     catch (err) {
         res.status(500).json(err);
-        next(err);
     }
     finally {
         if (connection) {
@@ -171,8 +179,9 @@ exports.getUserByPhone = getUserByPhone;
 const getUsersPatients = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { id } = req.params;
+    const q = (0, user_1.getUserPatients)();
     try {
-        const result = yield connection.execute((0, user_1.getUserPatients)(id));
+        const result = yield connection.execute(q, [id]);
         connection.release();
         res
             .status(200)
@@ -609,9 +618,10 @@ const createPatientFirstVisit = (req, res, next) => {
 };
 const getUnverifiedworkers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
+    const healthfacility = req.query.healthfacility;
     try {
-        const q = `SELECT * FROM healthpersonnel WHERE verified = 0`;
-        const result = yield connection.execute(q);
+        const q = `SELECT * FROM healthpersonnel WHERE verified = 0 AND healthfacility = ?`;
+        const result = yield connection.execute(q, [healthfacility]);
         res
             .status(200)
             .json({ statusCode: "200", message: "successful", result: result[0] });
@@ -902,13 +912,14 @@ exports.deleteAHealthworkerSchedule = deleteAHealthworkerSchedule;
 const getAllSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     try {
-        const q = `SELECT
+        const q = `
+    SELECT
     schedule.*,
     healthpersonnel.healthFacility,
     healthpersonnel.state, healthpersonnel.lga
-  FROM
-    schedule
-  LEFT JOIN
+    FROM
+      schedule
+    LEFT JOIN
     healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id;      
     `;
         const result = yield connection.execute(q);

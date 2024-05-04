@@ -284,7 +284,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const phonequery = `
     SELECT * FROM healthpersonnel
-    WHERE phone = ?
+    WHERE phone = ?;
   `;
         const phoneresult = yield connection.execute(phonequery, [req.body.phone]);
         const phone = phoneresult[0];

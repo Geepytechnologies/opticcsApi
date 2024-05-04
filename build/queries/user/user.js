@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patientRecordQuery = exports.createPatientFirstvisitObstetricQuery = exports.createPatientFirstvisitDailyhabitQuery = exports.createPatientPersonalInfoQuery = exports.getUserPatients = exports.getAUserByPhone = exports.getAUserByEmail = exports.updateUserRefresh = exports.getRefreshToken = exports.getAllUsers = exports.createUserQuery = exports.getExistingPhoneQuery = exports.getExistingUserQuery = exports.getExistingEmailQuery = void 0;
-function getExistingEmailQuery(email) {
+function getExistingEmailQuery() {
     return `
       SELECT * FROM healthpersonnel
-      WHERE email = '${email}'
+      WHERE email = ?
     `;
 }
 exports.getExistingEmailQuery = getExistingEmailQuery;
-function getExistingUserQuery(email, phone) {
+function getExistingUserQuery() {
     return `
       SELECT * FROM healthpersonnel
-      WHERE email = :email AND phone = :phone
+      WHERE email = ? AND phone = ?
     `;
 }
 exports.getExistingUserQuery = getExistingUserQuery;
@@ -34,17 +34,17 @@ function getAUserByEmail() {
     `;
 }
 exports.getAUserByEmail = getAUserByEmail;
-function getAUserByPhone(phone) {
+function getAUserByPhone() {
     return `
-      SELECT * FROM healthpersonnel WHERE phone = :phone
+      SELECT * FROM healthpersonnel WHERE phone = ?
     `;
 }
 exports.getAUserByPhone = getAUserByPhone;
-function getUserPatients(id) {
+function getUserPatients() {
     return `
   SELECT p.*
   FROM patients p
-  WHERE p.healthpersonnel_id = :id;  
+  WHERE p.healthpersonnel_id = ?;  
     `;
 }
 exports.getUserPatients = getUserPatients;

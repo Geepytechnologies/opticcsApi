@@ -1013,13 +1013,14 @@ const deleteAHealthworkerSchedule = async (req, res, next) => {
 const getAllSchedule = async (req, res) => {
   const connection = await db.getConnection();
   try {
-    const q = `SELECT
+    const q = `
+    SELECT
     schedule.*,
     healthpersonnel.healthFacility,
     healthpersonnel.state, healthpersonnel.lga
-  FROM
-    schedule
-  LEFT JOIN
+    FROM
+      schedule
+    LEFT JOIN
     healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id;      
     `;
     const result = await connection.execute(q);

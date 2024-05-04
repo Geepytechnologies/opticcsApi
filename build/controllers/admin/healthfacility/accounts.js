@@ -66,7 +66,7 @@ const createHealthfacilityAccount = (req, res, next) => __awaiter(void 0, void 0
 });
 exports.createHealthfacilityAccount = createHealthfacilityAccount;
 const createHealthfacilityUserAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ward, staffname, staffid, gender, lga, state, cadre, phone, email, userid, password, healthfacilityid, } = req.body;
+    const { ward, staffname, staffid, gender, lga, state, cadre, phone, email, userid, password, healthfacility, } = req.body;
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
     const values = [
@@ -81,7 +81,7 @@ const createHealthfacilityUserAccount = (req, res, next) => __awaiter(void 0, vo
         email,
         userid,
         hashedpassword,
-        healthfacilityid,
+        healthfacility,
     ];
     // const { error } = healthfacilityvalidation.createUserAccount(req.body);
     // if (error) {

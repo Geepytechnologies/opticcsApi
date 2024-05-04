@@ -150,11 +150,10 @@ class PatientService {
             const healthfacility = query.healthfacility || "";
             const from = query.from || "";
             const to = query.to || "";
-            console.log(state);
-            console.log(lga);
-            console.log(healthfacility);
+            const filter = query.filter;
+            logger_1.default.info(filter + ": " + "getAllPatientsAndHealthworker");
             try {
-                if (patients_1.Patientconditions.allStates(state, lga, healthfacility)) {
+                if (filter == "state") {
                     logger_1.default.warn("state");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
                         const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByStatewithdate(pageSize, offset, state, from, to);
@@ -166,11 +165,12 @@ class PatientService {
                         const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByState(pageSize, offset, state);
                         const [count] = yield this.patientRepo.getPatientsWithHealthworkerFilteredByStateCount(state);
                         const data = { result: result, count: count.total_count };
+                        console.log(data);
                         return data;
                     }
                 }
                 //::: lga ::://
-                if (patients_1.Patientconditions.allLga(state, lga)) {
+                if (filter == "lga") {
                     logger_1.default.warn("lga");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
                         const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByLgawithdate(pageSize, offset, state, lga, from, to);
@@ -185,7 +185,7 @@ class PatientService {
                         return data;
                     }
                 }
-                if (patients_1.Patientconditions.allHealthFacility(state, lga, healthfacility)) {
+                if (filter == "healthfacility") {
                     logger_1.default.warn("healthfacility");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
                         const result = yield this.patientRepo.getPatientsWithHealthworkerFilteredByHealthfacilitywithdate(pageSize, offset, state, lga, healthfacility, from, to);
@@ -200,23 +200,8 @@ class PatientService {
                         return data;
                     }
                 }
-                if (patients_1.Patientconditions.national1(state, lga, healthfacility)) {
-                    logger_1.default.warn("general");
-                    if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
-                        const result = yield this.patientRepo.getPatientsWithHealthworkerwithdate(pageSize, offset, from, to);
-                        const result2 = yield this.patientRepo.getPatientCountwithdate(from, to);
-                        const data = { result: result, count: result2 };
-                        return data;
-                    }
-                    else {
-                        const result = yield this.patientRepo.getPatientsWithHealthworker(pageSize, offset);
-                        const result2 = yield this.patientRepo.getPatientCount();
-                        const data = { result: result, count: result2 };
-                        return data;
-                    }
-                }
-                if (patients_1.Patientconditions.national2(state, lga, healthfacility)) {
-                    logger_1.default.warn("general");
+                if (filter == "national") {
+                    logger_1.default.warn("national");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
                         const result = yield this.patientRepo.getPatientsWithHealthworkerwithdate(pageSize, offset, from, to);
                         const result2 = yield this.patientRepo.getPatientCountwithdate(from, to);
