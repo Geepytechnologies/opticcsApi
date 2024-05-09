@@ -6,6 +6,7 @@ import { HealthFacilityRepository } from "../../../repositories/HealthFacilityRe
 import { healthfacilityvalidation } from "../../../validations/healthfacility";
 import { HealthPersonnelRepository } from "../../../repositories/HealthPersonnelRepository";
 import BaseRepository from "../../../repositories/BaseRepository";
+import { HealthfacilityService } from "../../../services/healthfacility.service";
 
 const createHealthfacilityAccount = async (
   req: Request,
@@ -205,6 +206,7 @@ const getHealthfacilityAccounts = async (
     res.status(500).json(error);
   }
 };
+
 const getHealthfacilityAccountsForLGA = async (
   req: any,
   res: Response,
@@ -237,6 +239,41 @@ const getHealthfacilityUserAccounts = async (
     res.status(500).json(error);
   }
 };
+const getAllHealthfacility = async (req: any, res: Response) => {
+  const page = req.query.page || 1;
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+  const state = req.query.state || "";
+  const lga = req.query.lga || "";
+  const healthfacility = req.query.healthfacility || "";
+  const from = req.query.from || "";
+  const to = req.query.to || "";
+  const filter = req.query.filter;
+  console.log("filter: " + filter);
+  const connection = await db.getConnection();
+  const hfRepo = new HealthFacilityRepository(connection);
+  const hfService = new HealthfacilityService(hfRepo);
+  try {
+    const result: any = await hfService.getAllHealthfacility(
+      pageSize,
+      offset,
+      filter,
+      state,
+      lga,
+      healthfacility,
+      from,
+      to
+    );
+    res.status(200).json({ result: result.result, count: result.count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 
 export {
   createHealthfacilityAccount,
@@ -246,4 +283,5 @@ export {
   getHealthfacilityUserAccounts,
   getHealthfacilityAccountsFiltered,
   getHealthfacilityAccountsForLGA,
+  getAllHealthfacility,
 };

@@ -24,6 +24,7 @@ import {
   patientscheduledvisitmissedsms,
   getMissedSchedulewithWorker,
   getAPatientSchedule,
+  getAllUsersFiltered,
 } from "../../controllers/user/users";
 import {
   verifyToken,
@@ -87,6 +88,8 @@ router.get("/find/patients/:id", getUsersPatients);
 
 //get all users
 router.get("/find", getAllUsers);
+//get all users filter
+router.get("/find/filtered", getAllUsersFiltered);
 
 //get unverified users
 router.get("/find/unverified", getUnverifiedworkers);

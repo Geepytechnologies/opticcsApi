@@ -4,6 +4,7 @@ import {
   createStateUserAccount,
   deleteState,
   getAllStates,
+  getAllStatesWithFilter,
   getAllStateUsers,
 } from "../../../controllers/admin/state/accounts";
 import {
@@ -21,6 +22,8 @@ router.post("/", createStateAccount);
 router.delete("/delete/:id", deleteState);
 
 router.get("/find", getAllStates);
+
+router.get("/find/filtered", getAllStatesWithFilter);
 
 router.get("/find/users", getAllStateUsers);
 

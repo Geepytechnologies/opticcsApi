@@ -1287,7 +1287,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2B(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2BNumerator();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.StateIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -1305,7 +1305,7 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.StateIntermediateResult2BNumeratorwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.StateIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1326,7 +1326,7 @@ export class IndicatorRepository {
   }
   async LgaIntermediateResult2B(state: string, lga: string) {
     const q = IntermediateResult2Query.LgaIntermediateResult2B();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.LgaIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state, lga]);
       const [denominator]: any = await this.connection.execute(q2, [
@@ -1347,7 +1347,7 @@ export class IndicatorRepository {
     to: string
   ) {
     const q = IntermediateResult2Query.LgaIntermediateResult2Bwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.LgaIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1373,7 +1373,7 @@ export class IndicatorRepository {
     healthfacility: string
   ) {
     const q = IntermediateResult2Query.HealthfacilityIntermediateResult2B();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.HealthfacilityIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1398,7 +1398,8 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.HealthfacilityIntermediateResult2Bwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 =
+      IndicatorQuery.HealthfacilityIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1435,7 +1436,7 @@ export class IndicatorRepository {
   }
   async IntermediateResult2Cwithdate(from: string, to: string) {
     const q = IntermediateResult2Query.IntermediateResult2CNumeratorwithdate();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 = IntermediateResult2Query.IntermediateResult2BNumeratorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [from, to]);
       const [denominator]: any = await this.connection.execute(q2, [from, to]);
@@ -1448,7 +1449,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2C(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2CNumerator();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 = IntermediateResult2Query.StateIntermediateResult2BNumerator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -1466,7 +1467,8 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.StateIntermediateResult2CNumeratorwithdate();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 =
+      IntermediateResult2Query.StateIntermediateResult2BNumeratorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1487,7 +1489,7 @@ export class IndicatorRepository {
   }
   async LgaIntermediateResult2C(state: string, lga: string) {
     const q = IntermediateResult2Query.LgaIntermediateResult2C();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 = IntermediateResult2Query.LgaIntermediateResult2B();
     try {
       const [numerator]: any = await this.connection.execute(q, [state, lga]);
       const [denominator]: any = await this.connection.execute(q2, [
@@ -1508,7 +1510,7 @@ export class IndicatorRepository {
     to: string
   ) {
     const q = IntermediateResult2Query.LgaIntermediateResult2Cwithdate();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 = IntermediateResult2Query.LgaIntermediateResult2Bwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1534,7 +1536,7 @@ export class IndicatorRepository {
     healthfacility: string
   ) {
     const q = IntermediateResult2Query.HealthfacilityIntermediateResult2C();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 = IntermediateResult2Query.HealthfacilityIntermediateResult2B();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1559,7 +1561,8 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.HealthfacilityIntermediateResult2Cwithdate();
-    const q2 = IntermediateResult2Query.IntermediateResult2BNumerator();
+    const q2 =
+      IntermediateResult2Query.HealthfacilityIntermediateResult2Bwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1596,7 +1599,7 @@ export class IndicatorRepository {
   }
   async IntermediateResult2Dwithdate(from: string, to: string) {
     const q = IntermediateResult2Query.IntermediateResult2DNumeratorwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.IntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [from, to]);
       const [denominator]: any = await this.connection.execute(q2, [from, to]);
@@ -1609,7 +1612,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2D(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2DNumerator();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.StateIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -1627,7 +1630,7 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.StateIntermediateResult2DNumeratorwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.StateIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1648,7 +1651,7 @@ export class IndicatorRepository {
   }
   async LgaIntermediateResult2D(state: string, lga: string) {
     const q = IntermediateResult2Query.LgaIntermediateResult2D();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.LgaIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state, lga]);
       const [denominator]: any = await this.connection.execute(q2, [
@@ -1669,7 +1672,7 @@ export class IndicatorRepository {
     to: string
   ) {
     const q = IntermediateResult2Query.LgaIntermediateResult2Dwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.LgaIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1695,7 +1698,7 @@ export class IndicatorRepository {
     healthfacility: string
   ) {
     const q = IntermediateResult2Query.HealthfacilityIntermediateResult2D();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 = IndicatorQuery.HealthfacilityIntermediateResult1Cdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1720,7 +1723,8 @@ export class IndicatorRepository {
   ) {
     const q =
       IntermediateResult2Query.HealthfacilityIntermediateResult2Dwithdate();
-    const q2 = IndicatorQuery.IntermediateResult1Cdenominator();
+    const q2 =
+      IndicatorQuery.HealthfacilityIntermediateResult1Cdenominatorwithdate();
     try {
       const [numerator]: any = await this.connection.execute(q, [
         state,
@@ -1771,7 +1775,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2E(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2ENumerator();
-    const q2 = IntermediateResult2Query.StateIntermediateResult2ENumerator();
+    const q2 = IntermediateResult2Query.StateIntermediateResult2Edenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -1937,7 +1941,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2F(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2FNumerator();
-    const q2 = IntermediateResult2Query.StateIntermediateResult2FNumerator();
+    const q2 = IntermediateResult2Query.StateIntermediateResult2Fdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -1977,7 +1981,7 @@ export class IndicatorRepository {
   }
   async LgaIntermediateResult2F(state: string, lga: string) {
     const q = IntermediateResult2Query.LgaIntermediateResult2F();
-    const q2 = IntermediateResult2Query.LgaIntermediateResult2F();
+    const q2 = IntermediateResult2Query.LgaIntermediateResult2Fdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state, lga]);
       const [denominator]: any = await this.connection.execute(q2, [
@@ -2103,7 +2107,7 @@ export class IndicatorRepository {
   }
   async StateIntermediateResult2G(state: string) {
     const q = IntermediateResult2Query.StateIntermediateResult2GNumerator();
-    const q2 = IntermediateResult2Query.StateIntermediateResult2GNumerator();
+    const q2 = IntermediateResult2Query.StateIntermediateResult2Gdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state]);
       const [denominator]: any = await this.connection.execute(q2, [state]);
@@ -2143,7 +2147,7 @@ export class IndicatorRepository {
   }
   async LgaIntermediateResult2G(state: string, lga: string) {
     const q = IntermediateResult2Query.LgaIntermediateResult2G();
-    const q2 = IntermediateResult2Query.LgaIntermediateResult2G();
+    const q2 = IntermediateResult2Query.LgaIntermediateResult2Gdenominator();
     try {
       const [numerator]: any = await this.connection.execute(q, [state, lga]);
       const [denominator]: any = await this.connection.execute(q2, [

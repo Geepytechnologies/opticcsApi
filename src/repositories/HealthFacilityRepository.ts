@@ -6,6 +6,7 @@ import {
 } from "../entities/healthfacility";
 import logger from "../logger";
 import BaseRepository from "./BaseRepository";
+import { HealthfacilityQueries } from "../queries/admin/healthfacility";
 
 export class HealthFacilityRepository {
   private connection: PoolConnection;
@@ -121,6 +122,169 @@ export class HealthFacilityRepository {
       }
     }
   }
+  async getAllHealthfacilityNational(pageSize: number, offset: number) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityNational(
+        pageSize,
+        offset
+      );
+      const [result] = await this.connection.execute(q);
+      return result;
+    } catch (err: any) {
+      console.log(err);
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityNationalCount() {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityNationalCount();
+      const [result] = await this.connection.execute(q);
+      return result;
+    } catch (err: any) {
+      console.log(err);
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityNationalwithdate(
+    pageSize: number,
+    offset: number,
+    from: string,
+    to: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityNationalwithdate(
+        pageSize,
+        offset
+      );
+      const [result] = await this.connection.execute(q, [from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityNationalwithdateCount(from: string, to: string) {
+    try {
+      const q =
+        HealthfacilityQueries.getAllHealthfacilityNationalwithdateCount();
+      const [result] = await this.connection.execute(q, [from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityState(
+    pageSize: number,
+    offset: number,
+    state: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityState(
+        pageSize,
+        offset
+      );
+      const [result] = await this.connection.execute(q, [state]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityStateCount(state: string) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityStateCount();
+      const [result] = await this.connection.execute(q, [state]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityStatewithdate(
+    pageSize: number,
+    offset: number,
+    state: string,
+    from: string,
+    to: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityStatewithdate(
+        pageSize,
+        offset
+      );
+      const [result] = await this.connection.execute(q, [state, from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityStatewithdateCount(
+    state: string,
+    from: string,
+    to: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityStatewithdateCount();
+      const [result] = await this.connection.execute(q, [state, from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityLga(
+    pageSize: number,
+    offset: number,
+    state: string,
+    lga: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityLga(pageSize, offset);
+      const [result] = await this.connection.execute(q, [state, lga]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityLgaCount(state: string, lga: string) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityLgaCount();
+      const [result] = await this.connection.execute(q, [state, lga]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityLgawithdate(
+    pageSize: number,
+    offset: number,
+    state: string,
+    lga: string,
+    from: string,
+    to: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityLgawithdate(
+        pageSize,
+        offset
+      );
+      const [result] = await this.connection.execute(q, [state, lga, from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+  async getAllHealthfacilityLgawithdateCount(
+    state: string,
+    lga: string,
+    from: string,
+    to: string
+  ) {
+    try {
+      const q = HealthfacilityQueries.getAllHealthfacilityLgawithdateCount();
+      const [result] = await this.connection.execute(q, [state, lga, from, to]);
+      return result;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+
   async getHealthFacilityAccountsForLGA(lga: string) {
     const q = `SELECT * FROM healthfacilityaccount WHERE lga = ?`;
 

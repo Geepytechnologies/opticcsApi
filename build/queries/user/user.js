@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patientRecordQuery = exports.createPatientFirstvisitObstetricQuery = exports.createPatientFirstvisitDailyhabitQuery = exports.createPatientPersonalInfoQuery = exports.getUserPatients = exports.getAUserByPhone = exports.getAUserByEmail = exports.updateUserRefresh = exports.getRefreshToken = exports.getAllUsers = exports.createUserQuery = exports.getExistingPhoneQuery = exports.getExistingUserQuery = exports.getExistingEmailQuery = void 0;
+exports.patientRecordQuery = exports.createPatientFirstvisitObstetricQuery = exports.createPatientFirstvisitDailyhabitQuery = exports.createPatientPersonalInfoQuery = exports.getUserPatients = exports.getAUserByPhone = exports.getAUserByEmail = exports.updateUserRefresh = exports.getRefreshToken = exports.getAllUsers = exports.createUserQuery = exports.getExistingPhoneQuery = exports.getExistingUserQuery = exports.getExistingEmailQuery = exports.UserQueries = void 0;
 function getExistingEmailQuery() {
     return `
       SELECT * FROM healthpersonnel
@@ -157,3 +157,65 @@ function createUserQuery() {
   VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 }
 exports.createUserQuery = createUserQuery;
+class UserQueries {
+    static getAllUsersNational(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersNationalCount() {
+        return `SELECT count(*) as total FROM healthpersonnel`;
+    }
+    static getAllUsersNationalwithdate(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel AND DATE(createdat) BETWEEN ? AND ? ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersNationalwithdateCount() {
+        return `SELECT count(*) FROM healthpersonnel AND DATE(createdat) BETWEEN ? AND ?`;
+    }
+    //state
+    static getAllUsersState(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ?  ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersStateCount() {
+        return `SELECT count(*) as total FROM healthpersonnel WHERE state = ?`;
+    }
+    static getAllUsersStatewithdate(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ? AND DATE(createdat) BETWEEN ? AND ? ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersStatewithdateCount() {
+        return `SELECT count(*) FROM healthpersonnel WHERE state = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    }
+    //lga
+    static getAllUsersLga(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ? AND lga = ? ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersLgaCount() {
+        return `SELECT count(*) as total FROM healthpersonnel WHERE state = ? AND lga = ?`;
+    }
+    static getAllUsersLgawithdate(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ? AND lga = ? AND DATE(createdat) BETWEEN ? AND ? ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersLgawithdateCount() {
+        return `SELECT count(*) FROM healthpersonnel WHERE state = ? AND lga = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    }
+    //healthfacility
+    static getAllUsersHealthfacility(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ? AND halthfacility = ? ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersHealthfacilityCount() {
+        return `SELECT count(*) as total FROM healthpersonnel WHERE state = ? AND healthfacility = ?`;
+    }
+    static getAllUsersHealthfacilitywithdate(pageSize, offset) {
+        return `SELECT * FROM healthpersonnel WHERE state = ? AND halthfacility = ? AND DATE(createdat) BETWEEN ? AND ?  ORDER BY
+    id DESC LIMIT ${pageSize} OFFSET ${offset}`;
+    }
+    static getAllUsersHealthfacilitywithdateCount() {
+        return `SELECT count(*) FROM healthpersonnel WHERE state = ? AND healthfacility = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    }
+}
+exports.UserQueries = UserQueries;

@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPatient = exports.createPatientFirstvisitPersonalInfo = exports.getUsersPatients = exports.getUserByPhone = exports.createATest = exports.createDeliveryReport = exports.getMissedSchedulewithWorker = exports.getAPatientSchedule = exports.getAllUpcomingSchedule = exports.getAllFlaggedSchedule = exports.getAllMissedSchedule = exports.getAllCompletedSchedule = exports.deleteAHealthworkerSchedule = exports.updateHealthworkerScheduleCompleted = exports.getAllSchedule = exports.getAllHealthworkersSchedule = exports.createHealthworkerSchedule = exports.createASchedule = exports.getUnverifiedworkers = exports.getAllUsers = exports.sendAMessageToWorker = exports.getHealthworkerInfo = exports.patientscheduledvisitmissedsms = exports.patientscheduledvisitremindersms = exports.patientscheduledvisitsms = void 0;
+exports.createPatient = exports.createPatientFirstvisitPersonalInfo = exports.getUsersPatients = exports.getUserByPhone = exports.createATest = exports.createDeliveryReport = exports.getMissedSchedulewithWorker = exports.getAPatientSchedule = exports.getAllUpcomingSchedule = exports.getAllFlaggedSchedule = exports.getAllMissedSchedule = exports.getAllCompletedSchedule = exports.deleteAHealthworkerSchedule = exports.updateHealthworkerScheduleCompleted = exports.getAllSchedule = exports.getAllHealthworkersSchedule = exports.createHealthworkerSchedule = exports.createASchedule = exports.getUnverifiedworkers = exports.getAllUsersFiltered = exports.getAllUsers = exports.sendAMessageToWorker = exports.getHealthworkerInfo = exports.patientscheduledvisitmissedsms = exports.patientscheduledvisitremindersms = exports.patientscheduledvisitsms = void 0;
 //@ts-nocheck
 const db_1 = __importDefault(require("../../config/db"));
 const user_1 = require("../../queries/user/user");
 const session_1 = require("../session");
+const user_service_1 = require("../../services/user.service");
 // send users a message
 const patientscheduledvisitsms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { mobile_number, firstname, lastname, day, date, healthfacilityname } = req.body;
@@ -147,6 +148,32 @@ const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllUsers = getAllUsers;
+const getAllUsersFiltered = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = req.query.page || 1;
+    const pageSize = 20;
+    const offset = (page - 1) * pageSize;
+    const state = req.query.state || "";
+    const lga = req.query.lga || "";
+    const healthfacility = req.query.healthfacility || "";
+    const from = req.query.from || "";
+    const to = req.query.to || "";
+    const filter = req.query.filter;
+    const connection = yield db_1.default.getConnection();
+    const userService = new user_service_1.UserService(connection);
+    try {
+        const result = yield userService.getAllUsers(pageSize, offset, filter, state, lga, healthfacility, from, to);
+        res.status(200).json({ result: result.result, count: result.count });
+    }
+    catch (err) {
+        res.status(500).json({ statusCode: "500", error: err });
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.getAllUsersFiltered = getAllUsersFiltered;
 const getUserByPhone = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { phone } = req.body;

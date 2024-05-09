@@ -1,0 +1,7 @@
+`CREATE TABLE wards (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    state VARCHAR(255),
+    lga VARCHAR(255),
+    ward VARCHAR(255),
+    createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`;

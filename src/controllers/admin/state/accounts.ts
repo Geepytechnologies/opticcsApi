@@ -2,6 +2,8 @@
 import db from "../../../config/db";
 import bcrypt from "bcryptjs";
 import logger from "../../../logger";
+import { StateRepository } from "../../../repositories/StateRepository";
+import { StateService } from "../../../services/state.service";
 
 const createStateAccount = async (req, res, next) => {
   const { state, boardname, stateid, officeaddress, phone, email } = req.body;
@@ -146,6 +148,42 @@ const getAllStates = async (req, res) => {
   }
 };
 
+const getAllStatesWithFilter = async (req, res) => {
+  const page = req.query.page || 1;
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+  const state = req.query.state || "";
+  const lga = req.query.lga || "";
+  const healthfacility = req.query.healthfacility || "";
+  const from = req.query.from || "";
+  const to = req.query.to || "";
+  const filter = req.query.filter;
+  console.log(filter + ": " + "filter");
+  const connection = await db.getConnection();
+  const stateRepo = new StateRepository(connection);
+  const stateService = new StateService(stateRepo);
+  try {
+    const result: any = await stateService.getAllStates(
+      pageSize,
+      offset,
+      filter,
+      state,
+      lga,
+      healthfacility,
+      from,
+      to
+    );
+    res.status(200).json({ result: result.result, count: result.count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 const deleteState = async (req, res) => {
   const connection = await db.getConnection();
   const { id } = req.params;
@@ -187,6 +225,7 @@ export {
   createStateAccount,
   createStateUserAccount,
   getAllStates,
+  getAllStatesWithFilter,
   getAllStateUsers,
   deleteState,
 };

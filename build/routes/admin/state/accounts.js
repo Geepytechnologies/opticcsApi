@@ -11,6 +11,7 @@ const router = express_1.default.Router();
 router.post("/", accounts_1.createStateAccount);
 router.delete("/delete/:id", accounts_1.deleteState);
 router.get("/find", accounts_1.getAllStates);
+router.get("/find/filtered", accounts_1.getAllStatesWithFilter);
 router.get("/find/users", accounts_1.getAllStateUsers);
 router.get("/refresh", auth_1.handleRefreshToken);
 router.get("/generateuser", auth_1.generatestatedetails);

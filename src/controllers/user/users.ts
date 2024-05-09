@@ -9,6 +9,7 @@ import {
 } from "../../queries/user/user";
 import request from "request";
 import { updateSessionSchedule } from "../session";
+import { UserService } from "../../services/user.service";
 
 // send users a message
 const patientscheduledvisitsms = async (req, res) => {
@@ -139,6 +140,38 @@ const getAllUsers = async (req, res, next) => {
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (err) {
+    res.status(500).json({ statusCode: "500", error: err });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+const getAllUsersFiltered = async (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+  const state = req.query.state || "";
+  const lga = req.query.lga || "";
+  const healthfacility = req.query.healthfacility || "";
+  const from = req.query.from || "";
+  const to = req.query.to || "";
+  const filter = req.query.filter;
+  const connection = await db.getConnection();
+  const userService = new UserService(connection);
+  try {
+    const result = await userService.getAllUsers(
+      pageSize,
+      offset,
+      filter,
+      state,
+      lga,
+      healthfacility,
+      from,
+      to
+    );
+    res.status(200).json({ result: result.result, count: result.count });
   } catch (err) {
     res.status(500).json({ statusCode: "500", error: err });
   } finally {
@@ -1045,6 +1078,7 @@ export {
   getHealthworkerInfo,
   sendAMessageToWorker,
   getAllUsers,
+  getAllUsersFiltered,
   getUnverifiedworkers,
   createASchedule,
   createHealthworkerSchedule,

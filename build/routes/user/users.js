@@ -33,6 +33,8 @@ router.get("/find/patients/:id", users_1.getUsersPatients);
 // router.post("/find/one", getUserByProp);
 //get all users
 router.get("/find", users_1.getAllUsers);
+//get all users filter
+router.get("/find/filtered", users_1.getAllUsersFiltered);
 //get unverified users
 router.get("/find/unverified", users_1.getUnverifiedworkers);
 // create a cadre

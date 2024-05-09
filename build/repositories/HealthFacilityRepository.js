@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HealthFacilityRepository = void 0;
 const logger_1 = __importDefault(require("../logger"));
+const healthfacility_1 = require("../queries/admin/healthfacility");
 class HealthFacilityRepository {
     constructor(connection) {
         this.connection = connection;
@@ -140,6 +141,152 @@ class HealthFacilityRepository {
                 if (this.connection) {
                     this.connection.release();
                 }
+            }
+        });
+    }
+    getAllHealthfacilityNational(pageSize, offset) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityNational(pageSize, offset);
+                const [result] = yield this.connection.execute(q);
+                return result;
+            }
+            catch (err) {
+                console.log(err);
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityNationalCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityNationalCount();
+                const [result] = yield this.connection.execute(q);
+                return result;
+            }
+            catch (err) {
+                console.log(err);
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityNationalwithdate(pageSize, offset, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityNationalwithdate(pageSize, offset);
+                const [result] = yield this.connection.execute(q, [from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityNationalwithdateCount(from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityNationalwithdateCount();
+                const [result] = yield this.connection.execute(q, [from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityState(pageSize, offset, state) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityState(pageSize, offset);
+                const [result] = yield this.connection.execute(q, [state]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityStateCount(state) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityStateCount();
+                const [result] = yield this.connection.execute(q, [state]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityStatewithdate(pageSize, offset, state, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityStatewithdate(pageSize, offset);
+                const [result] = yield this.connection.execute(q, [state, from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityStatewithdateCount(state, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityStatewithdateCount();
+                const [result] = yield this.connection.execute(q, [state, from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityLga(pageSize, offset, state, lga) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityLga(pageSize, offset);
+                const [result] = yield this.connection.execute(q, [state, lga]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityLgaCount(state, lga) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityLgaCount();
+                const [result] = yield this.connection.execute(q, [state, lga]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityLgawithdate(pageSize, offset, state, lga, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityLgawithdate(pageSize, offset);
+                const [result] = yield this.connection.execute(q, [state, lga, from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        });
+    }
+    getAllHealthfacilityLgawithdateCount(state, lga, from, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = healthfacility_1.HealthfacilityQueries.getAllHealthfacilityLgawithdateCount();
+                const [result] = yield this.connection.execute(q, [state, lga, from, to]);
+                return result;
+            }
+            catch (err) {
+                throw new Error(err);
             }
         });
     }

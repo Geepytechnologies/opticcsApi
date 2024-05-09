@@ -12,11 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteState = exports.getAllStateUsers = exports.getAllStates = exports.createStateUserAccount = exports.createStateAccount = void 0;
+exports.deleteState = exports.getAllStateUsers = exports.getAllStatesWithFilter = exports.getAllStates = exports.createStateUserAccount = exports.createStateAccount = void 0;
 //@ts-nocheck
 const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = __importDefault(require("../../../logger"));
+const StateRepository_1 = require("../../../repositories/StateRepository");
+const state_service_1 = require("../../../services/state.service");
 const createStateAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { state, boardname, stateid, officeaddress, phone, email } = req.body;
     const values = [state, boardname, stateid, officeaddress, phone, email];
@@ -161,6 +163,35 @@ const getAllStates = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getAllStates = getAllStates;
+const getAllStatesWithFilter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = req.query.page || 1;
+    const pageSize = 20;
+    const offset = (page - 1) * pageSize;
+    const state = req.query.state || "";
+    const lga = req.query.lga || "";
+    const healthfacility = req.query.healthfacility || "";
+    const from = req.query.from || "";
+    const to = req.query.to || "";
+    const filter = req.query.filter;
+    console.log(filter + ": " + "filter");
+    const connection = yield db_1.default.getConnection();
+    const stateRepo = new StateRepository_1.StateRepository(connection);
+    const stateService = new state_service_1.StateService(stateRepo);
+    try {
+        const result = yield stateService.getAllStates(pageSize, offset, filter, state, lga, healthfacility, from, to);
+        res.status(200).json({ result: result.result, count: result.count });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.getAllStatesWithFilter = getAllStatesWithFilter;
 const deleteState = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { id } = req.params;
