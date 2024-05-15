@@ -1,5 +1,28 @@
 "use strict";
 //@ts-nocheck
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,7 +64,8 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const logger_1 = __importDefault(require("./logger"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
-// require("./services/missedschedule");
+const path = __importStar(require("path"));
+// ScheduleReminder.start();
 // require("./services/reminderschedule");
 // app.post("/sendotp2", (req: Request, res: Response) => {
 //   const options = {
@@ -129,6 +153,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express_1.default.static("public"));
+app.use(express_1.default.static(path.join(__dirname, "/dist")));
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)(corsOptions));
@@ -151,17 +176,17 @@ app.use("/api/admin/healthfacility/data", data_4.default);
 app.use("/api/admin/users", users_1.default);
 app.use("/api/refresh", refreshToken_1.default);
 app.use("/api/session", index_1.default);
-app.get("/", (req, res) => {
-    const token = "geepy";
-    res.cookie("nationaltoken", token, {
-        httpOnly: false,
-        secure: true,
-        sameSite: "none",
-        // domain: ".vercel.app",
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-    });
-    res.send("Home page");
-});
+// app.get("/", (req: Request, res: Response) => {
+//   const token = "geepy";
+//   res.cookie("nationaltoken", token, {
+//     httpOnly: false,
+//     secure: true,
+//     sameSite: "none",
+//     // domain: ".vercel.app",
+//     maxAge: 10 * 24 * 60 * 60 * 1000,
+//   });
+//   res.send("Home page");
+// });
 app.get("/test", (req, res) => {
     const q = `SELECT * FROM healthpersonnel`;
     db_1.default.query(q, (err, result) => {
@@ -212,7 +237,11 @@ app.get("/liveuser", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) { }
 }));
+app.get("*", (req, res) => {
+    res.sendFile(__dirname + "../dist/index.html");
+});
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     logger_1.default.info("Backend server is up and running");
 });
+// require("./services/missedschedule.service");

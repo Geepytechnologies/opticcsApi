@@ -562,7 +562,6 @@ WHERE
     try {
         yield connection.beginTransaction();
         const createdrecord = yield personalRecord();
-        console.log("createdrecord: ", createdrecord);
         const personalInformation_id = createdrecord[0].insertId;
         const patientcreate = yield createpatient(personalInformation_id);
         const patientID = patientcreate[0].insertId;
@@ -589,11 +588,6 @@ WHERE
     }
     catch (error) {
         console.log("error from creating patient", error);
-        const errorResponse = {
-            statusCode: error.statusCode || 500,
-            error: Object.assign({}, error), // Convert error to a plain object
-        };
-        // res.status(500).json(error.message);
         if (connection) {
             try {
                 yield connection.rollback();
@@ -605,7 +599,7 @@ WHERE
         }
         res.status(500).json({
             statusCode: error.statusCode || 500,
-            error: error.message,
+            error: "Something went wrong",
         });
     }
     finally {
@@ -681,8 +675,8 @@ WHERE
         }
     }
     catch (err) {
-        console.log("the error: ", err);
-        res.status(500).json(err);
+        logger_1.default.info("error from request:getPatientRecord" + " :" + err);
+        res.status(500).json("something went wrong");
     }
     finally {
         if (connection) {
@@ -1267,10 +1261,10 @@ const createPatientEveryVisit = (req, res, next) => __awaiter(void 0, void 0, vo
     catch (err) {
         res.status(500).json({
             statusCode: "500",
-            message: "Failed to create return visit for patient",
+            message: "Something went wrong",
             error: err,
         });
-        console.error(err);
+        logger_1.default.error("error from return visit" + " :" + err);
     }
     finally {
         if (connection) {
@@ -1437,7 +1431,8 @@ const getPatientFirstVisit = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json({ statusCode: "200", result: result[0] });
     }
     catch (error) {
-        res.status(500).json(error);
+        logger_1.default.error("error from getPatientFirstVisit" + " :" + error);
+        res.status(500).json("something went wrong");
     }
     finally {
         if (connection) {
@@ -1458,7 +1453,8 @@ const getPatientReturnVisit = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(200).json(result[0]);
     }
     catch (error) {
-        res.status(500).json(error);
+        logger_1.default.error("error from getPatientReturnVisit" + " :" + error);
+        res.status(500).json("Something went wrong");
     }
     finally {
         if (connection) {
@@ -1477,7 +1473,8 @@ const getAllPatientReturnVisit = (req, res) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         connection.release();
-        res.status(500).json(error);
+        logger_1.default.error("error from getAllPatientReturnVisit" + " :" + error);
+        res.status(500).json("Something went wrong");
     }
     finally {
         if (connection) {
@@ -1516,8 +1513,8 @@ const getAllPatientFirstVisits = (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(200).json({ statusCode: "200", result: result[0] });
     }
     catch (error) {
-        connection.release();
-        res.status(500).json(error);
+        logger_1.default.error("error from getAllPatientFirstVisits" + " :" + error);
+        res.status(500).json("Something went wrong");
     }
     finally {
         if (connection) {
@@ -1622,7 +1619,10 @@ const createTest = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (connection) {
             connection.rollback();
         }
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from createTest" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1642,7 +1642,8 @@ const getAPatientsTest = (req, res) => __awaiter(void 0, void 0, void 0, functio
             .json({ statusCode: "200", message: "successful", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", error: error });
+        logger_1.default.error("error from getAPatientsTest" + " :" + error);
+        res.status(500).json({ statusCode: "500", error: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1671,7 +1672,8 @@ const getAllTests = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             .json({ statusCode: "200", message: "successful", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", error: error });
+        logger_1.default.error("error from getAllTests" + " :" + error);
+        res.status(500).json({ statusCode: "500", error: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1692,7 +1694,8 @@ const getATestByAUser = (req, res) => __awaiter(void 0, void 0, void 0, function
             .json({ statusCode: "200", message: "successful", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", error: error });
+        logger_1.default.error("error from getAllTests" + " :" + error);
+        res.status(500).json({ statusCode: "500", error: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1736,7 +1739,6 @@ const updateTest = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     ;`;
         const q2 = `SELECT * FROM testresult where id = ?`;
         const result = yield connection.execute(q, values);
-        // const result2 = await connection.execute(q2, [req.params.id]);
         res
             .status(200)
             .json({ statusCode: "200", message: "succcessfull", result: result[0] });
@@ -1745,7 +1747,8 @@ const updateTest = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (connection) {
             connection.rollback();
         }
-        res.status(500).json(error);
+        logger_1.default.error("error from updateTest" + " :" + error);
+        res.status(500).json("Something went wrong");
     }
     finally {
         if (connection) {
@@ -1793,7 +1796,10 @@ const createdeliveryreport = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (connection) {
             connection.rollback();
         }
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from createdeliveryreport" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1810,7 +1816,10 @@ const getAllDeliveryreports = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(200).json({ statusCode: "200", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from getAlldeliveryreports" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1828,7 +1837,10 @@ const getAllDeliveryreportsByAWorker = (req, res) => __awaiter(void 0, void 0, v
         res.status(200).json({ statusCode: "200", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from getAlldeliveryreportsByAWorker" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1846,7 +1858,10 @@ const getAPatientsDeliveryreport = (req, res) => __awaiter(void 0, void 0, void 
         res.status(200).json({ statusCode: "200", result: result[0] });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from getAPatientsdeliveryreport" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1873,7 +1888,10 @@ const requestingatest = (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from requestingatest" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1904,7 +1922,10 @@ const getrequestedtests = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from getRequestedtests" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1937,7 +1958,10 @@ const updaterequestedtest = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from updaterequestedtest" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -1956,7 +1980,10 @@ const createtestoptions = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(201).json({ statusCode: "201", message: "successful" });
     }
     catch (error) {
-        res.status(500).json({ statusCode: "500", message: error });
+        logger_1.default.error("error from createTestoptions" + " :" + error);
+        res
+            .status(500)
+            .json({ statusCode: "500", message: "Something went wrong" });
     }
     finally {
         if (connection) {
@@ -2033,9 +2060,8 @@ const deleteAPatient = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json({ q1: result[0], q2: result2[0] });
     }
     catch (error) {
-        logger_1.default.error(error);
-        connection.release();
-        res.status(500).json(error);
+        logger_1.default.error("error from deleteAPatient" + " :" + error);
+        res.status(500).json("Something went wrong");
     }
     finally {
         if (connection) {

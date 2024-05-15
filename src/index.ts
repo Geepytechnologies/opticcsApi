@@ -32,7 +32,9 @@ import { createClient } from "redis";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import * as path from "path";
-// require("./services/missedschedule");
+import { ScheduleReminder } from "./services/schedulereminder.service";
+
+// ScheduleReminder.start();
 // require("./services/reminderschedule");
 
 // app.post("/sendotp2", (req: Request, res: Response) => {
@@ -124,6 +126,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "/dist")));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(corsOptions));
@@ -147,17 +150,17 @@ app.use("/api/admin/users", adminUserRoute);
 app.use("/api/refresh", refreshTokenRoute);
 app.use("/api/session", sessionRoute);
 
-app.get("/", (req: Request, res: Response) => {
-  const token = "geepy";
-  res.cookie("nationaltoken", token, {
-    httpOnly: false,
-    secure: true,
-    sameSite: "none",
-    // domain: ".vercel.app",
-    maxAge: 10 * 24 * 60 * 60 * 1000,
-  });
-  res.send("Home page");
-});
+// app.get("/", (req: Request, res: Response) => {
+//   const token = "geepy";
+//   res.cookie("nationaltoken", token, {
+//     httpOnly: false,
+//     secure: true,
+//     sameSite: "none",
+//     // domain: ".vercel.app",
+//     maxAge: 10 * 24 * 60 * 60 * 1000,
+//   });
+//   res.send("Home page");
+// });
 
 app.get("/test", (req, res) => {
   const q = `SELECT * FROM healthpersonnel`;
@@ -208,8 +211,14 @@ app.get("/liveuser", async (req, res) => {
   } catch (error) {}
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(__dirname + "../dist/index.html");
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   logger.info("Backend server is up and running");
 });
+
+// require("./services/missedschedule.service");

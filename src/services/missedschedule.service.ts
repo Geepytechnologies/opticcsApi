@@ -8,7 +8,30 @@ const initializeStorage = async () => {
 };
 
 initializeStorage();
+cron.schedule("05 * * * * *", async () => {
+  console.log("task at date");
+  console.log({ next: nextExecutionTime, current: currentTime });
+  console.log("missed");
 
+  let currentDate = new Date();
+
+  // Set hours, minutes, seconds, and milliseconds to 7am
+  const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
+  // Check the last execution time
+  const nextExecutionTime =
+    (await storage.getItem("remindernextExecutionTime")) || 0;
+  const currentTime = new Date().getTime();
+  // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
+
+  if (currentTime >= nextExecutionTime) {
+    console.log("Running the job of reminder at..." + new Date());
+    await sendSms();
+
+    await storage.setItem("remindernextExecutionTime", nextScheduleTime);
+  } else {
+    console.log("Not time to run the job yet." + new Date());
+  }
+});
 const patientscheduledvisitmissedsms = async (
   mobile_number,
   firstname,
@@ -140,22 +163,6 @@ const sendSms = async () => {
   }
 };
 
-const task = cron.schedule("* * * * * *", async () => {
-  // Check the last execution time
-  const lastExecutionTime =
-    (await storage.getItem("missedlastExecutionTime")) || 0;
-  const currentTime = new Date().getTime();
-
-  // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
-
-  if (currentTime - lastExecutionTime >= 60 * 60 * 1000) {
-    console.log("Running the job of missed at..." + new Date());
-    // await sendSms();
-
-    await storage.setItem("missedlastExecutionTime", currentTime);
-  } else {
-    // console.log("Not time to run the job yet." + new Date());
-  }
-});
+// task.start();
 
 // task.stop();

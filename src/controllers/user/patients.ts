@@ -770,7 +770,6 @@ WHERE
   try {
     await connection.beginTransaction();
     const createdrecord = await personalRecord();
-    console.log("createdrecord: ", createdrecord);
     const personalInformation_id = createdrecord[0].insertId;
     const patientcreate = await createpatient(personalInformation_id);
     const patientID = patientcreate[0].insertId;
@@ -798,11 +797,7 @@ WHERE
     });
   } catch (error) {
     console.log("error from creating patient", error);
-    const errorResponse = {
-      statusCode: error.statusCode || 500,
-      error: { ...error }, // Convert error to a plain object
-    };
-    // res.status(500).json(error.message);
+
     if (connection) {
       try {
         await connection.rollback();
@@ -813,7 +808,7 @@ WHERE
     }
     res.status(500).json({
       statusCode: error.statusCode || 500,
-      error: error.message,
+      error: "Something went wrong",
     });
   } finally {
     if (connection) {
@@ -893,8 +888,8 @@ WHERE
       });
     }
   } catch (err) {
-    console.log("the error: ", err);
-    res.status(500).json(err);
+    logger.info("error from request:getPatientRecord" + " :" + err);
+    res.status(500).json("something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -1594,10 +1589,10 @@ const createPatientEveryVisit = async (req, res, next) => {
   } catch (err) {
     res.status(500).json({
       statusCode: "500",
-      message: "Failed to create return visit for patient",
+      message: "Something went wrong",
       error: err,
     });
-    console.error(err);
+    logger.error("error from return visit" + " :" + err);
   } finally {
     if (connection) {
       connection.release();
@@ -1756,7 +1751,8 @@ const getPatientFirstVisit = async (req, res) => {
     const result = await connection.execute(q, [id]);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json(error);
+    logger.error("error from getPatientFirstVisit" + " :" + error);
+    res.status(500).json("something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -1774,7 +1770,8 @@ const getPatientReturnVisit = async (req, res) => {
     const result = await connection.execute(q, [id]);
     res.status(200).json(result[0]);
   } catch (error) {
-    res.status(500).json(error);
+    logger.error("error from getPatientReturnVisit" + " :" + error);
+    res.status(500).json("Something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -1790,7 +1787,8 @@ const getAllPatientReturnVisit = async (req, res) => {
     res.status(200).json(result[0]);
   } catch (error) {
     connection.release();
-    res.status(500).json(error);
+    logger.error("error from getAllPatientReturnVisit" + " :" + error);
+    res.status(500).json("Something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -1827,8 +1825,8 @@ const getAllPatientFirstVisits = async (req, res) => {
     const result = await connection.execute(q);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    connection.release();
-    res.status(500).json(error);
+    logger.error("error from getAllPatientFirstVisits" + " :" + error);
+    res.status(500).json("Something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -1970,7 +1968,10 @@ const createTest = async (req, res) => {
     if (connection) {
       connection.rollback();
     }
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from createTest" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -1987,7 +1988,8 @@ const getAPatientsTest = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", error: error });
+    logger.error("error from getAPatientsTest" + " :" + error);
+    res.status(500).json({ statusCode: "500", error: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2013,7 +2015,8 @@ const getAllTests = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", error: error });
+    logger.error("error from getAllTests" + " :" + error);
+    res.status(500).json({ statusCode: "500", error: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2031,7 +2034,8 @@ const getATestByAUser = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", error: error });
+    logger.error("error from getAllTests" + " :" + error);
+    res.status(500).json({ statusCode: "500", error: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2086,7 +2090,6 @@ const updateTest = async (req, res) => {
     ;`;
     const q2 = `SELECT * FROM testresult where id = ?`;
     const result = await connection.execute(q, values);
-    // const result2 = await connection.execute(q2, [req.params.id]);
     res
       .status(200)
       .json({ statusCode: "200", message: "succcessfull", result: result[0] });
@@ -2094,7 +2097,8 @@ const updateTest = async (req, res) => {
     if (connection) {
       connection.rollback();
     }
-    res.status(500).json(error);
+    logger.error("error from updateTest" + " :" + error);
+    res.status(500).json("Something went wrong");
   } finally {
     if (connection) {
       connection.release();
@@ -2150,7 +2154,10 @@ const createdeliveryreport = async (req, res) => {
     if (connection) {
       connection.rollback();
     }
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from createdeliveryreport" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2165,7 +2172,10 @@ const getAllDeliveryreports = async (req, res) => {
     const result = await connection.execute(q);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from getAlldeliveryreports" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2180,7 +2190,10 @@ const getAllDeliveryreportsByAWorker = async (req, res) => {
     const result = await connection.execute(q, [id]);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from getAlldeliveryreportsByAWorker" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2195,7 +2208,10 @@ const getAPatientsDeliveryreport = async (req, res) => {
     const result = await connection.execute(q, [patient_id]);
     res.status(200).json({ statusCode: "200", result: result[0] });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from getAPatientsdeliveryreport" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2220,7 +2236,10 @@ const requestingatest = async (req, res) => {
       result: newlycreatedtest[0],
     });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from requestingatest" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2248,7 +2267,10 @@ const getrequestedtests = async (req, res) => {
       result: requestedtests[0],
     });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from getRequestedtests" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2278,7 +2300,10 @@ const updaterequestedtest = async (req, res) => {
       result: updatedtest[0],
     });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from updaterequestedtest" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2295,7 +2320,10 @@ const createtestoptions = async (req, res) => {
     const testoption = await connection.execute(q, values);
     res.status(201).json({ statusCode: "201", message: "successful" });
   } catch (error) {
-    res.status(500).json({ statusCode: "500", message: error });
+    logger.error("error from createTestoptions" + " :" + error);
+    res
+      .status(500)
+      .json({ statusCode: "500", message: "Something went wrong" });
   } finally {
     if (connection) {
       connection.release();
@@ -2367,9 +2395,8 @@ const deleteAPatient = async (req, res) => {
     const result2 = await connection.execute(q2, [id]);
     res.status(200).json({ q1: result[0], q2: result2[0] });
   } catch (error) {
-    logger.error(error);
-    connection.release();
-    res.status(500).json(error);
+    logger.error("error from deleteAPatient" + " :" + error);
+    res.status(500).json("Something went wrong");
   } finally {
     if (connection) {
       connection.release();
