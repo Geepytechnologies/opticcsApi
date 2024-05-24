@@ -212,13 +212,13 @@ app.get("/liveuser", async (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "../dist/index.html");
+  res.sendFile(__dirname + "/dist/index.html");
 });
 
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  logger.info("Backend server is up and running");
+  logger.info(`Backend server is up and running on port ${port}`);
 });
 
 // require("./services/missedschedule.service");
