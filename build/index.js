@@ -148,7 +148,8 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", [
         process.env.ORIGIN,
         "http://127.0.0.1:6379",
-    ]); // Replace with your Vercel app URL
+    ]);
+    // Replace with your Vercel app URL
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
@@ -238,10 +239,10 @@ app.get("/liveuser", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) { }
 }));
 app.get("*", (req, res) => {
-    res.sendFile(__dirname + "../dist/index.html");
+    res.sendFile(__dirname + "/dist/index.html");
 });
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    logger_1.default.info("Backend server is up and running");
+    logger_1.default.info(`Backend server is up and running on port ${port}`);
 });
 // require("./services/missedschedule.service");

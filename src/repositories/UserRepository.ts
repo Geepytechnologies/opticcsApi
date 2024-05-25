@@ -223,4 +223,13 @@ export class UserRepository {
       throw new Error(err);
     }
   }
+  async deleteAUser(id: string) {
+    try {
+      const q = UserQueries.deleteAUser();
+      const [result] = await this.connection.execute(q, [id]);
+      return result;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
 }

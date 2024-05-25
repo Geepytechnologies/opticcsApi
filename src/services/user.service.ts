@@ -20,6 +20,16 @@ export class UserService {
       throw new Error(error);
     }
   }
+  async deleteAUser(id: string) {
+    const userRepo = new UserRepository(this.connection);
+    try {
+      const result = await userRepo.deleteAUser(id);
+
+      return result;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
   async getAllUsers(
     pageSize: number,
     offset: number,

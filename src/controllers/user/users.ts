@@ -148,6 +148,23 @@ const getAllUsers = async (req, res, next) => {
     }
   }
 };
+const deleteAUser = async (req, res, next) => {
+  const connection = await db.getConnection();
+  const userService = new UserService(connection);
+  const id = req.params.id;
+  try {
+    const result = await userService.deleteAUser(id);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result });
+  } catch (err) {
+    res.status(500).json({ statusCode: "500", error: err });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getAllUsersFiltered = async (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = 20;
@@ -775,6 +792,24 @@ const createPatientFirstVisit = (req, res, next) => {
   }
 };
 
+const deVerifyAUser = async (req, res) => {
+  const connection = await db.getConnection();
+  const id = req.query.id;
+  try {
+    const q = `UPDATE healthpersonnel SET verified = 0 WHERE id = ?`;
+    const result = await connection.execute(q, [id]);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
+
 const getUnverifiedworkers = async (req, res) => {
   const connection = await db.getConnection();
   const healthfacility = req.query.healthfacility;
@@ -1080,6 +1115,7 @@ export {
   getAllUsers,
   getAllUsersFiltered,
   getUnverifiedworkers,
+  deVerifyAUser,
   createASchedule,
   createHealthworkerSchedule,
   getAllHealthworkersSchedule,
@@ -1095,6 +1131,7 @@ export {
   createDeliveryReport,
   createATest,
   getUserByPhone,
+  deleteAUser,
   getUsersPatients,
   createPatientFirstvisitPersonalInfo,
   createPatient,

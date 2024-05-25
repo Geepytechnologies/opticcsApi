@@ -237,5 +237,17 @@ class UserRepository {
             }
         });
     }
+    deleteAUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const q = user_1.UserQueries.deleteAUser();
+                const [result] = yield this.connection.execute(q, [id]);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
 }
 exports.UserRepository = UserRepository;

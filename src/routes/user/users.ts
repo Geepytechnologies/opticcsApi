@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllUsers,
+  deleteAUser,
   getUserByPhone,
   getUsersPatients,
   createPatient,
@@ -9,6 +10,7 @@ import {
   createASchedule,
   createDeliveryReport,
   getUnverifiedworkers,
+  deVerifyAUser,
   getHealthworkerInfo,
   createHealthworkerSchedule,
   updateHealthworkerScheduleCompleted,
@@ -80,7 +82,8 @@ router.post("/deliveryreport/:id", createDeliveryReport);
 
 // get a user by phone
 router.get("/find/phone", getUserByPhone);
-
+//delete a user
+router.delete("/healthpersonnel/:id", deleteAUser);
 // get user patients
 router.get("/find/patients/:id", getUsersPatients);
 
@@ -93,6 +96,9 @@ router.get("/find/filtered", getAllUsersFiltered);
 
 //get unverified users
 router.get("/find/unverified", getUnverifiedworkers);
+
+//deverify a user
+router.put("/deverify", deVerifyAUser);
 
 // create a cadre
 router.post("/cadre", createACadre);

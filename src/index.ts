@@ -121,7 +121,8 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", [
     process.env.ORIGIN,
     "http://127.0.0.1:6379",
-  ]); // Replace with your Vercel app URL
+  ]);
+  // Replace with your Vercel app URL
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });

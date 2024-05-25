@@ -28,6 +28,8 @@ router.put("/schedule/update/:id", verifyToken_1.verifyToken, users_1.updateHeal
 router.post("/deliveryreport/:id", users_1.createDeliveryReport);
 // get a user by phone
 router.get("/find/phone", users_1.getUserByPhone);
+//delete a user
+router.delete("/healthpersonnel/:id", users_1.deleteAUser);
 // get user patients
 router.get("/find/patients/:id", users_1.getUsersPatients);
 // router.post("/find/one", getUserByProp);
@@ -37,6 +39,8 @@ router.get("/find", users_1.getAllUsers);
 router.get("/find/filtered", users_1.getAllUsersFiltered);
 //get unverified users
 router.get("/find/unverified", users_1.getUnverifiedworkers);
+//deverify a user
+router.put("/deverify", users_1.deVerifyAUser);
 // create a cadre
 router.post("/cadre", cadre_1.createACadre);
 // update a cadre

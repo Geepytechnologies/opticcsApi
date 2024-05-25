@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPatient = exports.createPatientFirstvisitPersonalInfo = exports.getUsersPatients = exports.getUserByPhone = exports.createATest = exports.createDeliveryReport = exports.getMissedSchedulewithWorker = exports.getAPatientSchedule = exports.getAllUpcomingSchedule = exports.getAllFlaggedSchedule = exports.getAllMissedSchedule = exports.getAllCompletedSchedule = exports.deleteAHealthworkerSchedule = exports.updateHealthworkerScheduleCompleted = exports.getAllSchedule = exports.getAllHealthworkersSchedule = exports.createHealthworkerSchedule = exports.createASchedule = exports.getUnverifiedworkers = exports.getAllUsersFiltered = exports.getAllUsers = exports.sendAMessageToWorker = exports.getHealthworkerInfo = exports.patientscheduledvisitmissedsms = exports.patientscheduledvisitremindersms = exports.patientscheduledvisitsms = void 0;
+exports.createPatient = exports.createPatientFirstvisitPersonalInfo = exports.getUsersPatients = exports.deleteAUser = exports.getUserByPhone = exports.createATest = exports.createDeliveryReport = exports.getMissedSchedulewithWorker = exports.getAPatientSchedule = exports.getAllUpcomingSchedule = exports.getAllFlaggedSchedule = exports.getAllMissedSchedule = exports.getAllCompletedSchedule = exports.deleteAHealthworkerSchedule = exports.updateHealthworkerScheduleCompleted = exports.getAllSchedule = exports.getAllHealthworkersSchedule = exports.createHealthworkerSchedule = exports.createASchedule = exports.deVerifyAUser = exports.getUnverifiedworkers = exports.getAllUsersFiltered = exports.getAllUsers = exports.sendAMessageToWorker = exports.getHealthworkerInfo = exports.patientscheduledvisitmissedsms = exports.patientscheduledvisitremindersms = exports.patientscheduledvisitsms = void 0;
 //@ts-nocheck
 const db_1 = __importDefault(require("../../config/db"));
 const user_1 = require("../../queries/user/user");
@@ -148,6 +148,26 @@ const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllUsers = getAllUsers;
+const deleteAUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    const userService = new user_service_1.UserService(connection);
+    const id = req.params.id;
+    try {
+        const result = yield userService.deleteAUser(id);
+        res
+            .status(200)
+            .json({ statusCode: "200", message: "successful", result: result });
+    }
+    catch (err) {
+        res.status(500).json({ statusCode: "500", error: err });
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.deleteAUser = deleteAUser;
 const getAllUsersFiltered = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -643,6 +663,26 @@ const createPatientFirstVisit = (req, res, next) => {
         next(err);
     }
 };
+const deVerifyAUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    const id = req.query.id;
+    try {
+        const q = `UPDATE healthpersonnel SET verified = 0 WHERE id = ?`;
+        const result = yield connection.execute(q, [id]);
+        res
+            .status(200)
+            .json({ statusCode: "200", message: "successful", result: result[0] });
+    }
+    catch (error) {
+        res.status(500).json({ error });
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.deVerifyAUser = deVerifyAUser;
 const getUnverifiedworkers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const healthfacility = req.query.healthfacility;

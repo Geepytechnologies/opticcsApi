@@ -32,6 +32,18 @@ class UserService {
             }
         });
     }
+    deleteAUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepo = new UserRepository_1.UserRepository(this.connection);
+            try {
+                const result = yield userRepo.deleteAUser(id);
+                return result;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
     getAllUsers(pageSize, offset, filter, state, lga, healthfacility, from, to) {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepo = new UserRepository_1.UserRepository(this.connection);

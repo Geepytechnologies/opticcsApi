@@ -158,6 +158,9 @@ function createUserQuery() {
 }
 exports.createUserQuery = createUserQuery;
 class UserQueries {
+    static deleteAUser() {
+        return `DELETE FROM healthpersonnel WHERE id = ?`;
+    }
     static getAllUsersNational(pageSize, offset) {
         return `SELECT * FROM healthpersonnel ORDER BY
     id DESC LIMIT ${pageSize} OFFSET ${offset}`;
