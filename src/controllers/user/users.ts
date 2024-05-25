@@ -810,6 +810,22 @@ const deVerifyAUser = async (req, res) => {
   }
 };
 
+const getAllUnverifiedworkers = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const q = `SELECT * FROM healthpersonnel WHERE verified = 0`;
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    res.status(500).json({ error });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getUnverifiedworkers = async (req, res) => {
   const connection = await db.getConnection();
   const healthfacility = req.query.healthfacility;
@@ -1115,6 +1131,7 @@ export {
   getAllUsers,
   getAllUsersFiltered,
   getUnverifiedworkers,
+  getAllUnverifiedworkers,
   deVerifyAUser,
   createASchedule,
   createHealthworkerSchedule,

@@ -3,6 +3,7 @@ import {
   getAllUsers,
   deleteAUser,
   getUserByPhone,
+  getAllUnverifiedworkers,
   getUsersPatients,
   createPatient,
   createPatientFirstvisitPersonalInfo,
@@ -94,8 +95,11 @@ router.get("/find", getAllUsers);
 //get all users filter
 router.get("/find/filtered", getAllUsersFiltered);
 
-//get unverified users
+//get unverified users in healthfacility
 router.get("/find/unverified", getUnverifiedworkers);
+
+//get all unverified users
+router.get("/find/unverified/all", getAllUnverifiedworkers);
 
 //deverify a user
 router.put("/deverify", deVerifyAUser);

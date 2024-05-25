@@ -37,8 +37,10 @@ router.get("/find/patients/:id", users_1.getUsersPatients);
 router.get("/find", users_1.getAllUsers);
 //get all users filter
 router.get("/find/filtered", users_1.getAllUsersFiltered);
-//get unverified users
+//get unverified users in healthfacility
 router.get("/find/unverified", users_1.getUnverifiedworkers);
+//get all unverified users
+router.get("/find/unverified/all", users_1.getAllUnverifiedworkers);
 //deverify a user
 router.put("/deverify", users_1.deVerifyAUser);
 // create a cadre
