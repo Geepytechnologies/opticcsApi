@@ -10,6 +10,7 @@ import {
 import request from "request";
 import { updateSessionSchedule } from "../session";
 import { UserService } from "../../services/user.service";
+import logger from "../../logger";
 
 // send users a message
 const patientscheduledvisitsms = async (req, res) => {
@@ -819,6 +820,8 @@ const getAllUnverifiedworkers = async (req, res) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });
   } catch (error) {
+    console.log(error);
+    logger.error(error);
     res.status(500).json({ error });
   } finally {
     if (connection) {
