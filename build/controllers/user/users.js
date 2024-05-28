@@ -18,6 +18,7 @@ const db_1 = __importDefault(require("../../config/db"));
 const user_1 = require("../../queries/user/user");
 const session_1 = require("../session");
 const user_service_1 = require("../../services/user.service");
+const logger_1 = __importDefault(require("../../logger"));
 // send users a message
 const patientscheduledvisitsms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { mobile_number, firstname, lastname, day, date, healthfacilityname } = req.body;
@@ -50,7 +51,7 @@ const patientscheduledvisitsms = (req, res) => __awaiter(void 0, void 0, void 0,
         });
     }
     catch (error) {
-        logger.error("Error:", error);
+        logger_1.default.error("Error:", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
@@ -86,7 +87,7 @@ const patientscheduledvisitremindersms = (req, res) => __awaiter(void 0, void 0,
         });
     }
     catch (error) {
-        logger.error("Error:", error);
+        logger_1.default.error("Error:", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
@@ -122,7 +123,7 @@ const patientscheduledvisitmissedsms = (req, res) => __awaiter(void 0, void 0, v
         });
     }
     catch (error) {
-        logger.error("Error:", error);
+        logger_1.default.error("Error:", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
@@ -693,6 +694,8 @@ const getAllUnverifiedworkers = (req, res) => __awaiter(void 0, void 0, void 0, 
             .json({ statusCode: "200", message: "successful", result: result[0] });
     }
     catch (error) {
+        console.log(error);
+        logger_1.default.error(error);
         res.status(500).json({ error });
     }
     finally {

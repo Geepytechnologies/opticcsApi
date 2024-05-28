@@ -5,6 +5,7 @@ import { NextFunction, Response, Request } from "express";
 import { HealthfacilityService } from "../../../services/healthfacility.service";
 import { HealthFacilityRepository } from "../../../repositories/HealthFacilityRepository";
 import BaseRepository from "../../../repositories/BaseRepository";
+import logger from "../../../logger";
 
 interface User {
   id: string;
@@ -54,6 +55,8 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
     );
     return result[0];
   };
+  logger.info(existinguserid);
+
   const createRefresh = async (refreshtoken: string) => {
     const result = await hfRepository.UpdateUserRefreshToken(
       refreshtoken,
@@ -106,6 +109,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
 
       if (Array.isArray(newuser)) {
         const { password, refreshtoken, ...others } = newuser[0] as User;
+        console.log("signinsuccessful:", others);
         res.status(200).json({
           statusCode: "200",
           message: "successful",
@@ -114,10 +118,10 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
   } catch (err) {
+    console.log({ errorfromhfsignin: err });
     res
       .status(500)
       .json({ statusCode: "500", message: "Error signing in", error: err });
-    next(err);
   }
 };
 
@@ -276,7 +280,6 @@ const resetpassword = async (
       message: "Error Resetting password",
       error: err,
     });
-    next(err);
   }
 };
 
