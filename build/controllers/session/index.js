@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSessionSchedule = exports.getsessiongraphhealthfacility = exports.getsessiongraphlga = exports.getsessiongraphstate = exports.getsessiongraph = exports.getAllsessionshf = exports.getAllsessionsLga = exports.getAllsessionsState = exports.getAllsessions = exports.getCurrentusersessionrequest = exports.getCurrentusersession = exports.startSession = exports.updateSessionReturnvisit = exports.updateSessionFirstvisit = exports.endSession = exports.startSessionRequest = void 0;
+exports.getAllsessionsForAprilAndMay = exports.updateSessionSchedule = exports.getsessiongraphhealthfacility = exports.getsessiongraphlga = exports.getsessiongraphstate = exports.getsessiongraph = exports.getAllsessionshf = exports.getAllsessionsLga = exports.getAllsessionsState = exports.getAllsessions = exports.getCurrentusersessionrequest = exports.getCurrentusersession = exports.startSession = exports.updateSessionReturnvisit = exports.updateSessionFirstvisit = exports.endSession = exports.startSessionRequest = void 0;
 //@ts-nocheck
 const db_1 = __importDefault(require("../../config/db"));
 const logger_1 = __importDefault(require("../../logger"));
@@ -295,6 +295,29 @@ const endSession = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.endSession = endSession;
+const getAllsessionsForAprilAndMay = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+WHERE (YEAR(start_date) = 2024 AND MONTH(start_date) IN (4, 5));`;
+    try {
+        const result = yield connection.execute(q);
+        res
+            .status(200)
+            .json({ statusCode: "200", message: "successful", result: result[0] });
+    }
+    catch (error) {
+        connection.release();
+        res.status(500).json(error);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+exports.getAllsessionsForAprilAndMay = getAllsessionsForAprilAndMay;
 const getAllsessions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const { start_date } = req.query;

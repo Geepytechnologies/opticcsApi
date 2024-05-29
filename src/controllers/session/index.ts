@@ -269,6 +269,27 @@ const endSession = async (req, res) => {
   }
 };
 
+const getAllsessionsForAprilAndMay = async (req, res) => {
+  const connection = await db.getConnection();
+  const q = `SELECT sessions.*, healthpersonnel.healthworker, healthpersonnel.state, healthpersonnel.ward, healthpersonnel.cadre, healthpersonnel.id
+  FROM sessions
+  INNER JOIN healthpersonnel ON sessions.user_id = healthpersonnel.id
+WHERE (YEAR(start_date) = 2024 AND MONTH(start_date) IN (4, 5));`;
+  try {
+    const result = await connection.execute(q);
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "successful", result: result[0] });
+  } catch (error) {
+    connection.release();
+
+    res.status(500).json(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+};
 const getAllsessions = async (req, res) => {
   const connection = await db.getConnection();
   const { start_date } = req.query;
@@ -538,4 +559,5 @@ export {
   getsessiongraphlga,
   getsessiongraphhealthfacility,
   updateSessionSchedule,
+  getAllsessionsForAprilAndMay,
 };

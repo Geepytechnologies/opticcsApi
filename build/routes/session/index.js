@@ -10,6 +10,7 @@ router.post("/start", session_1.startSessionRequest);
 router.post("/end", session_1.endSession);
 router.get("/find/user/:id", session_1.getCurrentusersessionrequest);
 router.get("/find/all", session_1.getAllsessions);
+router.get("/find/april&may", session_1.getAllsessionsForAprilAndMay);
 router.get("/find/state", session_1.getAllsessionsState);
 router.get("/find/lga", session_1.getAllsessionsLga);
 router.get("/find/healthfacility", session_1.getAllsessionshf);

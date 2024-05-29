@@ -11,6 +11,7 @@ import {
   getsessiongraphstate,
   getsessiongraphlga,
   getsessiongraphhealthfacility,
+  getAllsessionsForAprilAndMay,
 } from "../../controllers/session";
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post("/start", startSessionRequest);
 router.post("/end", endSession);
 router.get("/find/user/:id", getCurrentusersessionrequest);
 router.get("/find/all", getAllsessions);
+router.get("/find/april&may", getAllsessionsForAprilAndMay);
 router.get("/find/state", getAllsessionsState);
 router.get("/find/lga", getAllsessionsLga);
 router.get("/find/healthfacility", getAllsessionshf);
