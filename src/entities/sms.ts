@@ -12,4 +12,5 @@ export interface Scheduledvisitreminder {
   lastname: string;
   date: string;
   healthfacilityname: string;
+  state: string;
 }

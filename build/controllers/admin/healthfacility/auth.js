@@ -29,7 +29,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const healthfacility_service_1 = require("../../../services/healthfacility.service");
 const HealthFacilityRepository_1 = require("../../../repositories/HealthFacilityRepository");
 const BaseRepository_1 = __importDefault(require("../../../repositories/BaseRepository"));
-const logger_1 = __importDefault(require("../../../logger"));
 const generatehealthfacilitydetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const connection = yield BaseRepository_1.default.getConnection();
@@ -63,7 +62,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const result = yield hfRepository.getHealthfacilityUserAccountByUserID(userid);
         return result[0];
     });
-    logger_1.default.info(existinguserid);
+    // logger.info(existinguserid);
     const createRefresh = (refreshtoken) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield hfRepository.UpdateUserRefreshToken(refreshtoken, userid);
         return result[0];

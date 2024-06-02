@@ -13,9 +13,11 @@ class NationalDataController {
     const nationalRepo = new NationalRepository(connection);
     const nationalservice = new NationalService(nationalRepo);
     const anc: any = req.query.anc;
+    logger.info(`nationalreturnvisitdata of anc ${anc}`);
+
     try {
       const result = await nationalservice.nationalreturnvisitdata(anc);
-      console.log(result);
+      // console.log(result);
       res.status(200).json(result);
     } catch (error) {
       console.log(error);

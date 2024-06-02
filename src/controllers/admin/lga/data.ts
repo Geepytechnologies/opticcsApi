@@ -2688,6 +2688,7 @@ const lgageneraldata = async (req, res) => {
 };
 const lgareturnvisitdata = async (req, res) => {
   const { lga } = req.query;
+  const anc = req.query.anc || 2;
 
   const getfeverreturn = async (lga) => {
     const connection = await db.getConnection();
@@ -2702,7 +2703,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.lga = ?
+        rv.fever = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2714,11 +2715,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.lga = ?
+        rv.fever = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2743,7 +2744,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.lga = ?
+        rv.headache = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2755,11 +2756,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.lga = ?
+        rv.headache = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2784,7 +2785,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.lga = ?
+        rv.cough = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2796,11 +2797,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.lga = ?
+        rv.cough = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2825,7 +2826,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.lga = ?
+        rv.palpitation = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2837,11 +2838,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.lga = ?
+        rv.palpitation = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2866,7 +2867,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.lga = ?
+        rv.severetirednesss = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2878,11 +2879,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.lga = ?
+        rv.severetirednesss = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2907,7 +2908,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.lga = ?
+        rv.difficultylyingflat = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2919,11 +2920,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.lga = ?
+        rv.difficultylyingflat = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2948,7 +2949,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.lga = ?
+        rv.dizziness = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2960,11 +2961,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.lga = ?
+        rv.dizziness = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2989,7 +2990,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.lga = ?
+        rv.convulsions = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3001,11 +3002,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.lga = ?
+        rv.convulsions = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3030,7 +3031,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.lga = ?
+        rv.severeabdominalpain = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3042,11 +3043,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.lga = ?
+        rv.severeabdominalpain = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3071,7 +3072,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.lga = ?
+        rv.urinarypain = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3083,11 +3084,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.lga = ?
+        rv.urinarypain = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3112,7 +3113,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.lga = ?
+        rv.bloodinurine = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3124,11 +3125,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.lga = ?
+        rv.bloodinurine = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3153,7 +3154,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.lga = ?
+        rv.vaginaldischarge = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3165,11 +3166,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.lga = ?
+        rv.vaginaldischarge = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3194,7 +3195,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.lga = ?
+        rv.painduringsex = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3206,11 +3207,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.lga = ?
+        rv.painduringsex = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3235,7 +3236,7 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.lga = ?
+        rv.syphillis = ? AND pi.lga = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3247,11 +3248,11 @@ const lgareturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.lga = ?
+        rv.syphillis = ? AND pi.lga = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", lga]);
-      const result2 = await connection.execute(q2, ["No", lga]);
+      const result = await connection.execute(q, ["Yes", lga, anc]);
+      const result2 = await connection.execute(q2, ["No", lga, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,

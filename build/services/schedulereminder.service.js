@@ -13,57 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ScheduleReminder = void 0;
-//@ts-nocheck
+exports.reminderSMS = exports.ScheduleReminder = void 0;
+// @ts-nocheck
 const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = __importDefault(require("../config/db"));
 const node_persist_1 = __importDefault(require("node-persist"));
+const sms_service_1 = require("./sms.service");
+const logger_1 = __importDefault(require("../logger"));
+const global_1 = require("../utils/global");
 const initializeStorage = () => __awaiter(void 0, void 0, void 0, function* () {
     yield node_persist_1.default.init();
 });
 initializeStorage();
+const SMSservice = new sms_service_1.SmsService();
 class ScheduleReminder {
-    constructor() {
-        this.sendSms = () => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const response = yield this.getCloseSchedules();
-                const users = response.result;
-                for (const item of users) {
-                    yield this.patientscheduledvisitremindersms(item.phone, item.firstname, item.lastname, formatDate(item.dateto), item.healthFacility);
-                    yield this.updateSchedule(item.id);
-                }
-            }
-            catch (error) {
-                console.error("Error in sendSms:", error);
-            }
-            finally {
-            }
-        });
-    }
-    static start() {
-        return __awaiter(this, void 0, void 0, function* () {
-            _a.task = node_cron_1.default.schedule("35 12 * * *", () => __awaiter(this, void 0, void 0, function* () {
-                console.log({ next: nextExecutionTime, current: currentTime });
-                console.log("task at date");
-                let currentDate = new Date();
-                // Set hours, minutes, seconds, and milliseconds to 7am
-                const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
-                // Check the last execution time
-                const nextExecutionTime = (yield node_persist_1.default.getItem("remindernextExecutionTime")) || 0;
-                const currentTime = new Date().getTime();
-                // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
-                if (currentTime >= nextExecutionTime) {
-                    console.log("Running the job of reminder at..." + new Date());
-                    yield this.sendSms();
-                    yield node_persist_1.default.setItem("remindernextExecutionTime", nextScheduleTime);
-                }
-                else {
-                    console.log("Not time to run the job yet." + new Date());
-                }
-            }));
-            _a.task.start();
-        });
-    }
     static stop() {
         if (this.task) {
             _a.task.stop();
@@ -76,44 +39,6 @@ class ScheduleReminder {
 }
 exports.ScheduleReminder = ScheduleReminder;
 _a = ScheduleReminder;
-ScheduleReminder.patientscheduledvisitremindersms = (mobile_number, firstname, lastname, date, healthfacilityname) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = "https://control.msg91.com/api/v5/flow/";
-    const authkey = "394982AVwwiRgqf64d2116bP1";
-    const template_id = "64d691aad6fc052a1473dc42";
-    const body = JSON.stringify({
-        template_id,
-        sender: "Opticcs",
-        short_url: "1",
-        mobiles: mobile_number,
-        firstname,
-        lastname,
-        date,
-        healthfacilityname,
-    });
-    const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authkey: authkey,
-    };
-    try {
-        const response = yield fetch(url, {
-            method: "POST",
-            headers,
-            body,
-        });
-        const result = yield response.json();
-        if (!response.ok) {
-            throw new Error(`An error occurred while sending Message. Status Code: ${response.status}`);
-        }
-        return { statusCode: response.status.toString(), result };
-    }
-    catch (error) {
-        return {
-            statusCode: "500",
-            error: error.message || "Internal Server Error",
-        };
-    }
-});
 ScheduleReminder.updateSchedule = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     try {
@@ -154,7 +79,7 @@ ScheduleReminder.getCloseSchedules = () => __awaiter(void 0, void 0, void 0, fun
         return { statusCode: "200", message: "successful", result: result[0] };
     }
     catch (error) {
-        logger.error("error from getCloseSchedules" + " :" + error);
+        logger_1.default.error("error from getCloseSchedules" + " :" + error);
         return { statusCode: "500", message: "error getting schedule", error };
     }
     finally {
@@ -163,3 +88,34 @@ ScheduleReminder.getCloseSchedules = () => __awaiter(void 0, void 0, void 0, fun
         }
     }
 });
+const sendSms = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield ScheduleReminder.getCloseSchedules();
+        const users = response.result;
+        for (const item of users) {
+            const smsdata = {
+                mobile_number: item.phone,
+                firstname: item.firstname,
+                lastname: item.lastname,
+                date: global_1.Global.formatDate(item.dateto),
+                healthfacilityname: item.healthFacility,
+                state: item.state,
+            };
+            const res = yield SMSservice.scheduledvisitreminderSMSforPatient(smsdata);
+            console.log(res);
+            if (res.status == 200) {
+                yield ScheduleReminder.updateSchedule(item.id);
+            }
+        }
+    }
+    catch (error) {
+        console.error("Error in sendSms:", error);
+    }
+    finally {
+    }
+});
+exports.reminderSMS = node_cron_1.default.schedule("00 8 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    const date = new Date();
+    yield sendSms();
+    logger_1.default.info(`Ran the reminderSMS task on ` + date.toUTCString());
+}));

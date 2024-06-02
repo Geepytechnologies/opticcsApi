@@ -208,8 +208,14 @@ export class SmsService {
     }
   }
   async scheduledvisitreminderSMSforPatient(smsdata: Scheduledvisitreminder) {
-    const { mobile_number, firstname, lastname, date, healthfacilityname } =
-      smsdata;
+    const {
+      mobile_number,
+      firstname,
+      lastname,
+      date,
+      healthfacilityname,
+      state,
+    } = smsdata;
     const url = `https://api.ng.termii.com/api/sms/send`;
 
     const data = {
@@ -218,7 +224,7 @@ export class SmsService {
       to: `${mobile_number}`,
       from: "opticcs",
       channel: "generic",
-      sms: `${firstname} ${lastname} this is to remind you of your scheduled antenatal visit tomorrow ${date} at ${healthfacilityname}`,
+      sms: `Hello ${firstname} ${lastname}, this is to remind you of your scheduled antenatal visit tomorrow ${date} at ${healthfacilityname} health facility in ${state} state`,
     };
     try {
       const response = await fetch(url, {
@@ -231,6 +237,7 @@ export class SmsService {
 
       return response;
     } catch (error: any) {
+      console.log(error);
       throw new Error(error);
     }
   }

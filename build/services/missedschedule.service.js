@@ -11,83 +11,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.missedscheduleSMS = exports.MissedSchedule = void 0;
 //@ts-nocheck
 const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = __importDefault(require("../config/db"));
 const node_persist_1 = __importDefault(require("node-persist"));
+const logger_1 = __importDefault(require("../logger"));
+const global_1 = require("../utils/global");
+const sms_service_1 = require("./sms.service");
 const initializeStorage = () => __awaiter(void 0, void 0, void 0, function* () {
     yield node_persist_1.default.init();
 });
 initializeStorage();
-node_cron_1.default.schedule("05 * * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("task at date");
-    console.log({ next: nextExecutionTime, current: currentTime });
-    console.log("missed");
-    let currentDate = new Date();
-    // Set hours, minutes, seconds, and milliseconds to 7am
-    const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
-    // Check the last execution time
-    const nextExecutionTime = (yield node_persist_1.default.getItem("remindernextExecutionTime")) || 0;
-    const currentTime = new Date().getTime();
-    // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
-    if (currentTime >= nextExecutionTime) {
-        console.log("Running the job of reminder at..." + new Date());
-        yield sendSms();
-        yield node_persist_1.default.setItem("remindernextExecutionTime", nextScheduleTime);
-    }
-    else {
-        console.log("Not time to run the job yet." + new Date());
-    }
-}));
-const patientscheduledvisitmissedsms = (mobile_number, firstname, lastname, date, healthfacilityname) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = "https://control.msg91.com/api/v5/flow/";
-    const authkey = process.env.MSGAUTHKEY;
-    const template_id = "64d6923ed6fc05311c3659f2";
-    const body = JSON.stringify({
-        template_id,
-        sender: "Opticcs",
-        short_url: "1",
-        mobiles: mobile_number,
-        firstname,
-        lastname,
-        date,
-        healthfacilityname,
-    });
-    const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authkey: authkey,
-    };
-    try {
-        const response = yield fetch(url, {
-            method: "POST",
-            headers,
-            body,
-        });
-        const result = yield response.json();
-        console.log({ smsres: result });
-        if (!response.ok) {
-            throw new Error(`An error occurred while sending Message. Status Code: ${response.status}`);
+const SMSservice = new sms_service_1.SmsService();
+class MissedSchedule {
+    static stop() {
+        if (this.task) {
+            _a.task.stop();
+            logger_1.default.log("Task stopped.");
         }
-        return { statusCode: response.status.toString(), result };
+        else {
+            logger_1.default.log("No task to stop.");
+        }
     }
-    catch (error) {
-        return {
-            statusCode: "500",
-            error: error.message || "Internal Server Error",
-        };
-    }
-});
-const updateSchedule = (id) => __awaiter(void 0, void 0, void 0, function* () {
+}
+exports.MissedSchedule = MissedSchedule;
+_a = MissedSchedule;
+MissedSchedule.updateSchedule = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     try {
         const q = `UPDATE schedule
-    SET
-      missed = true,
-      missedsms = true
-    WHERE id = ?;
-    `;
+      SET
+        missed = true,
+        missedsms = true
+      WHERE id = ?;
+      `;
         const result = yield connection.execute(q, [id]);
         return { statusCode: "200", message: "successful", result: result[0] };
     }
@@ -100,21 +60,21 @@ const updateSchedule = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
-const getMissedSchedules = () => __awaiter(void 0, void 0, void 0, function* () {
+MissedSchedule.getMissedSchedules = () => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     try {
         const q = `SELECT
-    schedule.*,
-    healthpersonnel.healthFacility,
-    healthpersonnel.state,
-    healthpersonnel.lga
-  FROM
-    schedule
-  LEFT JOIN
-    healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id
-  WHERE schedule.missedsms = false AND 
-  schedule.dateto < CURDATE();;      
-    `;
+      schedule.*,
+      healthpersonnel.healthFacility,
+      healthpersonnel.state,
+      healthpersonnel.lga
+    FROM
+      schedule
+    LEFT JOIN
+      healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id
+    WHERE schedule.missedsms = false AND 
+    schedule.dateto < CURDATE();;      
+      `;
         const result = yield connection.execute(q);
         return { statusCode: "200", message: "successful", result: result[0] };
     }
@@ -127,21 +87,54 @@ const getMissedSchedules = () => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 });
-const formatDate = (date) => {
-    const originalDate = new Date(date);
-    const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, "0");
-    const day = String(originalDate.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-};
+// cron.schedule("05 * * * * *", async () => {
+//   console.log("task at date");
+//   console.log({ next: nextExecutionTime, current: currentTime });
+//   console.log("missed");
+//   let currentDate = new Date();
+//   // Set hours, minutes, seconds, and milliseconds to 7am
+//   const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
+//   // Check the last execution time
+//   const nextExecutionTime =
+//     (await storage.getItem("remindernextExecutionTime")) || 0;
+//   const currentTime = new Date().getTime();
+//   // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
+//   if (currentTime >= nextExecutionTime) {
+//     console.log("Running the job of reminder at..." + new Date());
+//     await sendSms();
+//     await storage.setItem("remindernextExecutionTime", nextScheduleTime);
+//   } else {
+//     console.log("Not time to run the job yet." + new Date());
+//   }
+// });
 const sendSms = () => __awaiter(void 0, void 0, void 0, function* () {
+    const daysOfTheweek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
     try {
-        const response = yield getMissedSchedules();
+        const response = yield MissedSchedule.getMissedSchedules();
         const users = response.result;
         for (const item of users) {
-            yield patientscheduledvisitmissedsms(item.phone, item.firstname, item.lastname, formatDate(item.dateto), item.healthFacility);
-            yield updateSchedule(item.id);
+            const day = item.dateto.getDay();
+            const actualDate = daysOfTheweek[day];
+            const smsdata = {
+                mobile_number: item.phone,
+                firstname: item.firstname,
+                lastname: item.lastname,
+                day: actualDate,
+                date: global_1.Global.formatDate(item.dateto),
+                healthfacilityname: item.healthFacility,
+            };
+            const res = yield SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
+            if (res.status == 200) {
+                yield MissedSchedule.updateSchedule(item.id);
+            }
         }
     }
     catch (error) {
@@ -150,5 +143,8 @@ const sendSms = () => __awaiter(void 0, void 0, void 0, function* () {
     finally {
     }
 });
-// task.start();
-// task.stop();
+exports.missedscheduleSMS = node_cron_1.default.schedule("00 8 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    const date = new Date();
+    yield sendSms();
+    logger_1.default.info(`Ran the missedscheduleSMS task on ` + date.toUTCString());
+}));

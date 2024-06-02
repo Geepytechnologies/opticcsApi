@@ -2,160 +2,128 @@
 import cron from "node-cron";
 import db from "../config/db";
 import storage from "node-persist";
+import logger from "../logger";
+import { Global } from "../utils/global";
+import { SmsService } from "./sms.service";
 
 const initializeStorage = async () => {
   await storage.init();
 };
 
 initializeStorage();
-cron.schedule("05 * * * * *", async () => {
-  console.log("task at date");
-  console.log({ next: nextExecutionTime, current: currentTime });
-  console.log("missed");
 
-  let currentDate = new Date();
+const SMSservice = new SmsService();
 
-  // Set hours, minutes, seconds, and milliseconds to 7am
-  const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
-  // Check the last execution time
-  const nextExecutionTime =
-    (await storage.getItem("remindernextExecutionTime")) || 0;
-  const currentTime = new Date().getTime();
-  // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
+export class MissedSchedule {
+  static task;
 
-  if (currentTime >= nextExecutionTime) {
-    console.log("Running the job of reminder at..." + new Date());
-    await sendSms();
-
-    await storage.setItem("remindernextExecutionTime", nextScheduleTime);
-  } else {
-    console.log("Not time to run the job yet." + new Date());
+  static stop() {
+    if (this.task) {
+      MissedSchedule.task.stop();
+      logger.log("Task stopped.");
+    } else {
+      logger.log("No task to stop.");
+    }
   }
-});
-const patientscheduledvisitmissedsms = async (
-  mobile_number,
-  firstname,
-  lastname,
-  date,
-  healthfacilityname
-) => {
-  const url = "https://control.msg91.com/api/v5/flow/";
-  const authkey = process.env.MSGAUTHKEY;
-  const template_id = "64d6923ed6fc05311c3659f2";
-
-  const body = JSON.stringify({
-    template_id,
-    sender: "Opticcs",
-    short_url: "1",
-    mobiles: mobile_number,
-    firstname,
-    lastname,
-    date,
-    healthfacilityname,
-  });
-
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Authkey: authkey,
+  static updateSchedule = async (id: string) => {
+    const connection = await db.getConnection();
+    try {
+      const q = `UPDATE schedule
+      SET
+        missed = true,
+        missedsms = true
+      WHERE id = ?;
+      `;
+      const result = await connection.execute(q, [id]);
+      return { statusCode: "200", message: "successful", result: result[0] };
+    } catch (error) {
+      return error;
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
   };
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers,
-      body,
-    });
-
-    const result = await response.json();
-    console.log({ smsres: result });
-
-    if (!response.ok) {
-      throw new Error(
-        `An error occurred while sending Message. Status Code: ${response.status}`
-      );
+  static getMissedSchedules = async () => {
+    const connection = await db.getConnection();
+    try {
+      const q = `SELECT
+      schedule.*,
+      healthpersonnel.healthFacility,
+      healthpersonnel.state,
+      healthpersonnel.lga
+    FROM
+      schedule
+    LEFT JOIN
+      healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id
+    WHERE schedule.missedsms = false AND 
+    schedule.dateto < CURDATE();;      
+      `;
+      const result = await connection.execute(q);
+      return { statusCode: "200", message: "successful", result: result[0] };
+    } catch (error) {
+      return { statusCode: "500", message: "error getting schedule", error };
+    } finally {
+      if (connection) {
+        connection.release();
+      }
     }
+  };
+}
+// cron.schedule("05 * * * * *", async () => {
+//   console.log("task at date");
+//   console.log({ next: nextExecutionTime, current: currentTime });
+//   console.log("missed");
 
-    return { statusCode: response.status.toString(), result };
-  } catch (error: any) {
-    return {
-      statusCode: "500",
-      error: error.message || "Internal Server Error",
-    };
-  }
-};
+//   let currentDate = new Date();
 
-const updateSchedule = async (id: string) => {
-  const connection = await db.getConnection();
-  try {
-    const q = `UPDATE schedule
-    SET
-      missed = true,
-      missedsms = true
-    WHERE id = ?;
-    `;
-    const result = await connection.execute(q, [id]);
-    return { statusCode: "200", message: "successful", result: result[0] };
-  } catch (error) {
-    return error;
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
+//   // Set hours, minutes, seconds, and milliseconds to 7am
+//   const nextScheduleTime = currentDate.setHours(7, 0, 0, 0).getTime();
+//   // Check the last execution time
+//   const nextExecutionTime =
+//     (await storage.getItem("remindernextExecutionTime")) || 0;
+//   const currentTime = new Date().getTime();
+//   // console.log(currentTime - lastExecutionTime, 60 * 60 * 1000);
 
-const getMissedSchedules = async () => {
-  const connection = await db.getConnection();
-  try {
-    const q = `SELECT
-    schedule.*,
-    healthpersonnel.healthFacility,
-    healthpersonnel.state,
-    healthpersonnel.lga
-  FROM
-    schedule
-  LEFT JOIN
-    healthpersonnel ON schedule.healthpersonnel_id = healthpersonnel.id
-  WHERE schedule.missedsms = false AND 
-  schedule.dateto < CURDATE();;      
-    `;
-    const result = await connection.execute(q);
-    return { statusCode: "200", message: "successful", result: result[0] };
-  } catch (error) {
-    return { statusCode: "500", message: "error getting schedule", error };
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-};
+//   if (currentTime >= nextExecutionTime) {
+//     console.log("Running the job of reminder at..." + new Date());
+//     await sendSms();
 
-const formatDate = (date: string) => {
-  const originalDate = new Date(date);
-
-  const year = originalDate.getFullYear();
-  const month = String(originalDate.getMonth() + 1).padStart(2, "0");
-  const day = String(originalDate.getDate()).padStart(2, "0");
-
-  const formattedDate = `${year}-${month}-${day}`;
-
-  return formattedDate;
-};
+//     await storage.setItem("remindernextExecutionTime", nextScheduleTime);
+//   } else {
+//     console.log("Not time to run the job yet." + new Date());
+//   }
+// });
 const sendSms = async () => {
+  const daysOfTheweek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   try {
-    const response = await getMissedSchedules();
+    const response = await MissedSchedule.getMissedSchedules();
     const users = response.result;
-
     for (const item of users) {
-      await patientscheduledvisitmissedsms(
-        item.phone,
-        item.firstname,
-        item.lastname,
-        formatDate(item.dateto),
-        item.healthFacility
-      );
-      await updateSchedule(item.id);
+      const day = item.dateto.getDay();
+      const actualDate = daysOfTheweek[day];
+      const smsdata = {
+        mobile_number: item.phone,
+        firstname: item.firstname,
+
+        lastname: item.lastname,
+        day: actualDate,
+        date: Global.formatDate(item.dateto),
+        healthfacilityname: item.healthFacility,
+      };
+      const res = await SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
+      if (res.status == 200) {
+        await MissedSchedule.updateSchedule(item.id);
+      }
     }
   } catch (error) {
     console.error("Error in sendSms:", error);
@@ -163,6 +131,8 @@ const sendSms = async () => {
   }
 };
 
-// task.start();
-
-// task.stop();
+export const missedscheduleSMS = cron.schedule("00 8 * * *", async () => {
+  const date = new Date();
+  await sendSms();
+  logger.info(`Ran the missedscheduleSMS task on ` + date.toUTCString());
+});

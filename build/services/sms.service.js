@@ -197,7 +197,7 @@ class SmsService {
     }
     scheduledvisitreminderSMSforPatient(smsdata) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { mobile_number, firstname, lastname, date, healthfacilityname } = smsdata;
+            const { mobile_number, firstname, lastname, date, healthfacilityname, state, } = smsdata;
             const url = `https://api.ng.termii.com/api/sms/send`;
             const data = {
                 api_key: process.env.TERMIIKEY,
@@ -205,7 +205,7 @@ class SmsService {
                 to: `${mobile_number}`,
                 from: "opticcs",
                 channel: "generic",
-                sms: `${firstname} ${lastname} this is to remind you of your scheduled antenatal visit tomorrow ${date} at ${healthfacilityname}`,
+                sms: `Hello ${firstname} ${lastname}, this is to remind you of your scheduled antenatal visit tomorrow ${date} at ${healthfacilityname} health facility in ${state} state`,
             };
             try {
                 const response = yield fetch(url, {
@@ -218,6 +218,7 @@ class SmsService {
                 return response;
             }
             catch (error) {
+                console.log(error);
                 throw new Error(error);
             }
         });

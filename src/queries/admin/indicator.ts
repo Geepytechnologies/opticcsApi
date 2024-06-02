@@ -35,7 +35,7 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.lga = ?    
+    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.state = ? AND pi.lga = ?    
     `;
   }
   static LgaIntermediateResult1Awithdate() {
@@ -43,7 +43,7 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.lga = ? AND DATE(av.createdat) BETWEEN ? AND ?;    
+    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.state = ? AND pi.lga = ? AND DATE(av.createdat) BETWEEN ? AND ?;    
     `;
   }
   static HealthfacilityIntermediateResult1A() {
@@ -51,7 +51,7 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.healthfacility = ?    
+    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.state = ? AND pi.healthfacility = ?;    
     `;
   }
   static HealthfacilityIntermediateResult1Awithdate() {
@@ -59,7 +59,7 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.healthfacility = ? AND DATE(av.createdat) BETWEEN ? AND ?;    
+    WHERE av.anc_number >= 4 AND av.missed = 0 AND pi.state = ? AND pi.healthfacility = ? AND DATE(av.createdat) BETWEEN ? AND ?;    
     `;
   }
 
@@ -78,7 +78,7 @@ export class IndicatorQuery {
   }
   static StateIntermediateResult1Bwithdate() {
     return `SELECT COUNT(*) AS total FROM deliveryreport dr  LEFT JOIN
-    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(createdat) BETWEEN ? AND ?`;
+    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(dr.createdat) BETWEEN ? AND ?`;
   }
   static LgaIntermediateResult1B() {
     return `SELECT COUNT(*) AS total FROM deliveryreport dr  LEFT JOIN
@@ -86,7 +86,7 @@ export class IndicatorQuery {
   }
   static LgaIntermediateResult1Bwithdate() {
     return `SELECT COUNT(*) AS total FROM deliveryreport dr  LEFT JOIN
-    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND hp.lga = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(createdat) BETWEEN ? AND ?`;
+    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND hp.lga = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(dr.createdat) BETWEEN ? AND ?`;
   }
   static HealthfacilityIntermediateResult1B() {
     return `SELECT COUNT(*) AS total FROM deliveryreport dr  LEFT JOIN
@@ -94,7 +94,7 @@ export class IndicatorQuery {
   }
   static HealthfacilityIntermediateResult1Bwithdate() {
     return `SELECT COUNT(*) AS total FROM deliveryreport dr  LEFT JOIN
-    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND hp.healthfacility = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(createdat) BETWEEN ? AND ?`;
+    healthpersonnel hp ON dr.healthpersonnel_id = hp.id WHERE hp.state = ? AND hp.healthfacility = ? AND dr.deliverAtHealthFacility = "yes" AND dr.attendAncVisit = "yes" AND DATE(dr.createdat) BETWEEN ? AND ?`;
   }
   //----- 1C Proportion of pregnant women at ANC 1st visit less than 20 weeks ----//
   //Numerator: Number of pregnant women with Gestational Age less than 20 weeks  == IntermediateResult1Ddenominator
@@ -113,7 +113,7 @@ export class IndicatorQuery {
   }
   static StateIntermediateResult1Cdenominatorwithdate() {
     return `SELECT COUNT(*) AS total FROM patients p  LEFT JOIN
-    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND DATE(p.firstvisit_date) BETWEEN ? AND ?`;
   }
   static LgaIntermediateResult1Cdenominator() {
     return `SELECT COUNT(*) AS total FROM patients p  LEFT JOIN
@@ -121,7 +121,7 @@ export class IndicatorQuery {
   }
   static LgaIntermediateResult1Cdenominatorwithdate() {
     return `SELECT COUNT(*) AS total FROM patients p  LEFT JOIN
-    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND pi.lga = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND pi.lga = ? AND DATE(p.firstvisit_date) BETWEEN ? AND ?`;
   }
   static HealthfacilityIntermediateResult1Cdenominator() {
     return `SELECT COUNT(*) AS total FROM patients p  LEFT JOIN
@@ -129,7 +129,7 @@ export class IndicatorQuery {
   }
   static HealthfacilityIntermediateResult1Cdenominatorwithdate() {
     return `SELECT COUNT(*) AS total FROM patients p  LEFT JOIN
-    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND pi.healthfacility = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    personalinformation pi ON p.personalinformation_id = pi.id WHERE pi.state = ? AND pi.healthfacility = ? AND DATE(p.firstvisit_date) BETWEEN ? AND ?`;
   }
   //----- 1D Proportion of pregnant women at ANC 1st Vist less than 20 weeks that achieved 8 ANC visits
   // ----Numerator: Number of pregnant women who achieved 8 ANC visits                                                                                                 //----Denominator: Total number of pregnant women with gestational age less than 20 weeks
@@ -172,14 +172,14 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number = 8 AND av.missed = 0 AND pi.state = ? AND pi.lga = ? AND pi.lga = ?`;
+    WHERE av.anc_number = 8 AND av.missed = 0 AND pi.state = ? AND pi.lga = ?`;
   }
   static HealthfacilityIntermediateResult1DNumeratorwithdate() {
     return `SELECT COUNT(*)  AS total
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.anc_number = 8 AND av.missed = 0 AND pi.state = ? AND pi.lga = ? AND pi.lga = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    WHERE av.anc_number = 8 AND av.missed = 0 AND pi.state = ? AND pi.healthfacility = ? AND DATE(av.createdat) BETWEEN ? AND ?`;
   }
 
   //1D denominator
@@ -251,14 +251,14 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.missed > 2 AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ?`;
+    WHERE av.missed > 2 AND pi.state = ? AND pi.healthfacility = ?`;
   }
   static HealthfacilityIntermediateResult1ENumeratorwithdate() {
     return `SELECT COUNT(*)  AS total
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.missed > 2 AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    WHERE av.missed > 2 AND pi.state = ? AND pi.healthfacility = ? AND DATE(av.createdat) BETWEEN ? AND ?`;
   }
   //1F Proportion of pregnant women who were contacted and resumed ANC visits
   //Numerator: Number of pregnant women who resumed ANC visits after they were contacted
@@ -303,14 +303,14 @@ export class IndicatorQuery {
     FROM returnvisit rv
     JOIN patients p ON p.id = rv.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE rv.contactedByPHC = "yes" AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ?`;
+    WHERE rv.contactedByPHC = "yes" AND pi.state = ? AND pi.healthfacility = ?`;
   }
   static HealthfacilityIntermediateResult1FNumeratorwithdate() {
     return `SELECT COUNT(*)  AS total
     FROM returnvisit rv
     JOIN patients p ON p.id = rv.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE rv.contactedByPHC = "yes" AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ? AND DATE(rv.createdat) BETWEEN ? AND ?`;
+    WHERE rv.contactedByPHC = "yes" AND pi.state = ?  AND pi.healthfacility = ? AND DATE(rv.createdat) BETWEEN ? AND ?`;
   }
   //1F denominator
   static IntermediateResult1Fdenominator() {
@@ -352,14 +352,14 @@ export class IndicatorQuery {
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.missed > 0 AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ?`;
+    WHERE av.missed > 0 AND pi.state = ? AND pi.healthfacility = ?`;
   }
   static HealthfacilityIntermediateResult1Fdenominatorwithdate() {
     return `SELECT COUNT(*)  AS total
     FROM ancvisit av
     JOIN patients p ON p.id = av.patient_id
     LEFT JOIN personalinformation pi ON p.personalinformation_id = pi.id
-    WHERE av.missed > 0 AND pi.state = ? AND pi.lga = ? AND pi.healthfacility = ? AND DATE(createdat) BETWEEN ? AND ?`;
+    WHERE av.missed > 0 AND pi.state = ? AND pi.healthfacility = ? AND DATE(av.createdat) BETWEEN ? AND ?`;
   }
 }
 //intermediateResult2

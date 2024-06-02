@@ -65,33 +65,10 @@ const logger_1 = __importDefault(require("./logger"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const path = __importStar(require("path"));
-// ScheduleReminder.start();
-// require("./services/reminderschedule");
-// app.post("/sendotp2", (req: Request, res: Response) => {
-//   const options = {
-//     method: "POST",
-//     url: "https://control.msg91.com/api/v5/otp?template_id=64d21743d6fc055e40287382&mobile=2348106974201&otp_length=6&otp_expiry=5",
-//     headers: {
-//       accept: "application/json",
-//       "content-type": "application/json",
-//       authkey: "394982AVwwiRgqf64d2116bP1",
-//     },
-//     body: { name: "Geepy" },
-//     json: true,
-//   };
-//   try {
-//     request(options, function (error: string | undefined, response: any, body: any) {
-//       if (error) throw new Error(error);
-//       console.log(body);
-//     });
-//     res.status(200).json("successful");
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
-// const client = createClient()
-//   .on("error", (err) => console.log("Redis Client Error", err))
-//   .connect();
+const schedulereminder_service_1 = require("./services/schedulereminder.service");
+const missedschedule_service_1 = require("./services/missedschedule.service");
+schedulereminder_service_1.reminderSMS.start();
+missedschedule_service_1.missedscheduleSMS.start();
 const adminOptions = {
     definition: {
         openapi: "3.0.0",

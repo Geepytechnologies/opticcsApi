@@ -70,6 +70,7 @@ export class IndicatorService {
         //healthfacility
         logger.warn("healthfacility 1A");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
+          logger.info("HealthfacilityIntermediateResult1Awithdate");
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Awithdate(
               state,
@@ -320,7 +321,7 @@ export class IndicatorService {
       }
       if (filter == "healthfacility") {
         //healthfacility
-        logger.warn("healthfacility");
+        logger.warn("healthfacility 1D");
         if (Patientconditions.datesAreNotEmpty(from, to)) {
           result =
             await this.indicatorRepository.HealthfacilityIntermediateResult1Dwithdate(

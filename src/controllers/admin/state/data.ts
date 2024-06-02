@@ -1,5 +1,6 @@
 //@ts-nocheck
 import db from "../../../config/db";
+import logger from "../../../logger";
 
 const numberofwomenwith4visits = async (req, res) => {
   const connection = await db.getConnection();
@@ -2725,7 +2726,8 @@ const stategeneraldata = async (req, res) => {
 
 const statereturnvisitdata = async (req, res) => {
   const { state } = req.query;
-
+  const anc = req.query.anc || 2;
+  logger.info(`statereturnvisitdata of anc ${anc}`);
   const getfeverreturn = async (state) => {
     const connection = await db.getConnection();
     try {
@@ -2739,7 +2741,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.state = ?
+        rv.fever = ?  AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2751,11 +2753,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.state = ?
+        rv.fever = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2780,7 +2782,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.state = ?
+        rv.headache = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2792,11 +2794,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.state = ?
+        rv.headache = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2821,7 +2823,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.state = ?
+        rv.cough = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2833,11 +2835,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.state = ?
+        rv.cough = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2862,7 +2864,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.state = ?
+        rv.palpitation = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2874,11 +2876,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.state = ?
+        rv.palpitation = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2903,7 +2905,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.state = ?
+        rv.severetirednesss = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2915,11 +2917,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.state = ?
+        rv.severetirednesss = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2944,7 +2946,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.state = ?
+        rv.difficultylyingflat = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2956,11 +2958,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.state = ?
+        rv.difficultylyingflat = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2985,7 +2987,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.state = ?
+        rv.dizziness = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2997,11 +2999,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.state = ?
+        rv.dizziness = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3026,7 +3028,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.state = ?
+        rv.convulsions = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3038,11 +3040,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.state = ?
+        rv.convulsions = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3067,7 +3069,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.state = ?
+        rv.severeabdominalpain = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3079,11 +3081,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.state = ?
+        rv.severeabdominalpain = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3108,7 +3110,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.state = ?
+        rv.urinarypain = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3120,11 +3122,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.state = ?
+        rv.urinarypain = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3149,7 +3151,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.state = ?
+        rv.bloodinurine = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3161,11 +3163,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.state = ?
+        rv.bloodinurine = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3190,7 +3192,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.state = ?
+        rv.vaginaldischarge = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3202,11 +3204,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.state = ?
+        rv.vaginaldischarge = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3231,7 +3233,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.state = ?
+        rv.painduringsex = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3243,11 +3245,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.state = ?
+        rv.painduringsex = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3272,7 +3274,7 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.state = ?
+        rv.syphillis = ? AND pi.state = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3284,11 +3286,11 @@ const statereturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.state = ?
+        rv.syphillis = ? AND pi.state = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", state]);
-      const result2 = await connection.execute(q2, ["No", state]);
+      const result = await connection.execute(q, ["Yes", state, anc]);
+      const result2 = await connection.execute(q2, ["No", state, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3333,7 +3335,7 @@ const statereturnvisitdata = async (req, res) => {
       syphilis,
     });
   } catch (error) {
-    console.log(error);
+    logger.log(error + ": " + "from statereturnvisitdata");
     res.status(500).json(error);
   } finally {
   }

@@ -59,6 +59,7 @@ class IndicatorService {
                     //healthfacility
                     logger_1.default.warn("healthfacility 1A");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
+                        logger_1.default.info("HealthfacilityIntermediateResult1Awithdate");
                         result =
                             yield this.indicatorRepository.HealthfacilityIntermediateResult1Awithdate(state, healthfacility, from, to);
                     }
@@ -225,7 +226,7 @@ class IndicatorService {
                 }
                 if (filter == "healthfacility") {
                     //healthfacility
-                    logger_1.default.warn("healthfacility");
+                    logger_1.default.warn("healthfacility 1D");
                     if (patients_1.Patientconditions.datesAreNotEmpty(from, to)) {
                         result =
                             yield this.indicatorRepository.HealthfacilityIntermediateResult1Dwithdate(state, healthfacility, from, to);

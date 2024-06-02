@@ -32,38 +32,12 @@ import { createClient } from "redis";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import * as path from "path";
-import { ScheduleReminder } from "./services/schedulereminder.service";
+import { reminderSMS } from "./services/schedulereminder.service";
+import { missedscheduleSMS } from "./services/missedschedule.service";
 
-// ScheduleReminder.start();
-// require("./services/reminderschedule");
+reminderSMS.start();
+missedscheduleSMS.start();
 
-// app.post("/sendotp2", (req: Request, res: Response) => {
-//   const options = {
-//     method: "POST",
-//     url: "https://control.msg91.com/api/v5/otp?template_id=64d21743d6fc055e40287382&mobile=2348106974201&otp_length=6&otp_expiry=5",
-//     headers: {
-//       accept: "application/json",
-//       "content-type": "application/json",
-//       authkey: "394982AVwwiRgqf64d2116bP1",
-//     },
-//     body: { name: "Geepy" },
-//     json: true,
-//   };
-//   try {
-//     request(options, function (error: string | undefined, response: any, body: any) {
-//       if (error) throw new Error(error);
-
-//       console.log(body);
-//     });
-//     res.status(200).json("successful");
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
-
-// const client = createClient()
-//   .on("error", (err) => console.log("Redis Client Error", err))
-//   .connect();
 const adminOptions = {
   definition: {
     openapi: "3.0.0",

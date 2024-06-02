@@ -1383,7 +1383,7 @@ const getseverediarrhoea = (healthfacility) => __awaiter(void 0, void 0, void 0,
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severediarrhoea = ?
-    AND pi.healthfacility = ?`;
+    AND pi.healthfacility = ?AND pi.healthfacility = ?`;
         const result = yield connection.execute(q, ["Yes", healthfacility]);
         const result2 = yield connection.execute(q2, ["No", healthfacility]);
         return {
@@ -1398,6 +1398,54 @@ const getseverediarrhoea = (healthfacility) => __awaiter(void 0, void 0, void 0,
             connection.release();
         }
     }
+});
+const getdizziness = (healthfacility) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield db_1.default.getConnection();
+    try {
+        const q = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ? AND pi.healthfacility = ?
+    `;
+        const q2 = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ? AND pi.healthfacility = ?
+    `;
+        const result = yield this.connection.execute(q, [
+            "Yes",
+            healthfacility,
+        ]);
+        const result2 = yield this.connection.execute(q2, [
+            "No",
+            healthfacility,
+        ]);
+        return {
+            yes: result[0].length,
+            no: result2[0].length,
+        };
+    }
+    catch (error) { }
 });
 //urinary
 const getpainwithurination = (healthfacility) => __awaiter(void 0, void 0, void 0, function* () {
@@ -2639,6 +2687,7 @@ const healthfacilitygeneraldata = (req, res) => __awaiter(void 0, void 0, void 0
         const severeabdominalpain = yield getsevereabdominalpain(healthfacility);
         const persistentvomiting = yield getpersistentvomiting(healthfacility);
         const severediarrhoea = yield getseverediarrhoea(healthfacility);
+        const dizziness = yield getdizziness(healthfacility);
         //urinary
         const painwithurination = yield getpainwithurination(healthfacility);
         const severeflankpain = yield getsevereflankpain(healthfacility);
@@ -2698,6 +2747,7 @@ const healthfacilitygeneraldata = (req, res) => __awaiter(void 0, void 0, void 0
             severeabdominalpain,
             persistentvomiting,
             severediarrhoea,
+            dizziness,
             painwithurination,
             severeflankpain,
             bloodinurine,
@@ -2735,6 +2785,7 @@ const healthfacilitygeneraldata = (req, res) => __awaiter(void 0, void 0, void 0
 exports.healthfacilitygeneraldata = healthfacilitygeneraldata;
 const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { healthfacility } = req.query;
+    const anc = req.query.anc || 2;
     const getfeverreturn = (healthfacility) => __awaiter(void 0, void 0, void 0, function* () {
         const connection = yield db_1.default.getConnection();
         try {
@@ -2748,7 +2799,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.healthfacility = ?
+        rv.fever = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2760,10 +2811,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.healthfacility = ?
+        rv.fever = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -2790,7 +2841,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.healthfacility = ?
+        rv.headache = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2802,10 +2853,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.healthfacility = ?
+        rv.headache = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -2832,7 +2883,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.healthfacility = ?
+        rv.cough = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2844,10 +2895,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.healthfacility = ?
+        rv.cough = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -2874,7 +2925,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.healthfacility = ?
+        rv.palpitation = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2886,10 +2937,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.healthfacility = ?
+        rv.palpitation = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -2916,7 +2967,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.healthfacility = ?
+        rv.severetirednesss = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2928,10 +2979,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.healthfacility = ?
+        rv.severetirednesss = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -2958,7 +3009,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.healthfacility = ?
+        rv.difficultylyingflat = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -2970,10 +3021,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.healthfacility = ?
+        rv.difficultylyingflat = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3000,7 +3051,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.healthfacility = ?
+        rv.dizziness = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3012,10 +3063,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.healthfacility = ?
+        rv.dizziness = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3042,7 +3093,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.healthfacility = ?
+        rv.convulsions = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3054,10 +3105,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.healthfacility = ?
+        rv.convulsions = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3084,7 +3135,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.healthfacility = ?
+        rv.severeabdominalpain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3096,10 +3147,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.healthfacility = ?
+        rv.severeabdominalpain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3126,7 +3177,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.healthfacility = ?
+        rv.urinarypain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3138,10 +3189,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.healthfacility = ?
+        rv.urinarypain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3168,7 +3219,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.healthfacility = ?
+        rv.bloodinurine = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3180,10 +3231,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.healthfacility = ?
+        rv.bloodinurine = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3210,7 +3261,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.healthfacility = ?
+        rv.vaginaldischarge = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3222,10 +3273,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.healthfacility = ?
+        rv.vaginaldischarge = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3252,7 +3303,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.healthfacility = ?
+        rv.painduringsex = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3264,10 +3315,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.healthfacility = ?
+        rv.painduringsex = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3294,7 +3345,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.healthfacility = ?
+        rv.syphillis = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
             const q2 = `SELECT
       pi.*,
@@ -3306,10 +3357,10 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.healthfacility = ?
+        rv.syphillis = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
-            const result = yield connection.execute(q, ["Yes", healthfacility]);
-            const result2 = yield connection.execute(q2, ["No", healthfacility]);
+            const result = yield connection.execute(q, ["Yes", healthfacility, anc]);
+            const result2 = yield connection.execute(q2, ["No", healthfacility, anc]);
             return {
                 yes: result[0].length,
                 no: result2[0].length,
@@ -3356,7 +3407,7 @@ const healthfacilityreturnvisitdata = (req, res) => __awaiter(void 0, void 0, vo
         });
     }
     catch (error) {
-        console.log(error);
+        logger_1.default.log("healthfacilityreturnvisitdata" + ": " + error);
         res.status(500).json(error);
     }
     finally {

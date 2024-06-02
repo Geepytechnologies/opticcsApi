@@ -55,7 +55,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
     );
     return result[0];
   };
-  logger.info(existinguserid);
+  // logger.info(existinguserid);
 
   const createRefresh = async (refreshtoken: string) => {
     const result = await hfRepository.UpdateUserRefreshToken(

@@ -1321,7 +1321,7 @@ const getseverediarrhoea = async (healthfacility) => {
         personalinformation pi ON p.personalinformation_id = pi.id
     WHERE
       mh.severediarrhoea = ?
-    AND pi.healthfacility = ?`;
+    AND pi.healthfacility = ?AND pi.healthfacility = ?`;
 
     const result = await connection.execute(q, ["Yes", healthfacility]);
     const result2 = await connection.execute(q2, ["No", healthfacility]);
@@ -1335,6 +1335,55 @@ const getseverediarrhoea = async (healthfacility) => {
       connection.release();
     }
   }
+};
+const getdizziness = async (healthfacility) => {
+  const connection = await db.getConnection();
+
+  try {
+    const q = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ? AND pi.healthfacility = ?
+    `;
+    const q2 = `SELECT
+    pi.*,
+    fv.*,
+    p.*
+    FROM
+    medicalhistory mh
+    JOIN
+        firstvisit fv ON mh.firstvisit_id = fv.id
+    JOIN
+        patients p ON fv.patient_id = p.id
+    JOIN
+        personalinformation pi ON p.personalinformation_id = pi.id
+    WHERE
+      mh.dizziness = ? AND pi.healthfacility = ?
+    `;
+
+    const result: any = await this.connection.execute(q, [
+      "Yes",
+      healthfacility,
+    ]);
+    const result2: any = await this.connection.execute(q2, [
+      "No",
+      healthfacility,
+    ]);
+    return {
+      yes: result[0].length,
+      no: result2[0].length,
+    };
+  } catch (error) {}
 };
 //urinary
 const getpainwithurination = async (healthfacility) => {
@@ -2558,6 +2607,7 @@ const healthfacilitygeneraldata = async (req, res) => {
     const severeabdominalpain = await getsevereabdominalpain(healthfacility);
     const persistentvomiting = await getpersistentvomiting(healthfacility);
     const severediarrhoea = await getseverediarrhoea(healthfacility);
+    const dizziness = await getdizziness(healthfacility);
     //urinary
     const painwithurination = await getpainwithurination(healthfacility);
     const severeflankpain = await getsevereflankpain(healthfacility);
@@ -2624,6 +2674,7 @@ const healthfacilitygeneraldata = async (req, res) => {
       severeabdominalpain,
       persistentvomiting,
       severediarrhoea,
+      dizziness,
       painwithurination,
       severeflankpain,
       bloodinurine,
@@ -2659,6 +2710,7 @@ const healthfacilitygeneraldata = async (req, res) => {
 
 const healthfacilityreturnvisitdata = async (req, res) => {
   const { healthfacility } = req.query;
+  const anc = req.query.anc || 2;
 
   const getfeverreturn = async (healthfacility) => {
     const connection = await db.getConnection();
@@ -2673,7 +2725,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.healthfacility = ?
+        rv.fever = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2685,11 +2737,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.fever = ? AND pi.healthfacility = ?
+        rv.fever = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2714,7 +2766,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.healthfacility = ?
+        rv.headache = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2726,11 +2778,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.headache = ? AND pi.healthfacility = ?
+        rv.headache = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2755,7 +2807,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.healthfacility = ?
+        rv.cough = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2767,11 +2819,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.cough = ? AND pi.healthfacility = ?
+        rv.cough = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2796,7 +2848,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.healthfacility = ?
+        rv.palpitation = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2808,11 +2860,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.palpitation = ? AND pi.healthfacility = ?
+        rv.palpitation = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2837,7 +2889,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.healthfacility = ?
+        rv.severetirednesss = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2849,11 +2901,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severetirednesss = ? AND pi.healthfacility = ?
+        rv.severetirednesss = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2878,7 +2930,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.healthfacility = ?
+        rv.difficultylyingflat = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2890,11 +2942,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.difficultylyingflat = ? AND pi.healthfacility = ?
+        rv.difficultylyingflat = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2919,7 +2971,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.healthfacility = ?
+        rv.dizziness = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2931,11 +2983,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.dizziness = ? AND pi.healthfacility = ?
+        rv.dizziness = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -2960,7 +3012,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.healthfacility = ?
+        rv.convulsions = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -2972,11 +3024,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.convulsions = ? AND pi.healthfacility = ?
+        rv.convulsions = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3001,7 +3053,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.healthfacility = ?
+        rv.severeabdominalpain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3013,11 +3065,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.severeabdominalpain = ? AND pi.healthfacility = ?
+        rv.severeabdominalpain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3042,7 +3094,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.healthfacility = ?
+        rv.urinarypain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3054,11 +3106,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.urinarypain = ? AND pi.healthfacility = ?
+        rv.urinarypain = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3083,7 +3135,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.healthfacility = ?
+        rv.bloodinurine = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3095,11 +3147,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.bloodinurine = ? AND pi.healthfacility = ?
+        rv.bloodinurine = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3124,7 +3176,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.healthfacility = ?
+        rv.vaginaldischarge = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3136,11 +3188,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.vaginaldischarge = ? AND pi.healthfacility = ?
+        rv.vaginaldischarge = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3165,7 +3217,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.healthfacility = ?
+        rv.painduringsex = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3177,11 +3229,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.painduringsex = ? AND pi.healthfacility = ?
+        rv.painduringsex = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3206,7 +3258,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.healthfacility = ?
+        rv.syphillis = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
       const q2 = `SELECT
       pi.*,
@@ -3218,11 +3270,11 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       JOIN
           personalinformation pi ON p.personalinformation_id = pi.id
       WHERE
-        rv.syphillis = ? AND pi.healthfacility = ?
+        rv.syphillis = ? AND pi.healthfacility = ? AND rv.anc = ?
       `;
 
-      const result = await connection.execute(q, ["Yes", healthfacility]);
-      const result2 = await connection.execute(q2, ["No", healthfacility]);
+      const result = await connection.execute(q, ["Yes", healthfacility, anc]);
+      const result2 = await connection.execute(q2, ["No", healthfacility, anc]);
       return {
         yes: result[0].length,
         no: result2[0].length,
@@ -3271,7 +3323,7 @@ const healthfacilityreturnvisitdata = async (req, res) => {
       syphilis,
     });
   } catch (error) {
-    console.log(error);
+    logger.log("healthfacilityreturnvisitdata" + ": " + error);
     res.status(500).json(error);
   } finally {
   }
