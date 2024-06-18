@@ -295,8 +295,8 @@ const signin = async (req, res, next) => {
     // Creates Secure Cookie with refresh token
     res.cookie("nationaltoken", refreshToken, {
       httpOnly: false,
-      secure: true,
-      sameSite: "None",
+      secure: false,
+      sameSite: "none",
       // domain: ".vercel.app",
       maxAge: 6 * 24 * 60 * 60 * 1000,
     });

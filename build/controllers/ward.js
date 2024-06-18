@@ -88,8 +88,9 @@ class WardController {
             const wardRepo = new WardRepsitory_1.WardRepository(connection);
             const wardservice = new ward_service_1.WardService(wardRepo);
             const lga = req.query.lga;
+            const state = req.query.state;
             try {
-                const result = yield wardservice.getAllWardsForState(lga);
+                const result = yield wardservice.getAllWardsForLga(state, lga);
                 res.status(200).json({ statusCode: "200", result: result });
             }
             catch (error) {

@@ -38,10 +38,10 @@ export class WardRepository {
       throw new Error(err);
     }
   }
-  async getAllWardsForLga(lga: string) {
+  async getAllWardsForLga(state: string, lga: string) {
     const q = wardQueries.getAllWardsForLga();
     try {
-      const [result] = await this.connection.execute(q, [lga]);
+      const [result] = await this.connection.execute(q, [state, lga]);
       return result;
     } catch (err: any) {
       throw new Error(err);

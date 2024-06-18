@@ -114,9 +114,9 @@ const signin = async (req, res, next) => {
 
     // Creates Secure Cookie with refresh token
     res.cookie("lgatoken", refreshToken, {
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: "None",
+      httpOnly: false,
+      secure: false,
+      sameSite: "none",
       maxAge: 6 * 24 * 60 * 60 * 1000,
     });
 

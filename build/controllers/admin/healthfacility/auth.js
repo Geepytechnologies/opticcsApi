@@ -95,10 +95,10 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             const newuser = yield existinguserid();
             // Creates Secure Cookie with refresh token
             res.cookie("healthtoken", refreshToken, {
-                // httpOnly: false,
-                // secure: true,
-                // sameSite: "None",
-                maxAge: 10 * 24 * 60 * 60 * 1000,
+                httpOnly: false,
+                secure: false,
+                sameSite: "none",
+                maxAge: 6 * 24 * 60 * 60 * 1000,
             });
             if (Array.isArray(newuser)) {
                 const _a = newuser[0], { password, refreshtoken } = _a, others = __rest(_a, ["password", "refreshtoken"]);

@@ -12,7 +12,7 @@ class wardQueries {
         return `SELECT * FROM wards WHERE state = ?`;
     }
     static getAllWardsForLga() {
-        return `SELECT * FROM wards WHERE lga = ?`;
+        return `SELECT * FROM wards WHERE state = ? AND lga = ?`;
     }
 }
 exports.wardQueries = wardQueries;

@@ -34,9 +34,9 @@ export class WardService {
       throw new Error(error);
     }
   }
-  async getAllWardsForLga(lga: string) {
+  async getAllWardsForLga(state: string, lga: string) {
     try {
-      const result = await this.wardRepo.getAllWardsForLga(lga);
+      const result = await this.wardRepo.getAllWardsForLga(state, lga);
 
       return result;
     } catch (error: any) {

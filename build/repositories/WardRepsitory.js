@@ -52,11 +52,11 @@ class WardRepository {
             }
         });
     }
-    getAllWardsForLga(lga) {
+    getAllWardsForLga(state, lga) {
         return __awaiter(this, void 0, void 0, function* () {
             const q = ward_1.wardQueries.getAllWardsForLga();
             try {
-                const [result] = yield this.connection.execute(q, [lga]);
+                const [result] = yield this.connection.execute(q, [state, lga]);
                 return result;
             }
             catch (err) {

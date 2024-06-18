@@ -16,6 +16,7 @@ const db: Pool = mysql.createPool({
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
+  connectTimeout: 20000,
 });
 
 // Event listener for when a connection is acquired
@@ -39,6 +40,7 @@ db.on("release", function (connection) {
     await db.query("SELECT 1");
     logger.info("Connected to MySQL pool! new config");
   } catch (error: any) {
+    console.log(error);
     logger.error("Failed to connect to MySQL:", error.message);
   }
 })();

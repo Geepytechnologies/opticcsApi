@@ -47,10 +47,10 @@ class WardService {
             }
         });
     }
-    getAllWardsForLga(lga) {
+    getAllWardsForLga(state, lga) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.wardRepo.getAllWardsForLga(lga);
+                const result = yield this.wardRepo.getAllWardsForLga(state, lga);
                 return result;
             }
             catch (error) {

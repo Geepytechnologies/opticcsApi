@@ -28,6 +28,7 @@ const db = promise_1.default.createPool({
     queueLimit: 0,
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
+    connectTimeout: 20000,
 });
 // Event listener for when a connection is acquired
 db.on("acquire", function (connection) {
@@ -45,6 +46,7 @@ db.on("release", function (connection) {
         logger_1.default.info("Connected to MySQL pool! new config");
     }
     catch (error) {
+        console.log(error);
         logger_1.default.error("Failed to connect to MySQL:", error.message);
     }
 }))();

@@ -123,9 +123,9 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const updatedUser = yield createRefresh(refreshToken);
         // Creates Secure Cookie with refresh token
         res.cookie("statetoken", refreshToken, {
-            // httpOnly: false,
-            // secure: true,
-            // sameSite: "None",
+            httpOnly: false,
+            secure: false,
+            sameSite: "none",
             maxAge: 6 * 24 * 60 * 60 * 1000,
         });
         const { password } = user, others = __rest(user, ["password"]);
