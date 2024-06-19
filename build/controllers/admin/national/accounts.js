@@ -21,16 +21,16 @@ const createNationalUserAccount = (req, res, next) => __awaiter(void 0, void 0, 
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
     const values = [
-        state,
-        staffname,
-        staffid,
-        gender,
-        cadre,
-        phone,
-        email,
-        userid,
-        hashedpassword,
-        accountType,
+        state.trim(),
+        staffname.trim(),
+        staffid.trim(),
+        gender.trim(),
+        cadre.trim(),
+        phone.trim(),
+        email.trim(),
+        userid.trim(),
+        hashedpassword.trim(),
+        accountType.trim(),
     ];
     try {
         const connection = yield db_1.default.getConnection();

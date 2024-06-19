@@ -24,26 +24,17 @@ const createHealthfacilityAccount = async (
     email,
   } = req.body;
   const values = [
-    ward,
-    healthfacilityname,
-    lga,
-    state,
-    healthfacilityID,
-    officeaddress,
-    phone,
-    email,
+    ward.trim(),
+    healthfacilityname.trim(),
+    lga.trim(),
+    state.trim(),
+    healthfacilityID.trim(),
+    officeaddress.trim(),
+    phone.trim(),
+    email.trim(),
   ];
   console.log(values);
 
-  // const { error } = healthfacilityvalidation.createAccount(req.body);
-  // console.log(error);
-  // if (error) {
-  //   return res.status(400).json({
-  //     statusCode: "400",
-  //     message: error.details[0].message.toUpperCase(),
-  //     result: null,
-  //   });
-  // }
   try {
     const connection = await BaseRepository.getConnection();
     const hfRepository = new HealthFacilityRepository(connection);
@@ -91,18 +82,18 @@ const createHealthfacilityUserAccount = async (
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
   const values = [
-    ward,
-    staffname,
-    staffid,
-    gender,
-    lga,
-    state,
-    cadre,
-    phone,
-    email,
-    userid,
-    hashedpassword,
-    healthfacility,
+    ward.trim(),
+    staffname.trim(),
+    staffid.trim(),
+    gender.trim(),
+    lga.trim(),
+    state.trim(),
+    cadre.trim(),
+    phone.trim(),
+    email.trim(),
+    userid.trim(),
+    hashedpassword.trim(),
+    healthfacility.trim(),
   ];
   // const { error } = healthfacilityvalidation.createUserAccount(req.body);
   // if (error) {
@@ -248,7 +239,7 @@ const getAllHealthfacility = async (req: any, res: Response) => {
   const healthfacility = req.query.healthfacility || "";
   const from = req.query.from || "";
   const to = req.query.to || "";
-  const filter = req.query.filter;
+  const filter = req.query.filter || "national";
   console.log("filter: " + filter);
   const connection = await db.getConnection();
   const hfRepo = new HealthFacilityRepository(connection);
@@ -264,9 +255,10 @@ const getAllHealthfacility = async (req: any, res: Response) => {
       from,
       to
     );
+
     res.status(200).json({ result: result.result, count: result.count });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     res.status(500).json(error);
   } finally {
     if (connection) {

@@ -59,13 +59,23 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
     const { userid } = req.body;
     const existinguserid = () => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield hfRepository.getHealthfacilityUserAccountByUserID(userid);
-        return result[0];
+        try {
+            const result = yield hfRepository.getHealthfacilityUserAccountByUserID(userid);
+            return result[0];
+        }
+        catch (error) {
+            console.log("existinguserid in hfsignin" + " " + error);
+        }
     });
     // logger.info(existinguserid);
     const createRefresh = (refreshtoken) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield hfRepository.UpdateUserRefreshToken(refreshtoken, userid);
-        return result[0];
+        try {
+            const result = yield hfRepository.UpdateUserRefreshToken(refreshtoken, userid);
+            return result[0];
+        }
+        catch (error) {
+            console.log("createRefresh in hfsignin" + " " + error);
+        }
     });
     try {
         const user = yield existinguserid();

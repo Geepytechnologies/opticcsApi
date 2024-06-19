@@ -18,16 +18,16 @@ const createNationalUserAccount = async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
   const values = [
-    state,
-    staffname,
-    staffid,
-    gender,
-    cadre,
-    phone,
-    email,
-    userid,
-    hashedpassword,
-    accountType,
+    state.trim(),
+    staffname.trim(),
+    staffid.trim(),
+    gender.trim(),
+    cadre.trim(),
+    phone.trim(),
+    email.trim(),
+    userid.trim(),
+    hashedpassword.trim(),
+    accountType.trim(),
   ];
   try {
     const connection = await db.getConnection();

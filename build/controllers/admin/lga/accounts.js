@@ -18,7 +18,15 @@ const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const createLgaAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { lga, boardname, state, lgaID, officeaddress, phone, email } = req.body;
-    const values = [lga, boardname, state, lgaID, officeaddress, phone, email];
+    const values = [
+        lga.trim(),
+        boardname.trim(),
+        state.trim(),
+        lgaID.trim(),
+        officeaddress.trim(),
+        phone.trim(),
+        email.trim(),
+    ];
     const connection = yield db_1.default.getConnection();
     const checkIfLgaAccountExists = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const q = `SELECT * FROM lgaccount WHERE lga = ?`;
@@ -76,16 +84,16 @@ const createLgaUserAccount = (req, res, next) => __awaiter(void 0, void 0, void 
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
     const values = [
-        lga,
-        state,
-        staffname,
-        staffid,
-        gender,
-        cadre,
-        phone,
-        email,
-        userid,
-        hashedpassword,
+        lga.trim(),
+        state.trim(),
+        staffname.trim(),
+        staffid.trim(),
+        gender.trim(),
+        cadre.trim(),
+        phone.trim(),
+        email.trim(),
+        userid.trim(),
+        hashedpassword.trim(),
         null,
     ];
     const connection = yield db_1.default.getConnection();

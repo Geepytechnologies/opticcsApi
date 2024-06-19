@@ -271,13 +271,13 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
         const result = yield connection.execute((0, user_1.createUserQuery)(), [
             hashedpassword,
-            phone,
-            state,
-            lga,
-            ward,
-            healthfacility,
-            healthworker,
-            cadre,
+            phone.trim(),
+            state.trim(),
+            lga.trim(),
+            ward.trim(),
+            healthfacility.trim(),
+            healthworker.trim(),
+            cadre.trim(),
         ]);
         return result[0];
     });

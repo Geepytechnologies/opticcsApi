@@ -21,7 +21,14 @@ const StateRepository_1 = require("../../../repositories/StateRepository");
 const state_service_1 = require("../../../services/state.service");
 const createStateAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { state, boardname, stateid, officeaddress, phone, email } = req.body;
-    const values = [state, boardname, stateid, officeaddress, phone, email];
+    const values = [
+        state.trim(),
+        boardname.trim(),
+        stateid.trim(),
+        officeaddress.trim(),
+        phone.trim(),
+        email.trim(),
+    ];
     const connection = yield db_1.default.getConnection();
     const checkIfStateAccountExists = () => __awaiter(void 0, void 0, void 0, function* () {
         const q = `SELECT * FROM stateaccount WHERE state = ?`;
@@ -82,15 +89,15 @@ const createStateUserAccount = (req, res, next) => __awaiter(void 0, void 0, voi
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
     const values = [
-        state,
-        staffname,
-        staffid,
-        gender,
-        cadre,
-        phone,
-        email,
-        userid,
-        hashedpassword,
+        state.trim(),
+        staffname.trim(),
+        staffid.trim(),
+        gender.trim(),
+        cadre.trim(),
+        phone.trim(),
+        email.trim(),
+        userid.trim(),
+        hashedpassword.trim(),
         null,
     ];
     const connection = yield db_1.default.getConnection();

@@ -24,25 +24,16 @@ const healthfacility_service_1 = require("../../../services/healthfacility.servi
 const createHealthfacilityAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { ward, state, lga, healthfacilityname, healthfacilityID, officeaddress, phone, email, } = req.body;
     const values = [
-        ward,
-        healthfacilityname,
-        lga,
-        state,
-        healthfacilityID,
-        officeaddress,
-        phone,
-        email,
+        ward.trim(),
+        healthfacilityname.trim(),
+        lga.trim(),
+        state.trim(),
+        healthfacilityID.trim(),
+        officeaddress.trim(),
+        phone.trim(),
+        email.trim(),
     ];
     console.log(values);
-    // const { error } = healthfacilityvalidation.createAccount(req.body);
-    // console.log(error);
-    // if (error) {
-    //   return res.status(400).json({
-    //     statusCode: "400",
-    //     message: error.details[0].message.toUpperCase(),
-    //     result: null,
-    //   });
-    // }
     try {
         const connection = yield BaseRepository_1.default.getConnection();
         const hfRepository = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
@@ -72,18 +63,18 @@ const createHealthfacilityUserAccount = (req, res, next) => __awaiter(void 0, vo
     const salt = bcryptjs_1.default.genSaltSync(10);
     const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
     const values = [
-        ward,
-        staffname,
-        staffid,
-        gender,
-        lga,
-        state,
-        cadre,
-        phone,
-        email,
-        userid,
-        hashedpassword,
-        healthfacility,
+        ward.trim(),
+        staffname.trim(),
+        staffid.trim(),
+        gender.trim(),
+        lga.trim(),
+        state.trim(),
+        cadre.trim(),
+        phone.trim(),
+        email.trim(),
+        userid.trim(),
+        hashedpassword.trim(),
+        healthfacility.trim(),
     ];
     // const { error } = healthfacilityvalidation.createUserAccount(req.body);
     // if (error) {
@@ -208,7 +199,7 @@ const getAllHealthfacility = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const healthfacility = req.query.healthfacility || "";
     const from = req.query.from || "";
     const to = req.query.to || "";
-    const filter = req.query.filter;
+    const filter = req.query.filter || "national";
     console.log("filter: " + filter);
     const connection = yield db_1.default.getConnection();
     const hfRepo = new HealthFacilityRepository_1.HealthFacilityRepository(connection);
@@ -218,7 +209,7 @@ const getAllHealthfacility = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json({ result: result.result, count: result.count });
     }
     catch (error) {
-        console.log(error);
+        logger_1.default.error(error);
         res.status(500).json(error);
     }
     finally {

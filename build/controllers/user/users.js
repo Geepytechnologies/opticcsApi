@@ -708,9 +708,11 @@ exports.getAllUnverifiedworkers = getAllUnverifiedworkers;
 const getUnverifiedworkers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield db_1.default.getConnection();
     const healthfacility = req.query.healthfacility;
+    logger_1.default.info(healthfacility);
     try {
         const q = `SELECT * FROM healthpersonnel WHERE verified = 0 AND healthfacility = ?`;
         const result = yield connection.execute(q, [healthfacility]);
+        console.log(result, "   healthfacility");
         res
             .status(200)
             .json({ statusCode: "200", message: "successful", result: result[0] });

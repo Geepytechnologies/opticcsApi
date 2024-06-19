@@ -278,13 +278,13 @@ const signup = async (req, res, next) => {
     const hashedpassword = bcrypt.hashSync(password, salt);
     const result = await connection.execute(createUserQuery(), [
       hashedpassword,
-      phone,
-      state,
-      lga,
-      ward,
-      healthfacility,
-      healthworker,
-      cadre,
+      phone.trim(),
+      state.trim(),
+      lga.trim(),
+      ward.trim(),
+      healthfacility.trim(),
+      healthworker.trim(),
+      cadre.trim(),
     ]);
     return result[0];
   };

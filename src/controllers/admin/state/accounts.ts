@@ -7,7 +7,14 @@ import { StateService } from "../../../services/state.service";
 
 const createStateAccount = async (req, res, next) => {
   const { state, boardname, stateid, officeaddress, phone, email } = req.body;
-  const values = [state, boardname, stateid, officeaddress, phone, email];
+  const values = [
+    state.trim(),
+    boardname.trim(),
+    stateid.trim(),
+    officeaddress.trim(),
+    phone.trim(),
+    email.trim(),
+  ];
   const connection = await db.getConnection();
 
   const checkIfStateAccountExists = async () => {
@@ -73,15 +80,15 @@ const createStateUserAccount = async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
   const values = [
-    state,
-    staffname,
-    staffid,
-    gender,
-    cadre,
-    phone,
-    email,
-    userid,
-    hashedpassword,
+    state.trim(),
+    staffname.trim(),
+    staffid.trim(),
+    gender.trim(),
+    cadre.trim(),
+    phone.trim(),
+    email.trim(),
+    userid.trim(),
+    hashedpassword.trim(),
     null,
   ];
   const connection = await db.getConnection();

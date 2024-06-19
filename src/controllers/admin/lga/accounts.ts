@@ -5,7 +5,15 @@ import bcrypt from "bcryptjs";
 const createLgaAccount = async (req, res, next) => {
   const { lga, boardname, state, lgaID, officeaddress, phone, email } =
     req.body;
-  const values = [lga, boardname, state, lgaID, officeaddress, phone, email];
+  const values = [
+    lga.trim(),
+    boardname.trim(),
+    state.trim(),
+    lgaID.trim(),
+    officeaddress.trim(),
+    phone.trim(),
+    email.trim(),
+  ];
   const connection = await db.getConnection();
 
   const checkIfLgaAccountExists = async (req, res) => {
@@ -69,16 +77,16 @@ const createLgaUserAccount = async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedpassword = bcrypt.hashSync(password, salt);
   const values = [
-    lga,
-    state,
-    staffname,
-    staffid,
-    gender,
-    cadre,
-    phone,
-    email,
-    userid,
-    hashedpassword,
+    lga.trim(),
+    state.trim(),
+    staffname.trim(),
+    staffid.trim(),
+    gender.trim(),
+    cadre.trim(),
+    phone.trim(),
+    email.trim(),
+    userid.trim(),
+    hashedpassword.trim(),
     null,
   ];
   const connection = await db.getConnection();
