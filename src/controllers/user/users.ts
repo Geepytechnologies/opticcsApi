@@ -832,9 +832,11 @@ const getAllUnverifiedworkers = async (req, res) => {
 const getUnverifiedworkers = async (req, res) => {
   const connection = await db.getConnection();
   const healthfacility = req.query.healthfacility;
+  logger.info(healthfacility);
   try {
     const q = `SELECT * FROM healthpersonnel WHERE verified = 0 AND healthfacility = ?`;
     const result = await connection.execute(q, [healthfacility]);
+    console.log(result, "   healthfacility");
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: result[0] });

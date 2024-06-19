@@ -50,19 +50,27 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
   const { userid } = req.body;
 
   const existinguserid = async () => {
-    const result = await hfRepository.getHealthfacilityUserAccountByUserID(
-      userid
-    );
-    return result[0];
+    try {
+      const result = await hfRepository.getHealthfacilityUserAccountByUserID(
+        userid
+      );
+      return result[0];
+    } catch (error) {
+      console.log("existinguserid in hfsignin" + " " + error);
+    }
   };
   // logger.info(existinguserid);
 
   const createRefresh = async (refreshtoken: string) => {
-    const result = await hfRepository.UpdateUserRefreshToken(
-      refreshtoken,
-      userid
-    );
-    return result[0];
+    try {
+      const result = await hfRepository.UpdateUserRefreshToken(
+        refreshtoken,
+        userid
+      );
+      return result[0];
+    } catch (error) {
+      console.log("createRefresh in hfsignin" + " " + error);
+    }
   };
 
   try {
