@@ -78,10 +78,11 @@ const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             throw new Error(`Patient with phone number ${phone} already exists`);
         }
     });
-    const createpatient = (personalinformation_id) => __awaiter(void 0, void 0, void 0, function* () {
-        const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstvisit_date, personalinformation_id)
-    VALUES (?,?, ?)`;
+    const createpatient = (id, personalinformation_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const createPatientQuery = `INSERT INTO patients (id, healthpersonnel_id,firstvisit_date, personalinformation_id)
+    VALUES (?,?,?, ?)`;
         const result = yield connection.execute(createPatientQuery, [
+            id,
             healthpersonnel_id,
             firstvisit_date,
             personalinformation_id,
@@ -563,7 +564,7 @@ WHERE
         yield connection.beginTransaction();
         const createdrecord = yield personalRecord();
         const personalInformation_id = createdrecord[0].insertId;
-        const patientcreate = yield createpatient(personalInformation_id);
+        const patientcreate = yield createpatient(personalInformation_id, personalInformation_id);
         const patientID = patientcreate[0].insertId;
         const firstvisitcreation = yield createfirstvisit(patientID);
         const firstvisitID = firstvisitcreation[0].insertId;

@@ -279,10 +279,11 @@ const createPatient = async (req, res, next) => {
       throw new Error(`Patient with phone number ${phone} already exists`);
     }
   };
-  const createpatient = async (personalinformation_id) => {
-    const createPatientQuery = `INSERT INTO patients (healthpersonnel_id,firstvisit_date, personalinformation_id)
-    VALUES (?,?, ?)`;
+  const createpatient = async (id, personalinformation_id) => {
+    const createPatientQuery = `INSERT INTO patients (id, healthpersonnel_id,firstvisit_date, personalinformation_id)
+    VALUES (?,?,?, ?)`;
     const result = await connection.execute(createPatientQuery, [
+      id,
       healthpersonnel_id,
       firstvisit_date,
       personalinformation_id,
@@ -771,7 +772,10 @@ WHERE
     await connection.beginTransaction();
     const createdrecord = await personalRecord();
     const personalInformation_id = createdrecord[0].insertId;
-    const patientcreate = await createpatient(personalInformation_id);
+    const patientcreate = await createpatient(
+      personalInformation_id,
+      personalInformation_id
+    );
     const patientID = patientcreate[0].insertId;
     const firstvisitcreation = await createfirstvisit(patientID);
     const firstvisitID = firstvisitcreation[0].insertId;
