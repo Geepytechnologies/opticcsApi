@@ -887,10 +887,12 @@ const createHealthworkerSchedule = async (req, res, next) => {
     const resultquery = `SELECT * FROM schedule WHERE id = ?`;
     const create = await connection.execute(q, values);
     const result = await connection.execute(resultquery, [create[0].insertId]);
+    logger.info("Schedule created successfully");
     res
       .status(200)
       .json({ statusCode: "200", message: "successful", result: create[0] });
   } catch (error) {
+    console.warn("error from creating schedule" + " :" + error);
     res.status(500).json({ error: error });
   } finally {
     if (connection) {

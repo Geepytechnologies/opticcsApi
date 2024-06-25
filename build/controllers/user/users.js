@@ -768,11 +768,13 @@ const createHealthworkerSchedule = (req, res, next) => __awaiter(void 0, void 0,
         const resultquery = `SELECT * FROM schedule WHERE id = ?`;
         const create = yield connection.execute(q, values);
         const result = yield connection.execute(resultquery, [create[0].insertId]);
+        logger_1.default.info("Schedule created successfully");
         res
             .status(200)
             .json({ statusCode: "200", message: "successful", result: create[0] });
     }
     catch (error) {
+        console.warn("error from creating schedule" + " :" + error);
         res.status(500).json({ error: error });
     }
     finally {
