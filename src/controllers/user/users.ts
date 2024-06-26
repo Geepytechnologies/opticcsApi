@@ -892,7 +892,8 @@ const createHealthworkerSchedule = async (req, res, next) => {
       .status(200)
       .json({ statusCode: "200", message: "successful", result: create[0] });
   } catch (error) {
-    console.warn("error from creating schedule" + " :" + error);
+    console.log("error from creating schedule" + " :" + error);
+    logger.error(error);
     res.status(500).json({ error: error });
   } finally {
     if (connection) {

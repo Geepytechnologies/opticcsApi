@@ -774,7 +774,8 @@ const createHealthworkerSchedule = (req, res, next) => __awaiter(void 0, void 0,
             .json({ statusCode: "200", message: "successful", result: create[0] });
     }
     catch (error) {
-        console.warn("error from creating schedule" + " :" + error);
+        console.log("error from creating schedule" + " :" + error);
+        logger_1.default.error(error);
         res.status(500).json({ error: error });
     }
     finally {
