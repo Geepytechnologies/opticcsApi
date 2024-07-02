@@ -17,6 +17,7 @@ exports.getAllPatientReturnVisit = exports.getAllPatientFirstVisits = exports.da
 //@ts-nocheck
 const db_1 = __importDefault(require("../../config/db"));
 const logger_1 = __importDefault(require("../../logger"));
+const ancvisit_1 = require("../../queries/user/ancvisit");
 const patient_1 = require("../../queries/user/patient");
 const user_1 = require("../../queries/user/user");
 const createPatient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -754,6 +755,24 @@ WHERE
         const result = yield connection.execute(q, [patient_id]);
         return result[0];
     });
+    const createancvisit = (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const q = ancvisit_1.AncvisitQueries.createancvisit();
+        const values = [
+            data.patient_id,
+            data.healthpersonnel_id,
+            data.anc_number,
+            data.lastANC,
+            data.missed,
+            data.attended,
+        ];
+        try {
+            const [result] = yield connection.execute(q, values);
+            return result;
+        }
+        catch (err) {
+            throw new Error(err + ": " + "createancvisit");
+        }
+    });
     try {
         yield connection.beginTransaction();
         const createdrecord = yield personalRecord();
@@ -771,6 +790,16 @@ WHERE
         yield createmedicationHistory(firstvisitID);
         yield createdrugHistory(firstvisitID);
         yield createphysicalexamination(firstvisitID);
+        //anc visit
+        const ancdata = {
+            patient_id: patientID,
+            healthpersonnel_id: healthpersonnel_id,
+            anc_number: "1",
+            lastANC: "1",
+            missed: "0",
+            attended: "1",
+        };
+        yield createancvisit(ancdata);
         yield connection.commit();
         const newpatientrecord = yield getnewlycreatedpatientrecord(patientID);
         const result = newpatientrecord[0];

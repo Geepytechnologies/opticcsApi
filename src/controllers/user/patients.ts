@@ -2,6 +2,7 @@
 //@ts-nocheck
 import db from "../../config/db";
 import logger from "../../logger";
+import { AncvisitQueries } from "../../queries/user/ancvisit";
 import { Patientqueries } from "../../queries/user/patient";
 import {
   createPatientPersonalInfoQuery,
@@ -961,7 +962,23 @@ WHERE
     const result = await connection.execute(q, [patient_id]);
     return result[0];
   };
-
+  const createancvisit = async (data) => {
+    const q = AncvisitQueries.createancvisit();
+    const values = [
+      data.patient_id,
+      data.healthpersonnel_id,
+      data.anc_number,
+      data.lastANC,
+      data.missed,
+      data.attended,
+    ];
+    try {
+      const [result]: any = await connection.execute(q, values);
+      return result;
+    } catch (err) {
+      throw new Error(err + ": " + "createancvisit");
+    }
+  };
   try {
     await connection.beginTransaction();
     const createdrecord = await personalRecord();
@@ -982,7 +999,16 @@ WHERE
     await createmedicationHistory(firstvisitID);
     await createdrugHistory(firstvisitID);
     await createphysicalexamination(firstvisitID);
-
+    //anc visit
+    const ancdata = {
+      patient_id: patientID,
+      healthpersonnel_id: healthpersonnel_id,
+      anc_number: "1",
+      lastANC: "1",
+      missed: "0",
+      attended: "1",
+    };
+    await createancvisit(ancdata);
     await connection.commit();
 
     const newpatientrecord = await getnewlycreatedpatientrecord(patientID);
