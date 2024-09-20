@@ -78,20 +78,24 @@ const sendSms = async () => {
   try {
     const response = await ScheduleReminder.getCloseSchedules();
     const users = response.result;
-    for (const item of users) {
-      const smsdata = {
-        mobile_number: item.phone,
-        firstname: item.firstname,
+    if (Array.isArray(users)) {
+      for (const item of users) {
+        const smsdata = {
+          mobile_number: item.phone,
+          firstname: item.firstname,
 
-        lastname: item.lastname,
-        date: Global.formatDate(item.dateto),
-        healthfacilityname: item.healthFacility,
-        state: item.state,
-      };
-      const res = await SMSservice.scheduledvisitreminderSMSforPatient(smsdata);
-      console.log(res);
-      if (res.status == 200) {
-        await ScheduleReminder.updateSchedule(item.id);
+          lastname: item.lastname,
+          date: Global.formatDate(item.dateto),
+          healthfacilityname: item.healthFacility,
+          state: item.state,
+        };
+        const res = await SMSservice.scheduledvisitreminderSMSforPatient(
+          smsdata
+        );
+        console.log(res);
+        if (res.status == 200) {
+          await ScheduleReminder.updateSchedule(item.id);
+        }
       }
     }
   } catch (error) {

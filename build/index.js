@@ -67,6 +67,7 @@ const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const path = __importStar(require("path"));
 const schedulereminder_service_1 = require("./services/schedulereminder.service");
 const missedschedule_service_1 = require("./services/missedschedule.service");
+const swagger_1 = __importDefault(require("./config/swagger"));
 schedulereminder_service_1.reminderSMS.start();
 missedschedule_service_1.missedscheduleSMS.start();
 const adminOptions = {
@@ -104,7 +105,7 @@ app.use("/api-docs/admin", swagger_ui_express_1.default.serve, (req, res, next) 
     }
 });
 // Serve Swagger UI for user documentation
-app.use("/api-docs/user", swagger_ui_express_1.default.serve, (req, res, next) => {
+app.use("/api-docs", swagger_ui_express_1.default.serve, (req, res, next) => {
     if (req.baseUrl === "/api-docs/user") {
         swagger_ui_express_1.default.setup(swaggerSpecUser)(req, res, next);
     }
@@ -112,6 +113,7 @@ app.use("/api-docs/user", swagger_ui_express_1.default.serve, (req, res, next) =
         next();
     }
 });
+app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.default));
 const corsOptions = {
     origin: [process.env.ORIGIN, "127.0.0.1:6379"],
     credentials: true,

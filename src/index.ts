@@ -34,6 +34,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import * as path from "path";
 import { reminderSMS } from "./services/schedulereminder.service";
 import { missedscheduleSMS } from "./services/missedschedule.service";
+import swaggerSpec from "./config/swagger";
 
 reminderSMS.start();
 missedscheduleSMS.start();
@@ -74,13 +75,15 @@ app.use("/api-docs/admin", swaggerUi.serve, (req, res, next) => {
 });
 
 // Serve Swagger UI for user documentation
-app.use("/api-docs/user", swaggerUi.serve, (req, res, next) => {
+app.use("/api-docs", swaggerUi.serve, (req, res, next) => {
   if (req.baseUrl === "/api-docs/user") {
     swaggerUi.setup(swaggerSpecUser)(req, res, next);
   } else {
     next();
   }
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const corsOptions = {
   origin: [process.env.ORIGIN, "127.0.0.1:6379"],

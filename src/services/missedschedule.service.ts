@@ -108,21 +108,23 @@ const sendSms = async () => {
   try {
     const response = await MissedSchedule.getMissedSchedules();
     const users = response.result;
-    for (const item of users) {
-      const day = item.dateto.getDay();
-      const actualDate = daysOfTheweek[day];
-      const smsdata = {
-        mobile_number: item.phone,
-        firstname: item.firstname,
+    if (Array.isArray(users)) {
+      for (const item of users) {
+        const day = item.dateto.getDay();
+        const actualDate = daysOfTheweek[day];
+        const smsdata = {
+          mobile_number: item.phone,
+          firstname: item.firstname,
 
-        lastname: item.lastname,
-        day: actualDate,
-        date: Global.formatDate(item.dateto),
-        healthfacilityname: item.healthFacility,
-      };
-      const res = await SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
-      if (res.status == 200) {
-        await MissedSchedule.updateSchedule(item.id);
+          lastname: item.lastname,
+          day: actualDate,
+          date: Global.formatDate(item.dateto),
+          healthfacilityname: item.healthFacility,
+        };
+        const res = await SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
+        if (res.status == 200) {
+          await MissedSchedule.updateSchedule(item.id);
+        }
       }
     }
   } catch (error) {

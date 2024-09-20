@@ -27,7 +27,7 @@ const db = promise_1.default.createPool({
     idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
     queueLimit: 0,
     enableKeepAlive: true,
-    keepAliveInitialDelay: 0,
+    keepAliveInitialDelay: 10000,
     connectTimeout: 20000,
 });
 // Event listener for when a connection is acquired

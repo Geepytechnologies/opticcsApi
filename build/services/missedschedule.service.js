@@ -120,20 +120,22 @@ const sendSms = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield MissedSchedule.getMissedSchedules();
         const users = response.result;
-        for (const item of users) {
-            const day = item.dateto.getDay();
-            const actualDate = daysOfTheweek[day];
-            const smsdata = {
-                mobile_number: item.phone,
-                firstname: item.firstname,
-                lastname: item.lastname,
-                day: actualDate,
-                date: global_1.Global.formatDate(item.dateto),
-                healthfacilityname: item.healthFacility,
-            };
-            const res = yield SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
-            if (res.status == 200) {
-                yield MissedSchedule.updateSchedule(item.id);
+        if (Array.isArray(users)) {
+            for (const item of users) {
+                const day = item.dateto.getDay();
+                const actualDate = daysOfTheweek[day];
+                const smsdata = {
+                    mobile_number: item.phone,
+                    firstname: item.firstname,
+                    lastname: item.lastname,
+                    day: actualDate,
+                    date: global_1.Global.formatDate(item.dateto),
+                    healthfacilityname: item.healthFacility,
+                };
+                const res = yield SMSservice.scheduledvisitmissedSMSforPatient(smsdata);
+                if (res.status == 200) {
+                    yield MissedSchedule.updateSchedule(item.id);
+                }
             }
         }
     }

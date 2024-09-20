@@ -92,19 +92,21 @@ const sendSms = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield ScheduleReminder.getCloseSchedules();
         const users = response.result;
-        for (const item of users) {
-            const smsdata = {
-                mobile_number: item.phone,
-                firstname: item.firstname,
-                lastname: item.lastname,
-                date: global_1.Global.formatDate(item.dateto),
-                healthfacilityname: item.healthFacility,
-                state: item.state,
-            };
-            const res = yield SMSservice.scheduledvisitreminderSMSforPatient(smsdata);
-            console.log(res);
-            if (res.status == 200) {
-                yield ScheduleReminder.updateSchedule(item.id);
+        if (Array.isArray(users)) {
+            for (const item of users) {
+                const smsdata = {
+                    mobile_number: item.phone,
+                    firstname: item.firstname,
+                    lastname: item.lastname,
+                    date: global_1.Global.formatDate(item.dateto),
+                    healthfacilityname: item.healthFacility,
+                    state: item.state,
+                };
+                const res = yield SMSservice.scheduledvisitreminderSMSforPatient(smsdata);
+                console.log(res);
+                if (res.status == 200) {
+                    yield ScheduleReminder.updateSchedule(item.id);
+                }
             }
         }
     }
