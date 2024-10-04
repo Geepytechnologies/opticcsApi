@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HealthfacilityService = void 0;
 const logger_1 = __importDefault(require("../logger"));
-const global_1 = require("../utils/global");
+const generators_1 = require("../utils/generators");
 const patients_1 = require("../utils/patients");
 class HealthfacilityService {
     constructor(HfRepository) {
@@ -22,8 +22,8 @@ class HealthfacilityService {
     }
     generateUniqueCredentials(callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const username = global_1.Global.generateRandomString(8);
-            const password = global_1.Global.generateRandomString(12);
+            const username = "IANC" + generators_1.Generators.generateRandomNumberString(8);
+            const password = generators_1.Generators.generateRandomString(10);
             try {
                 // Check if the generated username already exists in the database
                 const [results] = yield this.hfRepository.getHealthfacilityUserAccountByUserID(username);

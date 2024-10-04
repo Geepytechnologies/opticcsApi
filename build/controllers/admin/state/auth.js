@@ -29,6 +29,7 @@ const db_1 = __importDefault(require("../../../config/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
+const generators_1 = require("../../../utils/generators");
 // Function to generate a random string of given length
 const generateRandomString = (length) => {
     return crypto_1.default
@@ -38,8 +39,8 @@ const generateRandomString = (length) => {
 };
 // Function to generate a unique username and password
 const generateUniqueCredentials = (callback) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = generateRandomString(8);
-    const password = generateRandomString(12);
+    const username = "IANC" + generators_1.Generators.generateRandomNumberString(8);
+    const password = generateRandomString(10);
     const connection = yield db_1.default.getConnection();
     try {
         // Check if the generated username already exists in the database
