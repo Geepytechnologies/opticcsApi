@@ -3,6 +3,7 @@ import db from "../../../config/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { Generators } from "../../../utils/generators";
 
 // Function to generate a random string of given length
 const generateRandomString = (length) => {
@@ -11,10 +12,11 @@ const generateRandomString = (length) => {
     .toString("hex")
     .slice(0, length);
 };
+
 // Function to generate a unique username and password
 const generateUniqueCredentials = async (callback) => {
-  const username = generateRandomString(8);
-  const password = generateRandomString(12);
+  const username = "IANC" + Generators.generateRandomNumberString(8);
+  const password = generateRandomString(10);
   const connection = await db.getConnection();
 
   try {

@@ -1,5 +1,6 @@
 import logger from "../logger";
 import { HealthFacilityRepository } from "../repositories/HealthFacilityRepository";
+import { Generators } from "../utils/generators";
 import { Global } from "../utils/global";
 import { Patientconditions } from "../utils/patients";
 
@@ -16,8 +17,8 @@ export class HealthfacilityService {
       arg1: { username: string; password: string } | undefined
     ): void;
   }) {
-    const username = Global.generateRandomString(8);
-    const password = Global.generateRandomString(12);
+    const username = "IANC" + Generators.generateRandomNumberString(8);
+    const password = Generators.generateRandomString(10);
 
     try {
       // Check if the generated username already exists in the database
