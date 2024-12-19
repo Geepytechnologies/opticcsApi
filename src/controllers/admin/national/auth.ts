@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import request from "request";
 import { NationalRepository } from "../../../repositories/NationalRepository";
 import BaseRepository from "../../../repositories/BaseRepository";
+import logger from "../../../logger";
 
 // const sendPasswordresetOtp = async (req, res) => {
 //   const { mobile_number } = req.body;
@@ -246,6 +247,7 @@ const signin = async (req, res, next) => {
   const existinguserid = async () => {
     try {
       const result = await nationalrepository.getNationalAdminByUserID(userid);
+      console.log("user from signing in to national", result[0]);
       return result[0];
     } catch (error) {}
   };
@@ -260,7 +262,8 @@ const signin = async (req, res, next) => {
 
   try {
     const user = await existinguserid();
-    if (!user.length)
+
+    if (!Array.isArray(result) && result.length > 0)
       return res
         .status(404)
         .json({ statusCode: "404", message: "User not found" });
