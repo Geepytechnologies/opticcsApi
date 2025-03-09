@@ -1,5 +1,4 @@
 "use strict";
-//@ts-nocheck
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -36,6 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+//@ts-nocheck
+require("module-alias/register");
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 require("dotenv").config();
@@ -59,6 +60,7 @@ const data_4 = __importDefault(require("./routes/admin/healthfacility/data"));
 const users_2 = __importDefault(require("./routes/user/users"));
 const refreshToken_1 = __importDefault(require("./routes/admin/refreshToken"));
 const index_1 = __importDefault(require("./routes/session/index"));
+const index_2 = __importDefault(require("./routes/enumeration/index"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const logger_1 = __importDefault(require("./logger"));
@@ -94,8 +96,35 @@ const userOptions = {
     // Paths to files containing OpenAPI annotations
     apis: ["./src/routes/user/**/*.ts"],
 };
+const EnumerationOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Enumeration Module",
+            version: "1.0.0",
+            description: "API documentation for the iANC Enumeration Module",
+        },
+        tags: [
+            {
+                name: "Enumerator",
+                description: "Operations related to enumerators",
+            },
+            {
+                name: "Settlements",
+                description: "Operations related to settlements",
+            },
+            {
+                name: "Enumeration Data",
+                description: "Operations related to enumeration data",
+            },
+        ],
+    },
+    // Paths to files containing OpenAPI annotations
+    apis: ["./src/routes/enumeration/**/*.ts"],
+};
 const swaggerSpecAdmin = (0, swagger_jsdoc_1.default)(adminOptions);
 const swaggerSpecUser = (0, swagger_jsdoc_1.default)(userOptions);
+const swaggerSpecEnumeration = (0, swagger_jsdoc_1.default)(EnumerationOptions);
 app.use("/api-docs/admin", swagger_ui_express_1.default.serve, (req, res, next) => {
     if (req.baseUrl === "/api-docs/admin") {
         swagger_ui_express_1.default.setup(swaggerSpecAdmin)(req, res, next);
@@ -108,6 +137,14 @@ app.use("/api-docs/admin", swagger_ui_express_1.default.serve, (req, res, next) 
 app.use("/api-docs", swagger_ui_express_1.default.serve, (req, res, next) => {
     if (req.baseUrl === "/api-docs/user") {
         swagger_ui_express_1.default.setup(swaggerSpecUser)(req, res, next);
+    }
+    else {
+        next();
+    }
+});
+app.use("/api/docs/enumeration", swagger_ui_express_1.default.serve, (req, res, next) => {
+    if (req.baseUrl === "/api/docs/enumeration") {
+        swagger_ui_express_1.default.setup(swaggerSpecEnumeration)(req, res, next);
     }
     else {
         next();
@@ -156,6 +193,7 @@ app.use("/api/admin/healthfacility/data", data_4.default);
 app.use("/api/admin/users", users_1.default);
 app.use("/api/refresh", refreshToken_1.default);
 app.use("/api/session", index_1.default);
+app.use("/api/enumeration", index_2.default);
 // app.get("/", (req: Request, res: Response) => {
 //   const token = "geepy";
 //   res.cookie("nationaltoken", token, {

@@ -1,0 +1,44 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+const { PrismaClient } = require("@prisma/client");
+const fs = require("fs");
+const path = require("path");
+const prisma = new PrismaClient();
+function seed() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // Read the JSON file
+            const filePath = path.join(__dirname, "settlements.json");
+            const data = fs.readFileSync(filePath, "utf8");
+            const settlements = JSON.parse(data);
+            // Seed the data into the database
+            for (const settlement of settlements) {
+                yield prisma.enumerationSettlements.create({
+                    data: {
+                        state: settlement.state,
+                        lga: settlement.lga,
+                        ward: settlement.ward,
+                        settlement: settlement.settlement,
+                        teamCode: settlement.teamCode,
+                    },
+                });
+            }
+            console.log("Data seeded successfully");
+        }
+        catch (error) {
+            console.error("Error seeding data:", error);
+        }
+        finally {
+            yield prisma.$disconnect();
+        }
+    });
+}
+seed();

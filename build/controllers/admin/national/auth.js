@@ -256,6 +256,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     const existinguserid = () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const result = yield nationalrepository.getNationalAdminByUserID(userid);
+            console.log("user from signing in to national", result[0]);
             return result[0];
         }
         catch (error) { }
@@ -270,7 +271,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     });
     try {
         const user = yield existinguserid();
-        if (!user.length)
+        if (!Array.isArray(result) && result.length > 0)
             return res
                 .status(404)
                 .json({ statusCode: "404", message: "User not found" });
