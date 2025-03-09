@@ -1,4 +1,5 @@
 //@ts-nocheck
+require("module-alias/register");
 
 import express, { Request, Response } from "express";
 import morgan from "morgan";
@@ -24,6 +25,8 @@ import adminHealthfacilityDataRoute from "./routes/admin/healthfacility/data";
 import userRoute from "./routes/user/users";
 import refreshTokenRoute from "./routes/admin/refreshToken";
 import sessionRoute from "./routes/session/index";
+import EnumerationRoute from "./routes/enumeration/index";
+
 import { createUserQuery } from "./queries/user/user";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -63,9 +66,36 @@ const userOptions = {
   // Paths to files containing OpenAPI annotations
   apis: ["./src/routes/user/**/*.ts"],
 };
+const EnumerationOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Enumeration Module",
+      version: "1.0.0",
+      description: "API documentation for the iANC Enumeration Module",
+    },
+    tags: [
+      {
+        name: "Enumerator",
+        description: "Operations related to enumerators",
+      },
+      {
+        name: "Settlements",
+        description: "Operations related to settlements",
+      },
+      {
+        name: "Enumeration Data",
+        description: "Operations related to enumeration data",
+      },
+    ],
+  },
+  // Paths to files containing OpenAPI annotations
+  apis: ["./src/routes/enumeration/**/*.ts"],
+};
 
 const swaggerSpecAdmin = swaggerJsdoc(adminOptions);
 const swaggerSpecUser = swaggerJsdoc(userOptions);
+const swaggerSpecEnumeration = swaggerJsdoc(EnumerationOptions);
 app.use("/api-docs/admin", swaggerUi.serve, (req, res, next) => {
   if (req.baseUrl === "/api-docs/admin") {
     swaggerUi.setup(swaggerSpecAdmin)(req, res, next);
@@ -78,6 +108,14 @@ app.use("/api-docs/admin", swaggerUi.serve, (req, res, next) => {
 app.use("/api-docs", swaggerUi.serve, (req, res, next) => {
   if (req.baseUrl === "/api-docs/user") {
     swaggerUi.setup(swaggerSpecUser)(req, res, next);
+  } else {
+    next();
+  }
+});
+
+app.use("/api/docs/enumeration", swaggerUi.serve, (req, res, next) => {
+  if (req.baseUrl === "/api/docs/enumeration") {
+    swaggerUi.setup(swaggerSpecEnumeration)(req, res, next);
   } else {
     next();
   }
@@ -127,6 +165,7 @@ app.use("/api/admin/healthfacility/data", adminHealthfacilityDataRoute);
 app.use("/api/admin/users", adminUserRoute);
 app.use("/api/refresh", refreshTokenRoute);
 app.use("/api/session", sessionRoute);
+app.use("/api/enumeration", EnumerationRoute);
 
 // app.get("/", (req: Request, res: Response) => {
 //   const token = "geepy";

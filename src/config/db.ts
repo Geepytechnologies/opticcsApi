@@ -1,5 +1,6 @@
 import mysql, { Pool } from "mysql2/promise";
 import logger from "../logger";
+import { createTables } from "../utils/database";
 
 const connectionsInUse = new Set();
 
@@ -39,6 +40,7 @@ db.on("release", function (connection) {
   try {
     await db.query("SELECT 1");
     logger.info("Connected to MySQL pool! new config");
+    await createTables();
   } catch (error: any) {
     console.log(error);
     logger.error("Failed to connect to MySQL:", error.message);
