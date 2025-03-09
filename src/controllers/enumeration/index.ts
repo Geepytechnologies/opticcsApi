@@ -485,6 +485,27 @@ class EnumerationController {
       res.status(500).json({ error: "Failed to fetch settlements" });
     }
   };
+  getTotalSubmissions = async (req: Request, res: Response) => {
+    try {
+      const totalSubmissions = await prisma.enumerationData.count();
+      const totalActiveStates = await prisma.enumerationSettlements
+        .groupBy({
+          by: ["state"],
+        })
+        .then((states) => states.length);
+      const totalClientNumber = await prisma.enumerationData
+        .groupBy({
+          by: ["clientNumber"],
+        })
+        .then((clientNumber) => clientNumber.length);
+      res
+        .status(200)
+        .json({ totalSubmissions, totalActiveStates, totalClientNumber });
+    } catch (error) {
+      console.error("Error fetching total submissions:", error);
+      res.status(500).json({ error: "Failed to fetch widgetdata" });
+    }
+  };
 }
 
 export default new EnumerationController();

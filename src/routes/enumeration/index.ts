@@ -711,4 +711,25 @@ router.get("/wards", EnumerationController.getAllWards);
  */
 router.get("/settlements", EnumerationController.getAllSettlements);
 
+/**
+ * @swagger
+ * /api/enumeration/analytics/widgetdata:
+ *   get:
+ *     summary: Get webUi Enumeration widget data
+ *     tags: [Enumeration Analytics]
+ *     description: Retrieve specific widget data.
+ *     responses:
+ *       200:
+ *         description: An object of widget data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/analytics/widgetdata", EnumerationController.getTotalSubmissions);
+
 export default router;

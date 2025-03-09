@@ -40,7 +40,7 @@ db.on("release", function (connection) {
   try {
     await db.query("SELECT 1");
     logger.info("Connected to MySQL pool! new config");
-    await createTables();
+    //await createTables();
   } catch (error: any) {
     console.log(error);
     logger.error("Failed to connect to MySQL:", error.message);

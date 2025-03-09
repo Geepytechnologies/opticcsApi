@@ -87,6 +87,10 @@ const EnumerationOptions = {
         name: "Enumeration Data",
         description: "Operations related to enumeration data",
       },
+      {
+        name: "Enumeration Analytics",
+        description: "Operations related to enumeration analytics",
+      },
     ],
   },
   // Paths to files containing OpenAPI annotations
