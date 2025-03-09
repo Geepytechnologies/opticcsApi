@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_1 = __importDefault(require("mysql2/promise"));
 const logger_1 = __importDefault(require("../logger"));
-const database_1 = require("../utils/database");
 const connectionsInUse = new Set();
 const db = promise_1.default.createPool({
     host: process.env.MYSQLHOST || "localhost",
@@ -45,7 +44,7 @@ db.on("release", function (connection) {
     try {
         yield db.query("SELECT 1");
         logger_1.default.info("Connected to MySQL pool! new config");
-        yield (0, database_1.createTables)();
+        //await createTables();
     }
     catch (error) {
         console.log(error);

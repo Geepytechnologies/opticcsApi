@@ -271,7 +271,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     });
     try {
         const user = yield existinguserid();
-        if (!Array.isArray(result) && result.length > 0)
+        if (!Array.isArray(user) && user.length > 0)
             return res
                 .status(404)
                 .json({ statusCode: "404", message: "User not found" });
