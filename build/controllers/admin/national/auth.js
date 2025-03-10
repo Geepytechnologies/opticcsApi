@@ -294,7 +294,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         res.cookie("nationaltoken", refreshToken, {
             httpOnly: false,
             secure: false,
-            sameSite: "none",
+            //sameSite: "none",
             // domain: ".vercel.app",
             maxAge: 6 * 24 * 60 * 60 * 1000,
         });

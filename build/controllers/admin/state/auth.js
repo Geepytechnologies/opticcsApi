@@ -126,7 +126,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         res.cookie("statetoken", refreshToken, {
             httpOnly: false,
             secure: false,
-            sameSite: "none",
+            //sameSite: "none",
             maxAge: 6 * 24 * 60 * 60 * 1000,
         });
         const { password } = user, others = __rest(user, ["password"]);

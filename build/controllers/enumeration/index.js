@@ -57,7 +57,7 @@ class EnumerationController {
                         lga,
                         ward,
                         settlement,
-                        password: hashedpassword,
+                        password,
                         userID,
                     },
                 });
@@ -110,7 +110,7 @@ class EnumerationController {
                         .json({ statusCode: 401, message: "Invalid credentials" });
                 }
                 // Compare the provided password with the hashed password in the database
-                const isPasswordValid = yield bcryptjs_1.default.compare(req.body.password, enumerator.password);
+                const isPasswordValid = req.body.password == enumerator.password;
                 // If password is invalid, return 401 Unauthorized
                 if (!isPasswordValid) {
                     return res
@@ -160,14 +160,29 @@ class EnumerationController {
             const pageNum = parseInt(pageNumber, 10);
             const pageSz = parseInt(pageSize, 10);
             try {
+                // Get total count of enumerators matching filters
+                const totalCount = yield prisma.enumerator.count({
+                    where: filters,
+                });
+                // Fetch enumerators with pagination
                 const enumerators = yield prisma.enumerator.findMany({
                     where: filters,
                     skip: (pageNum - 1) * pageSz,
                     take: pageSz,
                 });
-                res
-                    .status(200)
-                    .json({ statusCode: 200, message: "successful", result: enumerators });
+                // Calculate total pages
+                const totalPages = Math.ceil(totalCount / pageSz);
+                res.status(200).json({
+                    statusCode: 200,
+                    message: "successful",
+                    result: enumerators,
+                    pagination: {
+                        totalRecords: totalCount,
+                        totalPages,
+                        currentPage: pageNum,
+                        pageSize: pageSz,
+                    },
+                });
             }
             catch (error) {
                 console.error("Error fetching enumerators:", error);
@@ -414,6 +429,46 @@ class EnumerationController {
                 res.status(500).json({ error: "Failed to fetch wards" });
             }
         });
+        this.getActiveStates = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { state, lga, ward, date } = req.query;
+                const { pageNumber = 1, pageSize = 10 } = req.query;
+                // Build the filter condition dynamically
+                const filters = {};
+                if (state)
+                    filters.state = state;
+                if (lga)
+                    filters.lga = lga;
+                if (ward)
+                    filters.ward = ward;
+                if (date) {
+                    filters.createdAt = {
+                        gte: new Date(date),
+                    };
+                }
+                const states = yield prisma.enumerationSettlements.findMany({
+                    where: Object.keys(filters).length ? filters : undefined,
+                });
+                const totalCount = yield prisma.enumerationSettlements.count({
+                    where: filters,
+                });
+                res.status(200).json({
+                    statusCode: 200,
+                    message: "Active states retrieved successfully!",
+                    result: states,
+                    pagination: {
+                        pageNumber: Number(pageNumber),
+                        pageSize: Number(pageSize),
+                        totalCount,
+                        totalPages: Math.ceil(totalCount / Number(pageSize)),
+                    },
+                });
+            }
+            catch (error) {
+                console.error("Error fetching active states:", error);
+                res.status(500).json({ message: "Error fetching active states" });
+            }
+        });
         this.getAllSettlements = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { state, lga, ward } = req.params;
             try {
@@ -455,6 +510,34 @@ class EnumerationController {
             catch (error) {
                 console.error("Error fetching total submissions:", error);
                 res.status(500).json({ error: "Failed to fetch widgetdata" });
+            }
+        });
+        this.getLoginCredentials = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const enumerators = yield prisma.enumerator.findMany({
+                    select: {
+                        name: true,
+                        userID: true,
+                        password: true,
+                    },
+                });
+                const credentials = enumerators.map(({ name, userID, password }) => ({
+                    name,
+                    userID,
+                    password,
+                }));
+                res.status(200).json({
+                    statusCode: 200,
+                    message: "Enumerator credentials retrieved successfully!",
+                    result: credentials,
+                });
+            }
+            catch (error) {
+                console.error("Error fetching enumerator credentials:", error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "An error occurred while retrieving enumerator credentials",
+                });
             }
         });
     }
