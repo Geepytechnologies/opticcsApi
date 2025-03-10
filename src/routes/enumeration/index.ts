@@ -207,6 +207,48 @@ router.post("/enumerators", EnumerationController.createEnumerator);
 router.get("/enumerators/:id", EnumerationController.getEnumerator);
 /**
  * @swagger
+ * /api/enumeration/enumerators-credentials:
+ *   get:
+ *     summary: Get an enumerator credentials
+ *     tags: [Enumerator]
+ *     description: Retrieve an enumerator credential.
+ *     responses:
+ *       200:
+ *         description: Enumerator retrieved successfully
+ *       404:
+ *         description: Enumerator not found
+ *       500:
+ *         description: Something went wrong
+ */
+router.get(
+  "/enumerators-credentials",
+  EnumerationController.getLoginCredentials
+);
+/**
+ * @swagger
+ * /api/enumeration/enumerators/{id}:
+ *   get:
+ *     summary: Get an enumerator by ID
+ *     tags: [Enumerator]
+ *     description: Retrieve an enumerator by their unique ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the enumerator
+ *     responses:
+ *       200:
+ *         description: Enumerator retrieved successfully
+ *       404:
+ *         description: Enumerator not found
+ *       500:
+ *         description: Something went wrong
+ */
+router.get("/enumerators/:id", EnumerationController.getEnumerator);
+/**
+ * @swagger
  * /api/enumeration/enumerators/login:
  *   post:
  *     summary: Log in an enumerator
@@ -710,6 +752,46 @@ router.get("/wards", EnumerationController.getAllWards);
  *         description: Internal server error
  */
 router.get("/settlements", EnumerationController.getAllSettlements);
+
+/**
+ * @swagger
+ * /api/enumeration/activestates:
+ *   get:
+ *     summary: Get all active states
+ *     tags: [Settlements]
+ *     description: Retrieve a list of all active states.
+ *     parameters:
+ *       - in: path
+ *         name: state
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The state to filter by
+ *       - in: path
+ *         name: lga
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The LGA to filter by
+ *       - in: path
+ *         name: ward
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ward to filter by
+ *     responses:
+ *       200:
+ *         description: A list of active states
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/activeStates", EnumerationController.getActiveStates);
 
 /**
  * @swagger

@@ -59,6 +59,8 @@ model EnumerationData{
   tetanusVaccinationReceived EnumerationTTData[]
   latitude Float
   longitude Float
+  createdAt DateTime @default(now())
+
 }
 
 model EnumerationAncVisitData{

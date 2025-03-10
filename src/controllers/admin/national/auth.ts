@@ -299,7 +299,7 @@ const signin = async (req, res, next) => {
     res.cookie("nationaltoken", refreshToken, {
       httpOnly: false,
       secure: false,
-      sameSite: "none",
+      //sameSite: "none",
       // domain: ".vercel.app",
       maxAge: 6 * 24 * 60 * 60 * 1000,
     });

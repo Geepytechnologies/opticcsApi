@@ -111,7 +111,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       res.cookie("healthtoken", refreshToken, {
         httpOnly: false,
         secure: false,
-        sameSite: "none",
+        //sameSite: "none",
         maxAge: 6 * 24 * 60 * 60 * 1000,
       });
 
