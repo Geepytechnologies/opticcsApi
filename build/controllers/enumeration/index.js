@@ -238,6 +238,7 @@ class EnumerationController {
             }
         });
         this.createEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log("Enumeration data: ", req.body);
             const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
             try {
                 const enumerationData = yield prisma.enumerationData.create({
@@ -283,6 +284,8 @@ class EnumerationController {
                 });
             }
             catch (error) {
+                logger_1.default.error("error in creating enumeration data: ", error);
+                console.log("error in creating enumeration data: ", error);
                 res.status(500).json({
                     statusCode: 500,
                     message: "Failed to create enumeration data",

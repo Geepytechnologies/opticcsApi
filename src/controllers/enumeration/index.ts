@@ -246,6 +246,7 @@ class EnumerationController {
     }
   };
   createEnumerationData = async (req: Request, res: Response) => {
+    console.log("Enumeration data: ", req.body);
     const {
       clientNumber,
       firstName,
@@ -317,6 +318,8 @@ class EnumerationController {
         data: enumerationData,
       });
     } catch (error: any) {
+      logger.error("error in creating enumeration data: ", error);
+      console.log("error in creating enumeration data: ", error);
       res.status(500).json({
         statusCode: 500,
         message: "Failed to create enumeration data",
