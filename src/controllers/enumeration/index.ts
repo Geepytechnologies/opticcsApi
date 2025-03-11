@@ -433,13 +433,13 @@ class EnumerationController {
   };
 
   getAllLgas = async (req: Request, res: Response) => {
-    const { state } = req.params;
-    const { pageNumber = 1, pageSize = 10 } = req.query;
+    //const { state } = req.params;
+    const { state, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
       const lgas = await prisma.enumerationSettlements.findMany({
         where: {
-          state: state,
+          state: String(state),
         },
         select: {
           lga: true,
@@ -455,14 +455,13 @@ class EnumerationController {
     }
   };
   getAllWards = async (req: Request, res: Response) => {
-    const { state, lga } = req.params;
-    const { pageNumber = 1, pageSize = 10 } = req.query;
+    const { state, lga, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
       const wards = await prisma.enumerationSettlements.findMany({
         where: {
-          state: state,
-          lga: lga,
+          state: String(state),
+          lga: String(lga),
         },
         select: {
           ward: true,
@@ -520,14 +519,14 @@ class EnumerationController {
   };
 
   getAllSettlements = async (req: Request, res: Response) => {
-    const { state, lga, ward } = req.params;
+    const { state, lga, ward } = req.query;
 
     try {
       const settlements = await prisma.enumerationSettlements.findMany({
         where: {
-          state: state,
-          lga: lga,
-          ward: ward,
+          state: String(state),
+          lga: String(lga),
+          ward: String(ward),
         },
         select: {
           settlement: true,

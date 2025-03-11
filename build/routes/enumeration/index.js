@@ -625,7 +625,7 @@ router.get("/states", enumeration_1.default.getAllStates);
  *     tags: [Settlements]
  *     description: Retrieve a list of all unique LGAs for a given state, with pagination.
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: state
  *         required: true
  *         schema:
@@ -664,13 +664,13 @@ router.get("/lgas", enumeration_1.default.getAllLgas);
  *     tags: [Settlements]
  *     description: Retrieve a list of all unique wards for a given state and LGA, with pagination.
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: state
  *         required: true
  *         schema:
  *           type: string
  *         description: The state to filter by
- *       - in: path
+ *       - in: query
  *         name: lga
  *         required: true
  *         schema:
@@ -709,19 +709,19 @@ router.get("/wards", enumeration_1.default.getAllWards);
  *     tags: [Settlements]
  *     description: Retrieve a list of all unique settlements for a given state, LGA, and ward.
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: state
  *         required: true
  *         schema:
  *           type: string
  *         description: The state to filter by
- *       - in: path
+ *       - in: query
  *         name: lga
  *         required: true
  *         schema:
  *           type: string
  *         description: The LGA to filter by
- *       - in: path
+ *       - in: query
  *         name: ward
  *         required: true
  *         schema:

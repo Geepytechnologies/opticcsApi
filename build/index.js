@@ -70,6 +70,7 @@ const path = __importStar(require("path"));
 const schedulereminder_service_1 = require("./services/schedulereminder.service");
 const missedschedule_service_1 = require("./services/missedschedule.service");
 const swagger_1 = __importDefault(require("./config/swagger"));
+require("./utils/seeder");
 schedulereminder_service_1.reminderSMS.start();
 missedschedule_service_1.missedscheduleSMS.start();
 const adminOptions = {

@@ -16,7 +16,7 @@ function seed() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Read the JSON file
-            const filePath = path.join(__dirname, "settlements.json");
+            const filePath = path.join(__dirname, "settlement.json");
             const data = fs.readFileSync(filePath, "utf8");
             const settlements = JSON.parse(data);
             // Seed the data into the database
@@ -27,7 +27,7 @@ function seed() {
                         lga: settlement.lga,
                         ward: settlement.ward,
                         settlement: settlement.settlement,
-                        teamCode: settlement.teamCode,
+                        teamCode: settlement.teamCode || "",
                     },
                 });
             }

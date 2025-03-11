@@ -385,12 +385,12 @@ class EnumerationController {
             }
         });
         this.getAllLgas = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { state } = req.params;
-            const { pageNumber = 1, pageSize = 10 } = req.query;
+            //const { state } = req.params;
+            const { state, pageNumber = 1, pageSize = 10 } = req.query;
             try {
                 const lgas = yield prisma.enumerationSettlements.findMany({
                     where: {
-                        state: state,
+                        state: String(state),
                     },
                     select: {
                         lga: true,
@@ -407,13 +407,12 @@ class EnumerationController {
             }
         });
         this.getAllWards = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { state, lga } = req.params;
-            const { pageNumber = 1, pageSize = 10 } = req.query;
+            const { state, lga, pageNumber = 1, pageSize = 10 } = req.query;
             try {
                 const wards = yield prisma.enumerationSettlements.findMany({
                     where: {
-                        state: state,
-                        lga: lga,
+                        state: String(state),
+                        lga: String(lga),
                     },
                     select: {
                         ward: true,
@@ -470,13 +469,13 @@ class EnumerationController {
             }
         });
         this.getAllSettlements = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { state, lga, ward } = req.params;
+            const { state, lga, ward } = req.query;
             try {
                 const settlements = yield prisma.enumerationSettlements.findMany({
                     where: {
-                        state: state,
-                        lga: lga,
-                        ward: ward,
+                        state: String(state),
+                        lga: String(lga),
+                        ward: String(ward),
                     },
                     select: {
                         settlement: true,

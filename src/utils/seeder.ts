@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 async function seed() {
   try {
     // Read the JSON file
-    const filePath = path.join(__dirname, "settlements.json");
+    const filePath = path.join(__dirname, "settlement.json");
     const data = fs.readFileSync(filePath, "utf8");
     const settlements = JSON.parse(data);
 
@@ -19,7 +19,7 @@ async function seed() {
           lga: settlement.lga,
           ward: settlement.ward,
           settlement: settlement.settlement,
-          teamCode: settlement.teamCode,
+          teamCode: settlement.teamCode || "",
         },
       });
     }
