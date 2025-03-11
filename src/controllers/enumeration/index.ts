@@ -262,9 +262,6 @@ class EnumerationController {
       servingHealthcareFacility,
       gravidity,
       parity,
-      lmp,
-      edd,
-      ega,
       attendedAncVisit,
       numberOfAncVisits,
       ancVisits,
@@ -273,7 +270,9 @@ class EnumerationController {
       latitude,
       longitude,
     } = req.body;
-
+    const lmp = new Date(req.body.lmp).toISOString();
+    const edd = new Date(req.body.edd).toISOString();
+    const ega = new Date(req.body.ega).toISOString();
     try {
       const enumerationData = await prisma.enumerationData.create({
         data: {
