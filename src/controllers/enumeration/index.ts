@@ -572,15 +572,40 @@ class EnumerationController {
     }
   };
   getLoginCredentials = async (req: Request, res: Response) => {
+    const {
+      state,
+      lga,
+      ward,
+      settlement,
+      createdAt,
+      pageNumber = "1",
+      pageSize = "20",
+    }: QueryParams = req.query;
+
+    const filters: Filters = {};
+    if (state) filters.state = state;
+    if (lga) filters.lga = lga;
+    if (ward) filters.ward = ward;
+    if (settlement) filters.settlement = settlement;
+    if (createdAt) filters.createdAt = { gte: new Date(createdAt) };
+
+    const pageNum = parseInt(pageNumber, 10);
+    const pageSz = parseInt(pageSize, 10);
     try {
+      const totalCount = await prisma.enumerator.count({
+        where: filters,
+      });
       const enumerators = await prisma.enumerator.findMany({
+        where: filters,
+        orderBy: {
+          createdAt: "desc", // Ensures the latest records appear first
+        },
+        skip: (pageNum - 1) * pageSz,
+        take: pageSz,
         select: {
           name: true,
           userID: true,
           password: true,
-        },
-        orderBy: {
-          createdAt: "desc",
         },
       });
 
@@ -589,11 +614,17 @@ class EnumerationController {
         userID,
         password,
       }));
-
+      const totalPages = Math.ceil(totalCount / pageSz);
       res.status(200).json({
         statusCode: 200,
         message: "Enumerator credentials retrieved successfully!",
         result: credentials,
+        pagination: {
+          totalRecords: totalCount,
+          totalPages,
+          currentPage: pageNum,
+          pageSize: pageSz,
+        },
       });
     } catch (error) {
       console.error("Error fetching enumerator credentials:", error);

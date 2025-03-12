@@ -211,6 +211,45 @@ router.get("/enumerators/:id", EnumerationController.getEnumerator);
  *   get:
  *     summary: Get an enumerator credentials
  *     tags: [Enumerator]
+ *     parameters:
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         description: Filter by state
+ *       - in: query
+ *         name: lga
+ *         schema:
+ *           type: string
+ *         description: Filter by LGA
+ *       - in: query
+ *         name: ward
+ *         schema:
+ *           type: string
+ *         description: Filter by ward
+ *       - in: query
+ *         name: settlement
+ *         schema:
+ *           type: string
+ *         description: Filter by settlement
+ *       - in: query
+ *         name: createdAt
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter by creation date
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page
  *     description: Retrieve an enumerator credential.
  *     responses:
  *       200:
