@@ -15,7 +15,7 @@ const prisma = new PrismaClient();
 function seed() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const folderPath = path.join(__dirname, "data/settlements");
+            const folderPath = path.join(__dirname, "data/allsettlements");
             const files = fs
                 .readdirSync(folderPath)
                 .filter((file) => file.endsWith(".json"));

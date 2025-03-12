@@ -27,24 +27,24 @@ function healthfacilityseeder() {
                         ward: hf.wards,
                         facilityName: hf.name,
                         geocoordinate: hf.geocoordinate,
-                        latitude: hf.latitude,
-                        longitude: hf.longitude,
-                        altitude: hf.altitude,
-                        precision: hf.precision,
+                        latitude: String(hf.latitude) || "",
+                        longitude: String(hf.longitude) || "",
+                        altitude: String(hf.altitude) || "",
+                        precision: String(hf.precision) || "",
                     },
                 });
                 if (!existingRecord) {
                     yield prisma.enumerationHealthfacilities.create({
                         data: {
-                            state: hf.state,
-                            lga: hf.lga,
-                            ward: hf.wards,
-                            facilityName: hf.name,
+                            state: hf.state || "",
+                            lga: hf.lga || "",
+                            ward: hf.wards || "",
+                            facilityName: hf.name || "",
                             geocoordinate: hf.geocoordinate || "",
-                            latitude: hf.latitude || 0,
-                            longitude: hf.longitude || 0,
-                            altitude: hf.altitude || 0,
-                            precision: hf.precision || 0,
+                            latitude: String(hf.latitude) || "",
+                            longitude: String(hf.longitude) || "",
+                            altitude: String(hf.altitude) || "",
+                            precision: String(hf.precision) || "",
                         },
                     });
                     console.log(`Seeded: ${hf.state} in ${hf.ward}, ${hf.lga}, ${hf.name}`);

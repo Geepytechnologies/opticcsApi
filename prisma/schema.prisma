@@ -40,10 +40,10 @@ model EnumerationHealthfacilities{
   ward String
   facilityName String
   geocoordinate String
-  latitude Int
-  longitude Int
-  altitude Int
-  precision Int
+  latitude String
+  longitude String
+  altitude String
+  precision String
   createdAt DateTime @default(now())
 }
 
