@@ -33,6 +33,20 @@ model EnumerationSettlements{
   createdAt DateTime @default(now())
 }
 
+model EnumerationHealthfacilities{
+  id        Int      @id @default(autoincrement())
+  state String
+  lga String
+  ward String
+  facilityName String
+  geocoordinate String
+  latitude Int
+  longitude Int
+  altitude Int
+  precision Int
+  createdAt DateTime @default(now())
+}
+
 model EnumerationData{
   id        Int      @id @default(autoincrement())
   clientNumber String

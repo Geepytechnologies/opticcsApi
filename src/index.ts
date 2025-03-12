@@ -38,7 +38,7 @@ import * as path from "path";
 import { reminderSMS } from "./services/schedulereminder.service";
 import { missedscheduleSMS } from "./services/missedschedule.service";
 import swaggerSpec from "./config/swagger";
-import "./utils/seeder";
+//import "./utils/settlementSeeder";
 
 reminderSMS.start();
 missedscheduleSMS.start();

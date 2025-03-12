@@ -169,6 +169,9 @@ class EnumerationController {
       // Fetch enumerators with pagination
       const enumerators = await prisma.enumerator.findMany({
         where: filters,
+        orderBy: {
+          createdAt: "desc", // Ensures the latest records appear first
+        },
         skip: (pageNum - 1) * pageSz,
         take: pageSz,
       });
@@ -361,6 +364,9 @@ class EnumerationController {
         where: filters,
         skip,
         take,
+        orderBy: {
+          createdAt: "desc",
+        },
         include: {
           ancVisits: true,
           tetanusVaccinationReceived: true,
@@ -572,6 +578,9 @@ class EnumerationController {
           name: true,
           userID: true,
           password: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
 
