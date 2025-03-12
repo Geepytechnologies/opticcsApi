@@ -167,6 +167,9 @@ class EnumerationController {
                 // Fetch enumerators with pagination
                 const enumerators = yield prisma.enumerator.findMany({
                     where: filters,
+                    orderBy: {
+                        createdAt: "desc", // Ensures the latest records appear first
+                    },
                     skip: (pageNum - 1) * pageSz,
                     take: pageSz,
                 });
@@ -319,6 +322,9 @@ class EnumerationController {
                     where: filters,
                     skip,
                     take,
+                    orderBy: {
+                        createdAt: "desc",
+                    },
                     include: {
                         ancVisits: true,
                         tetanusVaccinationReceived: true,
@@ -518,8 +524,31 @@ class EnumerationController {
             }
         });
         this.getLoginCredentials = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { state, lga, ward, settlement, createdAt, pageNumber = "1", pageSize = "20", } = req.query;
+            const filters = {};
+            if (state)
+                filters.state = state;
+            if (lga)
+                filters.lga = lga;
+            if (ward)
+                filters.ward = ward;
+            if (settlement)
+                filters.settlement = settlement;
+            if (createdAt)
+                filters.createdAt = { gte: new Date(createdAt) };
+            const pageNum = parseInt(pageNumber, 10);
+            const pageSz = parseInt(pageSize, 10);
             try {
+                const totalCount = yield prisma.enumerator.count({
+                    where: filters,
+                });
                 const enumerators = yield prisma.enumerator.findMany({
+                    where: filters,
+                    orderBy: {
+                        createdAt: "desc", // Ensures the latest records appear first
+                    },
+                    skip: (pageNum - 1) * pageSz,
+                    take: pageSz,
                     select: {
                         name: true,
                         userID: true,
@@ -531,10 +560,17 @@ class EnumerationController {
                     userID,
                     password,
                 }));
+                const totalPages = Math.ceil(totalCount / pageSz);
                 res.status(200).json({
                     statusCode: 200,
                     message: "Enumerator credentials retrieved successfully!",
                     result: credentials,
+                    pagination: {
+                        totalRecords: totalCount,
+                        totalPages,
+                        currentPage: pageNum,
+                        pageSize: pageSz,
+                    },
                 });
             }
             catch (error) {

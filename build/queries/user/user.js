@@ -1,45 +1,53 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patientRecordQuery = exports.createPatientFirstvisitObstetricQuery = exports.createPatientFirstvisitDailyhabitQuery = exports.createPatientPersonalInfoQuery = exports.getUserPatients = exports.getAUserByPhone = exports.getAUserByEmail = exports.updateUserRefresh = exports.getRefreshToken = exports.getAllUsers = exports.createUserQuery = exports.getExistingPhoneQuery = exports.getExistingUserQuery = exports.getExistingEmailQuery = exports.UserQueries = void 0;
+exports.UserQueries = void 0;
+exports.getExistingEmailQuery = getExistingEmailQuery;
+exports.getExistingUserQuery = getExistingUserQuery;
+exports.getExistingPhoneQuery = getExistingPhoneQuery;
+exports.createUserQuery = createUserQuery;
+exports.getAllUsers = getAllUsers;
+exports.getRefreshToken = getRefreshToken;
+exports.updateUserRefresh = updateUserRefresh;
+exports.getAUserByEmail = getAUserByEmail;
+exports.getAUserByPhone = getAUserByPhone;
+exports.getUserPatients = getUserPatients;
+exports.createPatientPersonalInfoQuery = createPatientPersonalInfoQuery;
+exports.createPatientFirstvisitDailyhabitQuery = createPatientFirstvisitDailyhabitQuery;
+exports.createPatientFirstvisitObstetricQuery = createPatientFirstvisitObstetricQuery;
+exports.patientRecordQuery = patientRecordQuery;
 function getExistingEmailQuery() {
     return `
       SELECT * FROM healthpersonnel
       WHERE email = ?
     `;
 }
-exports.getExistingEmailQuery = getExistingEmailQuery;
 function getExistingUserQuery() {
     return `
       SELECT * FROM healthpersonnel
       WHERE email = ? AND phone = ?
     `;
 }
-exports.getExistingUserQuery = getExistingUserQuery;
 function getExistingPhoneQuery() {
     return `
       SELECT * FROM healthpersonnel
       WHERE phone = ?
     `;
 }
-exports.getExistingPhoneQuery = getExistingPhoneQuery;
 function getAllUsers() {
     return `
       SELECT * FROM healthpersonnel
     `;
 }
-exports.getAllUsers = getAllUsers;
 function getAUserByEmail() {
     return `
       SELECT * FROM healthpersonnel WHERE email = :email
     `;
 }
-exports.getAUserByEmail = getAUserByEmail;
 function getAUserByPhone() {
     return `
       SELECT * FROM healthpersonnel WHERE phone = ?
     `;
 }
-exports.getAUserByPhone = getAUserByPhone;
 function getUserPatients() {
     return `
   SELECT p.*
@@ -47,7 +55,6 @@ function getUserPatients() {
   WHERE p.healthpersonnel_id = ?;  
     `;
 }
-exports.getUserPatients = getUserPatients;
 function createPatientPersonalInfoQuery() {
     return `
   INSERT INTO personalinformation (
@@ -78,7 +85,6 @@ function createPatientPersonalInfoQuery() {
     ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
   )`;
 }
-exports.createPatientPersonalInfoQuery = createPatientPersonalInfoQuery;
 function createPatientFirstvisitDailyhabitQuery() {
     return `
   INSERT INTO dailyhabitsandlifestyle (
@@ -90,7 +96,6 @@ function createPatientFirstvisitDailyhabitQuery() {
     ) 
   VALUES (?,?,?,?,?)`;
 }
-exports.createPatientFirstvisitDailyhabitQuery = createPatientFirstvisitDailyhabitQuery;
 function createPatientFirstvisitObstetricQuery() {
     return `
   INSERT INTO obstetrichistory (
@@ -117,13 +122,11 @@ function createPatientFirstvisitObstetricQuery() {
     ) 
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)`;
 }
-exports.createPatientFirstvisitObstetricQuery = createPatientFirstvisitObstetricQuery;
 function getRefreshToken() {
     return `
       SELECT * FROM healthpersonnel WHERE refreshtoken = ?
     `;
 }
-exports.getRefreshToken = getRefreshToken;
 function updateUserRefresh(email, refreshtoken) {
     return `
   UPDATE healthpersonnel
@@ -131,7 +134,6 @@ function updateUserRefresh(email, refreshtoken) {
   WHERE email = '${email}'
     `;
 }
-exports.updateUserRefresh = updateUserRefresh;
 function patientRecordQuery(id) {
     return `
   SELECT *
@@ -141,7 +143,6 @@ LEFT JOIN firstvisit ON patients.id = firstvisit.patient_id
 WHERE patients.id = '${id}';
     `;
 }
-exports.patientRecordQuery = patientRecordQuery;
 function createUserQuery() {
     return `
   INSERT INTO healthpersonnel (
@@ -156,7 +157,6 @@ function createUserQuery() {
     ) 
   VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 }
-exports.createUserQuery = createUserQuery;
 class UserQueries {
     static deleteAUser() {
         return `DELETE FROM healthpersonnel WHERE id = ?`;
