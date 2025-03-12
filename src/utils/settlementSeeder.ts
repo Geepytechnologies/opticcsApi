@@ -29,11 +29,11 @@ async function seed() {
         if (!existingRecord) {
           await prisma.enumerationSettlements.create({
             data: {
-              state: settlement.state,
-              lga: settlement.lga,
-              ward: settlement.ward,
-              settlement: settlement.settlement,
-              teamCode: settlement.teamCode || "",
+              state: String(settlement.state),
+              lga: String(settlement.lga),
+              ward: String(settlement.ward),
+              settlement: String(settlement.settlement),
+              teamCode: String(settlement.teamCode) || "",
             },
           });
           console.log(
