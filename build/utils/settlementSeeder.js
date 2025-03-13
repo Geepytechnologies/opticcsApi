@@ -26,10 +26,10 @@ function seed() {
                 for (const settlement of settlements) {
                     const existingRecord = yield prisma.enumerationSettlements.findFirst({
                         where: {
-                            state: settlement.state,
-                            lga: settlement.lga,
-                            ward: settlement.ward,
-                            settlement: settlement.settlement,
+                            state: String(settlement.state),
+                            lga: String(settlement.lga),
+                            ward: String(settlement.ward),
+                            settlement: String(settlement.settlement),
                         },
                     });
                     if (!existingRecord) {
