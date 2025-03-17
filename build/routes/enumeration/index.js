@@ -72,6 +72,9 @@ const router = express_1.default.Router();
  *         alternatePhone:
  *           type: string
  *           example: "+0987654321"
+ *         age:
+ *           type: number
+ *           example: 20
  *         address:
  *           type: string
  *           example: "123 Main St"
@@ -434,6 +437,8 @@ router.delete("/enumerators/:id", enumeration_1.default.deleteEnumerator);
  *                 type: string
  *               phone:
  *                 type: string
+ *               age:
+ *                 type: number
  *               alternatePhone:
  *                 type: string
  *               address:

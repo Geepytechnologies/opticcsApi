@@ -242,7 +242,7 @@ class EnumerationController {
         });
         this.createEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
             console.log("Enumeration data: ", req.body);
-            const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
+            const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, age, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
             // const lmp = new Date(req.body.lmp).toISOString();
             // const edd = new Date(req.body.edd).toISOString();
             // const ega = new Date(req.body.ega).toISOString();
@@ -256,6 +256,7 @@ class EnumerationController {
                         phone,
                         alternatePhone,
                         address,
+                        age,
                         state,
                         lga,
                         ward,
