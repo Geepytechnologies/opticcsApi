@@ -118,11 +118,11 @@ class EnumerationController {
                         .json({ statusCode: 401, message: "Invalid credentials" });
                 }
                 // Generate Access Token
-                const accessToken = jsonwebtoken_1.default.sign({ id: enumerator.id }, process.env.ACCESS_SECRET, {
+                const accessToken = jsonwebtoken_1.default.sign({ id: enumerator.userID }, process.env.ACCESS_SECRET, {
                     expiresIn: "1d",
                 });
                 // Generate Refresh Token
-                const refreshToken = jsonwebtoken_1.default.sign({ id: enumerator.id }, process.env.REFRESH_SECRET, {
+                const refreshToken = jsonwebtoken_1.default.sign({ id: enumerator.userID }, process.env.REFRESH_SECRET, {
                     expiresIn: "7d", // Refresh token expires in 7 days
                 });
                 const { password } = enumerator, others = __rest(enumerator, ["password"]);

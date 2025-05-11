@@ -105,7 +105,7 @@ class EnumerationController {
 
       // Generate Access Token
       const accessToken = jwt.sign(
-        { id: enumerator.id },
+        { id: enumerator.userID },
         process.env.ACCESS_SECRET!,
         {
           expiresIn: "1d",
@@ -114,7 +114,7 @@ class EnumerationController {
 
       // Generate Refresh Token
       const refreshToken = jwt.sign(
-        { id: enumerator.id },
+        { id: enumerator.userID },
         process.env.REFRESH_SECRET!,
         {
           expiresIn: "7d", // Refresh token expires in 7 days
