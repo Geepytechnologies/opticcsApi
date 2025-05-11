@@ -1,0 +1,1440 @@
+06:17:24 [info] Backend server is up and running on port 3000
+06:17:24 [info] Connected to MySQL pool! new config
+06:54:27 [warn] healthfacility
+06:54:27 [warn] general
+07:41:38 [warn] healthfacility
+07:41:38 [warn] general
+07:43:42 [info] createEnumerator
+07:43:42 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+07:45:02 [info] createEnumerator
+07:46:49 [info] createEnumerator
+07:47:44 [info] createEnumerator
+07:48:44 [info] createEnumerator
+07:49:55 [info] Backend server is up and running on port 3000
+07:49:55 [info] Connected to MySQL pool! new config
+07:50:44 [info] createEnumerator
+07:56:54 [info] createEnumerator
+08:00:00 [info] Ran the reminderSMS task on Wed, 12 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 12 Mar 2025 08:00:00 GMT
+08:01:56 [info] Backend server is up and running on port 3000
+08:01:56 [info] Connected to MySQL pool! new config
+08:08:57 [info] Backend server is up and running on port 3000
+08:08:57 [info] Connected to MySQL pool! new config
+08:09:57 [info] Backend server is up and running on port 3000
+08:09:57 [info] Connected to MySQL pool! new config
+08:10:03 [info] Backend server is up and running on port 3000
+08:10:03 [info] Connected to MySQL pool! new config
+08:11:41 [info] Backend server is up and running on port 3000
+08:11:41 [info] Connected to MySQL pool! new config
+08:12:30 [warn] healthfacility
+08:12:30 [warn] general
+08:13:04 [info] Backend server is up and running on port 3000
+08:13:04 [info] Connected to MySQL pool! new config
+08:30:11 [info] Backend server is up and running on port 3000
+08:30:12 [info] Backend server is up and running on port 3000
+08:30:13 [info] Backend server is up and running on port 3000
+08:30:14 [info] Backend server is up and running on port 3000
+08:30:15 [info] Backend server is up and running on port 3000
+08:30:15 [info] Connected to MySQL pool! new config
+08:30:15 [info] Backend server is up and running on port 3000
+08:30:16 [info] Backend server is up and running on port 3000
+08:30:17 [info] Backend server is up and running on port 3000
+08:30:18 [info] Backend server is up and running on port 3000
+08:30:19 [info] Backend server is up and running on port 3000
+08:30:20 [info] Backend server is up and running on port 3000
+08:30:20 [info] Connected to MySQL pool! new config
+08:30:21 [info] Backend server is up and running on port 3000
+08:30:22 [info] Backend server is up and running on port 3000
+08:30:23 [info] Backend server is up and running on port 3000
+08:30:23 [info] Backend server is up and running on port 3000
+08:30:24 [info] Backend server is up and running on port 3000
+08:30:25 [info] Backend server is up and running on port 3000
+08:30:26 [info] Backend server is up and running on port 3000
+08:30:27 [info] Backend server is up and running on port 3000
+08:30:28 [info] Backend server is up and running on port 3000
+08:30:29 [info] Backend server is up and running on port 3000
+08:30:30 [info] Backend server is up and running on port 3000
+08:30:31 [info] Backend server is up and running on port 3000
+08:30:32 [info] Backend server is up and running on port 3000
+08:30:33 [info] Backend server is up and running on port 3000
+08:30:33 [info] Backend server is up and running on port 3000
+08:30:34 [info] Backend server is up and running on port 3000
+08:30:34 [info] Connected to MySQL pool! new config
+08:30:35 [info] Backend server is up and running on port 3000
+08:30:36 [info] Backend server is up and running on port 3000
+08:30:37 [info] Backend server is up and running on port 3000
+08:30:38 [info] Backend server is up and running on port 3000
+08:30:39 [info] Backend server is up and running on port 3000
+08:30:40 [info] Backend server is up and running on port 3000
+08:30:41 [info] Backend server is up and running on port 3000
+08:30:42 [info] Backend server is up and running on port 3000
+08:30:43 [info] Backend server is up and running on port 3000
+08:30:44 [info] Backend server is up and running on port 3000
+08:30:45 [info] Backend server is up and running on port 3000
+08:30:45 [info] Connected to MySQL pool! new config
+08:30:45 [info] Backend server is up and running on port 3000
+08:30:46 [info] Backend server is up and running on port 3000
+08:30:47 [info] Backend server is up and running on port 3000
+08:30:48 [info] Backend server is up and running on port 3000
+08:30:49 [info] Backend server is up and running on port 3000
+08:30:50 [info] Backend server is up and running on port 3000
+08:30:51 [info] Backend server is up and running on port 3000
+08:30:52 [info] Backend server is up and running on port 3000
+08:30:53 [info] Backend server is up and running on port 3000
+08:30:53 [info] Backend server is up and running on port 3000
+08:30:54 [info] Backend server is up and running on port 3000
+08:30:55 [info] Backend server is up and running on port 3000
+08:30:56 [info] Backend server is up and running on port 3000
+08:30:57 [info] Backend server is up and running on port 3000
+08:30:58 [info] Backend server is up and running on port 3000
+08:30:59 [info] Backend server is up and running on port 3000
+08:31:00 [info] Backend server is up and running on port 3000
+08:31:01 [info] Backend server is up and running on port 3000
+08:31:01 [info] Backend server is up and running on port 3000
+08:31:02 [info] Backend server is up and running on port 3000
+08:31:03 [info] Backend server is up and running on port 3000
+08:31:04 [info] Backend server is up and running on port 3000
+08:31:05 [info] Backend server is up and running on port 3000
+08:31:06 [info] Backend server is up and running on port 3000
+08:31:07 [info] Backend server is up and running on port 3000
+08:31:08 [info] Backend server is up and running on port 3000
+08:31:09 [info] Backend server is up and running on port 3000
+08:31:10 [info] Backend server is up and running on port 3000
+08:31:10 [info] Backend server is up and running on port 3000
+08:31:11 [info] Backend server is up and running on port 3000
+08:31:12 [info] Backend server is up and running on port 3000
+08:31:13 [info] Backend server is up and running on port 3000
+08:31:14 [info] Backend server is up and running on port 3000
+08:31:14 [info] Connected to MySQL pool! new config
+08:31:15 [info] Backend server is up and running on port 3000
+08:31:16 [info] Backend server is up and running on port 3000
+08:31:17 [info] Backend server is up and running on port 3000
+08:31:18 [info] Backend server is up and running on port 3000
+08:31:19 [info] Backend server is up and running on port 3000
+08:31:20 [info] Backend server is up and running on port 3000
+08:31:21 [info] Backend server is up and running on port 3000
+08:31:21 [info] Backend server is up and running on port 3000
+08:31:22 [info] Backend server is up and running on port 3000
+08:31:23 [info] Backend server is up and running on port 3000
+08:31:24 [info] Backend server is up and running on port 3000
+08:31:25 [info] Backend server is up and running on port 3000
+08:31:26 [info] Backend server is up and running on port 3000
+08:31:27 [info] Backend server is up and running on port 3000
+08:31:28 [info] Backend server is up and running on port 3000
+08:31:29 [info] Backend server is up and running on port 3000
+08:31:30 [info] Backend server is up and running on port 3000
+08:31:31 [info] Backend server is up and running on port 3000
+08:31:31 [info] Backend server is up and running on port 3000
+08:31:32 [info] Backend server is up and running on port 3000
+08:31:33 [info] Backend server is up and running on port 3000
+08:31:34 [info] Backend server is up and running on port 3000
+08:31:35 [info] Backend server is up and running on port 3000
+08:31:36 [info] Backend server is up and running on port 3000
+08:31:37 [info] Backend server is up and running on port 3000
+08:31:38 [info] Backend server is up and running on port 3000
+08:31:39 [info] Backend server is up and running on port 3000
+08:31:39 [info] Backend server is up and running on port 3000
+08:31:40 [info] Backend server is up and running on port 3000
+08:31:41 [info] Backend server is up and running on port 3000
+08:31:42 [info] Backend server is up and running on port 3000
+08:31:43 [info] Backend server is up and running on port 3000
+08:31:44 [info] Backend server is up and running on port 3000
+08:31:45 [info] Backend server is up and running on port 3000
+08:31:46 [info] Backend server is up and running on port 3000
+08:31:47 [info] Backend server is up and running on port 3000
+08:31:48 [info] Backend server is up and running on port 3000
+08:31:49 [info] Backend server is up and running on port 3000
+08:31:50 [info] Backend server is up and running on port 3000
+08:31:51 [info] Backend server is up and running on port 3000
+08:31:52 [info] Backend server is up and running on port 3000
+08:31:53 [info] Backend server is up and running on port 3000
+08:31:54 [info] Backend server is up and running on port 3000
+08:31:55 [info] Backend server is up and running on port 3000
+08:31:56 [info] Backend server is up and running on port 3000
+08:31:56 [info] Backend server is up and running on port 3000
+08:31:57 [info] Backend server is up and running on port 3000
+08:31:58 [info] Backend server is up and running on port 3000
+08:31:59 [info] Backend server is up and running on port 3000
+08:32:00 [info] Backend server is up and running on port 3000
+08:32:01 [info] Backend server is up and running on port 3000
+08:32:02 [info] Backend server is up and running on port 3000
+08:32:03 [info] Backend server is up and running on port 3000
+08:32:04 [info] Backend server is up and running on port 3000
+08:32:04 [info] Backend server is up and running on port 3000
+08:32:05 [info] Backend server is up and running on port 3000
+08:32:06 [info] Backend server is up and running on port 3000
+08:32:18 [info] Backend server is up and running on port 3000
+08:32:18 [info] Connected to MySQL pool! new config
+08:32:58 [warn] healthfacility
+08:32:59 [warn] general
+08:33:30 [warn] healthfacility
+08:33:30 [warn] general
+08:35:00 [warn] healthfacility
+08:35:00 [warn] general
+08:36:28 [info] createEnumerator
+08:39:01 [info] createEnumerator
+08:40:15 [warn] healthfacility
+08:40:16 [warn] general
+08:40:28 [info] createEnumerator
+08:41:04 [info] Backend server is up and running on port 3000
+08:41:04 [info] Connected to MySQL pool! new config
+08:41:17 [info] createEnumerator
+08:43:25 [info] createEnumerator
+08:44:13 [info] Backend server is up and running on port 3000
+08:44:13 [info] Connected to MySQL pool! new config
+08:44:38 [info] createEnumerator
+08:45:32 [info] createEnumerator
+08:45:53 [info] Backend server is up and running on port 3000
+08:45:53 [info] Connected to MySQL pool! new config
+08:46:17 [info] createEnumerator
+08:47:17 [info] createEnumerator
+08:51:44 [info] Backend server is up and running on port 3000
+08:51:44 [info] Connected to MySQL pool! new config
+08:55:43 [info] createEnumerator
+08:55:49 [info] Backend server is up and running on port 3000
+08:55:49 [info] Connected to MySQL pool! new config
+09:03:36 [warn] healthfacility
+09:03:36 [warn] general
+09:10:25 [info] createEnumerator
+09:11:29 [info] createEnumerator
+09:12:20 [info] createEnumerator
+09:12:52 [info] createEnumerator
+09:13:43 [info] createEnumerator
+09:14:22 [info] createEnumerator
+09:15:10 [info] createEnumerator
+09:16:14 [info] createEnumerator
+09:16:43 [info] createEnumerator
+09:36:26 [info] createEnumerator
+09:37:47 [info] createEnumerator
+09:39:50 [info] createEnumerator
+09:41:29 [info] createEnumerator
+09:43:01 [info] createEnumerator
+09:44:37 [info] createEnumerator
+09:44:51 [info] Backend server is up and running on port 3000
+09:44:51 [info] Connected to MySQL pool! new config
+09:45:40 [warn] healthfacility
+09:45:40 [warn] general
+09:46:32 [info] createEnumerator
+09:47:47 [info] createEnumerator
+09:50:00 [info] createEnumerator
+09:51:44 [info] createEnumerator
+09:53:55 [info] createEnumerator
+09:54:49 [info] createEnumerator
+09:55:32 [info] createEnumerator
+09:57:35 [info] createEnumerator
+09:58:55 [info] createEnumerator
+10:00:13 [info] createEnumerator
+10:01:52 [info] createEnumerator
+10:03:21 [info] createEnumerator
+10:04:27 [info] createEnumerator
+10:05:55 [info] createEnumerator
+10:07:24 [info] createEnumerator
+10:08:51 [info] createEnumerator
+10:11:02 [info] createEnumerator
+10:12:23 [info] createEnumerator
+10:13:55 [info] createEnumerator
+10:15:11 [info] createEnumerator
+10:16:52 [info] createEnumerator
+10:18:22 [info] createEnumerator
+10:18:49 [info] createEnumerator
+10:20:04 [info] createEnumerator
+10:20:14 [info] createEnumerator
+10:21:33 [info] createEnumerator
+10:21:34 [info] createEnumerator
+10:22:18 [info] createEnumerator
+10:23:13 [info] Backend server is up and running on port 3000
+10:23:13 [info] Connected to MySQL pool! new config
+10:23:20 [info] createEnumerator
+10:23:37 [info] createEnumerator
+10:24:47 [info] createEnumerator
+10:25:15 [warn] healthfacility
+10:25:15 [warn] general
+10:26:55 [info] createEnumerator
+10:28:15 [warn] healthfacility
+10:28:15 [warn] general
+10:28:15 [warn] healthfacility
+10:28:24 [info] createEnumerator
+10:29:47 [info] createEnumerator
+10:29:52 [warn] healthfacility
+10:29:52 [warn] general
+10:29:52 [warn] healthfacility
+10:31:25 [info] createEnumerator
+10:31:41 [warn] healthfacility
+10:31:41 [warn] general
+10:31:42 [warn] healthfacility
+10:32:55 [info] createEnumerator
+10:34:20 [info] createEnumerator
+10:38:29 [info] createEnumerator
+10:40:19 [info] createEnumerator
+10:42:10 [info] createEnumerator
+10:42:11 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+10:42:38 [info] createEnumerator
+10:42:38 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+10:43:49 [info] createEnumerator
+10:45:58 [info] createEnumerator
+10:47:40 [info] createEnumerator
+10:49:28 [info] createEnumerator
+10:49:45 [warn] healthfacility
+10:49:45 [warn] general
+10:49:45 [warn] healthfacility
+10:51:33 [info] createEnumerator
+10:53:44 [info] createEnumerator
+10:54:48 [warn] healthfacility
+10:54:53 [warn] general
+10:56:40 [warn] healthfacility
+10:56:40 [warn] general
+10:58:11 [info] Backend server is up and running on port 3000
+10:58:11 [info] Connected to MySQL pool! new config
+10:58:39 [warn] healthfacility
+10:58:39 [warn] general
+11:00:31 [info] createEnumerator
+11:02:04 [info] createEnumerator
+11:03:44 [info] createEnumerator
+11:06:06 [info] createEnumerator
+11:07:27 [info] createEnumerator
+11:09:37 [info] createEnumerator
+11:11:20 [warn] healthfacility
+11:11:20 [warn] general
+11:11:28 [info] createEnumerator
+11:14:15 [info] createEnumerator
+11:16:13 [info] createEnumerator
+11:18:06 [info] createEnumerator
+11:19:56 [info] createEnumerator
+11:22:18 [info] createEnumerator
+11:23:53 [info] createEnumerator
+11:25:22 [info] createEnumerator
+11:26:40 [info] createEnumerator
+11:38:47 [warn] healthfacility
+11:38:47 [warn] general
+11:40:05 [info] createEnumerator
+11:53:32 [info] createEnumerator
+11:55:03 [info] createEnumerator
+11:57:45 [warn] national Users
+12:10:41 [info] createEnumerator
+12:11:21 [info] createEnumerator
+12:13:49 [info] createEnumerator
+12:15:08 [info] createEnumerator
+12:16:12 [info] createEnumerator
+12:28:06 [warn] healthfacility
+12:28:06 [warn] general
+12:28:24 [info] nationalreturnvisitdata of anc 2
+12:28:28 [info] national: getAllPatientsAndHealthworker
+12:28:28 [warn] national
+12:28:28 [info] undefined: getAllPatientsAndHealthworker
+12:28:33 [warn] national Users
+12:28:36 [warn] national hf
+12:28:38 [warn] national states
+12:32:41 [warn] healthfacility
+12:32:41 [warn] general
+12:49:45 [warn] healthfacility
+12:49:45 [warn] general
+13:05:05 [info] createEnumerator
+13:05:51 [info] createEnumerator
+13:18:10 [warn] healthfacility
+13:18:10 [warn] general
+14:15:48 [warn] healthfacility
+14:15:53 [warn] general
+21:23:45 [info] createEnumerator
+21:24:48 [info] createEnumerator
+21:25:37 [info] createEnumerator
+21:26:45 [info] createEnumerator
+21:27:40 [info] createEnumerator
+21:28:33 [info] createEnumerator
+21:29:31 [info] createEnumerator
+21:30:22 [info] createEnumerator
+21:31:09 [info] createEnumerator
+21:31:55 [info] createEnumerator
+06:37:44 [warn] healthfacility
+06:37:44 [warn] general
+06:48:15 [info] Backend server is up and running on port 3000
+06:48:15 [info] Connected to MySQL pool! new config
+07:28:05 [info] Backend server is up and running on port 3000
+07:28:05 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the reminderSMS task on Thu, 13 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 13 Mar 2025 08:00:00 GMT
+09:38:51 [warn] healthfacility
+09:38:51 [warn] general
+09:39:24 [warn] healthfacility
+09:39:24 [warn] general
+09:41:32 [info] createEnumerator
+10:01:02 [info] createEnumerator
+10:04:37 [info] createEnumerator
+10:05:17 [info] createEnumerator
+10:06:09 [info] createEnumerator
+10:12:05 [info] createEnumerator
+10:12:50 [info] createEnumerator
+10:52:15 [warn] healthfacility
+10:52:15 [warn] general
+10:59:28 [warn] healthfacility
+10:59:29 [warn] general
+11:03:14 [warn] healthfacility
+11:03:14 [warn] general
+11:03:29 [warn] healthfacility
+11:03:29 [warn] general
+11:17:04 [warn] healthfacility
+11:17:04 [warn] general
+11:18:45 [info] createEnumerator
+11:21:01 [info] createEnumerator
+11:50:36 [warn] healthfacility
+11:50:37 [warn] general
+13:21:14 [warn] healthfacility
+13:21:14 [warn] general
+13:43:15 [warn] healthfacility
+13:43:15 [warn] general
+13:43:15 [warn] healthfacility
+13:44:57 [warn] healthfacility
+13:44:57 [warn] general
+13:44:57 [warn] healthfacility
+15:25:22 [warn] healthfacility
+15:25:22 [warn] general
+15:25:52 [warn] healthfacility
+15:25:52 [warn] general
+15:26:21 [warn] healthfacility
+15:26:21 [warn] general
+15:27:37 [info] nationalreturnvisitdata of anc 2
+15:27:53 [warn] national Users
+15:28:13 [warn] national states
+15:31:12 [info] createEnumerator
+15:35:50 [warn] healthfacility
+15:35:50 [warn] general
+15:38:06 [info] createEnumerator
+15:52:07 [info] createEnumerator
+15:52:08 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:52:26 [info] createEnumerator
+15:52:27 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:53:50 [info] createEnumerator
+15:53:50 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+17:39:33 [warn] healthfacility
+17:39:33 [warn] general
+21:43:26 [warn] national Users
+21:43:57 [info] undefined: getAllPatientsAndHealthworker
+21:43:57 [info] national: getAllPatientsAndHealthworker
+21:43:57 [warn] national
+21:44:00 [info] nationalreturnvisitdata of anc 2
+21:44:03 [warn] healthfacility
+21:44:03 [warn] general
+21:44:08 [info] undefined: getAllPatientsAndHealthworker
+21:44:26 [info] undefined: getAllPatientsAndHealthworker
+21:44:32 [warn] healthfacility
+21:44:32 [warn] general
+21:44:34 [info] nationalreturnvisitdata of anc 2
+21:44:36 [info] undefined: getAllPatientsAndHealthworker
+21:44:36 [info] national: getAllPatientsAndHealthworker
+21:44:36 [warn] national
+21:44:37 [warn] national Users
+21:45:12 [warn] healthfacility
+21:45:13 [warn] general
+21:45:15 [warn] healthfacility
+21:45:15 [warn] general
+21:45:28 [warn] healthfacility
+21:45:28 [warn] general
+21:46:13 [warn] national states
+07:07:07 [info] Backend server is up and running on port 3000
+07:07:07 [error] Failed to connect to MySQL:
+07:42:28 [info] Backend server is up and running on port 3000
+07:42:28 [info] Connected to MySQL pool! new config
+07:43:09 [warn] healthfacility
+07:43:09 [warn] general
+07:45:30 [warn] healthfacility
+07:45:30 [warn] general
+07:45:31 [warn] healthfacility
+07:50:36 [info] Backend server is up and running on port 3000
+07:50:37 [info] Connected to MySQL pool! new config
+07:51:14 [warn] healthfacility
+07:51:14 [warn] general
+08:00:00 [info] Ran the reminderSMS task on Fri, 14 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 14 Mar 2025 08:00:00 GMT
+08:57:45 [warn] healthfacility
+08:57:50 [warn] general
+10:31:07 [warn] healthfacility
+10:31:07 [warn] general
+05:44:08 [error] Can't add new command when connection is in closed state
+05:45:55 [info] Backend server is up and running on port 3000
+05:45:55 [info] Connected to MySQL pool! new config
+05:46:15 [warn] healthfacility
+05:46:15 [warn] general
+07:36:38 [info] nationalreturnvisitdata of anc 2
+07:37:00 [info] nationalreturnvisitdata of anc 2
+07:44:19 [info] nationalreturnvisitdata of anc 2
+07:44:21 [warn] healthfacility
+07:44:21 [warn] general
+08:00:00 [info] Ran the reminderSMS task on Sat, 15 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 15 Mar 2025 08:00:00 GMT
+04:00:34 [info] Backend server is up and running on port 3000
+04:00:34 [info] Connected to MySQL pool! new config
+07:03:45 [info] Backend server is up and running on port 3000
+07:03:46 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 16 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 16 Mar 2025 08:00:00 GMT
+08:08:19 [warn] healthfacility
+08:08:19 [warn] general
+08:12:09 [warn] national states
+08:12:30 [warn] national hf
+13:49:00 [warn] healthfacility
+13:49:00 [warn] general
+14:13:04 [info] createEnumerator
+14:14:26 [info] createEnumerator
+14:15:43 [info] createEnumerator
+14:16:47 [info] createEnumerator
+14:17:38 [info] createEnumerator
+14:18:41 [info] createEnumerator
+14:20:43 [info] createEnumerator
+14:21:36 [info] createEnumerator
+14:22:46 [info] createEnumerator
+14:23:42 [info] createEnumerator
+14:24:35 [info] createEnumerator
+14:25:33 [info] createEnumerator
+14:25:34 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:25:40 [info] createEnumerator
+14:25:41 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:25:45 [info] createEnumerator
+14:25:45 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:26:20 [info] createEnumerator
+14:26:20 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:02:55 [info] createEnumerator
+15:02:55 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:02:57 [info] createEnumerator
+15:02:58 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:04:55 [info] createEnumerator
+15:04:55 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:05:42 [info] createEnumerator
+15:06:46 [info] createEnumerator
+15:08:26 [info] createEnumerator
+15:09:42 [info] createEnumerator
+15:39:13 [warn] healthfacility
+15:39:13 [warn] general
+19:23:56 [warn] healthfacility
+19:23:56 [warn] general
+19:29:23 [info] undefined: getAllPatientsAndHealthworker
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Mon, 17 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 17 Mar 2025 08:00:00 GMT
+14:24:03 [info] Backend server is up and running on port 3000
+14:24:03 [info] Connected to MySQL pool! new config
+18:25:39 [warn] healthfacility
+18:25:39 [warn] general
+18:28:56 [info] createEnumerator
+18:31:45 [info] createEnumerator
+18:45:10 [info] createEnumerator
+19:21:09 [info] createEnumerator
+19:22:15 [info] createEnumerator
+19:23:09 [info] createEnumerator
+19:23:37 [warn] healthfacility
+19:23:37 [warn] general
+19:24:10 [info] createEnumerator
+19:25:20 [info] createEnumerator
+19:26:17 [info] createEnumerator
+19:30:20 [info] createEnumerator
+19:31:23 [warn] national hf
+19:32:43 [info] createEnumerator
+20:02:30 [info] createEnumerator
+20:03:23 [info] createEnumerator
+20:04:54 [info] createEnumerator
+20:06:16 [info] createEnumerator
+20:07:28 [info] createEnumerator
+05:40:13 [error] Can't add new command when connection is in closed state
+05:40:16 [error] Can't add new command when connection is in closed state
+05:40:22 [error] Can't add new command when connection is in closed state
+05:40:32 [error] Can't add new command when connection is in closed state
+05:41:07 [error] Can't add new command when connection is in closed state
+05:42:11 [warn] healthfacility
+05:42:11 [warn] general
+05:44:31 [info] createEnumerator
+05:45:28 [info] createEnumerator
+07:33:53 [info] createEnumerator
+08:00:00 [info] Ran the reminderSMS task on Tue, 18 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 18 Mar 2025 08:00:00 GMT
+09:06:22 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:22.066263Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:22.066307Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:06:31 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:30.688089Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:30.688112Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:06:34 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:33.911447Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:33.911463Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:05 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:05.642768Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:05.642786Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:05.642789Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:05.642806Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:14 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:14.340543Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:14.340553Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:14.340559Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:14.340573Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:29 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:29.404373Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:29.404387Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:29.404393Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:29.404412Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:09:57 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "6",
+    parity: "4",
+    lmp: "2024-07-05T23:00:00.000Z",
+    edd: "2025-04-11T23:00:00.000Z",
+    ega: "2025-03-21T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 11.8579155,
+    longitude: 13.1360207,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:09:57.113167Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:09:57.113177Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:09:57.113186Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:09:57.113197Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:10:03 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "6",
+    parity: "4",
+    lmp: "2024-07-05T23:00:00.000Z",
+    edd: "2025-04-11T23:00:00.000Z",
+    ega: "2025-03-21T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 11.8579155,
+    longitude: 13.1360207,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:10:03.209869Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:10:03.209877Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:10:03.209880Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:10:03.209889Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:40:44 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "2039/24",
+    firstName: "Fatima",
+    middleName: "Mohammed",
+    surName: "Adam",
+    phone: "00000000000",
+    alternatePhone: "0000000000",
+    address: "Shuwari",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "2",
+    parity: "1",
+    lmp: "2024-08-29T23:00:00.000Z",
+    edd: "2025-06-05T23:00:00.000Z",
+    ega: "2025-03-20T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:40:43.795863Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:40:43.795872Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD2",
+          date: "2025-03-18T11:40:43.795904Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:41:19 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "2039/24",
+    firstName: "Fatima",
+    middleName: "Mohammed",
+    surName: "Adam",
+    phone: "00000000000",
+    alternatePhone: "0000000000",
+    address: "Shuwari",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "2",
+    parity: "1",
+    lmp: "2024-08-29T23:00:00.000Z",
+    edd: "2025-06-05T23:00:00.000Z",
+    ega: "2025-03-20T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:41:18.937197Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:41:18.937214Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD2",
+          date: "2025-03-18T11:41:18.937230Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:47:29 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "00021/24",
+    firstName: "Aisha",
+    middleName: "",
+    surName: "Mustapha",
+    phone: "000000000",
+    alternatePhone: "0000000000",
+    address: "Bolori",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-08-19T23:00:00.000Z",
+    edd: "2025-05-26T23:00:00.000Z",
+    ega: "2025-03-17T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:47:29.358668Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:47:29.358676Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: []
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+13:04:00 [warn] healthfacility
+13:04:00 [warn] general
+13:06:12 [info] createEnumerator
+13:08:41 [info] createEnumerator
+13:09:38 [info] createEnumerator
+13:10:34 [info] createEnumerator
+13:11:36 [info] createEnumerator
+13:12:33 [info] createEnumerator
+13:13:32 [info] createEnumerator
+13:14:54 [info] createEnumerator
+13:15:53 [info] createEnumerator
+13:16:59 [info] createEnumerator
+13:18:06 [info] createEnumerator
+13:19:08 [info] createEnumerator
+13:20:05 [info] createEnumerator
+13:20:52 [info] createEnumerator
+13:21:55 [info] createEnumerator
+13:32:44 [info] createEnumerator
+13:33:40 [info] createEnumerator
+13:34:47 [info] createEnumerator
+13:35:51 [info] createEnumerator
+13:37:14 [info] createEnumerator
+13:38:12 [info] createEnumerator
+13:39:06 [info] createEnumerator
+13:39:06 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:39:13 [info] createEnumerator
+13:39:14 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:39:54 [info] createEnumerator
+13:39:54 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:19 [info] createEnumerator
+13:41:19 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:22 [info] createEnumerator
+13:41:22 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:22 [info] createEnumerator
+13:41:22 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:42:24 [info] createEnumerator
+13:45:37 [info] createEnumerator
+13:45:37 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:45:40 [info] createEnumerator
+13:45:40 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:45:46 [info] createEnumerator
+13:50:37 [info] createEnumerator
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Wed, 19 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 19 Mar 2025 08:00:00 GMT
+10:15:06 [error] Can't add new command when connection is in closed state
+10:15:06 [error] Can't add new command when connection is in closed state
+10:15:06 [error] Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Thu, 20 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 20 Mar 2025 08:00:00 GMT
+17:21:53 [warn] healthfacility
+17:21:58 [warn] general
+17:21:58 [warn] national states
+08:00:01 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:01 [info] Ran the reminderSMS task on Fri, 21 Mar 2025 08:00:01 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 22 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sat, 22 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 23 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 23 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 24 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 24 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 25 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 25 Mar 2025 08:00:00 GMT
+14:27:07 [warn] healthfacility
+14:27:07 [warn] general
+14:37:46 [warn] healthfacility
+14:37:46 [warn] general
+14:38:18 [warn] healthfacility
+14:38:18 [warn] general
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Wed, 26 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 26 Mar 2025 08:00:00 GMT
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Thu, 27 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 27 Mar 2025 08:00:00 GMT
+15:59:21 [error] Can't add new command when connection is in closed state
+15:59:21 [error] Can't add new command when connection is in closed state
+15:59:21 [error] Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 28 Mar 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Fri, 28 Mar 2025 08:00:00 GMT
+09:01:30 [warn] healthfacility
+09:01:30 [warn] general
+09:14:56 [warn] healthfacility
+09:14:56 [warn] general
+09:15:10 [info] undefined: getAllPatientsAndHealthworker
+11:14:40 [info] Backend server is up and running on port 3000
+11:14:41 [info] Connected to MySQL pool! new config
+08:00:01 [info] Ran the reminderSMS task on Sat, 05 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the missedscheduleSMS task on Sat, 05 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 06 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 06 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 07 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 07 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 08 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 08 Apr 2025 08:00:00 GMT
+13:49:15 [warn] healthfacility
+13:49:15 [warn] general
+13:52:26 [info] createEnumerator
+07:59:31 [error] Can't add new command when connection is in closed state
+07:59:31 [error] Error: Can't add new command when connection is in closed state
+07:59:31 [error] Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Wed, 09 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 09 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Thu, 10 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 10 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 11 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Fri, 11 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sat, 12 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 12 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 13 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 13 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 14 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 14 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 15 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 15 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Wed, 16 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 16 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Thu, 17 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 17 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Fri, 18 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 18 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sat, 19 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 19 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 20 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 20 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 21 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 21 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the missedscheduleSMS task on Tue, 22 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the reminderSMS task on Tue, 22 Apr 2025 08:00:00 GMT
+06:15:55 [info] Backend server is up and running on port 3000
+06:15:56 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 23 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Wed, 23 Apr 2025 08:00:00 GMT
+06:53:42 [info] Backend server is up and running on port 3000
+06:53:44 [info] Connected to MySQL pool! new config
+08:00:01 [info] Ran the reminderSMS task on Thu, 24 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the missedscheduleSMS task on Thu, 24 Apr 2025 08:00:00 GMT
+07:11:11 [info] Backend server is up and running on port 3000
+07:11:12 [info] Connected to MySQL pool! new config
+08:00:01 [info] Ran the missedscheduleSMS task on Fri, 25 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the reminderSMS task on Fri, 25 Apr 2025 08:00:00 GMT
+07:39:00 [info] Backend server is up and running on port 3000
+07:39:00 [info] Connected to MySQL pool! new config
+08:00:01 [info] Ran the missedscheduleSMS task on Sat, 26 Apr 2025 08:00:00 GMT
+08:00:01 [info] Ran the reminderSMS task on Sat, 26 Apr 2025 08:00:00 GMT
+07:09:23 [info] Backend server is up and running on port 3000
+07:09:23 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the reminderSMS task on Sun, 27 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 27 Apr 2025 08:00:00 GMT
+06:11:56 [info] Backend server is up and running on port 3000
+06:11:57 [info] Connected to MySQL pool! new config
+07:13:35 [info] Backend server is up and running on port 3000
+07:13:35 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 28 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 28 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 29 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 29 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 30 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Wed, 30 Apr 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 01 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Thu, 01 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 02 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Fri, 02 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sat, 03 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 03 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Sun, 04 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 04 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 05 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 05 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 06 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 06 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 07 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Wed, 07 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 08 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Thu, 08 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Fri, 09 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Fri, 09 May 2025 08:00:00 GMT
+18:41:40 [warn] healthfacility
+18:41:40 [warn] general
+18:41:54 [info] undefined: getAllPatientsAndHealthworker
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Sat, 10 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sat, 10 May 2025 08:00:00 GMT
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Sun, 11 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Sun, 11 May 2025 08:00:00 GMT
+12:49:33 [warn] healthfacility
+12:49:34 [warn] healthfacility
+12:49:34 [warn] general
+20:11:06 [info] Backend server is up and running on port 3000
+20:11:06 [info] Connected to MySQL pool! new config

@@ -1,0 +1,747 @@
+07:43:42 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+10:42:11 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+10:42:38 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:52:08 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:52:27 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:53:50 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+07:07:07 [error] Failed to connect to MySQL:
+05:44:08 [error] Can't add new command when connection is in closed state
+14:25:34 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:25:41 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:25:45 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+14:26:20 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:02:55 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:02:58 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+15:04:55 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+05:40:13 [error] Can't add new command when connection is in closed state
+05:40:16 [error] Can't add new command when connection is in closed state
+05:40:22 [error] Can't add new command when connection is in closed state
+05:40:32 [error] Can't add new command when connection is in closed state
+05:41:07 [error] Can't add new command when connection is in closed state
+09:06:22 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:22.066263Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:22.066307Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:06:31 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:30.688089Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:30.688112Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:06:34 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "343",
+    firstName: "Falmta",
+    middleName: "",
+    surName: "Modu",
+    phone: "00",
+    alternatePhone: "",
+    address: "Bayan tazaco",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "3",
+    parity: "2",
+    lmp: "2024-08-07T23:00:00.000Z",
+    edd: "2025-05-14T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 1,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:06:33.911447Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:06:33.911463Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:05 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:05.642768Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:05.642786Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:05.642789Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:05.642806Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:14 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:14.340543Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:14.340553Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:14.340559Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:14.340573Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:08:29 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-07-03T23:00:00.000Z",
+    edd: "2025-04-09T23:00:00.000Z",
+    ega: "2025-03-19T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:08:29.404373Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:08:29.404387Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:08:29.404393Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:08:29.404412Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:09:57 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "6",
+    parity: "4",
+    lmp: "2024-07-05T23:00:00.000Z",
+    edd: "2025-04-11T23:00:00.000Z",
+    ega: "2025-03-21T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 11.8579155,
+    longitude: 13.1360207,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:09:57.113167Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:09:57.113177Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:09:57.113186Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:09:57.113197Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+09:10:03 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "15746",
+    firstName: "Fatsuma",
+    middleName: "",
+    surName: "Muhammad",
+    phone: "00",
+    alternatePhone: "",
+    address: "Jan church",
+    state: "Borno",
+    lga: "Mmc",
+    ward: "Bolori 2",
+    settlement: "Ajakuta",
+    servingHealthcareFacility: "Baga Road PHC",
+    gravidity: "6",
+    parity: "4",
+    lmp: "2024-07-05T23:00:00.000Z",
+    edd: "2025-04-11T23:00:00.000Z",
+    ega: "2025-03-21T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 3,
+    receivedTetanusVaccination: "true",
+    latitude: 11.8579155,
+    longitude: 13.1360207,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T09:10:03.209869Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T09:10:03.209877Z"
+        },
+        {
+          anc: "Anc Visit 3",
+          date: "2025-03-18T09:10:03.209880Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD1",
+          date: "2025-03-18T09:10:03.209889Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:40:44 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "2039/24",
+    firstName: "Fatima",
+    middleName: "Mohammed",
+    surName: "Adam",
+    phone: "00000000000",
+    alternatePhone: "0000000000",
+    address: "Shuwari",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "2",
+    parity: "1",
+    lmp: "2024-08-29T23:00:00.000Z",
+    edd: "2025-06-05T23:00:00.000Z",
+    ega: "2025-03-20T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:40:43.795863Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:40:43.795872Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD2",
+          date: "2025-03-18T11:40:43.795904Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:41:19 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "2039/24",
+    firstName: "Fatima",
+    middleName: "Mohammed",
+    surName: "Adam",
+    phone: "00000000000",
+    alternatePhone: "0000000000",
+    address: "Shuwari",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "2",
+    parity: "1",
+    lmp: "2024-08-29T23:00:00.000Z",
+    edd: "2025-06-05T23:00:00.000Z",
+    ega: "2025-03-20T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:41:18.937197Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:41:18.937214Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: [
+        {
+          name: "TD2",
+          date: "2025-03-18T11:41:18.937230Z"
+        }
+      ]
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+11:47:29 [error] error in creating enumeration data:  
+Invalid `prisma.enumerationData.create()` invocation:
+
+{
+  data: {
+    clientNumber: "00021/24",
+    firstName: "Aisha",
+    middleName: "",
+    surName: "Mustapha",
+    phone: "000000000",
+    alternatePhone: "0000000000",
+    address: "Bolori",
+    state: "Borno",
+    lga: "MMC",
+    ward: "Bolori 1",
+    settlement: "Old Bolori Bulama Ganama",
+    servingHealthcareFacility: "Mala Kachalla Primary Health Care",
+    gravidity: "5",
+    parity: "4",
+    lmp: "2024-08-19T23:00:00.000Z",
+    edd: "2025-05-26T23:00:00.000Z",
+    ega: "2025-03-17T23:00:00.000Z",
+    attendedAncVisit: "false",
+    numberOfAncVisits: 2,
+    receivedTetanusVaccination: "true",
+    latitude: 0,
+    longitude: 0,
+    ancVisits: {
+      create: [
+        {
+          anc: "Anc Visit 1",
+          date: "2025-03-18T11:47:29.358668Z"
+        },
+        {
+          anc: "Anc Visit 2",
+          date: "2025-03-18T11:47:29.358676Z"
+        }
+      ]
+    },
+    tetanusVaccinationReceived: {
+      create: []
+    },
++   age: Int
+  },
+  include: {
+    ancVisits: true,
+    tetanusVaccinationReceived: true
+  }
+}
+
+Argument `age` is missing.
+13:39:06 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:39:14 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:39:54 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:19 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:22 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:41:22 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:45:37 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+13:45:40 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+
+Unique constraint failed on the constraint: `phone`
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+10:15:06 [error] Can't add new command when connection is in closed state
+10:15:06 [error] Can't add new command when connection is in closed state
+10:15:06 [error] Error: Can't add new command when connection is in closed state
+08:00:01 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+15:59:21 [error] Can't add new command when connection is in closed state
+15:59:21 [error] Can't add new command when connection is in closed state
+15:59:21 [error] Error: Can't add new command when connection is in closed state
+07:59:31 [error] Can't add new command when connection is in closed state
+07:59:31 [error] Error: Can't add new command when connection is in closed state
+07:59:31 [error] Can't add new command when connection is in closed state
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
