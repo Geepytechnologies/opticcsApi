@@ -102,6 +102,9 @@ class EnumerationController {
                 // Find the enumerator by userID
                 const enumerator = yield prisma.enumerator.findFirst({
                     where: { userID: enumeratorId },
+                    include: {
+                        settlement: true,
+                    },
                 });
                 // If enumerator doesn't exist, return 401 Unauthorized
                 if (!enumerator) {
@@ -171,6 +174,9 @@ class EnumerationController {
                 // Fetch enumerators with pagination
                 const enumerators = yield prisma.enumerator.findMany({
                     where: filters,
+                    include: {
+                        settlement: true, // include related settlements
+                    },
                     orderBy: {
                         createdAt: "desc", // Ensures the latest records appear first
                     },
@@ -554,9 +560,9 @@ class EnumerationController {
                 })
                     .then((clientNumber) => clientNumber.length);
                 res.status(200).json({
-                    totalSubmissions,
+                    totalSubmissions: totalSubmissions.length,
                     numberOfAncVisits: total,
-                    numnerOfWomen: totalSubmissions,
+                    numberOfWomen: totalSubmissions.length,
                 });
             }
             catch (error) {

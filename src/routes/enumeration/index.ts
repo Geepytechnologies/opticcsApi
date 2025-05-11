@@ -167,7 +167,7 @@ const router = express.Router();
  *               ward:
  *                 type: string
  *               settlement:
- *                 type: string[]
+ *                 type: array
  *               password:
  *                 type: string
  *             example:
@@ -177,7 +177,7 @@ const router = express.Router();
  *               state: Lagos
  *               lga: Ikeja
  *               ward: Ward 1
- *               settlement: Settlement A
+ *               settlement: ["Settlement A", "Settlement B"]
  *               password: password123
  *     responses:
  *       201:
