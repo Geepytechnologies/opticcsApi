@@ -168,7 +168,7 @@ const router = express_1.default.Router();
  *               ward:
  *                 type: string
  *               settlement:
- *                 type: string
+ *                 type: string[]
  *               password:
  *                 type: string
  *             example:

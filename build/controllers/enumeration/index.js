@@ -153,8 +153,12 @@ class EnumerationController {
                 filters.lga = lga;
             if (ward)
                 filters.ward = ward;
-            if (settlement)
-                filters.settlement = settlement;
+            if (settlement) {
+                // Assuming `settlement` is a relationship with the `Settlement` model
+                filters.settlement = {
+                    some: { name: { in: settlement.split(",") } }, // Adjust this based on how the relation is defined in your Prisma schema
+                };
+            }
             if (createdAt)
                 filters.createdAt = { gte: new Date(createdAt) };
             const pageNum = parseInt(pageNumber, 10);
@@ -549,9 +553,7 @@ class EnumerationController {
                     by: ["clientNumber"],
                 })
                     .then((clientNumber) => clientNumber.length);
-                res
-                    .status(200)
-                    .json({
+                res.status(200).json({
                     totalSubmissions,
                     numberOfAncVisits: total,
                     numnerOfWomen: totalSubmissions,
@@ -571,8 +573,11 @@ class EnumerationController {
                 filters.lga = lga;
             if (ward)
                 filters.ward = ward;
-            if (settlement)
-                filters.settlement = settlement;
+            if (settlement) {
+                filters.settlement = {
+                    some: { name: { in: settlement.split(",") } },
+                };
+            }
             if (createdAt)
                 filters.createdAt = { gte: new Date(createdAt) };
             const pageNum = parseInt(pageNumber, 10);
