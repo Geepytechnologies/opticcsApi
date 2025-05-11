@@ -1,5 +1,6 @@
 import express from "express";
 import EnumerationController from "../../controllers/enumeration";
+import { verifyToken } from "../../middlewares/verifyToken";
 
 const router = express.Router();
 
@@ -145,7 +146,7 @@ const router = express.Router();
  *   post:
  *     summary: Create a new enumerator
  *     tags: [Enumerator]
- *     description: Create a new enumerator with a unique userID in the format IANC/EM/0001.
+ *     description: Create a new enumerator with a unique userID in the format IANC/EM/0001. Requires Authorization header
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +167,7 @@ const router = express.Router();
  *               ward:
  *                 type: string
  *               settlement:
- *                 type: string
+ *                 type: string[]
  *               password:
  *                 type: string
  *             example:
@@ -505,7 +506,7 @@ router.delete("/enumerators/:id", EnumerationController.deleteEnumerator);
  *       500:
  *         description: Failed to create enumeration data
  */
-router.post("/data", EnumerationController.createEnumerationData);
+router.post("/data", verifyToken, EnumerationController.createEnumerationData);
 
 /**
  * @swagger
@@ -857,5 +858,26 @@ router.get("/activeStates", EnumerationController.getActiveStates);
  *         description: Internal server error
  */
 router.get("/analytics/widgetdata", EnumerationController.getTotalSubmissions);
+
+/**
+ * @swagger
+ * /api/enumeration/activitylog:
+ *   get:
+ *     summary: Get Enumeration activity log
+ *     tags: [Enumeration Analytics]
+ *     description: Retrieve activity log.
+ *     responses:
+ *       200:
+ *         description: Requires Authorization header
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/activitylog", verifyToken, EnumerationController.getActivityLog);
 
 export default router;

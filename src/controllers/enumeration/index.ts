@@ -154,7 +154,12 @@ class EnumerationController {
     if (state) filters.state = state;
     if (lga) filters.lga = lga;
     if (ward) filters.ward = ward;
-    if (settlement) filters.settlement = settlement;
+    if (settlement) {
+      // Assuming `settlement` is a relationship with the `Settlement` model
+      filters.settlement = {
+        some: { name: { in: settlement.split(",") } }, // Adjust this based on how the relation is defined in your Prisma schema
+      };
+    }
     if (createdAt) filters.createdAt = { gte: new Date(createdAt) };
 
     const pageNum = parseInt(pageNumber, 10);
@@ -248,7 +253,8 @@ class EnumerationController {
         .json({ statusCode: 500, message: "Something went wrong" });
     }
   };
-  createEnumerationData = async (req: Request, res: Response) => {
+  createEnumerationData = async (req: any, res: Response) => {
+    const UserId = req.user.id;
     console.log("Enumeration data: ", req.body);
     const {
       clientNumber,
@@ -306,6 +312,7 @@ class EnumerationController {
           receivedTetanusVaccination,
           latitude,
           longitude,
+          submittedById: UserId,
           ancVisits: {
             create: ancVisits,
           },
@@ -573,6 +580,39 @@ class EnumerationController {
       res.status(500).json({ error: "Failed to fetch widgetdata" });
     }
   };
+  getActivityLog = async (req: any, res: Response) => {
+    const user = req.user.id;
+    try {
+      const totalSubmissions = await prisma.enumerationData.findMany({
+        where: {
+          submittedById: user,
+        },
+      });
+      const numberOfWomen = await prisma.enumerationData.aggregate({
+        where: {
+          submittedById: user,
+        },
+        _sum: {
+          numberOfAncVisits: true,
+        },
+      });
+      const total = numberOfWomen._sum.numberOfAncVisits ?? 0;
+
+      const totalClientNumber = await prisma.enumerationData
+        .groupBy({
+          by: ["clientNumber"],
+        })
+        .then((clientNumber) => clientNumber.length);
+      res.status(200).json({
+        totalSubmissions,
+        numberOfAncVisits: total,
+        numnerOfWomen: totalSubmissions,
+      });
+    } catch (error) {
+      console.error("Error fetching activity log:", error);
+      res.status(500).json({ error: "Failed to fetch activity log" });
+    }
+  };
   getLoginCredentials = async (req: Request, res: Response) => {
     const {
       state,
@@ -588,7 +628,11 @@ class EnumerationController {
     if (state) filters.state = state;
     if (lga) filters.lga = lga;
     if (ward) filters.ward = ward;
-    if (settlement) filters.settlement = settlement;
+    if (settlement) {
+      filters.settlement = {
+        some: { name: { in: settlement.split(",") } },
+      };
+    }
     if (createdAt) filters.createdAt = { gte: new Date(createdAt) };
 
     const pageNum = parseInt(pageNumber, 10);

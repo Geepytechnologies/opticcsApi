@@ -6,7 +6,11 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
+model Settlement {
+  id           Int              @id @default(autoincrement())
+  name         String
+  enumerationData Enumerator[] @relation("SettlementData")
+}
 model Enumerator {
   id        Int      @id @default(autoincrement())
   name  String
@@ -16,9 +20,10 @@ model Enumerator {
   state String
   lga String
   ward String
-  settlement String
+  settlement Settlement[] @relation("SettlementData")
   password String
   isActive Boolean @default(true)
+  enumerationData EnumerationData[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -74,6 +79,8 @@ model EnumerationData{
   tetanusVaccinationReceived EnumerationTTData[]
   latitude Float
   longitude Float
+  submittedById  String
+  submittedBy Enumerator @relation(fields: [submittedById], references: [userID])
   createdAt DateTime @default(now())
 
 }
