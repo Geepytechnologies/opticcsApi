@@ -21,7 +21,7 @@ function seed() {
             const settlements = JSON.parse(data);
             // Seed the data into the database
             for (const settlement of settlements) {
-                yield prisma.enumerationSettlements.create({
+                yield prisma.EnumerationSettlements.create({
                     data: {
                         state: settlement.state,
                         lga: settlement.lga,
