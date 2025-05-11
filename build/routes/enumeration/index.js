@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const enumeration_1 = __importDefault(require("../../controllers/enumeration"));
+const verifyToken_1 = require("../../middlewares/verifyToken");
 const router = express_1.default.Router();
 /**
  * @swagger
@@ -146,7 +147,7 @@ const router = express_1.default.Router();
  *   post:
  *     summary: Create a new enumerator
  *     tags: [Enumerator]
- *     description: Create a new enumerator with a unique userID in the format IANC/EM/0001.
+ *     description: Create a new enumerator with a unique userID in the format IANC/EM/0001. Requires Authorization header
  *     requestBody:
  *       required: true
  *       content:
@@ -499,7 +500,7 @@ router.delete("/enumerators/:id", enumeration_1.default.deleteEnumerator);
  *       500:
  *         description: Failed to create enumeration data
  */
-router.post("/data", enumeration_1.default.createEnumerationData);
+router.post("/data", verifyToken_1.verifyToken, enumeration_1.default.createEnumerationData);
 /**
  * @swagger
  * /api/enumeration/data:
@@ -843,4 +844,24 @@ router.get("/activeStates", enumeration_1.default.getActiveStates);
  *         description: Internal server error
  */
 router.get("/analytics/widgetdata", enumeration_1.default.getTotalSubmissions);
+/**
+ * @swagger
+ * /api/enumeration/activitylog:
+ *   get:
+ *     summary: Get Enumeration activity log
+ *     tags: [Enumeration Analytics]
+ *     description: Retrieve activity log.
+ *     responses:
+ *       200:
+ *         description: Requires Authorization header
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/activitylog", verifyToken_1.verifyToken, enumeration_1.default.getActivityLog);
 exports.default = router;

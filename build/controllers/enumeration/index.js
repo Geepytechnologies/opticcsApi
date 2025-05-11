@@ -241,6 +241,7 @@ class EnumerationController {
             }
         });
         this.createEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const UserId = req.user.id;
             console.log("Enumeration data: ", req.body);
             const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, age, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
             // const lmp = new Date(req.body.lmp).toISOString();
@@ -272,6 +273,7 @@ class EnumerationController {
                         receivedTetanusVaccination,
                         latitude,
                         longitude,
+                        submittedById: UserId,
                         ancVisits: {
                             create: ancVisits,
                         },
@@ -522,6 +524,42 @@ class EnumerationController {
             catch (error) {
                 console.error("Error fetching total submissions:", error);
                 res.status(500).json({ error: "Failed to fetch widgetdata" });
+            }
+        });
+        this.getActivityLog = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const user = req.user.id;
+            try {
+                const totalSubmissions = yield prisma.enumerationData.findMany({
+                    where: {
+                        submittedById: user,
+                    },
+                });
+                const numberOfWomen = yield prisma.enumerationData.aggregate({
+                    where: {
+                        submittedById: user,
+                    },
+                    _sum: {
+                        numberOfAncVisits: true,
+                    },
+                });
+                const total = (_a = numberOfWomen._sum.numberOfAncVisits) !== null && _a !== void 0 ? _a : 0;
+                const totalClientNumber = yield prisma.enumerationData
+                    .groupBy({
+                    by: ["clientNumber"],
+                })
+                    .then((clientNumber) => clientNumber.length);
+                res
+                    .status(200)
+                    .json({
+                    totalSubmissions,
+                    numberOfAncVisits: total,
+                    numnerOfWomen: totalSubmissions,
+                });
+            }
+            catch (error) {
+                console.error("Error fetching activity log:", error);
+                res.status(500).json({ error: "Failed to fetch activity log" });
             }
         });
         this.getLoginCredentials = (req, res) => __awaiter(this, void 0, void 0, function* () {

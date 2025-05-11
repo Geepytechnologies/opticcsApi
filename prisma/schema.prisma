@@ -19,6 +19,7 @@ model Enumerator {
   settlement String
   password String
   isActive Boolean @default(true)
+  enumerationData EnumerationData[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -74,6 +75,8 @@ model EnumerationData{
   tetanusVaccinationReceived EnumerationTTData[]
   latitude Float
   longitude Float
+  submittedById  String
+  submittedBy Enumerator @relation(fields: [submittedById], references: [userID])
   createdAt DateTime @default(now())
 
 }
