@@ -22,10 +22,13 @@ jobs:
         PM2_APP_NAME: ${{ secrets.PM2_APP_NAME }}
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "
-          cd $PROJECT_PATH &&
-          git pull origin main &&
-          npm install &&
-          npx prisma generate &&
-          npm run build &&
-          pm2 restart $PM2_APP_NAME
+          bash -lc '
+            cd $PROJECT_PATH &&
+            git pull origin main &&
+            npm install &&
+            npx prisma generate &&
+            npm run build &&
+            pm2 restart $PM2_APP_NAME
+          '
         "
+
