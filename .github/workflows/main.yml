@@ -22,13 +22,15 @@ jobs:
         PM2_APP_NAME: ${{ secrets.PM2_APP_NAME }}
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST '
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          echo "Current directory: $(pwd)"
           cd $PROJECT_PATH &&
+          echo "In project directory: $(pwd)" &&
+          git status &&
           git pull origin main &&
           npm install &&
           npx prisma generate &&
           npm run build &&
           pm2 restart $PM2_APP_NAME
         '
+
 
