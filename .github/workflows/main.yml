@@ -1,0 +1,31 @@
+name: Deploy Node.js App to Ubuntu VPS
+
+on:
+  push:
+    branches:
+      - main  # Change to your deploy branch if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install SSH Client
+      run: sudo apt-get install -y sshpass
+
+    - name: Deploy over SSH
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        PM2_APP_NAME: ${{ secrets.PM2_APP_NAME }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "
+          cd $PROJECT_PATH &&
+          git pull origin main &&
+          npm install &&
+          npx prisma generate &&
+          npm run build &&
+          pm2 restart $PM2_APP_NAME
+        "
