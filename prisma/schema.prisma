@@ -9,7 +9,6 @@ datasource db {
 model Settlement {
   id           Int              @id @default(autoincrement())
   name         String
-  enumerationData Enumerator[] @relation("SettlementData")
 }
 model Enumerator {
   id        Int      @id @default(autoincrement())
@@ -20,7 +19,7 @@ model Enumerator {
   state String
   lga String
   ward String
-  settlement Settlement[] @relation("SettlementData")
+  settlement String
   password String
   isActive Boolean @default(true)
   enumerationData EnumerationData[]

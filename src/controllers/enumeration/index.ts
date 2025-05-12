@@ -11,7 +11,7 @@ class EnumerationController {
     logger.info("createEnumerator");
     const { name, phone, gender, state, lga, ward, settlement, password } =
       req.body;
-
+    console.log(settlement);
     try {
       // Get the last enumerator's userID
       const lastEnumerator = await prisma.enumerator.findFirst({
@@ -36,7 +36,7 @@ class EnumerationController {
           state,
           lga,
           ward,
-          settlement,
+          settlement: JSON.stringify(settlement),
           password,
           userID,
         },
@@ -85,9 +85,6 @@ class EnumerationController {
       // Find the enumerator by userID
       const enumerator = await prisma.enumerator.findFirst({
         where: { userID: enumeratorId },
-        include: {
-          settlement: true,
-        },
       });
 
       // If enumerator doesn't exist, return 401 Unauthorized
@@ -157,12 +154,7 @@ class EnumerationController {
     if (state) filters.state = state;
     if (lga) filters.lga = lga;
     if (ward) filters.ward = ward;
-    if (settlement) {
-      // Assuming `settlement` is a relationship with the `Settlement` model
-      filters.settlement = {
-        some: { name: { in: settlement.split(",") } }, // Adjust this based on how the relation is defined in your Prisma schema
-      };
-    }
+    if (settlement) filters.settlement = settlement;
     if (createdAt) filters.createdAt = { gte: new Date(createdAt) };
 
     const pageNum = parseInt(pageNumber, 10);
@@ -177,16 +169,12 @@ class EnumerationController {
       // Fetch enumerators with pagination
       const enumerators = await prisma.enumerator.findMany({
         where: filters,
-        include: {
-          settlement: true, // include related settlements
-        },
         orderBy: {
           createdAt: "desc", // Ensures the latest records appear first
         },
         skip: (pageNum - 1) * pageSz,
         take: pageSz,
       });
-
       // Calculate total pages
       const totalPages = Math.ceil(totalCount / pageSz);
 
@@ -363,11 +351,11 @@ class EnumerationController {
 
     const filters: any = {};
 
-    if (dateCreated) {
-      filters.createdAt = {
-        gte: new Date(dateCreated as string),
-      };
-    }
+    // if (dateCreated) {
+    //   filters.createdAt = {
+    //     gte: new Date(`${dateCreated}T00:00:00.000Z`),
+    //   };
+    // }
 
     if (state) filters.state = state;
     if (lga) filters.lga = lga;
@@ -403,6 +391,7 @@ class EnumerationController {
         },
       });
     } catch (error: any) {
+      console.log(error);
       res.status(500).json({
         statusCode: 500,
         message: "Failed to retrieve enumeration data",
@@ -635,11 +624,8 @@ class EnumerationController {
     if (state) filters.state = state;
     if (lga) filters.lga = lga;
     if (ward) filters.ward = ward;
-    if (settlement) {
-      filters.settlement = {
-        some: { name: { in: settlement.split(",") } },
-      };
-    }
+    if (settlement) filters.settlement = settlement;
+
     if (createdAt) filters.createdAt = { gte: new Date(createdAt) };
 
     const pageNum = parseInt(pageNumber, 10);
