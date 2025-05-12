@@ -18,7 +18,7 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         SSH_HOST: ${{ secrets.SSH_HOST }}
-        PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        PROJECT_PATH: "/home/optics/opticcsapp"
         PM2_APP_NAME: ${{ secrets.PM2_APP_NAME }}
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST '
