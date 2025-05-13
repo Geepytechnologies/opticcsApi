@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import { parse } from "json2csv";
 
 class EnumerationController {
   createEnumerator = async (req: Request, res: Response) => {
@@ -395,6 +396,37 @@ class EnumerationController {
       res.status(500).json({
         statusCode: 500,
         message: "Failed to retrieve enumeration data",
+        error: error.message,
+      });
+    }
+  };
+  downloadEnumerationData = async (req: Request, res: Response) => {
+    try {
+      const enumerationData = await prisma.enumerationData.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
+        },
+      });
+      const csv = parse(enumerationData);
+
+      // Set the response headers to trigger file download
+      res.header("Content-Type", "text/csv");
+      res.attachment("EnumerationData.csv");
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=EnumerationData.csv"
+      );
+
+      res.status(200).send(csv);
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "Failed to download enumeration data",
         error: error.message,
       });
     }

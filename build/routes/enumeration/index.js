@@ -864,4 +864,23 @@ router.get("/analytics/widgetdata", enumeration_1.default.getTotalSubmissions);
  *         description: Internal server error
  */
 router.get("/activitylog", verifyToken_1.verifyToken, enumeration_1.default.getActivityLog);
+/**
+ * @swagger
+ * /api/enumeration/data/download:
+ *   get:
+ *     summary: Download Enumeration data
+ *     tags: [Enumeration Analytics]
+ *     description: Download Enumeration Data.
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/download/data", enumeration_1.default.downloadEnumerationData);
 exports.default = router;

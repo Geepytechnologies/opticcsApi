@@ -880,4 +880,24 @@ router.get("/analytics/widgetdata", EnumerationController.getTotalSubmissions);
  */
 router.get("/activitylog", verifyToken, EnumerationController.getActivityLog);
 
+/**
+ * @swagger
+ * /api/enumeration/data/download:
+ *   get:
+ *     summary: Download Enumeration data
+ *     tags: [Enumeration Analytics]
+ *     description: Download Enumeration Data.
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/download/data", EnumerationController.downloadEnumerationData);
+
 export default router;

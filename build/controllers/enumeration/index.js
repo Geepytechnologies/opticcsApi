@@ -28,6 +28,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
+const json2csv_1 = require("json2csv");
 class EnumerationController {
     constructor() {
         this.createEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -352,6 +353,33 @@ class EnumerationController {
                 res.status(500).json({
                     statusCode: 500,
                     message: "Failed to retrieve enumeration data",
+                    error: error.message,
+                });
+            }
+        });
+        this.downloadEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const enumerationData = yield prisma.enumerationData.findMany({
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                    include: {
+                        ancVisits: true,
+                        tetanusVaccinationReceived: true,
+                    },
+                });
+                const csv = (0, json2csv_1.parse)(enumerationData);
+                // Set the response headers to trigger file download
+                res.header("Content-Type", "text/csv");
+                res.attachment("EnumerationData.csv");
+                res.setHeader("Content-Disposition", "attachment; filename=EnumerationData.csv");
+                res.status(200).send(csv);
+            }
+            catch (error) {
+                console.log(error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "Failed to download enumeration data",
                     error: error.message,
                 });
             }
