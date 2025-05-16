@@ -141,6 +141,36 @@ export class SmsService {
       throw new Error(error);
     }
   };
+  verifyPhone = async ({ phone }: { phone: string }) => {
+    const apiKey = process.env.TERMIIKEY;
+    const phoneNumber = phone;
+    const countryCode = "NG";
+
+    const queryParams = new URLSearchParams({
+      api_key: apiKey ?? "",
+      phone_number: phoneNumber,
+      country_code: countryCode,
+    });
+
+    const url = `https://v3.api.termii.com/api/insight/number/query?${queryParams}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch phone verification");
+      }
+      const res = await response.json();
+      console.log(res);
+      return res;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
   async scheduledvisitSMSforPatient(smsdata: Scheduledvisit) {
     const {
       mobile_number,
