@@ -34,7 +34,7 @@ jobs:
             npm install
             npx prisma generate
             npm run build
-            pm2 restart optics
+            pm2 restart opticcs
       
 
 
