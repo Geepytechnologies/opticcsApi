@@ -282,7 +282,7 @@ class EnumerationController {
     // const edd = new Date(req.body.edd).toISOString();
     // const ega = new Date(req.body.ega).toISOString();
     try {
-      const enumerationdata = await prisma.enumerationdata.create({
+      const enumerationdata = await prisma.enumerationData.create({
         data: {
           clientNumber,
           firstName,
@@ -308,16 +308,16 @@ class EnumerationController {
           latitude,
           longitude,
           submittedById: UserId,
-          enumerationancvisitdata: {
+          ancVisits: {
             create: ancVisits,
           },
-          enumerationttdata: {
+          tetanusVaccinationReceived: {
             create: tetanusVaccinationReceived,
           },
         },
         include: {
-          enumerationancvisitdata: true,
-          enumerationttdata: true,
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
         },
       });
 
@@ -364,7 +364,7 @@ class EnumerationController {
     if (settlement) filters.settlement = settlement;
 
     try {
-      const enumerationdata = await prisma.enumerationdata.findMany({
+      const enumerationdata = await prisma.enumerationData.findMany({
         where: filters,
 
         skip,
@@ -373,12 +373,12 @@ class EnumerationController {
           createdAt: "desc",
         },
         include: {
-          enumerationancvisitdata: true,
-          enumerationttdata: true,
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
         },
       });
 
-      const totalCount = await prisma.enumerationdata.count({ where: filters });
+      const totalCount = await prisma.enumerationData.count({ where: filters });
 
       res.status(200).json({
         statusCode: 200,
@@ -402,13 +402,13 @@ class EnumerationController {
   };
   downloadEnumerationData = async (req: Request, res: Response) => {
     try {
-      const enumerationdata = await prisma.enumerationdata.findMany({
+      const enumerationdata = await prisma.enumerationData.findMany({
         orderBy: {
           createdAt: "desc",
         },
         include: {
-          enumerationancvisitdata: true,
-          enumerationttdata: true,
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
         },
       });
       const csv = parse(enumerationdata);
@@ -435,11 +435,11 @@ class EnumerationController {
     const { id } = req.params;
 
     try {
-      const enumerationdata = await prisma.enumerationdata.findUnique({
+      const enumerationdata = await prisma.enumerationData.findUnique({
         where: { id: Number(id) },
         include: {
-          enumerationancvisitdata: true,
-          enumerationttdata: true,
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
         },
       });
 
@@ -467,7 +467,7 @@ class EnumerationController {
 
   getAllStates = async (req: Request, res: Response) => {
     try {
-      const states = await prisma.enumerationsettlements.findMany({
+      const states = await prisma.enumerationSettlements.findMany({
         select: {
           state: true,
         },
@@ -485,7 +485,7 @@ class EnumerationController {
     const { state, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
-      const lgas = await prisma.enumerationsettlements.findMany({
+      const lgas = await prisma.enumerationSettlements.findMany({
         where: {
           state: String(state),
         },
@@ -506,7 +506,7 @@ class EnumerationController {
     const { state, lga, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
-      const wards = await prisma.enumerationsettlements.findMany({
+      const wards = await prisma.enumerationSettlements.findMany({
         where: {
           state: String(state),
           lga: String(lga),
@@ -542,10 +542,10 @@ class EnumerationController {
         };
       }
 
-      const states = await prisma.enumerationsettlements.findMany({
+      const states = await prisma.enumerationSettlements.findMany({
         where: Object.keys(filters).length ? filters : undefined,
       });
-      const totalCount = await prisma.enumerationsettlements.count({
+      const totalCount = await prisma.enumerationSettlements.count({
         where: filters,
       });
 
@@ -570,7 +570,7 @@ class EnumerationController {
     const { state, lga, ward } = req.query;
 
     try {
-      const settlements = await prisma.enumerationsettlements.findMany({
+      const settlements = await prisma.enumerationSettlements.findMany({
         where: {
           state: String(state),
           lga: String(lga),
@@ -589,13 +589,13 @@ class EnumerationController {
   };
   getTotalSubmissions = async (req: Request, res: Response) => {
     try {
-      const totalSubmissions = await prisma.enumerationdata.count();
-      const totalActiveStates = await prisma.enumerationsettlements
+      const totalSubmissions = await prisma.enumerationData.count();
+      const totalActiveStates = await prisma.enumerationSettlements
         .groupBy({
           by: ["state"],
         })
         .then((states) => states.length);
-      const totalClientNumber = await prisma.enumerationdata
+      const totalClientNumber = await prisma.enumerationData
         .groupBy({
           by: ["clientNumber"],
         })
@@ -611,12 +611,12 @@ class EnumerationController {
   getActivityLog = async (req: any, res: Response) => {
     const user = req.user.id;
     try {
-      const totalSubmissions = await prisma.enumerationdata.findMany({
+      const totalSubmissions = await prisma.enumerationData.findMany({
         where: {
           submittedById: user,
         },
       });
-      const numberOfWomen = await prisma.enumerationdata.aggregate({
+      const numberOfWomen = await prisma.enumerationData.aggregate({
         where: {
           submittedById: user,
         },
@@ -626,7 +626,7 @@ class EnumerationController {
       });
       const total = numberOfWomen._sum.numberOfAncVisits ?? 0;
 
-      const totalClientNumber = await prisma.enumerationdata
+      const totalClientNumber = await prisma.enumerationData
         .groupBy({
           by: ["clientNumber"],
         })
