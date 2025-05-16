@@ -282,7 +282,7 @@ class EnumerationController {
     // const edd = new Date(req.body.edd).toISOString();
     // const ega = new Date(req.body.ega).toISOString();
     try {
-      const enumerationData = await prisma.enumerationData.create({
+      const enumerationdata = await prisma.enumerationdata.create({
         data: {
           clientNumber,
           firstName,
@@ -308,23 +308,23 @@ class EnumerationController {
           latitude,
           longitude,
           submittedById: UserId,
-          ancVisits: {
+          enumerationancvisitdata: {
             create: ancVisits,
           },
-          tetanusVaccinationReceived: {
+          enumerationttdata: {
             create: tetanusVaccinationReceived,
           },
         },
         include: {
-          ancVisits: true,
-          tetanusVaccinationReceived: true,
+          enumerationancvisitdata: true,
+          enumerationttdata: true,
         },
       });
 
       res.status(201).json({
         statusCode: 201,
         message: "Enumeration data created successfully!",
-        data: enumerationData,
+        data: enumerationdata,
       });
     } catch (error: any) {
       logger.error("error in creating enumeration data: ", error);
@@ -364,7 +364,7 @@ class EnumerationController {
     if (settlement) filters.settlement = settlement;
 
     try {
-      const enumerationData = await prisma.enumerationData.findMany({
+      const enumerationdata = await prisma.enumerationdata.findMany({
         where: filters,
 
         skip,
@@ -373,17 +373,17 @@ class EnumerationController {
           createdAt: "desc",
         },
         include: {
-          ancVisits: true,
-          tetanusVaccinationReceived: true,
+          enumerationancvisitdata: true,
+          enumerationttdata: true,
         },
       });
 
-      const totalCount = await prisma.enumerationData.count({ where: filters });
+      const totalCount = await prisma.enumerationdata.count({ where: filters });
 
       res.status(200).json({
         statusCode: 200,
         message: "Enumeration data retrieved successfully!",
-        data: enumerationData,
+        data: enumerationdata,
         pagination: {
           pageNumber: Number(pageNumber),
           pageSize: Number(pageSize),
@@ -402,23 +402,23 @@ class EnumerationController {
   };
   downloadEnumerationData = async (req: Request, res: Response) => {
     try {
-      const enumerationData = await prisma.enumerationData.findMany({
+      const enumerationdata = await prisma.enumerationdata.findMany({
         orderBy: {
           createdAt: "desc",
         },
         include: {
-          ancVisits: true,
-          tetanusVaccinationReceived: true,
+          enumerationancvisitdata: true,
+          enumerationttdata: true,
         },
       });
-      const csv = parse(enumerationData);
+      const csv = parse(enumerationdata);
 
       // Set the response headers to trigger file download
       res.header("Content-Type", "text/csv");
-      res.attachment("EnumerationData.csv");
+      res.attachment("enumerationdata.csv");
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=EnumerationData.csv"
+        "attachment; filename=enumerationdata.csv"
       );
 
       res.status(200).send(csv);
@@ -435,15 +435,15 @@ class EnumerationController {
     const { id } = req.params;
 
     try {
-      const enumerationData = await prisma.enumerationData.findUnique({
+      const enumerationdata = await prisma.enumerationdata.findUnique({
         where: { id: Number(id) },
         include: {
-          ancVisits: true,
-          tetanusVaccinationReceived: true,
+          enumerationancvisitdata: true,
+          enumerationttdata: true,
         },
       });
 
-      if (!enumerationData) {
+      if (!enumerationdata) {
         return res.status(404).json({
           statusCode: 404,
 
@@ -454,7 +454,7 @@ class EnumerationController {
       res.status(200).json({
         statusCode: 200,
         message: "Enumeration data retrieved successfully!",
-        data: enumerationData,
+        data: enumerationdata,
       });
     } catch (error: any) {
       res.status(500).json({
@@ -467,7 +467,7 @@ class EnumerationController {
 
   getAllStates = async (req: Request, res: Response) => {
     try {
-      const states = await prisma.enumerationSettlements.findMany({
+      const states = await prisma.enumerationsettlements.findMany({
         select: {
           state: true,
         },
@@ -485,7 +485,7 @@ class EnumerationController {
     const { state, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
-      const lgas = await prisma.enumerationSettlements.findMany({
+      const lgas = await prisma.enumerationsettlements.findMany({
         where: {
           state: String(state),
         },
@@ -506,7 +506,7 @@ class EnumerationController {
     const { state, lga, pageNumber = 1, pageSize = 10 } = req.query;
 
     try {
-      const wards = await prisma.enumerationSettlements.findMany({
+      const wards = await prisma.enumerationsettlements.findMany({
         where: {
           state: String(state),
           lga: String(lga),
@@ -542,10 +542,10 @@ class EnumerationController {
         };
       }
 
-      const states = await prisma.enumerationSettlements.findMany({
+      const states = await prisma.enumerationsettlements.findMany({
         where: Object.keys(filters).length ? filters : undefined,
       });
-      const totalCount = await prisma.enumerationSettlements.count({
+      const totalCount = await prisma.enumerationsettlements.count({
         where: filters,
       });
 
@@ -570,7 +570,7 @@ class EnumerationController {
     const { state, lga, ward } = req.query;
 
     try {
-      const settlements = await prisma.enumerationSettlements.findMany({
+      const settlements = await prisma.enumerationsettlements.findMany({
         where: {
           state: String(state),
           lga: String(lga),
@@ -589,13 +589,13 @@ class EnumerationController {
   };
   getTotalSubmissions = async (req: Request, res: Response) => {
     try {
-      const totalSubmissions = await prisma.enumerationData.count();
-      const totalActiveStates = await prisma.enumerationSettlements
+      const totalSubmissions = await prisma.enumerationdata.count();
+      const totalActiveStates = await prisma.enumerationsettlements
         .groupBy({
           by: ["state"],
         })
         .then((states) => states.length);
-      const totalClientNumber = await prisma.enumerationData
+      const totalClientNumber = await prisma.enumerationdata
         .groupBy({
           by: ["clientNumber"],
         })
@@ -611,12 +611,12 @@ class EnumerationController {
   getActivityLog = async (req: any, res: Response) => {
     const user = req.user.id;
     try {
-      const totalSubmissions = await prisma.enumerationData.findMany({
+      const totalSubmissions = await prisma.enumerationdata.findMany({
         where: {
           submittedById: user,
         },
       });
-      const numberOfWomen = await prisma.enumerationData.aggregate({
+      const numberOfWomen = await prisma.enumerationdata.aggregate({
         where: {
           submittedById: user,
         },
@@ -626,7 +626,7 @@ class EnumerationController {
       });
       const total = numberOfWomen._sum.numberOfAncVisits ?? 0;
 
-      const totalClientNumber = await prisma.enumerationData
+      const totalClientNumber = await prisma.enumerationdata
         .groupBy({
           by: ["clientNumber"],
         })
