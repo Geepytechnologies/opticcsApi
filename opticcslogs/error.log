@@ -745,3 +745,44 @@ Unique constraint failed on the constraint: `phone`
 07:59:31 [error] Can't add new command when connection is in closed state
 08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
 08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+17:13:13 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+{
+  data: {
+    name: "John Doe",
+    phone: 1234567890,
+           ~~~~~~~~~~
+    gender: "Male",
+    state: "Lagos",
+    lga: "Ikeja",
+    ward: "Ward 1",
+    settlement: "[\"Settlement A\",\"Settlement B\"]",
+    password: "password123",
+    userID: "IANC/EM/0221"
+  }
+}
+
+Argument `phone`: Invalid value provided. Expected String, provided Int.
+17:13:16 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+{
+  data: {
+    name: "John Doe",
+    phone: 1234567890,
+           ~~~~~~~~~~
+    gender: "Male",
+    state: "Lagos",
+    lga: "Ikeja",
+    ward: "Ward 1",
+    settlement: "[\"Settlement A\",\"Settlement B\"]",
+    password: "password123",
+    userID: "IANC/EM/0221"
+  }
+}
+
+Argument `phone`: Invalid value provided. Expected String, provided Int.
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+18:27:34 [error] Can't add new command when connection is in closed state

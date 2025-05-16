@@ -6,96 +6,836 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model Settlement {
-  id           Int              @id @default(autoincrement())
-  name         String
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  SettlementData SettlementData[]
 }
+
 model Enumerator {
-  id        Int      @id @default(autoincrement())
-  name  String
-  phone     String   @unique
-  gender String
-  userID String  @unique
-  state String
-  lga String
-  ward String
-  settlement String
-  password String
-  isActive Boolean @default(true)
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(255)
+  phone           String            @unique(map: "phone") @db.VarChar(255)
+  gender          String            @db.VarChar(255)
+  userID          String            @unique(map: "userID") @db.VarChar(255)
+  state           String            @db.VarChar(255)
+  lga             String            @db.VarChar(255)
+  ward            String            @db.VarChar(255)
+  settlement      String?           @db.Text
+  password        String            @db.VarChar(255)
+  isActive        Boolean?          @default(true)
+  createdAt       DateTime?         @default(now()) @db.DateTime(0)
+  updatedAt       DateTime?         @updatedAt @db.DateTime(0)
   enumerationData EnumerationData[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  SettlementData  SettlementData[]
 }
 
-model EnumerationSettlements{
-  id        Int      @id @default(autoincrement())
-  state String
-  lga String
-  ward String
-  settlement String
-  teamCode String
-  createdAt DateTime @default(now())
+model EnumerationSettlements {
+  id         Int       @id @default(autoincrement())
+  state      String    @db.VarChar(255)
+  lga        String    @db.VarChar(255)
+  ward       String    @db.VarChar(255)
+  settlement String    @db.VarChar(255)
+  teamCode   String    @db.VarChar(255)
+  createdAt  DateTime? @default(now()) @db.DateTime(0)
 }
 
-model EnumerationHealthfacilities{
-  id        Int      @id @default(autoincrement())
-  state String
-  lga String
-  ward String
-  facilityName String
-  geocoordinate String
-  latitude String
-  longitude String
-  altitude String
-  precision String
-  createdAt DateTime @default(now())
+model EnumerationHealthfacilities {
+  id            Int      @id @default(autoincrement())
+  state         String   @db.VarChar(255)
+  lga           String   @db.VarChar(255)
+  ward          String   @db.VarChar(255)
+  facilityName  String   @db.VarChar(255)
+  geocoordinate String   @db.VarChar(255)
+  latitude      String   @db.VarChar(255)
+  longitude     String   @db.VarChar(255)
+  altitude      String   @db.VarChar(255)
+  precision     String   @db.VarChar(255)
+  createdAt     DateTime @default(now()) @db.DateTime(0)
 }
 
-model EnumerationData{
-  id        Int      @id @default(autoincrement())
-  clientNumber String
-  firstName String
-  middleName String
-  surName String
-  phone String
-  alternatePhone String
-  address String
-  age Int
-  state String
-  lga String
-  ward String
-  settlement String
-  servingHealthcareFacility String
-  gravidity String
-  parity String
-  lmp String
-  edd String
-  ega String
-  attendedAncVisit String
-  numberOfAncVisits Int
-  ancVisits EnumerationAncVisitData[]
-  receivedTetanusVaccination String
+model EnumerationData {
+  id                         Int                       @id @default(autoincrement())
+  clientNumber               String                    @db.VarChar(255)
+  firstName                  String                    @db.VarChar(255)
+  middleName                 String?                   @db.VarChar(255)
+  surName                    String                    @db.VarChar(255)
+  phone                      String                    @db.VarChar(255)
+  alternatePhone             String?                   @db.VarChar(255)
+  address                    String                    @db.VarChar(255)
+  state                      String                    @db.VarChar(255)
+  lga                        String                    @db.VarChar(255)
+  ward                       String                    @db.VarChar(255)
+  settlement                 String                    @db.VarChar(255)
+  servingHealthcareFacility  String                    @db.VarChar(255)
+  gravidity                  String                    @db.VarChar(255)
+  parity                     String                    @db.VarChar(255)
+  lmp                        String                    @db.VarChar(255)
+  edd                        String                    @db.VarChar(255)
+  ega                        String                    @db.VarChar(255)
+  attendedAncVisit           String                    @db.VarChar(255)
+  numberOfAncVisits          Int?
+  receivedTetanusVaccination String                    @db.VarChar(255)
+  latitude                   Float?                    @db.Float
+  longitude                  Float?                    @db.Float
+  createdAt                  DateTime?                 @default(now()) @db.DateTime(0)
+  age                        Int?
+  submittedById              String?
+  ancVisits                  EnumerationAncVisitData[]
+  submittedBy                Enumerator?               @relation(fields: [submittedById], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_submittedBy")
   tetanusVaccinationReceived EnumerationTTData[]
-  latitude Float
-  longitude Float
-  submittedById  String
-  submittedBy Enumerator @relation(fields: [submittedById], references: [userID])
-  createdAt DateTime @default(now())
 
+  @@index([submittedById], map: "fk_submittedBy")
 }
 
-model EnumerationAncVisitData{
-  id        Int      @id @default(autoincrement())
-  anc String
-  date DateTime
-  enumerationDataId  Int
-  enumerationData    EnumerationData   @relation(fields: [enumerationDataId], references: [id])
+model EnumerationAncVisitData {
+  id                Int              @id @default(autoincrement())
+  anc               String           @db.VarChar(255)
+  date              DateTime         @db.DateTime(0)
+  enumerationDataId Int?
+  enumerationData   EnumerationData? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "EnumerationAncVisitData_ibfk_1")
+
+  @@index([enumerationDataId], map: "enumerationDataId")
 }
 
-model EnumerationTTData{
-  id        Int      @id @default(autoincrement())
-  name String
-  date DateTime
-  enumerationDataId  Int
-  enumerationData    EnumerationData   @relation(fields: [enumerationDataId], references: [id])
+model EnumerationTTData {
+  id                Int              @id @default(autoincrement())
+  name              String           @db.VarChar(255)
+  date              DateTime         @db.DateTime(0)
+  enumerationDataId Int?
+  enumerationData   EnumerationData? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "EnumerationTTData_ibfk_1")
+
+  @@index([enumerationDataId], map: "enumerationDataId")
+}
+
+model SettlementData {
+  A          Int
+  B          Int
+  Enumerator Enumerator @relation(fields: [A], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "_SettlementData_ibfk_1")
+  Settlement Settlement @relation(fields: [B], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "_SettlementData_ibfk_2")
+
+  @@id([A, B])
+  @@index([B], map: "B")
+  @@map("_SettlementData")
+}
+
+model ancvisit {
+  id                 Int       @id @default(autoincrement())
+  patient_id         Int?
+  healthpersonnel_id Int?
+  anc_number         Int?
+  lastANC            Int?
+  missed             Int?      @default(0)
+  attended           Int?      @default(1)
+  createdat          DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model dailyhabitsandlifestyle {
+  id                         Int         @id @default(autoincrement())
+  firstvisit_id              Int?
+  doyousmoke                 String?     @db.Text
+  whodoyoulivewith           String?     @db.Text
+  specifywhodoyoulivewith    String?     @db.Text
+  didanyoneevernone          String?     @db.Text
+  createdat                  DateTime?   @default(now()) @db.Timestamp(0)
+  doyoudrinkalcohol          String?     @db.Text
+  othersubstances            String?     @db.Text
+  doyounone                  String?     @db.Text
+  stoppedfromleavingthehouse String?     @db.Text
+  threatenedyourlife         String?     @db.Text
+  abusedphysically           String?     @db.Text
+  firstvisit                 firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "dailyhabitsandlifestyle_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model deliveryreport {
+  id                      Int              @id @default(autoincrement())
+  healthpersonnel_id      Int?
+  numberofchildren        String?          @db.VarChar(255)
+  deliverydate            DateTime?        @db.Date
+  deliverytime            String?          @db.VarChar(255)
+  createdat               DateTime?        @default(now()) @db.Timestamp(0)
+  firstname               String?          @db.VarChar(255)
+  lastname                String?          @db.VarChar(255)
+  deliverydata            Json?
+  deliverAtHealthFacility String?          @db.VarChar(255)
+  givenPostPartum         String?          @db.VarChar(255)
+  attendAncVisit          String?          @db.VarChar(255)
+  healthpersonnel         healthpersonnel? @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "deliveryreport_ibfk_1")
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+}
+
+model drughistory {
+  id                      Int         @id @default(autoincrement())
+  firstvisit_id           Int?
+  historyofallergy        String?     @db.Text
+  allergies               String?     @db.Text
+  herbalremedies          String?     @db.Text
+  vitamins                String?     @db.Text
+  otcdrugs                String?     @db.Text
+  dietarysupplements      String?     @db.Text
+  typeofdietarysupplement String?     @db.Text
+  otherdrugs              String?     @db.Text
+  tetanus                 String?     @db.Text
+  tetanusdoses            String?     @db.Text
+  lasttetanusdose         String?     @db.Text
+  covidvaccination        String?     @db.Text
+  createdat               DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit              firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "drughistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model familyhistory {
+  id                               Int         @id @default(autoincrement())
+  firstvisit_id                    Int?
+  patienthaschildren               String?     @db.Text
+  haveyoubreastfedbefore           String?     @db.Text
+  breastfeedingduration            String?     @db.Text
+  breastfeedingproblems            String?     @db.Text
+  breastfeedingproblemsmoredetails String?     @db.Text
+  babylessthanayear                String?     @db.Text
+  stillbreastfeeding               String?     @db.Text
+  camewithachildunder5years        String?     @db.Text
+  hasunvaccinatedchildren          String?     @db.Text
+  familyepilepsy                   String?     @db.Text
+  familyepilepsyyes                String?     @db.Text
+  familyhypertension               String?     @db.Text
+  familyhypertensionyes            String?     @db.Text
+  familyasthma                     String?     @db.Text
+  familyasthmayes                  String?     @db.Text
+  familydiabetes                   String?     @db.Text
+  familydiabetesyes                String?     @db.Text
+  familysicklecell                 String?     @db.Text
+  familysicklecellyes              String?     @db.Text
+  createdat                        DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                       firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "familyhistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model firstvisit {
+  id                      Int                       @id @default(autoincrement())
+  firstvisit_date         DateTime?                 @db.Date
+  patient_id              Int?
+  createdat               DateTime?                 @default(now()) @db.Timestamp(0)
+  anc                     Int?                      @default(1)
+  dailyhabitsandlifestyle dailyhabitsandlifestyle[]
+  drughistory             drughistory[]
+  familyhistory           familyhistory[]
+  patients                patients?                 @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "firstvisit_ibfk_1")
+  medicalhistory          medicalhistory[]
+  obstetrichistory        obstetrichistory[]
+  pastmedicalhistory      pastmedicalhistory[]
+  physicalexamination     physicalexamination[]
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model healthfacilityaccount {
+  id                 Int       @id @default(autoincrement())
+  ward               String?   @db.VarChar(255)
+  healthfacilityname String?   @db.VarChar(255)
+  healthfacilityID   String?   @db.VarChar(255)
+  officeaddress      String?   @db.VarChar(255)
+  phone              String?   @db.VarChar(255)
+  email              String?   @db.VarChar(255)
+  createdat          DateTime? @default(now()) @db.Timestamp(0)
+  state              String?   @db.VarChar(255)
+  lga                String?   @db.VarChar(255)
+  status             Boolean?  @default(true)
+}
+
+model healthfacilityadmin {
+  id             Int       @id @default(autoincrement())
+  ward           String?   @db.VarChar(255)
+  staffname      String?   @db.VarChar(255)
+  staffid        String?   @db.VarChar(255)
+  gender         String?   @db.VarChar(255)
+  phone          String?   @db.VarChar(255)
+  email          String?   @db.VarChar(255)
+  cadre          String?   @db.VarChar(255)
+  userid         String?   @db.VarChar(255)
+  password       String?   @db.VarChar(255)
+  healthfacility String?   @db.VarChar(255)
+  refreshtoken   String?   @db.VarChar(255)
+  createdat      DateTime? @default(now()) @db.Timestamp(0)
+  state          String?   @db.VarChar(255)
+  lga            String?   @db.VarChar(255)
+  status         Boolean?  @default(true)
+}
+
+model healthpersonnel {
+  id             Int              @id @default(autoincrement())
+  email          String?          @db.VarChar(50)
+  password       String?          @db.VarChar(255)
+  phone          String?          @db.VarChar(255)
+  state          String?          @db.VarChar(255)
+  lga            String?          @db.VarChar(255)
+  ward           String?          @db.VarChar(50)
+  healthfacility String?          @db.VarChar(255)
+  healthworker   String?          @db.VarChar(255)
+  verified       Boolean?         @default(false)
+  cadre          String?          @db.VarChar(255)
+  createdat      DateTime?        @default(now()) @db.Timestamp(0)
+  currentsession Int?
+  deliveryreport deliveryreport[]
+  messages       messages[]
+  patients       patients[]
+  requestedtest  requestedtest[]
+  schedule       schedule[]
+  testresult     testresult[]
+}
+
+model lgaccount {
+  id            Int       @id @default(autoincrement())
+  lga           String?   @db.VarChar(255)
+  boardname     String?   @db.VarChar(255)
+  lgaID         String?   @db.VarChar(255)
+  officeaddress String?   @db.VarChar(255)
+  phone         String?   @db.VarChar(255)
+  email         String?   @db.VarChar(255)
+  createdat     DateTime? @default(now()) @db.Timestamp(0)
+  state         String?   @db.VarChar(255)
+  status        Boolean?  @default(true)
+}
+
+model lgadmin {
+  id           Int       @id @default(autoincrement())
+  lga          String?   @db.VarChar(255)
+  staffname    String?   @db.VarChar(255)
+  staffid      String?   @db.VarChar(255)
+  gender       String?   @db.VarChar(255)
+  phone        String?   @db.VarChar(255)
+  email        String?   @db.VarChar(255)
+  cadre        String?   @db.VarChar(255)
+  userid       String?   @db.VarChar(255)
+  password     String?   @db.VarChar(255)
+  accounttype  String?   @db.VarChar(255)
+  refreshtoken String?   @db.VarChar(255)
+  createdat    DateTime? @default(now()) @db.Timestamp(0)
+  state        String?   @db.VarChar(255)
+  status       Boolean?  @default(true)
+}
+
+model medicalhistory {
+  id                             Int         @id @default(autoincrement())
+  firstvisit_id                  Int?
+  fever                          String?     @db.Text
+  chills                         String?     @db.Text
+  headaches                      String?     @db.Text
+  dizziness                      String?     @db.Text
+  convulsions                    String?     @db.Text
+  weakness                       String?     @db.Text
+  blurryvision                   String?     @db.Text
+  cough                          String?     @db.Text
+  difficultybreathing            String?     @db.Text
+  severechestpain                String?     @db.Text
+  severeepigastricpain           String?     @db.Text
+  pepticulcerpatient             String?     @db.Text
+  severetiredness                String?     @db.Text
+  severeabdominalpain            String?     @db.Text
+  persistentvomiting             String?     @db.Text
+  severediarrhoea                String?     @db.Text
+  painwithurination              String?     @db.Text
+  severeflankpain                String?     @db.Text
+  bloodinurine                   String?     @db.Text
+  increasedurination             String?     @db.Text
+  noticedantsaroundplaceurinated String?     @db.Text
+  increasedthirst                String?     @db.Text
+  vaginaldischarge               String?     @db.Text
+  deeppelvicpain                 String?     @db.Text
+  syphilis                       String?     @db.Text
+  syphilistreatment              String?     @db.Text
+  feveryes                       String?     @db.Text
+  chillsyes                      String?     @db.Text
+  headachesyes                   String?     @db.Text
+  dizzinessyes                   String?     @db.Text
+  convulsionsyes                 String?     @db.Text
+  weaknessyes                    String?     @db.Text
+  blurryvisionyes                String?     @db.Text
+  coughyes                       String?     @db.Text
+  persistentdrycough             String?     @db.Text
+  persistentdrycoughyes          String?     @db.Text
+  progressiveweightloss          String?     @db.Text
+  progressiveweightlossyes       String?     @db.Text
+  nightsweats                    String?     @db.Text
+  nightsweatsyes                 String?     @db.Text
+  diagnosedwithtuberculosis      String?     @db.Text
+  diagnosedwithtuberculosisyes   String?     @db.Text
+  treatedTBpreviously            String?     @db.Text
+  treatedTBpreviouslyyes         String?     @db.Text
+  difficultybreathingyes         String?     @db.Text
+  severechestpainyes             String?     @db.Text
+  severeepigastricpainyes        String?     @db.Text
+  palpitations                   String?     @db.Text
+  palpitationyes                 String?     @db.Text
+  swellingfeet                   String?     @db.Text
+  swellingfeetyes                String?     @db.Text
+  difficultytosleep              String?     @db.Text
+  difficultytosleepyes           String?     @db.Text
+  pepticulcerpatientyes          String?     @db.Text
+  severetirednessyes             String?     @db.Text
+  severeabdominalpainyes         String?     @db.Text
+  persistentvomitingyes          String?     @db.Text
+  severediarrhoeayes             String?     @db.Text
+  painwithurinationyes           String?     @db.Text
+  severeflankpainyes             String?     @db.Text
+  bloodinurineyes                String?     @db.Text
+  increasedurinationyes          String?     @db.Text
+  increasedthirstyes             String?     @db.Text
+  vaginaldischargeyes            String?     @db.Text
+  deeppelvicpainyes              String?     @db.Text
+  syphilisyes                    String?     @db.Text
+  createdat                      DateTime?   @default(now()) @db.Timestamp(0)
+  wakinguptopassurine            String?     @db.VarChar(255)
+  firstvisit                     firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "medicalhistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model messages {
+  id                 Int              @id @default(autoincrement())
+  healthpersonnel_id Int?
+  messagefrom        String?          @db.VarChar(255)
+  date               String?          @db.VarChar(255)
+  status             Boolean?
+  message            String?          @db.VarChar(255)
+  createdat          DateTime?        @default(now()) @db.Timestamp(0)
+  healthpersonnel    healthpersonnel? @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "messages_ibfk_1")
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+}
+
+model nationaladmin {
+  id           Int       @id @default(autoincrement())
+  state        String?   @db.VarChar(50)
+  staffname    String?   @db.VarChar(255)
+  staffid      String?   @db.VarChar(50)
+  gender       String?   @db.VarChar(50)
+  phone        String?   @db.VarChar(50)
+  email        String?   @db.VarChar(100)
+  cadre        String?   @db.VarChar(50)
+  userid       String?   @db.VarChar(255)
+  password     String?   @db.VarChar(255)
+  accounttype  String?   @db.VarChar(255)
+  refreshtoken String?   @db.VarChar(255)
+  createdat    DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model obstetrichistory {
+  id                                Int         @id @default(autoincrement())
+  firstvisit_id                     Int?
+  otherinputobstetrichistory        String?     @db.Text
+  yearofpregnancy                   String?     @db.VarChar(10)
+  carriedtoterm                     String?     @db.VarChar(20)
+  modeofdelivery                    String?     @db.Text
+  weightofbaby                      String?     @db.Text
+  sexofbaby                         String?     @db.Text
+  babycriedafterbirth               String?     @db.Text
+  complicationsafterdelivery        String?     @db.Text
+  specifycomplicationsafterdelivery String?     @db.Text
+  breastfedexclusively              String?     @db.Text
+  createdat                         DateTime?   @default(now()) @db.Timestamp(0)
+  caesarean                         String?     @db.Text
+  tearsthroughsphincter             String?     @db.Text
+  postpartiumhaemorrghage           String?     @db.Text
+  stillbirths                       String?     @db.Text
+  prematuredeliveries               String?     @db.Text
+  lowbirthbabies                    String?     @db.Text
+  babieswhodied                     String?     @db.Text
+  miscarriages                      String?     @db.Text
+  convulsionsduringpregnancy        String?     @db.Text
+  firstvisit                        firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "obstetrichistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model pastmedicalhistory {
+  id                             Int         @id @default(autoincrement())
+  firstvisit_id                  Int?
+  hypertension                   String?     @db.Text
+  heartdisease                   String?     @db.Text
+  anaemia                        String?     @db.Text
+  kidneydisease                  String?     @db.Text
+  sicklecell                     String?     @db.Text
+  diabetes                       String?     @db.Text
+  goitre                         String?     @db.Text
+  hivaids                        String?     @db.Text
+  hivaidstreatment               String?     @db.Text
+  covid19                        String?     @db.Text
+  otherseriouschronicillnesses   String?     @db.Text
+  specifyseriouschronicillnesses String?     @db.Text
+  hadsurgery                     String?     @db.Text
+  specifyhadsurgery              String?     @db.Text
+  hypertensionyes                String?     @db.Text
+  heartdiseaseyes                String?     @db.Text
+  anaemiayes                     String?     @db.Text
+  kidneydiseaseyes               String?     @db.Text
+  sicklecellyes                  String?     @db.Text
+  diabetesyes                    String?     @db.Text
+  goitreyes                      String?     @db.Text
+  hivaidsyes                     String?     @db.Text
+  covid19yes                     String?     @db.Text
+  createdat                      DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                     firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "pastmedicalhistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model patients {
+  id                     Int                  @id @default(autoincrement())
+  healthpersonnel_id     Int?
+  firstvisit_date        DateTime?            @db.Date
+  personalinformation_id Int?
+  createdat              DateTime?            @default(now()) @db.Timestamp(0)
+  firstvisit             firstvisit[]
+  healthpersonnel        healthpersonnel?     @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "patients_ibfk_1")
+  personalinformation    personalinformation? @relation(fields: [personalinformation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "patients_ibfk_2")
+  requestedtest          requestedtest[]
+  returnvisit            returnvisit[]
+  schedule               schedule[]
+  testresult             testresult[]
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+  @@index([personalinformation_id], map: "personalinformation_id")
+}
+
+model personalinformation {
+  id                               Int        @id @default(autoincrement())
+  hospitalnumber                   String?    @db.VarChar(20)
+  firstname                        String?    @db.VarChar(30)
+  middlename                       String?    @db.VarChar(30)
+  surname                          String?    @db.VarChar(30)
+  phone                            String?    @db.VarChar(255)
+  address                          String?    @db.VarChar(255)
+  state                            String?    @db.VarChar(30)
+  dateofbirth                      DateTime?  @db.Date
+  lga                              String?    @db.VarChar(50)
+  healthfacility                   String?    @db.VarChar(50)
+  gravidity                        String?    @db.VarChar(50)
+  parity                           String?    @db.VarChar(50)
+  alive                            String?    @db.VarChar(20)
+  lmpknown                         String?    @db.VarChar(20)
+  lmp                              DateTime?  @db.Date
+  edd                              DateTime?  @db.Date
+  ega                              String?    @db.VarChar(20)
+  laborstarted                     String?    @db.VarChar(20)
+  firstbabymovement                String?    @db.VarChar(50)
+  doyoufeelthebabysmovement        String?    @db.VarChar(255)
+  doyouknowdateoffirstbabymovement String?    @db.VarChar(20)
+  createdat                        DateTime?  @default(now()) @db.Timestamp(0)
+  lastmonthseenperiod              String?    @db.VarChar(255)
+  patients                         patients[]
+}
+
+model physicalexamination {
+  id                            Int         @id @default(autoincrement())
+  firstvisit_id                 Int?
+  conjunctiva                   String?     @db.Text
+  sclera                        String?     @db.Text
+  bloodpressure                 String?     @db.Text
+  respiratoryrate               String?     @db.Text
+  temperature                   String?     @db.Text
+  pulserate                     String?     @db.Text
+  abdomenScars                  String?     @db.Text
+  fromcaesareansection          String?     @db.Text
+  fundalheight                  String?     @db.Text
+  measurefundalheightweek       String?     @db.Text
+  measurefundalheightcentimeter String?     @db.Text
+  presentation                  String?     @db.Text
+  descent                       String?     @db.Text
+  positionoffoetus              String?     @db.Text
+  breastexamination             String?     @db.Text
+  abnormalbreastexamination     String?     @db.Text
+  genitalexamination            String?     @db.Text
+  swelling                      String?     @db.Text
+  discharge                     String?     @db.Text
+  tenderness                    String?     @db.Text
+  ulcers                        String?     @db.Text
+  fistulas                      String?     @db.Text
+  irregularities                String?     @db.Text
+  swellingyes                   String?     @db.Text
+  dischargeyes                  String?     @db.Text
+  tendernessyes                 String?     @db.Text
+  ulcersyes                     String?     @db.Text
+  fistulasyes                   String?     @db.Text
+  irregularitiesyes             String?     @db.Text
+  heartrate                     String?     @db.Text
+  bmi                           String?     @db.Text
+  createdat                     DateTime?   @default(now()) @db.Timestamp(0)
+  observation                   String?     @db.Text
+  percussion                    String?     @db.Text
+  palpationchest                String?     @db.Text
+  auscultationchest             String?     @db.Text
+  firstvisit                    firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "physicalexamination_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model requestedtest {
+  id                 Int              @id @default(autoincrement())
+  healthpersonnel_id Int?
+  testoption         Json?
+  patient_id         Int?
+  createdat          DateTime?        @default(now()) @db.Timestamp(0)
+  completed          Boolean?         @default(false)
+  patients           patients?        @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "requestedtest_ibfk_1")
+  healthpersonnel    healthpersonnel? @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "requestedtest_ibfk_2")
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+  @@index([patient_id], map: "patient_id")
+}
+
+model returnvisit {
+  id                                    Int       @id @default(autoincrement())
+  patient_id                            Int?
+  returnvisit_date                      DateTime? @db.Date
+  state                                 String?   @db.VarChar(20)
+  lga                                   String?   @db.VarChar(40)
+  healthfacility                        String?   @db.VarChar(20)
+  fever                                 String?   @db.Text
+  headache                              String?   @db.Text
+  dizziness                             String?   @db.Text
+  convulsions                           String?   @db.Text
+  weakness                              String?   @db.Text
+  blurryvision                          String?   @db.Text
+  cough                                 String?   @db.Text
+  difficultybreathing                   String?   @db.Text
+  palpitation                           String?   @db.Text
+  swellingoffeet                        String?   @db.Text
+  severechestpain                       String?   @db.Text
+  severeepigastricpain                  String?   @db.Text
+  pepticulcerpatient                    String?   @db.Text
+  severetirednesss                      String?   @db.Text
+  difficultylyingflat                   String?   @db.Text
+  severeabdominalpain                   String?   @db.Text
+  vomiting                              String?   @db.Text
+  diarrhoea                             String?   @db.Text
+  urinarypain                           String?   @db.Text
+  severeflankpain                       String?   @db.Text
+  bloodinurine                          String?   @db.Text
+  increasedurination                    String?   @db.Text
+  antsaroundurine                       String?   @db.Text
+  increasedthirst                       String?   @db.Text
+  vaginaldischarge                      String?   @db.Text
+  painduringsex                         String?   @db.Text
+  syphillis                             String?   @db.Text
+  receivedcaresincelastvisit            String?   @db.Text
+  whoprovidedthecare                    String?   @db.Text
+  whatcarewasprovided                   String?   @db.Text
+  outcomeofthecare                      String?   @db.Text
+  takingprescribeddrugs                 String?   @db.Text
+  problemtakingdrugs                    String?   @db.Text
+  followadvice                          String?   @db.Text
+  reactionorsideeffects                 String?   @db.Text
+  anythingrelatedtopregnancy            String?   @db.Text
+  pink                                  String?   @db.Text
+  palepink                              String?   @db.Text
+  whiteincolour                         String?   @db.Text
+  white                                 String?   @db.Text
+  tinge                                 String?   @db.Text
+  deepyellow                            String?   @db.Text
+  dirtywhite                            String?   @db.Text
+  bloodpressure                         String?   @db.Text
+  respiratoryrate                       String?   @db.Text
+  temperature                           String?   @db.Text
+  pulserate                             String?   @db.Text
+  abdomenScars                          String?   @db.Text
+  palpateAndEstimatefundusdocumentation String?   @db.Text
+  distancebtwtopdffundus                String?   @db.Text
+  cmfromtopfundusdocumentation          String?   @db.Text
+  cmfromuppersymphysis                  String?   @db.Text
+  presentation                          String?   @db.Text
+  descent                               String?   @db.Text
+  positionoffoetus                      String?   @db.Text
+  persisitentdrycough                   String?   @db.Text
+  persisitentdrycoughyes                String?   @db.Text
+  unexplainedweightloss                 String?   @db.Text
+  nightsweats                           String?   @db.Text
+  diagnosedwithtuberculosis             String?   @db.Text
+  treatedfortuberculosis                String?   @db.Text
+  heartrate                             String?   @db.Text
+  complaint                             String?   @db.Text
+  stategenobser                         String?   @db.Text
+  generalwellchoice                     String?   @db.Text
+  syphillistreatment                    String?   @db.Text
+  pregnancydiscuss                      String?   @db.Text
+  wakeuptourinate                       String?   @db.Text
+  problemmedication                     String?   @db.Text
+  bmi                                   String?   @db.Text
+  createdat                             DateTime? @default(now()) @db.Timestamp(0)
+  sclera                                String?   @db.Text
+  conjuctiva                            String?   @db.Text
+  chill                                 String?   @db.Text
+  bloodpressdia                         String?   @db.Text
+  bloodpresssis                         String?   @db.Text
+  chestpaindiscuss                      String?   @db.Text
+  epigastricpaindiscuss                 String?   @db.Text
+  severetireddisuss                     String?   @db.Text
+  severediarrhoeadiscuss                String?   @db.Text
+  swellingfeetdiscuss                   String?   @db.Text
+  sputrumcolor                          String?   @db.Text
+  sputrum                               String?   @db.Text
+  lmp                                   String?   @db.Text
+  lmpdate                               DateTime? @db.Date
+  edd                                   DateTime? @db.Date
+  ega                                   String?   @db.Text
+  laborstarted                          String?   @db.Text
+  selectedbabymovement                  String?   @db.Text
+  selectedfirstbabymovement             String?   @db.Text
+  observelookpatient                    String?   @db.Text
+  documentpercussion                    String?   @db.Text
+  palpatediscuss                        String?   @db.Text
+  auscultationdiscuss                   String?   @db.Text
+  breast                                String?   @db.Text
+  breastdiscuss                         String?   @db.Text
+  selectedfirstbabymovementdate         DateTime? @db.Date
+  severabdodisuss                       String?   @db.Text
+  missedAncVisit                        String?   @db.VarChar(255)
+  contactedByPHC                        String?   @db.VarChar(255)
+  whoContacted                          String?   @db.VarChar(255)
+  urinaryGen                            String?   @db.VarChar(255)
+  comeWithUnderFiveChildren             String?   @db.VarChar(255)
+  testedFverMalaria                     String?   @db.VarChar(255)
+  getAppropriateTreatMalariaFever       String?   @db.VarChar(255)
+  recieveImmunizationAge                String?   @db.VarChar(255)
+  screenedMalnutrition                  String?   @db.VarChar(255)
+  underFiveCovidVaccinated              String?   @db.VarChar(255)
+  anc                                   Int?      @default(2)
+  patients                              patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "returnvisit_ibfk_1")
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model schedule {
+  id                 Int              @id @default(autoincrement())
+  healthpersonnel_id Int?
+  patient_id         Int?
+  firstname          String?          @db.VarChar(255)
+  middlename         String?          @db.VarChar(255)
+  lastname           String?          @db.VarChar(255)
+  phone              String?          @db.VarChar(255)
+  completed          Boolean?         @default(false)
+  upcoming           Boolean?         @default(true)
+  missed             Boolean?         @default(false)
+  flagged            Boolean?         @default(false)
+  createdat          DateTime?        @default(now()) @db.Timestamp(0)
+  datefrom           DateTime?        @db.Date
+  dateto             DateTime?        @db.Date
+  missedsms          Boolean?         @default(false)
+  remindersms        Boolean?         @default(false)
+  healthpersonnel    healthpersonnel? @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "schedule_ibfk_1")
+  patients           patients?        @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "schedule_ibfk_2")
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+  @@index([patient_id], map: "patient_id")
+}
+
+model sessions {
+  id             BigInt    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  user_id        Int?
+  session_status String?   @db.Text
+  session_data   Json?
+  start_time     DateTime? @db.Time(0)
+  end_time       DateTime? @db.Time(0)
+  createdat      DateTime? @db.DateTime(0)
+  start_date     DateTime? @db.Date
+  end_date       DateTime? @db.Date
+}
+
+model stateaccount {
+  id            Int       @id @default(autoincrement())
+  state         String?   @db.VarChar(255)
+  boardname     String?   @db.VarChar(255)
+  stateid       String?   @db.VarChar(255)
+  officeaddress String?   @db.VarChar(255)
+  phone         String?   @db.VarChar(255)
+  email         String?   @db.VarChar(255)
+  createdat     DateTime? @default(now()) @db.Timestamp(0)
+  status        Boolean?  @default(true)
+}
+
+model stateadmin {
+  id           Int       @id @default(autoincrement())
+  state        String?   @db.VarChar(50)
+  staffname    String?   @db.VarChar(255)
+  staffid      String?   @db.VarChar(50)
+  gender       String?   @db.VarChar(30)
+  phone        String?   @db.VarChar(255)
+  email        String?   @db.VarChar(255)
+  cadre        String?   @db.VarChar(50)
+  userid       String?   @db.VarChar(255)
+  password     String?   @db.VarChar(255)
+  accounttype  String?   @db.VarChar(255)
+  refreshtoken String?   @db.VarChar(255)
+  createdat    DateTime? @default(now()) @db.Timestamp(0)
+  status       Boolean?  @default(true)
+}
+
+model testoption {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(100)
+  createdat DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model testresult {
+  id                 Int              @id @default(autoincrement())
+  healthpersonnel_id Int?
+  hb                 String?          @db.Text
+  wcc                String?          @db.Text
+  rcc                String?          @db.Text
+  pcv                String?          @db.Text
+  mcv                String?          @db.Text
+  platelet           String?          @db.Text
+  glucose            String?          @db.Text
+  hiv                String?          @db.Text
+  hepatitis          String?          @db.Text
+  patient_id         Int?
+  rdt                String?          @db.Text
+  bodytemp           String?          @db.Text
+  heartrate          String?          @db.Text
+  respiratoryrate    String?          @db.Text
+  bodypressure       String?          @db.Text
+  malariarapid       String?          @db.Text
+  status             String?          @db.VarChar(50)
+  createdat          DateTime?        @default(now()) @db.Timestamp(0)
+  requestedtest_id   Int?
+  completed          Boolean?         @default(true)
+  leukocytes         String?          @db.Text
+  nitrites           String?          @db.Text
+  urobilinogen       String?          @db.Text
+  protein            String?          @db.Text
+  pH                 String?          @db.Text
+  blood              String?          @db.Text
+  specificgravity    String?          @db.Text
+  ketones            String?          @db.Text
+  bilirubin          String?          @db.Text
+  glucoseUrinary     String?          @db.Text
+  neutrophils        String?          @db.Text
+  lymphocytes        String?          @db.Text
+  monocytes          String?          @db.Text
+  eosinophils        String?          @db.Text
+  basophils          String?          @db.Text
+  Haematocrit        String?          @db.Text
+  mch                String?          @db.Text
+  reticulocytecount  String?          @db.Text
+  hbsag              String?          @db.Text
+  hcv                String?          @db.Text
+  patients           patients?        @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "testresult_ibfk_1")
+  healthpersonnel    healthpersonnel? @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "testresult_ibfk_2")
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+  @@index([patient_id], map: "patient_id")
+}
+
+model wards {
+  id        Int       @id @default(autoincrement())
+  state     String?   @db.VarChar(255)
+  lga       String?   @db.VarChar(255)
+  ward      String?   @db.VarChar(255)
+  createdat DateTime? @default(now()) @db.Timestamp(0)
 }
