@@ -506,7 +506,7 @@ router.delete("/enumerators/:id", EnumerationController.deleteEnumerator);
  *       500:
  *         description: Failed to create enumeration data
  */
-router.post("/data", verifyToken, EnumerationController.createEnumerationData);
+router.post("/data", verifyToken, EnumerationController.createenumerationdata);
 
 /**
  * @swagger
@@ -597,7 +597,7 @@ router.post("/data", verifyToken, EnumerationController.createEnumerationData);
  *                   type: string
  *                   example: "Error message details"
  */
-router.get("/data", EnumerationController.getAllEnumerationData);
+router.get("/data", EnumerationController.getAllenumerationdata);
 
 /**
  * @swagger
@@ -649,7 +649,7 @@ router.get("/data", EnumerationController.getAllEnumerationData);
  *                   type: string
  *                   example: "Error message details"
  */
-router.get("/data/:id", EnumerationController.getEnumerationDataById);
+router.get("/data/:id", EnumerationController.getenumerationdataById);
 
 /**
  * @swagger
@@ -898,6 +898,40 @@ router.get("/activitylog", verifyToken, EnumerationController.getActivityLog);
  *       500:
  *         description: Internal server error
  */
-router.get("/download/data", EnumerationController.downloadEnumerationData);
+router.get("/download/data", EnumerationController.downloadenumerationdata);
+
+/**
+ * @swagger
+ * /api/enumeration/verifyphone:
+ *   post:
+ *     summary: Verify if a phone number is reachable
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *
+ *             example:
+ *               phone: 2348341864324
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.post(
+  "/verifyphone",
+  EnumerationController.verifyPhoneNumberAvailability
+);
 
 export default router;

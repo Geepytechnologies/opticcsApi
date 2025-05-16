@@ -6,96 +6,391 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model Settlement {
-  id           Int              @id @default(autoincrement())
-  name         String
-}
-model Enumerator {
-  id        Int      @id @default(autoincrement())
-  name  String
-  phone     String   @unique
-  gender String
-  userID String  @unique
-  state String
-  lga String
-  ward String
-  settlement String
-  password String
-  isActive Boolean @default(true)
-  enumerationData EnumerationData[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+model dailyhabitsandlifestyle {
+  id                         Int         @id @default(autoincrement())
+  firstvisit_id              Int?
+  doyousmoke                 String?     @db.Text
+  doyoudrinkalcohol          String?     @db.Text
+  othersubstances            String?     @db.Text
+  doyounone                  String?     @db.Text
+  whodoyoulivewith           String?     @db.Text
+  specifywhodoyoulivewith    String?     @db.Text
+  stoppedfromleavingthehouse String?     @db.Text
+  threatenedyourlife         String?     @db.Text
+  abusedphysically           String?     @db.Text
+  didanyoneevernone          String?     @db.Text
+  createdat                  DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                 firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "dailyhabitsandlifestyle_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
 }
 
-model EnumerationSettlements{
-  id        Int      @id @default(autoincrement())
-  state String
-  lga String
-  ward String
-  settlement String
-  teamCode String
-  createdAt DateTime @default(now())
+model drughistory {
+  id                      Int         @id @default(autoincrement())
+  firstvisit_id           Int?
+  historyofallergy        String?     @db.Text
+  allergies               String?     @db.Text
+  herbalremedies          String?     @db.Text
+  vitamins                String?     @db.Text
+  otcdrugs                String?     @db.Text
+  dietarysupplements      String?     @db.Text
+  typeofdietarysupplement String?     @db.Text
+  otherdrugs              String?     @db.Text
+  tetanus                 String?     @db.Text
+  tetanusdoses            String?     @db.Text
+  lasttetanusdose         String?     @db.Text
+  covidvaccination        String?     @db.Text
+  createdat               DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit              firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "drughistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
 }
 
-model EnumerationHealthfacilities{
-  id        Int      @id @default(autoincrement())
-  state String
-  lga String
-  ward String
-  facilityName String
-  geocoordinate String
-  latitude String
-  longitude String
-  altitude String
-  precision String
-  createdAt DateTime @default(now())
+model enumerationancvisitdata {
+  id                Int              @id @default(autoincrement())
+  anc               String           @db.VarChar(255)
+  date              DateTime         @db.DateTime(0)
+  enumerationDataId Int?
+  enumerationdata   enumerationdata? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "enumerationancvisitdata_ibfk_1")
+
+  @@index([enumerationDataId], map: "enumerationDataId")
 }
 
-model EnumerationData{
-  id        Int      @id @default(autoincrement())
-  clientNumber String
-  firstName String
-  middleName String
-  surName String
-  phone String
-  alternatePhone String
-  address String
-  age Int
-  state String
-  lga String
-  ward String
-  settlement String
-  servingHealthcareFacility String
-  gravidity String
-  parity String
-  lmp String
-  edd String
-  ega String
-  attendedAncVisit String
-  numberOfAncVisits Int
-  ancVisits EnumerationAncVisitData[]
+model enumerationdata {
+  id                         Int                       @id @default(autoincrement())
+  clientNumber               String
+  firstName                  String
+  middleName                 String
+  surName                    String
+  phone                      String
+  alternatePhone             String
+  address                    String
+  age                        Int
+  state                      String
+  lga                        String
+  ward                       String
+  settlement                 String
+  servingHealthcareFacility  String
+  gravidity                  String
+  parity                     String
+  lmp                        String
+  edd                        String
+  ega                        String
+  attendedAncVisit           String
+  numberOfAncVisits          Int
   receivedTetanusVaccination String
-  tetanusVaccinationReceived EnumerationTTData[]
-  latitude Float
-  longitude Float
-  submittedById  String
-  submittedBy Enumerator @relation(fields: [submittedById], references: [userID])
-  createdAt DateTime @default(now())
+  latitude                   Float
+  longitude                  Float
+  submittedById              String
+  createdAt                  DateTime                  @default(now())
+  enumerationancvisitdata    enumerationancvisitdata[]
+  enumerator                 enumerator                @relation(fields: [submittedById], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_submittedBy")
+  enumerationttdata          enumerationttdata[]
 
+  @@index([submittedById], map: "fk_submittedBy")
 }
 
-model EnumerationAncVisitData{
-  id        Int      @id @default(autoincrement())
-  anc String
-  date DateTime
-  enumerationDataId  Int
-  enumerationData    EnumerationData   @relation(fields: [enumerationDataId], references: [id])
+model enumerationsettlements {
+  id         Int       @id @default(autoincrement())
+  state      String    @db.VarChar(255)
+  lga        String    @db.VarChar(255)
+  ward       String    @db.VarChar(255)
+  settlement String    @db.VarChar(255)
+  teamCode   String    @db.VarChar(255)
+  createdAt  DateTime? @default(now()) @db.DateTime(0)
 }
 
-model EnumerationTTData{
-  id        Int      @id @default(autoincrement())
-  name String
-  date DateTime
-  enumerationDataId  Int
-  enumerationData    EnumerationData   @relation(fields: [enumerationDataId], references: [id])
+model enumerationttdata {
+  id                Int              @id @default(autoincrement())
+  name              String           @db.VarChar(255)
+  date              DateTime         @db.DateTime(0)
+  enumerationDataId Int?
+  enumerationdata   enumerationdata? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "enumerationttdata_ibfk_1")
+
+  @@index([enumerationDataId], map: "enumerationDataId")
+}
+
+model enumerator {
+  id              Int               @id @default(autoincrement())
+  name            String
+  phone           String            @unique(map: "phone")
+  gender          String
+  userID          String            @unique(map: "userID")
+  state           String
+  lga             String
+  ward            String
+  settlement      String?           @db.Text
+  password        String
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  enumerationdata enumerationdata[]
+}
+
+model familyhistory {
+  id                               Int         @id @default(autoincrement())
+  firstvisit_id                    Int?
+  patienthaschildren               String?     @db.Text
+  haveyoubreastfedbefore           String?     @db.Text
+  breastfeedingduration            String?     @db.Text
+  breastfeedingproblems            String?     @db.Text
+  breastfeedingproblemsmoredetails String?     @db.Text
+  babylessthanayear                String?     @db.Text
+  stillbreastfeeding               String?     @db.Text
+  camewithachildunder5years        String?     @db.Text
+  hasunvaccinatedchildren          String?     @db.Text
+  familyepilepsy                   String?     @db.Text
+  familyepilepsyyes                String?     @db.Text
+  familyhypertension               String?     @db.Text
+  familyhypertensionyes            String?     @db.Text
+  familyasthma                     String?     @db.Text
+  familyasthmayes                  String?     @db.Text
+  familydiabetes                   String?     @db.Text
+  familydiabetesyes                String?     @db.Text
+  familysicklecell                 String?     @db.Text
+  familysicklecellyes              String?     @db.Text
+  createdat                        DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                       firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "familyhistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model firstvisit {
+  id                      Int                       @id @default(autoincrement())
+  firstvisit_date         DateTime?                 @db.Date
+  patient_id              Int?
+  createdat               DateTime?                 @default(now()) @db.Timestamp(0)
+  dailyhabitsandlifestyle dailyhabitsandlifestyle[]
+  drughistory             drughistory[]
+  familyhistory           familyhistory[]
+  patients                patients?                 @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "firstvisit_ibfk_1")
+  obstetrichistory        obstetrichistory[]
+  pastmedicalhistory      pastmedicalhistory[]
+  physicalexamination     physicalexamination[]
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model healthpersonnel {
+  id             Int        @id @default(autoincrement())
+  email          String?    @db.VarChar(50)
+  password       String?    @db.VarChar(255)
+  phone          String?    @db.VarChar(255)
+  state          String?    @db.VarChar(255)
+  lga            String?    @db.VarChar(255)
+  ward           String?    @db.VarChar(50)
+  healthfacility String?    @db.VarChar(255)
+  healthworker   String?    @db.VarChar(255)
+  verified       Boolean?   @default(false)
+  cadre          String?    @db.VarChar(255)
+  createdat      DateTime?  @default(now()) @db.Timestamp(0)
+  patients       patients[]
+}
+
+model nationaladmin {
+  id           Int       @id @default(autoincrement())
+  state        String?   @db.VarChar(50)
+  staffname    String?   @db.VarChar(255)
+  staffid      String?   @db.VarChar(50)
+  gender       String?   @db.VarChar(50)
+  phone        String?   @db.VarChar(50)
+  email        String?   @db.VarChar(100)
+  cadre        String?   @db.VarChar(50)
+  userid       String?   @db.VarChar(255)
+  password     String?   @db.VarChar(255)
+  accounttype  String?   @db.VarChar(255)
+  refreshtoken String?   @db.VarChar(255)
+  createdat    DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model obstetrichistory {
+  id                                Int         @id @default(autoincrement())
+  firstvisit_id                     Int?
+  convulsionsduringpregnancy        String?     @db.Text
+  caesarean                         String?     @db.Text
+  tearsthroughsphincter             String?     @db.Text
+  postpartiumhaemorrghage           String?     @db.Text
+  stillbirths                       String?     @db.Text
+  prematuredeliveries               String?     @db.Text
+  lowbirthbabies                    String?     @db.Text
+  babieswhodied                     String?     @db.Text
+  miscarriages                      String?     @db.Text
+  otherinputobstetrichistory        String?     @db.Text
+  yearofpregnancy                   String?     @db.Text
+  carriedtoterm                     String?     @db.Text
+  modeofdelivery                    String?     @db.Text
+  weightofbaby                      String?     @db.Text
+  sexofbaby                         String?     @db.Text
+  babycriedafterbirth               String?     @db.Text
+  complicationsafterdelivery        String?     @db.Text
+  specifycomplicationsafterdelivery String?     @db.Text
+  breastfedexclusively              String?     @db.Text
+  createdat                         DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                        firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "obstetrichistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model pastmedicalhistory {
+  id                             Int         @id @default(autoincrement())
+  firstvisit_id                  Int?
+  hypertension                   String?     @db.Text
+  heartdisease                   String?     @db.Text
+  anaemia                        String?     @db.Text
+  kidneydisease                  String?     @db.Text
+  sicklecell                     String?     @db.Text
+  diabetes                       String?     @db.Text
+  goitre                         String?     @db.Text
+  hivaids                        String?     @db.Text
+  hivaidstreatment               String?     @db.Text
+  covid19                        String?     @db.Text
+  otherseriouschronicillnesses   String?     @db.Text
+  specifyseriouschronicillnesses String?     @db.Text
+  hadsurgery                     String?     @db.Text
+  specifyhadsurgery              String?     @db.Text
+  hypertensionyes                String?     @db.Text
+  heartdiseaseyes                String?     @db.Text
+  anaemiayes                     String?     @db.Text
+  kidneydiseaseyes               String?     @db.Text
+  sicklecellyes                  String?     @db.Text
+  diabetesyes                    String?     @db.Text
+  goitreyes                      String?     @db.Text
+  hivaidsyes                     String?     @db.Text
+  covid19yes                     String?     @db.Text
+  createdat                      DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                     firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "pastmedicalhistory_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model patients {
+  id                     Int                  @id @default(autoincrement())
+  healthpersonnel_id     Int?
+  firstvisit_date        DateTime?            @db.Date
+  personalinformation_id Int?
+  createdat              DateTime?            @default(now()) @db.Timestamp(0)
+  firstvisit             firstvisit[]
+  healthpersonnel        healthpersonnel?     @relation(fields: [healthpersonnel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "patients_ibfk_1")
+  personalinformation    personalinformation? @relation(fields: [personalinformation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "patients_ibfk_2")
+  returnvisit            returnvisit[]
+
+  @@index([healthpersonnel_id], map: "healthpersonnel_id")
+  @@index([personalinformation_id], map: "personalinformation_id")
+}
+
+model personalinformation {
+  id                               Int        @id @default(autoincrement())
+  hospitalnumber                   String?    @db.VarChar(20)
+  firstname                        String?    @db.VarChar(30)
+  middlename                       String?    @db.VarChar(30)
+  surname                          String?    @db.VarChar(30)
+  phone                            String?    @db.VarChar(255)
+  address                          String?    @db.VarChar(255)
+  state                            String?    @db.VarChar(30)
+  dateofbirth                      DateTime?  @db.Date
+  lga                              String?    @db.VarChar(50)
+  healthfacility                   String?    @db.VarChar(50)
+  gravidity                        String?    @db.VarChar(50)
+  parity                           String?    @db.VarChar(50)
+  alive                            String?    @db.VarChar(20)
+  lmpknown                         String?    @db.VarChar(20)
+  lmp                              DateTime?  @db.Date
+  edd                              DateTime?  @db.Date
+  ega                              String?    @db.VarChar(20)
+  laborstarted                     String?    @db.VarChar(20)
+  firstbabymovement                String?    @db.VarChar(50)
+  doyoufeelthebabysmovement        String?    @db.VarChar(255)
+  doyouknowdateoffirstbabymovement String?    @db.VarChar(20)
+  createdat                        DateTime?  @default(now()) @db.Timestamp(0)
+  patients                         patients[]
+}
+
+model physicalexamination {
+  id                            Int         @id @default(autoincrement())
+  firstvisit_id                 Int?
+  conjunctiva                   String?     @db.Text
+  sclera                        String?     @db.Text
+  bloodpressure                 String?     @db.Text
+  respiratoryrate               String?     @db.Text
+  temperature                   String?     @db.Text
+  pulserate                     String?     @db.Text
+  abdomenScars                  String?     @db.Text
+  fromcaesareansection          String?     @db.Text
+  fundalheight                  String?     @db.Text
+  measurefundalheightweek       String?     @db.Text
+  measurefundalheightcentimeter String?     @db.Text
+  presentation                  String?     @db.Text
+  descent                       String?     @db.Text
+  positionoffoetus              String?     @db.Text
+  breastexamination             String?     @db.Text
+  abnormalbreastexamination     String?     @db.Text
+  genitalexamination            String?     @db.Text
+  swelling                      String?     @db.Text
+  discharge                     String?     @db.Text
+  tenderness                    String?     @db.Text
+  ulcers                        String?     @db.Text
+  fistulas                      String?     @db.Text
+  irregularities                String?     @db.Text
+  swellingyes                   String?     @db.Text
+  dischargeyes                  String?     @db.Text
+  tendernessyes                 String?     @db.Text
+  ulcersyes                     String?     @db.Text
+  fistulasyes                   String?     @db.Text
+  irregularitiesyes             String?     @db.Text
+  heartrate                     String?     @db.Text
+  bmi                           String?     @db.Text
+  observation                   String?     @db.Text
+  percussion                    String?     @db.Text
+  palpationchest                String?     @db.Text
+  auscultationchest             String?     @db.Text
+  createdat                     DateTime?   @default(now()) @db.Timestamp(0)
+  firstvisit                    firstvisit? @relation(fields: [firstvisit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "physicalexamination_ibfk_1")
+
+  @@index([firstvisit_id], map: "firstvisit_id")
+}
+
+model returnvisit {
+  id                   Int       @id @default(autoincrement())
+  patient_id           Int?
+  returnvisit_date     DateTime? @db.Date
+  state                String?   @db.VarChar(20)
+  lga                  String?   @db.VarChar(40)
+  healthfacility       String?   @db.VarChar(20)
+  fever                String?   @db.VarChar(255)
+  headache             String?   @db.VarChar(255)
+  dizziness            String?   @db.VarChar(255)
+  convulsions          String?   @db.VarChar(255)
+  weakness             String?   @db.VarChar(255)
+  blurryvision         String?   @db.VarChar(255)
+  cough                String?   @db.VarChar(255)
+  difficultybreathing  String?   @db.VarChar(255)
+  palpitation          String?   @db.VarChar(255)
+  swellingoffeet       String?   @db.VarChar(255)
+  severechestpain      String?   @db.VarChar(255)
+  severeepigastricpain String?   @db.VarChar(255)
+  pepticulcerpatient   String?   @db.VarChar(255)
+  severetirednesss     String?   @db.VarChar(255)
+  difficultylyingflat  String?   @db.VarChar(255)
+  severeabdominalpain  String?   @db.VarChar(255)
+  vomiting             String?   @db.VarChar(255)
+  diarrhoea            String?   @db.VarChar(255)
+  urinarypain          String?   @db.VarChar(255)
+  severeflankpain      String?   @db.VarChar(255)
+  bloodinurine         String?   @db.VarChar(255)
+  increasedurination   String?   @db.VarChar(255)
+  antsaroundurine      String?   @db.VarChar(255)
+  increasedthirst      String?   @db.VarChar(255)
+  createdat            DateTime? @default(now()) @db.Timestamp(0)
+  patients             patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "returnvisit_ibfk_1")
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model wards {
+  id        Int       @id @default(autoincrement())
+  state     String?   @db.VarChar(255)
+  lga       String?   @db.VarChar(255)
+  ward      String?   @db.VarChar(255)
+  createdat DateTime? @default(now()) @db.Timestamp(0)
 }
