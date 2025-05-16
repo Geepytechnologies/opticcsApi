@@ -14,21 +14,31 @@ model Settlement {
 }
 
 model Enumerator {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  phone           String            @unique(map: "phone") @db.VarChar(255)
-  gender          String            @db.VarChar(255)
-  userID          String            @unique(map: "userID") @db.VarChar(255)
-  state           String            @db.VarChar(255)
-  lga             String            @db.VarChar(255)
-  ward            String            @db.VarChar(255)
-  settlement      String?           @db.Text
-  password        String            @db.VarChar(255)
-  isActive        Boolean?          @default(true)
-  createdAt       DateTime?         @default(now()) @db.DateTime(0)
-  updatedAt       DateTime?         @updatedAt @db.DateTime(0)
-  enumerationData EnumerationData[]
-  SettlementData  SettlementData[]
+  id                Int                          @id @default(autoincrement())
+  name              String                       @db.VarChar(255)
+  phone             String                       @unique(map: "phone") @db.VarChar(255)
+  gender            String                       @db.VarChar(255)
+  userID            String                       @unique(map: "userID") @db.VarChar(255)
+  state             String                       @db.VarChar(255)
+  lga               String                       @db.VarChar(255)
+  ward              String                       @db.VarChar(255)
+  settlement        String?                      @db.Text
+  password          String                       @db.VarChar(255)
+  isActive          Boolean?                     @default(true)
+  createdAt         DateTime?                    @default(now()) @db.DateTime(0)
+  updatedAt         DateTime?                    @updatedAt @db.DateTime(0)
+  enumerationData   EnumerationData[]
+  SettlementData    SettlementData[]
+  healthFacility    EnumerationHealthFacility[]
+  referrals         EnumerationReferrals[]
+  serviceDeliveries EnumerationServiceDelivery[]
+}
+
+model EnumerationHealthFacility {
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(255)
+  enumeratorId Int
+  enumerator   Enumerator @relation(fields: [enumeratorId], references: [id])
 }
 
 model EnumerationSettlements {
@@ -56,57 +66,215 @@ model EnumerationHealthfacilities {
 }
 
 model EnumerationData {
-  id                         Int                       @id @default(autoincrement())
-  clientNumber               String                    @db.VarChar(255)
-  firstName                  String                    @db.VarChar(255)
-  middleName                 String?                   @db.VarChar(255)
-  surName                    String                    @db.VarChar(255)
-  phone                      String                    @db.VarChar(255)
-  alternatePhone             String?                   @db.VarChar(255)
-  address                    String                    @db.VarChar(255)
-  state                      String                    @db.VarChar(255)
-  lga                        String                    @db.VarChar(255)
-  ward                       String                    @db.VarChar(255)
-  settlement                 String                    @db.VarChar(255)
-  servingHealthcareFacility  String                    @db.VarChar(255)
-  gravidity                  String                    @db.VarChar(255)
-  parity                     String                    @db.VarChar(255)
-  lmp                        String                    @db.VarChar(255)
-  edd                        String                    @db.VarChar(255)
-  ega                        String                    @db.VarChar(255)
-  attendedAncVisit           String                    @db.VarChar(255)
+  id                         Int       @id @default(autoincrement())
+  clientNumber               String    @unique @db.VarChar(255)
+  firstName                  String    @db.VarChar(255)
+  middleName                 String?   @db.VarChar(255)
+  surName                    String    @db.VarChar(255)
+  phone                      String    @db.VarChar(255)
+  alternatePhone             String?   @db.VarChar(255)
+  address                    String    @db.VarChar(255)
+  state                      String    @db.VarChar(255)
+  lga                        String    @db.VarChar(255)
+  ward                       String    @db.VarChar(255)
+  settlement                 String    @db.VarChar(255)
+  servingHealthcareFacility  String    @db.VarChar(255)
+  gravidity                  String    @db.VarChar(255)
+  parity                     String    @db.VarChar(255)
+  lmp                        String    @db.VarChar(255)
+  edd                        String    @db.VarChar(255)
+  ega                        String    @db.VarChar(255)
+  attendedAncVisit           String    @db.VarChar(255)
   numberOfAncVisits          Int?
-  receivedTetanusVaccination String                    @db.VarChar(255)
-  latitude                   Float?                    @db.Float
-  longitude                  Float?                    @db.Float
-  createdAt                  DateTime?                 @default(now()) @db.DateTime(0)
+  receivedTetanusVaccination String    @db.VarChar(255)
+  latitude                   Float?    @db.Float
+  longitude                  Float?    @db.Float
+  createdAt                  DateTime? @default(now()) @db.DateTime(0)
   age                        Int?
   submittedById              String?
+
+  submittedBy Enumerator? @relation(fields: [submittedById], references: [userID], map: "fk_submittedBy")
+
   ancVisits                  EnumerationAncVisitData[]
-  submittedBy                Enumerator?               @relation(fields: [submittedById], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_submittedBy")
   tetanusVaccinationReceived EnumerationTTData[]
 
   @@index([submittedById], map: "fk_submittedBy")
 }
 
 model EnumerationAncVisitData {
-  id                Int              @id @default(autoincrement())
-  anc               String           @db.VarChar(255)
-  date              DateTime         @db.DateTime(0)
-  enumerationDataId Int?
-  enumerationData   EnumerationData? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "EnumerationAncVisitData_ibfk_1")
+  id                Int      @id @default(autoincrement())
+  anc               String   @db.VarChar(255)
+  date              DateTime @db.DateTime(0)
+  enumerationDataId Int
+
+  enumerationData EnumerationData @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, map: "EnumerationAncVisitData_ibfk_1")
 
   @@index([enumerationDataId], map: "enumerationDataId")
 }
 
 model EnumerationTTData {
-  id                Int              @id @default(autoincrement())
-  name              String           @db.VarChar(255)
-  date              DateTime         @db.DateTime(0)
-  enumerationDataId Int?
-  enumerationData   EnumerationData? @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "EnumerationTTData_ibfk_1")
+  id                Int      @id @default(autoincrement())
+  name              String   @db.VarChar(255)
+  date              DateTime @db.DateTime(0)
+  enumerationDataId Int
+
+  enumerationData EnumerationData @relation(fields: [enumerationDataId], references: [id], onDelete: Cascade, map: "EnumerationTTData_ibfk_1")
 
   @@index([enumerationDataId], map: "enumerationDataId")
+}
+
+model EnumerationServiceDelivery {
+  id                   Int    @id @default(autoincrement())
+  clientNumber         String @unique
+  nameOfHealthFacility String
+  purposeOfVisit       String
+
+  ancId    Int? @unique
+  labourId Int? @unique
+  pncId    Int? @unique
+  othersId Int? @unique
+
+  anc               EnumerationServiceDeliveryVisit?  @relation("VisitRelation")
+  deliveryAndLabour EnumerationServiceDeliveryLabour? @relation("LabourRelation")
+  pnc               EnumerationServiceDeliveryPnc?    @relation("PncRelation")
+  others            EnumerationServiceDeliveryOthers? @relation("OthersRelation")
+
+  submittedById String
+  submittedBy   Enumerator @relation(fields: [submittedById], references: [userID])
+}
+
+model EnumerationServiceDeliveryVisit {
+  id                           Int                         @id @default(autoincrement())
+  enumerationServiceDeliveryId Int                         @unique
+  enumerationServiceDelivery   EnumerationServiceDelivery  @relation("VisitRelation", fields: [enumerationServiceDeliveryId], references: [id])
+  dateOfVisit                  DateTime
+  ancVisit                     String
+  servicesProvided             EnumerationVisitService[]
+  commoditiesDispensed         EnumerationVisitCommodity[]
+  outcomeOfVisit               EnumerationVisitOutcome[]
+  dateOfNextAppointment        DateTime
+}
+
+model EnumerationVisitService {
+  id      Int    @id @default(autoincrement())
+  visitId Int
+  name    String @db.VarChar(255)
+
+  visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationVisitCommodity {
+  id      Int    @id @default(autoincrement())
+  visitId Int
+  name    String @db.VarChar(255)
+
+  visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationVisitOutcome {
+  id      Int    @id @default(autoincrement())
+  visitId Int
+  outcome String @db.VarChar(255)
+
+  visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationServiceDeliveryLabour {
+  id                           Int @id @default(autoincrement())
+  enumerationServiceDeliveryId Int @unique
+
+  enumerationServiceDelivery EnumerationServiceDelivery    @relation("LabourRelation", fields: [enumerationServiceDeliveryId], references: [id])
+  dateOfVisit                DateTime
+  commoditiesDispensed       EnumerationLabourCommodity[]
+  otherCommodities           String
+  receivedMamaKit            String
+  pregnancyOutcome           EnumerationPregnancyOutcome[]
+  deliveryDate               DateTime
+  NumberOfNewBorn            Int
+  outcomeOfVisit             EnumerationLabourOutcome[]
+}
+
+model EnumerationLabourCommodity {
+  id       Int    @id @default(autoincrement())
+  labourId Int
+  name     String @db.VarChar(255)
+
+  labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationLabourOutcome {
+  id       Int    @id @default(autoincrement())
+  labourId Int
+  outcome  String @db.VarChar(255)
+
+  labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationPregnancyOutcome {
+  id       Int    @id @default(autoincrement())
+  labourId Int
+  result   String @db.VarChar(255)
+
+  labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationServiceDeliveryPnc {
+  id                           Int @id @default(autoincrement())
+  enumerationServiceDeliveryId Int @unique
+
+  enumerationServiceDelivery EnumerationServiceDelivery @relation("PncRelation", fields: [enumerationServiceDeliveryId], references: [id])
+  dateOfVisit                DateTime
+  detailsOfVisit             String
+  outcomeOfVisit             EnumerationPncOutcome[]
+  dateOfNextAppointment      DateTime
+}
+
+model EnumerationPncOutcome {
+  id      Int    @id @default(autoincrement())
+  pncId   Int
+  outcome String @db.VarChar(255)
+
+  pnc EnumerationServiceDeliveryPnc @relation(fields: [pncId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationServiceDeliveryOthers {
+  id             Int      @id @default(autoincrement())
+  dateOfVisit    DateTime
+  detailsOfVisit String
+
+  outcomeOfVisit               EnumerationOtherOutcome[]
+  enumerationServiceDeliveryId Int                        @unique
+  serviceDelivery              EnumerationServiceDelivery @relation("OthersRelation", fields: [enumerationServiceDeliveryId], references: [id])
+}
+
+model EnumerationOtherOutcome {
+  id      Int    @id @default(autoincrement())
+  otherId Int
+  outcome String @db.VarChar(255)
+
+  others EnumerationServiceDeliveryOthers @relation(fields: [otherId], references: [id], onDelete: Cascade)
+}
+
+model EnumerationReferrals {
+  id                        Int      @id @default(autoincrement())
+  clientNumber              String   @unique
+  referredto                String
+  nameOfReferralFacility    String
+  modeOfTransportation      String
+  otherModeOfTransportation String
+  reasonForReferral         String
+  otherReasonForReferral    String
+  dateOfReferral            DateTime
+
+  submittedById String?
+  submittedBy   Enumerator? @relation(fields: [submittedById], references: [userID])
+}
+
+model EnumerationClientSchedule {
+  id           Int      @id @default(autoincrement())
+  clientNumber String   @unique
+  scheduleType String
+  scheduleDate DateTime
 }
 
 model SettlementData {
