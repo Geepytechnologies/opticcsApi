@@ -272,7 +272,7 @@ model EnumerationReferrals {
 
 model EnumerationClientSchedule {
   id           Int      @id @default(autoincrement())
-  clientNumber String   @unique
+  clientNumber String   
   scheduleType String
   scheduleDate DateTime
 }
