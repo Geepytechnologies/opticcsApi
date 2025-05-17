@@ -1448,3 +1448,80 @@ Unique constraint failed on the constraint: `phone`
 22:19:17 [info] Connected to MySQL pool! new config
 22:22:18 [info] Backend server is up and running on port 3000
 22:22:18 [info] Connected to MySQL pool! new config
+22:40:40 [info] Backend server is up and running on port 3000
+22:40:40 [info] Connected to MySQL pool! new config
+22:51:33 [warn] healthfacility
+22:51:33 [warn] general
+22:51:33 [warn] healthfacility
+06:56:43 [info] Backend server is up and running on port 3000
+06:56:44 [info] Connected to MySQL pool! new config
+08:00:00 [info] Ran the missedscheduleSMS task on Mon, 12 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Mon, 12 May 2025 08:00:00 GMT
+11:34:26 [info] Backend server is up and running on port 3000
+11:34:26 [info] Connected to MySQL pool! new config
+11:36:27 [warn] healthfacility
+11:36:27 [warn] general
+11:39:46 [info] Backend server is up and running on port 3000
+11:39:46 [info] Connected to MySQL pool! new config
+17:13:13 [info] createEnumerator
+17:13:13 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+{
+  data: {
+    name: "John Doe",
+    phone: 1234567890,
+           ~~~~~~~~~~
+    gender: "Male",
+    state: "Lagos",
+    lga: "Ikeja",
+    ward: "Ward 1",
+    settlement: "[\"Settlement A\",\"Settlement B\"]",
+    password: "password123",
+    userID: "IANC/EM/0221"
+  }
+}
+
+Argument `phone`: Invalid value provided. Expected String, provided Int.
+17:13:16 [info] createEnumerator
+17:13:16 [error] Error creating enumerator: 
+Invalid `prisma.enumerator.create()` invocation:
+
+{
+  data: {
+    name: "John Doe",
+    phone: 1234567890,
+           ~~~~~~~~~~
+    gender: "Male",
+    state: "Lagos",
+    lga: "Ikeja",
+    ward: "Ward 1",
+    settlement: "[\"Settlement A\",\"Settlement B\"]",
+    password: "password123",
+    userID: "IANC/EM/0221"
+  }
+}
+
+Argument `phone`: Invalid value provided. Expected String, provided Int.
+17:14:35 [info] createEnumerator
+18:40:46 [warn] healthfacility
+18:40:47 [warn] general
+08:00:00 [info] Ran the missedscheduleSMS task on Tue, 13 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the reminderSMS task on Tue, 13 May 2025 08:00:00 GMT
+13:13:04 [warn] healthfacility
+13:13:04 [warn] general
+13:13:04 [warn] healthfacility
+13:15:53 [info] createEnumerator
+14:42:51 [info] Backend server is up and running on port 3000
+14:42:51 [info] Connected to MySQL pool! new config
+14:43:12 [warn] healthfacility
+14:43:12 [warn] general
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Wed, 14 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Wed, 14 May 2025 08:00:00 GMT
+17:11:57 [warn] healthfacility
+17:11:57 [warn] general
+08:00:00 [error] error from getCloseSchedules :Error: Can't add new command when connection is in closed state
+08:00:00 [info] Ran the reminderSMS task on Thu, 15 May 2025 08:00:00 GMT
+08:00:00 [info] Ran the missedscheduleSMS task on Thu, 15 May 2025 08:00:00 GMT
+18:27:34 [error] Can't add new command when connection is in closed state

@@ -601,6 +601,101 @@ router.get("/data", EnumerationController.getAllenumerationdata);
 
 /**
  * @swagger
+ * /api/enumeration/enumerator/data:
+ *   get:
+ *     summary: Get all enumeration data for enumerator
+ *     tags: [Enumeration Data]
+ *     parameters:
+ *       - in: query
+ *         name: dateCreated
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter by creation date (e.g., "2023-10-01")
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         description: Filter by state
+ *       - in: query
+ *         name: lga
+ *         schema:
+ *           type: string
+ *         description: Filter by Local Government Area (LGA)
+ *       - in: query
+ *         name: ward
+ *         schema:
+ *           type: string
+ *         description: Filter by ward
+ *       - in: query
+ *         name: settlement
+ *         schema:
+ *           type: string
+ *         description: Filter by settlement
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Enumeration data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Enumeration data retrieved successfully!"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/EnumerationData"
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     pageNumber:
+ *                       type: integer
+ *                       example: 1
+ *                     pageSize:
+ *                       type: integer
+ *                       example: 20
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 100
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 5
+ *       500:
+ *         description: Failed to retrieve enumeration data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to retrieve enumeration data"
+ *                 error:
+ *                   type: string
+ *                   example: "Error message details"
+ */
+router.get(
+  "/enumerator/data",
+  verifyToken,
+  EnumerationController.getAllEnumeratorData
+);
+
+/**
+ * @swagger
  * /api/enumeration/data/{id}:
  *   get:
  *     summary: Get enumeration data by ID
@@ -932,6 +1027,238 @@ router.get("/download/data", EnumerationController.downloadenumerationdata);
 router.post(
   "/verifyphone",
   EnumerationController.verifyPhoneNumberAvailability
+);
+
+/**
+ * @swagger
+ * /api/enumeration/service-delivery:
+ *   post:
+ *     summary: Create Enumeration Service Delivery
+ *     tags: [Enumeration Data]
+ *     description: Creates a new service delivery record including optional ANC, Labour, PNC, and Other visit data.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               clientNumber:
+ *                 type: string
+ *               nameOfHealthFacility:
+ *                 type: string
+ *               purposeOfVisit:
+ *                 type: string
+ *               anc:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   ancVisit:
+ *                     type: string
+ *                   servicesProvided:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   commoditiesDispensed:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   dateOfNextAppointment:
+ *                     type: string
+ *                     format: date-time
+ *               labour:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   commoditiesDispensed:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   otherCommodities:
+ *                     type: string
+ *                   receivedMamaKit:
+ *                     type: string
+ *                   pregnancyOutcome:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   deliveryDate:
+ *                     type: string
+ *                     format: date-time
+ *                   NumberOfNewBorn:
+ *                     type: integer
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *               pnc:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   detailsOfVisit:
+ *                     type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   dateOfNextAppointment:
+ *                     type: string
+ *                     format: date-time
+ *               others:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   detailsOfVisit:
+ *                     type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 clientNumber:
+ *                   type: string
+ *                 nameOfHealthFacility:
+ *                   type: string
+ *                 purposeOfVisit:
+ *                   type: string
+ *                 anc:
+ *                   type: object
+ *                 labour:
+ *                   type: object
+ *                 pnc:
+ *                   type: object
+ *                 others:
+ *                   type: object
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+
+router.post(
+  "/service-delivery",
+  verifyToken,
+  EnumerationController.createServiceDelivery
+);
+
+/**
+ * @swagger
+ * /api/enumeration/service-delivery:
+ *   get:
+ *     summary: Get Service Deliveries by Client Number
+ *     tags: [Enumeration Data]
+ *     description: Retrieves all service delivery records (ANC, Labour, PNC, Others) associated with the specified client number.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: clientNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The client number used to fetch the service delivery records.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved service deliveries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Service Deliveries Retrieved
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       clientNumber:
+ *                         type: string
+ *                       nameOfHealthFacility:
+ *                         type: string
+ *                       purposeOfVisit:
+ *                         type: string
+ *                       submittedBy:
+ *                         type: object
+ *                         properties:
+ *                           userID:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                       anc:
+ *                         type: object
+ *                         nullable: true
+ *                       deliveryAndLabour:
+ *                         type: object
+ *                         nullable: true
+ *                       pnc:
+ *                         type: object
+ *                         nullable: true
+ *                       others:
+ *                         type: object
+ *                         nullable: true
+ *       400:
+ *         description: Client number is required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: Client Number is Required
+ *                 result:
+ *                   type: string
+ *                   nullable: true
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while creating service delivery
+ */
+router.get(
+  "/service-delivery",
+  EnumerationController.getServiceDeliveryByClientNumberRequest
 );
 
 export default router;

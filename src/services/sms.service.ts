@@ -171,7 +171,6 @@ export class SmsService {
       throw new Error(error.message);
     }
   };
-
   async scheduledvisitSMSforPatient(smsdata: Scheduledvisit) {
     const {
       mobile_number,

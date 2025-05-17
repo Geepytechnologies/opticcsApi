@@ -140,6 +140,34 @@ class SmsService {
                 throw new Error(error);
             }
         });
+        this.verifyPhone = (_a) => __awaiter(this, [_a], void 0, function* ({ phone }) {
+            const apiKey = process.env.TERMIIKEY;
+            const phoneNumber = phone;
+            const countryCode = "NG";
+            const queryParams = new URLSearchParams({
+                api_key: apiKey !== null && apiKey !== void 0 ? apiKey : "",
+                phone_number: phoneNumber,
+                country_code: countryCode,
+            });
+            const url = `https://v3.api.termii.com/api/insight/number/query?${queryParams}`;
+            try {
+                const response = yield fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch phone verification");
+                }
+                const res = yield response.json();
+                console.log(res);
+                return res;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
     }
     scheduledvisitSMSforPatient(smsdata) {
         return __awaiter(this, void 0, void 0, function* () {
