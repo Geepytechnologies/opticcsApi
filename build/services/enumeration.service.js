@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createReferralProcess = exports.getServiceDeliveriesByClientNumber = exports.createServiceDelivery = void 0;
+exports.getEnumerationByClientNumber = exports.getSchedulesByClientNumber = exports.getReferralsByClientNumber = exports.createReferralProcess = exports.getServiceDeliveriesByClientNumber = exports.createServiceDelivery = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createServiceDelivery = (data, submittedById) => __awaiter(void 0, void 0, void 0, function* () {
@@ -155,105 +155,37 @@ const getServiceDeliveriesByClientNumber = (clientNumber) => __awaiter(void 0, v
 });
 exports.getServiceDeliveriesByClientNumber = getServiceDeliveriesByClientNumber;
 const createReferralProcess = (data, submittedById) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
-    return prisma.enumerationServiceDelivery.create({
+    var _a, _b;
+    return prisma.enumerationReferrals.create({
         data: {
             clientNumber: data.clientNumber,
-            nameOfHealthFacility: data.nameOfHealthFacility,
-            purposeOfVisit: data.purposeOfVisit,
+            referredto: data.referredto,
+            nameOfReferralFacility: data.nameOfReferralFacility,
+            modeOfTransportation: data.modeOfTransportation,
+            otherModeOfTransportation: (_a = data.otherModeOfTransportation) !== null && _a !== void 0 ? _a : "",
+            reasonForReferral: data.reasonForReferral,
+            otherReasonForReferral: (_b = data.otherReasonForReferral) !== null && _b !== void 0 ? _b : "",
+            dateOfReferral: data.dateOfReferral,
             submittedBy: { connect: { userID: submittedById } },
-            anc: data.anc
-                ? {
-                    create: {
-                        dateOfVisit: data.anc.dateOfVisit,
-                        ancVisit: data.anc.ancVisit,
-                        dateOfNextAppointment: data.anc.dateOfNextAppointment,
-                        servicesProvided: {
-                            connectOrCreate: data.anc.servicesProvided.map((name) => ({
-                                where: { name: name },
-                                create: { name },
-                            })),
-                        },
-                        commoditiesDispensed: {
-                            connectOrCreate: data.anc.commoditiesDispensed.map((name) => ({
-                                where: { name: name },
-                                create: { name },
-                            })),
-                        },
-                        outcomeOfVisit: {
-                            connectOrCreate: data.anc.outcomeOfVisit.map((name) => ({
-                                where: { outcome: name },
-                                create: { outcome: name },
-                            })),
-                        },
-                    },
-                }
-                : undefined,
-            deliveryAndLabour: data.labour
-                ? {
-                    create: {
-                        dateOfVisit: data.labour.dateOfVisit,
-                        otherCommodities: data.labour.otherCommodities,
-                        receivedMamaKit: data.labour.receivedMamaKit,
-                        deliveryDate: data.labour.deliveryDate,
-                        NumberOfNewBorn: data.labour.NumberOfNewBorn,
-                        commoditiesDispensed: {
-                            connectOrCreate: (_a = data.labour) === null || _a === void 0 ? void 0 : _a.commoditiesDispensed.map((name) => ({
-                                where: { name: name },
-                                create: { name: name },
-                            })),
-                        },
-                        pregnancyOutcome: {
-                            connectOrCreate: (_b = data.labour) === null || _b === void 0 ? void 0 : _b.pregnancyOutcome.map((name) => ({
-                                where: { result: name },
-                                create: { result: name },
-                            })),
-                        },
-                        outcomeOfVisit: {
-                            connectOrCreate: (_c = data.labour) === null || _c === void 0 ? void 0 : _c.outcomeOfVisit.map((name) => ({
-                                where: { outcome: name },
-                                create: { outcome: name },
-                            })),
-                        },
-                    },
-                }
-                : undefined,
-            pnc: data.pnc
-                ? {
-                    create: {
-                        dateOfVisit: data.pnc.dateOfVisit,
-                        detailsOfVisit: data.pnc.detailsOfVisit,
-                        dateOfNextAppointment: data.pnc.dateOfNextAppointment,
-                        outcomeOfVisit: {
-                            connectOrCreate: data.pnc.outcomeOfVisit.map((name) => ({
-                                where: { outcome: name },
-                                create: { outcome: name },
-                            })),
-                        },
-                    },
-                }
-                : undefined,
-            others: data.others
-                ? {
-                    create: {
-                        dateOfVisit: data.others.dateOfVisit,
-                        detailsOfVisit: data.others.detailsOfVisit,
-                        outcomeOfVisit: {
-                            connectOrCreate: (_d = data.others) === null || _d === void 0 ? void 0 : _d.outcomeOfVisit.map((name) => ({
-                                where: { outcome: name }, // Replace 'uniqueField' with the actual unique field in your schema
-                                create: { outcome: name },
-                            })),
-                        },
-                    },
-                }
-                : undefined,
-        },
-        include: {
-            anc: true,
-            deliveryAndLabour: true,
-            pnc: true,
-            others: true,
         },
     });
 });
 exports.createReferralProcess = createReferralProcess;
+const getReferralsByClientNumber = (clientNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    return prisma.enumerationReferrals.findMany({
+        where: { clientNumber },
+    });
+});
+exports.getReferralsByClientNumber = getReferralsByClientNumber;
+const getSchedulesByClientNumber = (clientNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    return prisma.enumerationClientSchedule.findMany({
+        where: { clientNumber },
+    });
+});
+exports.getSchedulesByClientNumber = getSchedulesByClientNumber;
+const getEnumerationByClientNumber = (clientNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    return prisma.enumerationData.findMany({
+        where: { clientNumber },
+    });
+});
+exports.getEnumerationByClientNumber = getEnumerationByClientNumber;

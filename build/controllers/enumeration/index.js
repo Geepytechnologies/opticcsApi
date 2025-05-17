@@ -242,7 +242,7 @@ class EnumerationController {
                     .json({ statusCode: 500, message: "Something went wrong" });
             }
         });
-        this.createEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.createenumerationdata = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const UserId = req.user.id;
             const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, age, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
             // const lmp = new Date(req.body.lmp).toISOString();
@@ -303,7 +303,7 @@ class EnumerationController {
                 });
             }
         });
-        this.getAllEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getAllenumerationdata = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { dateCreated, state, lga, ward, settlement, pageNumber = 1, pageSize = 20, } = req.query;
             const skip = (Number(pageNumber) - 1) * Number(pageSize);
             const take = Number(pageSize);
@@ -398,7 +398,7 @@ class EnumerationController {
                 });
             }
         });
-        this.downloadEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.downloadenumerationdata = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const enumerationdata = yield prisma.enumerationData.findMany({
                     orderBy: {
@@ -425,7 +425,7 @@ class EnumerationController {
                 });
             }
         });
-        this.getEnumerationDataById = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getenumerationdataById = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
                 const enumerationdata = yield prisma.enumerationData.findUnique({
@@ -743,18 +743,99 @@ class EnumerationController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const UserId = req.user.id;
-                const result = yield (0, enumeration_service_1.createServiceDelivery)(req.body, UserId);
+                const result = yield (0, enumeration_service_1.createReferralProcess)(req.body, UserId);
                 res.status(201).json({
                     statusCode: 200,
-                    message: "Service Delivery Created",
+                    message: "Referral Created",
                     result: result,
                 });
             }
             catch (error) {
-                console.error("Error creating service delivery:", error);
+                console.error("Error creating referral:", error);
                 res.status(500).json({
                     statusCode: 500,
-                    message: "An error occurred while creating service delivery",
+                    message: "An error occurred while creating referral",
+                });
+            }
+        });
+    }
+    getClientReferrals(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const clientNumber = req.query.clientNumber;
+                if (!clientNumber) {
+                    res.status(400).json({
+                        statusCode: 400,
+                        message: "Client Number is Required",
+                        result: null,
+                    });
+                }
+                const result = yield (0, enumeration_service_1.getReferralsByClientNumber)(clientNumber);
+                res.status(200).json({
+                    statusCode: 200,
+                    message: "Referrals Retrieved",
+                    result: result,
+                });
+            }
+            catch (error) {
+                console.error("Error getting referrals:", error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "An error occurred while getting referral",
+                });
+            }
+        });
+    }
+    getClientEnumerationData(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const clientNumber = req.query.clientNumber;
+                if (!clientNumber) {
+                    res.status(400).json({
+                        statusCode: 400,
+                        message: "Client Number is Required",
+                        result: null,
+                    });
+                }
+                const result = yield (0, enumeration_service_1.getEnumerationByClientNumber)(clientNumber);
+                res.status(200).json({
+                    statusCode: 200,
+                    message: `Enumeration data for client-${clientNumber} Retrieved`,
+                    result: result,
+                });
+            }
+            catch (error) {
+                console.error("Error while getting client enumeration data:", error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "An error occurred while getting client enumeration data",
+                });
+            }
+        });
+    }
+    getClientSchedules(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const clientNumber = req.query.clientNumber;
+                if (!clientNumber) {
+                    res.status(400).json({
+                        statusCode: 400,
+                        message: "Client Number is Required",
+                        result: null,
+                    });
+                }
+                const result = yield (0, enumeration_service_1.getSchedulesByClientNumber)(clientNumber);
+                res.status(200).json({
+                    statusCode: 200,
+                    message: `Schedule for client-${clientNumber} Retrieved`,
+                    result: result,
+                });
+            }
+            catch (error) {
+                console.error("Error while getting client schedules:", error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "An error occurred while getting client schedules",
                 });
             }
         });

@@ -20,7 +20,11 @@ import {
   Tags,
 } from "tsoa";
 import {
+  createReferralProcess,
   createServiceDelivery,
+  getEnumerationByClientNumber,
+  getReferralsByClientNumber,
+  getSchedulesByClientNumber,
   getServiceDeliveriesByClientNumber,
 } from "../../services/enumeration.service";
 import { customRequest } from "../../middlewares/tsoaAuth";
@@ -815,17 +819,92 @@ export class EnumerationController {
     try {
       const UserId = req.user.id;
 
-      const result = await createServiceDelivery(req.body, UserId);
+      const result = await createReferralProcess(req.body, UserId);
       res.status(201).json({
         statusCode: 200,
-        message: "Service Delivery Created",
+        message: "Referral Created",
         result: result,
       });
     } catch (error) {
-      console.error("Error creating service delivery:", error);
+      console.error("Error creating referral:", error);
       res.status(500).json({
         statusCode: 500,
-        message: "An error occurred while creating service delivery",
+        message: "An error occurred while creating referral",
+      });
+    }
+  }
+  async getClientReferrals(req: Request, res: Response) {
+    try {
+      const clientNumber = req.query.clientNumber;
+      if (!clientNumber) {
+        res.status(400).json({
+          statusCode: 400,
+          message: "Client Number is Required",
+          result: null,
+        });
+      }
+
+      const result = await getReferralsByClientNumber(clientNumber as string);
+      res.status(200).json({
+        statusCode: 200,
+        message: "Referrals Retrieved",
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error getting referrals:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while getting referral",
+      });
+    }
+  }
+  async getClientEnumerationData(req: Request, res: Response) {
+    try {
+      const clientNumber = req.query.clientNumber;
+      if (!clientNumber) {
+        res.status(400).json({
+          statusCode: 400,
+          message: "Client Number is Required",
+          result: null,
+        });
+      }
+
+      const result = await getEnumerationByClientNumber(clientNumber as string);
+      res.status(200).json({
+        statusCode: 200,
+        message: `Enumeration data for client-${clientNumber} Retrieved`,
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error while getting client enumeration data:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while getting client enumeration data",
+      });
+    }
+  }
+  async getClientSchedules(req: Request, res: Response) {
+    try {
+      const clientNumber = req.query.clientNumber;
+      if (!clientNumber) {
+        res.status(400).json({
+          statusCode: 400,
+          message: "Client Number is Required",
+          result: null,
+        });
+      }
+
+      const result = await getSchedulesByClientNumber(clientNumber as string);
+      res.status(200).json({
+        statusCode: 200,
+        message: `Schedule for client-${clientNumber} Retrieved`,
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error while getting client schedules:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while getting client schedules",
       });
     }
   }

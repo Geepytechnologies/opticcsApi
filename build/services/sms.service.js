@@ -134,7 +134,7 @@ class SmsService {
                     },
                     body: JSON.stringify(data),
                 });
-                return response;
+                return response.json();
             }
             catch (error) {
                 throw new Error(error);

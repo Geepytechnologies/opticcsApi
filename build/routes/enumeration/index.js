@@ -500,7 +500,7 @@ router.delete("/enumerators/:id", enumeration_1.default.deleteEnumerator);
  *       500:
  *         description: Failed to create enumeration data
  */
-router.post("/data", verifyToken_1.verifyToken, enumeration_1.default.createEnumerationData);
+router.post("/data", verifyToken_1.verifyToken, enumeration_1.default.createenumerationdata);
 /**
  * @swagger
  * /api/enumeration/data:
@@ -590,7 +590,7 @@ router.post("/data", verifyToken_1.verifyToken, enumeration_1.default.createEnum
  *                   type: string
  *                   example: "Error message details"
  */
-router.get("/data", enumeration_1.default.getAllEnumerationData);
+router.get("/data", enumeration_1.default.getAllenumerationdata);
 /**
  * @swagger
  * /api/enumeration/enumerator/data:
@@ -731,7 +731,7 @@ router.get("/enumerator/data", verifyToken_1.verifyToken, enumeration_1.default.
  *                   type: string
  *                   example: "Error message details"
  */
-router.get("/data/:id", enumeration_1.default.getEnumerationDataById);
+router.get("/data/:id", enumeration_1.default.getenumerationdataById);
 /**
  * @swagger
  * /api/enumeration/states:
@@ -972,7 +972,7 @@ router.get("/activitylog", verifyToken_1.verifyToken, enumeration_1.default.getA
  *       500:
  *         description: Internal server error
  */
-router.get("/download/data", enumeration_1.default.downloadEnumerationData);
+router.get("/download/data", enumeration_1.default.downloadenumerationdata);
 /**
  * @swagger
  * /api/enumeration/service-delivery:
@@ -1074,28 +1074,50 @@ router.get("/download/data", enumeration_1.default.downloadEnumerationData);
  *                       type: string
  *     responses:
  *       201:
- *         description: Created successfully
+ *         description: Service delivery created
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 statusCode:
  *                   type: integer
- *                 clientNumber:
+ *                   example: 200
+ *                 message:
  *                   type: string
- *                 nameOfHealthFacility:
- *                   type: string
- *                 purposeOfVisit:
- *                   type: string
- *                 anc:
- *                   type: object
- *                 labour:
- *                   type: object
- *                 pnc:
- *                   type: object
- *                 others:
- *                   type: object
+ *                   example: Service Deliveries Retrieved
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       clientNumber:
+ *                         type: string
+ *                       nameOfHealthFacility:
+ *                         type: string
+ *                       purposeOfVisit:
+ *                         type: string
+ *                       submittedBy:
+ *                         type: object
+ *                         properties:
+ *                           userID:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                       anc:
+ *                         type: object
+ *                         nullable: true
+ *                       deliveryAndLabour:
+ *                         type: object
+ *                         nullable: true
+ *                       pnc:
+ *                         type: object
+ *                         nullable: true
+ *                       others:
+ *                         type: object
+ *                         nullable: true
  *       400:
  *         description: Bad request
  *       500:
@@ -1104,7 +1126,7 @@ router.get("/download/data", enumeration_1.default.downloadEnumerationData);
 router.post("/service-delivery", verifyToken_1.verifyToken, enumeration_1.default.createServiceDelivery);
 /**
  * @swagger
- * /api/enumeration/service-delivery:
+ * /api/enumeration/client/service-delivery:
  *   get:
  *     summary: Get Service Deliveries by Client Number
  *     tags: [Enumeration Data]
@@ -1194,5 +1216,255 @@ router.post("/service-delivery", verifyToken_1.verifyToken, enumeration_1.defaul
  *                   type: string
  *                   example: An error occurred while creating service delivery
  */
-router.get("/service-delivery", enumeration_1.default.getServiceDeliveryByClientNumberRequest);
+router.get("/client/service-delivery", enumeration_1.default.getServiceDeliveryByClientNumberRequest);
+/**
+ * @swagger
+ * /api/enumeration/referrals:
+ *   post:
+ *     summary: Create a new referral
+ *     tags: [Enumeration Data]
+ *     description: Creates a referral for a client.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               clientNumber:
+ *                 type: string
+ *                 example: "123456"
+ *               referralReason:
+ *                 type: string
+ *                 example: "High blood pressure"
+ *               referredTo:
+ *                 type: string
+ *                 example: "General Hospital"
+ *               referralDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2025-05-16"
+ *             required:
+ *               - clientNumber
+ *               - referralReason
+ *               - referredTo
+ *               - referralDate
+ *     responses:
+ *       201:
+ *         description: Referral successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Referral Created
+ *                 result:
+ *                   type: object
+ *       500:
+ *         description: Server error while creating referral
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while creating referral
+ */
+router.post("/referrals", verifyToken_1.verifyToken, enumeration_1.default.createReferral);
+/**
+ * @swagger
+ * /api/referrals:
+ *   get:
+ *     summary: Get referrals for a client
+ *     tags: [Referrals]
+ *     description: Retrieves all referrals associated with the specified client number.
+ *     parameters:
+ *       - in: query
+ *         name: clientNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The client number to fetch referrals for.
+ *     responses:
+ *       200:
+ *         description: Referrals retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Referrals Retrieved
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       400:
+ *         description: Client number is missing
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: Client Number is Required
+ *                 result:
+ *                   type: string
+ *                   nullable: true
+ *       500:
+ *         description: Server error while retrieving referrals
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while getting referral
+ */
+router.get("/client-referrals", enumeration_1.default.getClientReferrals);
+/**
+ * @swagger
+ * /api/enumeration/client-data:
+ *   get:
+ *     summary: Get enumeration data for a client
+ *     tags: [Enumeration Data]
+ *     description: Retrieves enumeration details for the given client number.
+ *     parameters:
+ *       - in: query
+ *         name: clientNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The client number used to fetch enumeration data.
+ *     responses:
+ *       200:
+ *         description: Enumeration data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Enumeration data for client-123456 Retrieved
+ *                 result:
+ *                   type: object
+ *       400:
+ *         description: Client number is missing
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: Client Number is Required
+ *                 result:
+ *                   type: string
+ *                   nullable: true
+ *       500:
+ *         description: Server error while retrieving enumeration data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while getting enumeration data
+ */
+router.get("/client-data", enumeration_1.default.getClientEnumerationData);
+/**
+ * @swagger
+ * /api/enumeration/client-schedules:
+ *   get:
+ *     summary: Get schedule for a client
+ *     tags: [Enumeration Data]
+ *     description: Retrieves enumeration schedule for the given client number.
+ *     parameters:
+ *       - in: query
+ *         name: clientNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The client number used to fetch enumeration schedule.
+ *     responses:
+ *       200:
+ *         description: Enumeration schedule retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Enumeration data for client-123456 Retrieved
+ *                 result:
+ *                   type: object
+ *       400:
+ *         description: Client number is missing
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: Client Number is Required
+ *                 result:
+ *                   type: string
+ *                   nullable: true
+ *       500:
+ *         description: Server error while retrieving enumeration data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while getting client schedule
+ */
+router.get("/client-schedules", enumeration_1.default.getClientSchedules);
 exports.default = router;

@@ -54,3 +54,14 @@ export interface CreateServiceDeliveryDto {
     outcomeOfVisit: string[];
   };
 }
+
+export interface ICreateReferralDTO {
+  clientNumber: string;
+  referredto: string;
+  nameOfReferralFacility: string;
+  modeOfTransportation: string;
+  otherModeOfTransportation?: string;
+  reasonForReferral: string;
+  otherReasonForReferral?: string;
+  dateOfReferral: Date;
+}
