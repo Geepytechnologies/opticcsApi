@@ -23,18 +23,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnumerationController = void 0;
 const logger_1 = __importDefault(require("../../logger"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const json2csv_1 = require("json2csv");
+const enumeration_service_1 = require("../../services/enumeration.service");
 class EnumerationController {
     constructor() {
         this.createEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            logger_1.default.info("createEnumerator");
             const { name, phone, gender, state, lga, ward, settlement, password } = req.body;
-            console.log(settlement);
             try {
                 // Get the last enumerator's userID
                 const lastEnumerator = yield prisma.enumerator.findFirst({
@@ -244,13 +244,12 @@ class EnumerationController {
         });
         this.createEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const UserId = req.user.id;
-            console.log("Enumeration data: ", req.body);
             const { clientNumber, firstName, middleName, surName, phone, alternatePhone, address, state, lga, age, ward, settlement, servingHealthcareFacility, gravidity, parity, lmp, edd, ega, attendedAncVisit, numberOfAncVisits, ancVisits, receivedTetanusVaccination, tetanusVaccinationReceived, latitude, longitude, } = req.body;
             // const lmp = new Date(req.body.lmp).toISOString();
             // const edd = new Date(req.body.edd).toISOString();
             // const ega = new Date(req.body.ega).toISOString();
             try {
-                const enumerationData = yield prisma.enumerationData.create({
+                const enumerationdata = yield prisma.enumerationData.create({
                     data: {
                         clientNumber,
                         firstName,
@@ -291,7 +290,7 @@ class EnumerationController {
                 res.status(201).json({
                     statusCode: 201,
                     message: "Enumeration data created successfully!",
-                    data: enumerationData,
+                    data: enumerationdata,
                 });
             }
             catch (error) {
@@ -323,7 +322,7 @@ class EnumerationController {
             if (settlement)
                 filters.settlement = settlement;
             try {
-                const enumerationData = yield prisma.enumerationData.findMany({
+                const enumerationdata = yield prisma.enumerationData.findMany({
                     where: filters,
                     skip,
                     take,
@@ -339,7 +338,7 @@ class EnumerationController {
                 res.status(200).json({
                     statusCode: 200,
                     message: "Enumeration data retrieved successfully!",
-                    data: enumerationData,
+                    data: enumerationdata,
                     pagination: {
                         pageNumber: Number(pageNumber),
                         pageSize: Number(pageSize),
@@ -359,7 +358,7 @@ class EnumerationController {
         });
         this.downloadEnumerationData = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const enumerationData = yield prisma.enumerationData.findMany({
+                const enumerationdata = yield prisma.enumerationData.findMany({
                     orderBy: {
                         createdAt: "desc",
                     },
@@ -368,11 +367,11 @@ class EnumerationController {
                         tetanusVaccinationReceived: true,
                     },
                 });
-                const csv = (0, json2csv_1.parse)(enumerationData);
+                const csv = (0, json2csv_1.parse)(enumerationdata);
                 // Set the response headers to trigger file download
                 res.header("Content-Type", "text/csv");
-                res.attachment("EnumerationData.csv");
-                res.setHeader("Content-Disposition", "attachment; filename=EnumerationData.csv");
+                res.attachment("enumerationdata.csv");
+                res.setHeader("Content-Disposition", "attachment; filename=enumerationdata.csv");
                 res.status(200).send(csv);
             }
             catch (error) {
@@ -387,14 +386,14 @@ class EnumerationController {
         this.getEnumerationDataById = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                const enumerationData = yield prisma.enumerationData.findUnique({
+                const enumerationdata = yield prisma.enumerationData.findUnique({
                     where: { id: Number(id) },
                     include: {
                         ancVisits: true,
                         tetanusVaccinationReceived: true,
                     },
                 });
-                if (!enumerationData) {
+                if (!enumerationdata) {
                     return res.status(404).json({
                         statusCode: 404,
                         message: "Enumeration data not found",
@@ -403,7 +402,7 @@ class EnumerationController {
                 res.status(200).json({
                     statusCode: 200,
                     message: "Enumeration data retrieved successfully!",
-                    data: enumerationData,
+                    data: enumerationdata,
                 });
             }
             catch (error) {
@@ -590,7 +589,9 @@ class EnumerationController {
                 res.status(500).json({ error: "Failed to fetch activity log" });
             }
         });
-        this.getLoginCredentials = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    }
+    getLoginCredentials(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
             const { state, lga, ward, settlement, createdAt, pageNumber = "1", pageSize = "20", } = req.query;
             const filters = {};
             if (state)
@@ -649,5 +650,26 @@ class EnumerationController {
             }
         });
     }
+    createServiceDelivery(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const UserId = req.user.id;
+                const result = yield (0, enumeration_service_1.createServiceDelivery)(req.body, UserId);
+                res.status(201).json({
+                    statusCode: 200,
+                    message: "Service Delivery Created",
+                    result: result,
+                });
+            }
+            catch (error) {
+                console.error("Error creating service delivery:", error);
+                res.status(500).json({
+                    statusCode: 500,
+                    message: "An error occurred while creating service delivery",
+                });
+            }
+        });
+    }
 }
+exports.EnumerationController = EnumerationController;
 exports.default = new EnumerationController();

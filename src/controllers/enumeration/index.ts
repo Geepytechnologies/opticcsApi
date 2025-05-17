@@ -19,7 +19,10 @@ import {
   Security,
   Tags,
 } from "tsoa";
-import { createServiceDelivery } from "../../services/enumeration.service";
+import {
+  createServiceDelivery,
+  getServiceDeliveriesByClientNumber,
+} from "../../services/enumeration.service";
 import { customRequest } from "../../middlewares/tsoaAuth";
 
 export class EnumerationController {
@@ -412,6 +415,48 @@ export class EnumerationController {
       });
     }
   };
+  getAllEnumeratorData = async (req: customRequest, res: Response) => {
+    const { pageNumber = 1, pageSize = 20 } = req.query;
+    const userId = req.user.id;
+    const skip = (Number(pageNumber) - 1) * Number(pageSize);
+    const take = Number(pageSize);
+    try {
+      const enumerationdata = await prisma.enumerationData.findMany({
+        where: { submittedById: userId },
+
+        skip,
+        take,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
+        },
+      });
+      const totalCount = await prisma.enumerationData.count({
+        where: { submittedById: userId },
+      });
+      res.status(200).json({
+        statusCode: 200,
+        message: "Enumeration data retrieved successfully!",
+        data: enumerationdata,
+        pagination: {
+          pageNumber: Number(pageNumber),
+          pageSize: Number(pageSize),
+          totalCount,
+          totalPages: Math.ceil(totalCount / Number(pageSize)),
+        },
+      });
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "Failed to retrieve enumeration data",
+        error: error.message,
+      });
+    }
+  };
   downloadEnumerationData = async (req: Request, res: Response) => {
     try {
       const enumerationdata = await prisma.enumerationData.findMany({
@@ -719,14 +764,70 @@ export class EnumerationController {
   }
 
   async createServiceDelivery(req: customRequest, res: Response) {
-    const UserId = req.user.id;
+    try {
+      const UserId = req.user.id;
 
-    const result = await createServiceDelivery(req.body, UserId);
-    res.status(201).json({
-      statusCode: 200,
-      message: "Service Delivery Created",
-      result: result,
-    });
+      const result = await createServiceDelivery(req.body, UserId);
+      res.status(201).json({
+        statusCode: 201,
+        message: "Service Delivery Created",
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error creating service delivery:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while creating service delivery",
+      });
+    }
+  }
+  async getServiceDeliveryByClientNumberRequest(
+    req: customRequest,
+    res: Response
+  ) {
+    try {
+      const clientNumber = req.query.clientNumber;
+      if (!clientNumber) {
+        res.status(400).json({
+          statusCode: 400,
+          message: "Client Number is Required",
+          result: null,
+        });
+      }
+
+      const result = await getServiceDeliveriesByClientNumber(
+        clientNumber as string
+      );
+      res.status(200).json({
+        statusCode: 200,
+        message: "Service Deliveries Retrieved",
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error retrieving service deliveries:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while creating service delivery",
+      });
+    }
+  }
+  async createReferral(req: customRequest, res: Response) {
+    try {
+      const UserId = req.user.id;
+
+      const result = await createServiceDelivery(req.body, UserId);
+      res.status(201).json({
+        statusCode: 200,
+        message: "Service Delivery Created",
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error creating service delivery:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while creating service delivery",
+      });
+    }
   }
 }
 
