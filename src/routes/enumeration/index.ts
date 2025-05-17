@@ -1317,10 +1317,10 @@ router.post("/referrals", verifyToken, EnumerationController.createReferral);
 
 /**
  * @swagger
- * /api/referrals:
+ * /api/enumeration/client-referrals:
  *   get:
  *     summary: Get referrals for a client
- *     tags: [Referrals]
+ *     tags: [Enumeration Data]
  *     description: Retrieves all referrals associated with the specified client number.
  *     parameters:
  *       - in: query
