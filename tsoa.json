@@ -1,0 +1,72 @@
+{
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/v2controllers/**/*.ts"],
+  "spec": {
+    "outputDirectory": "src/swagger",
+    "specVersion": 3,
+    "basePath": "/api",
+    "spec": {
+      "servers": [
+        {
+          "url": "http://localhost:3000/api",
+          "description": "Local server"
+        },
+        {
+          "url": "http://iantecare.nphcda.gov.ng/api",
+          "description": "Production server"
+        }
+      ],
+      "info": {
+        "title": "IANC",
+        "version": "1.0.0",
+        "description": "This is the documentation of the IANC App",
+        "license": {
+          "name": "ISC"
+        },
+        "contact": {
+          "name": "Your Support Team",
+          "email": "support@ianc.com",
+          "url": "http://iantecare.nphcda.gov.ng/support"
+        }
+      },
+      "tags": [
+        { "name": "Enumeration", "description": "Enumeration endpoints" }
+      ]
+    },
+    "securityDefinitions": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "security": [{ "jwt": [] }],
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        },
+        "apiKey": {
+          "type": "apiKey",
+          "name": "x-api-key",
+          "in": "header"
+        }
+      },
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ]
+    }
+  },
+  "routes": {
+    "routesDir": "src/tsoa-routes",
+    "authenticationModule": "src/middlewares/tsoaAuth",
+    "bodyParsers": {
+      "multipart/form-data": true
+    }
+  }
+}
