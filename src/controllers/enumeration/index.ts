@@ -1,18 +1,31 @@
 import { Request, Response } from "express";
 import logger from "../../logger";
-import { Filters, QueryParams } from "../../interfaces/enumeration.interface";
+import {
+  CreateServiceDeliveryDto,
+  Filters,
+  QueryParams,
+} from "../../interfaces/enumeration.interface";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { parse } from "json2csv";
+import {
+  Body,
+  Controller,
+  Post,
+  Route,
+  Request as tsoaRequest,
+  Security,
+  Tags,
+} from "tsoa";
+import { createServiceDelivery } from "../../services/enumeration.service";
+import { customRequest } from "../../middlewares/tsoaAuth";
 
-class EnumerationController {
+export class EnumerationController {
   createEnumerator = async (req: Request, res: Response) => {
-    logger.info("createEnumerator");
     const { name, phone, gender, state, lga, ward, settlement, password } =
       req.body;
-    console.log(settlement);
     try {
       // Get the last enumerator's userID
       const lastEnumerator = await prisma.enumerator.findFirst({
@@ -250,7 +263,6 @@ class EnumerationController {
   };
   createEnumerationData = async (req: any, res: Response) => {
     const UserId = req.user.id;
-    console.log("Enumeration data: ", req.body);
     const {
       clientNumber,
       firstName,
@@ -641,7 +653,7 @@ class EnumerationController {
       res.status(500).json({ error: "Failed to fetch activity log" });
     }
   };
-  getLoginCredentials = async (req: Request, res: Response) => {
+  async getLoginCredentials(req: Request, res: Response) {
     const {
       state,
       lga,
@@ -704,7 +716,18 @@ class EnumerationController {
         message: "An error occurred while retrieving enumerator credentials",
       });
     }
-  };
+  }
+
+  async createServiceDelivery(req: customRequest, res: Response) {
+    const UserId = req.user.id;
+
+    const result = await createServiceDelivery(req.body, UserId);
+    res.status(201).json({
+      statusCode: 200,
+      message: "Service Delivery Created",
+      result: result,
+    });
+  }
 }
 
 export default new EnumerationController();

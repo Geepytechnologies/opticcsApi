@@ -94,6 +94,20 @@ const EnumerationOptions = {
         description: "Operations related to enumeration analytics",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT", // Optional, can be omitted
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   // Paths to files containing OpenAPI annotations
   apis: ["./src/routes/enumeration/**/*.ts"],

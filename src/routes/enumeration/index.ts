@@ -900,4 +900,139 @@ router.get("/activitylog", verifyToken, EnumerationController.getActivityLog);
  */
 router.get("/download/data", EnumerationController.downloadEnumerationData);
 
+/**
+ * @swagger
+ * /api/enumeration/service-delivery:
+ *   post:
+ *     summary: Create Enumeration Service Delivery
+ *     tags: [Enumeration Data]
+ *     description: Creates a new service delivery record including optional ANC, Labour, PNC, and Other visit data.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               clientNumber:
+ *                 type: string
+ *               nameOfHealthFacility:
+ *                 type: string
+ *               purposeOfVisit:
+ *                 type: string
+ *               anc:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   ancVisit:
+ *                     type: string
+ *                   servicesProvided:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   commoditiesDispensed:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   dateOfNextAppointment:
+ *                     type: string
+ *                     format: date-time
+ *               labour:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   commoditiesDispensed:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   otherCommodities:
+ *                     type: string
+ *                   receivedMamaKit:
+ *                     type: string
+ *                   pregnancyOutcome:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   deliveryDate:
+ *                     type: string
+ *                     format: date-time
+ *                   NumberOfNewBorn:
+ *                     type: integer
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *               pnc:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   detailsOfVisit:
+ *                     type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   dateOfNextAppointment:
+ *                     type: string
+ *                     format: date-time
+ *               others:
+ *                 type: object
+ *                 properties:
+ *                   dateOfVisit:
+ *                     type: string
+ *                     format: date-time
+ *                   detailsOfVisit:
+ *                     type: string
+ *                   outcomeOfVisit:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 clientNumber:
+ *                   type: string
+ *                 nameOfHealthFacility:
+ *                   type: string
+ *                 purposeOfVisit:
+ *                   type: string
+ *                 anc:
+ *                   type: object
+ *                 labour:
+ *                   type: object
+ *                 pnc:
+ *                   type: object
+ *                 others:
+ *                   type: object
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+
+router.post(
+  "/service-delivery",
+  verifyToken,
+  EnumerationController.createServiceDelivery
+);
+
 export default router;

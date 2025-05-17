@@ -125,7 +125,7 @@ model EnumerationTTData {
 
 model EnumerationServiceDelivery {
   id                   Int    @id @default(autoincrement())
-  clientNumber         String @unique
+  clientNumber         String
   nameOfHealthFacility String
   purposeOfVisit       String
 
@@ -158,7 +158,7 @@ model EnumerationServiceDeliveryVisit {
 model EnumerationVisitService {
   id      Int    @id @default(autoincrement())
   visitId Int
-  name    String @db.VarChar(255)
+  name    String @unique @db.VarChar(255)
 
   visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
 }
@@ -166,7 +166,7 @@ model EnumerationVisitService {
 model EnumerationVisitCommodity {
   id      Int    @id @default(autoincrement())
   visitId Int
-  name    String @db.VarChar(255)
+  name    String @unique @db.VarChar(255)
 
   visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
 }
@@ -174,7 +174,7 @@ model EnumerationVisitCommodity {
 model EnumerationVisitOutcome {
   id      Int    @id @default(autoincrement())
   visitId Int
-  outcome String @db.VarChar(255)
+  outcome String @unique @db.VarChar(255)
 
   visit EnumerationServiceDeliveryVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
 }
@@ -197,7 +197,7 @@ model EnumerationServiceDeliveryLabour {
 model EnumerationLabourCommodity {
   id       Int    @id @default(autoincrement())
   labourId Int
-  name     String @db.VarChar(255)
+  name     String @unique @db.VarChar(255)
 
   labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
 }
@@ -205,7 +205,7 @@ model EnumerationLabourCommodity {
 model EnumerationLabourOutcome {
   id       Int    @id @default(autoincrement())
   labourId Int
-  outcome  String @db.VarChar(255)
+  outcome  String @unique @db.VarChar(255)
 
   labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
 }
@@ -213,7 +213,7 @@ model EnumerationLabourOutcome {
 model EnumerationPregnancyOutcome {
   id       Int    @id @default(autoincrement())
   labourId Int
-  result   String @db.VarChar(255)
+  result   String @unique @db.VarChar(255)
 
   labour EnumerationServiceDeliveryLabour @relation(fields: [labourId], references: [id], onDelete: Cascade)
 }
@@ -232,7 +232,7 @@ model EnumerationServiceDeliveryPnc {
 model EnumerationPncOutcome {
   id      Int    @id @default(autoincrement())
   pncId   Int
-  outcome String @db.VarChar(255)
+  outcome String @unique @db.VarChar(255)
 
   pnc EnumerationServiceDeliveryPnc @relation(fields: [pncId], references: [id], onDelete: Cascade)
 }
@@ -250,7 +250,7 @@ model EnumerationServiceDeliveryOthers {
 model EnumerationOtherOutcome {
   id      Int    @id @default(autoincrement())
   otherId Int
-  outcome String @db.VarChar(255)
+  outcome String @unique @db.VarChar(255)
 
   others EnumerationServiceDeliveryOthers @relation(fields: [otherId], references: [id], onDelete: Cascade)
 }
