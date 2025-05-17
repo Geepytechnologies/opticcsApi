@@ -719,14 +719,22 @@ export class EnumerationController {
   }
 
   async createServiceDelivery(req: customRequest, res: Response) {
-    const UserId = req.user.id;
+    try {
+      const UserId = req.user.id;
 
-    const result = await createServiceDelivery(req.body, UserId);
-    res.status(201).json({
-      statusCode: 200,
-      message: "Service Delivery Created",
-      result: result,
-    });
+      const result = await createServiceDelivery(req.body, UserId);
+      res.status(201).json({
+        statusCode: 200,
+        message: "Service Delivery Created",
+        result: result,
+      });
+    } catch (error) {
+      console.error("Error creating service delivery:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error occurred while creating service delivery",
+      });
+    }
   }
 }
 
