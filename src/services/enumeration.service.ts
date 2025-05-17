@@ -172,7 +172,7 @@ export const createReferralProcess = async (
   return prisma.enumerationReferrals.create({
     data: {
       clientNumber: data.clientNumber,
-      referredto: data.referredto,
+      referredto: data.referredTo,
       nameOfReferralFacility: data.nameOfReferralFacility,
       modeOfTransportation: data.modeOfTransportation,
       otherModeOfTransportation: data.otherModeOfTransportation ?? "",

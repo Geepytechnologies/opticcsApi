@@ -57,7 +57,7 @@ export interface CreateServiceDeliveryDto {
 
 export interface ICreateReferralDTO {
   clientNumber: string;
-  referredto: string;
+  referredTo: string;
   nameOfReferralFacility: string;
   modeOfTransportation: string;
   otherModeOfTransportation?: string;
