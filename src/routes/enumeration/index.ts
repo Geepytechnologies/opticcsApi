@@ -1274,7 +1274,22 @@ router.get(
  *               referredTo:
  *                 type: string
  *                 example: "General Hospital"
- *               referralDate:
+ *               nameOfReferralFacility:
+ *                 type: string
+ *                 example: "General Hospital"
+ *               modeOfTransportation:
+ *                 type: string
+ *                 example: "Ambulance"
+ *               otherModeOfTransportation:
+ *                 type: string
+ *                 example: "Taxi"
+ *               reasonForReferral:
+ *                 type: string
+ *                 example: "Emergency treatment required"
+ *               otherReasonForReferral:
+ *                 type: string
+ *                 example: "Patient request"
+ *               dateOfReferral:
  *                 type: string
  *                 format: date
  *                 example: "2025-05-16"
@@ -1282,7 +1297,8 @@ router.get(
  *               - clientNumber
  *               - referralReason
  *               - referredTo
- *               - referralDate
+ *               - nameOfReferralFacility
+ *               - dateOfReferral
  *     responses:
  *       201:
  *         description: Referral successfully created
@@ -1293,7 +1309,7 @@ router.get(
  *               properties:
  *                 statusCode:
  *                   type: integer
- *                   example: 200
+ *                   example: 201
  *                 message:
  *                   type: string
  *                   example: Referral Created

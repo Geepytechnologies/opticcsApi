@@ -28,27 +28,59 @@ import {
   getServiceDeliveriesByClientNumber,
 } from "../../services/enumeration.service";
 import { customRequest } from "../../middlewares/tsoaAuth";
+import { createError } from "../../middlewares/error";
 
 export class EnumerationController {
   createEnumerator = async (req: Request, res: Response) => {
-    const { name, phone, gender, state, lga, ward, settlement, password } =
-      req.body;
+    const {
+      name,
+      phone,
+      gender,
+      state,
+      lga,
+      ward,
+      settlement,
+      password,
+      healthfacility,
+    } = req.body;
+
     try {
-      // Get the last enumerator's userID
+      // Check if phone already exists
+      const existingPhone = await prisma.enumerator.findUnique({
+        where: { phone },
+      });
+
+      if (existingPhone) {
+        return res.status(409).json({
+          statusCode: 409,
+          message: "Enumerator phone number already exists",
+        });
+      }
+
+      // Get the last enumerator's userID and generate the next
       const lastEnumerator = await prisma.enumerator.findFirst({
         orderBy: { createdAt: "desc" },
       });
 
-      // Generate the new userID
       let nextNumber = 1;
       if (lastEnumerator) {
-        const lastNumber = parseInt(lastEnumerator.userID.split("/")[2], 10);
+        const parts = lastEnumerator.userID.split("/");
+        const lastNumber = parseInt(parts[2], 10);
         nextNumber = lastNumber + 1;
       }
+
       const userID = `IANC/EM/${String(nextNumber).padStart(4, "0")}`;
+
+      // Prepare health facilities data
+      const healthFacilityData = healthfacility.map((name: string) => ({
+        name,
+      }));
+
+      // Hash password
       const salt = bcrypt.genSaltSync(10);
-      const hashedpassword = bcrypt.hashSync(password, salt);
-      // Create the enumerator
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      // Create enumerator
       const enumerator = await prisma.enumerator.create({
         data: {
           name,
@@ -58,23 +90,28 @@ export class EnumerationController {
           lga,
           ward,
           settlement: JSON.stringify(settlement),
-          password,
+          password: hashedPassword,
           userID,
+          healthFacility: {
+            create: healthFacilityData,
+          },
         },
       });
 
-      res.status(201).json({
+      return res.status(201).json({
         statusCode: 201,
         message: "Enumerator created",
         result: enumerator,
       });
     } catch (error) {
       logger.error("Error creating enumerator:", error);
-      res
-        .status(500)
-        .json({ statusCode: 500, message: "Something went wrong" });
+      return res.status(500).json({
+        statusCode: 500,
+        message: "Something went wrong",
+      });
     }
   };
+
   getEnumerator = async (req: Request, res: Response) => {
     const { id } = req.params;
 
