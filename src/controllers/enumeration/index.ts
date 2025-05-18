@@ -77,8 +77,8 @@ export class EnumerationController {
       }));
 
       // Hash password
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(password, salt);
+      // const salt = bcrypt.genSaltSync(10);
+      // const hashedPassword = bcrypt.hashSync(password, salt);
 
       // Create enumerator
       const enumerator = await prisma.enumerator.create({
@@ -90,7 +90,7 @@ export class EnumerationController {
           lga,
           ward,
           settlement: JSON.stringify(settlement),
-          password: hashedPassword,
+          password,
           userID,
           healthFacility: {
             create: healthFacilityData,
@@ -143,6 +143,9 @@ export class EnumerationController {
       // Find the enumerator by userID
       const enumerator = await prisma.enumerator.findFirst({
         where: { userID: enumeratorId },
+        include: {
+          healthFacility: true,
+        },
       });
 
       // If enumerator doesn't exist, return 401 Unauthorized
