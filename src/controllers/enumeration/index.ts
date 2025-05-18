@@ -818,7 +818,7 @@ export class EnumerationController {
         result: result,
       });
     } catch (error) {
-      console.error("Error creating service delivery:", error);
+      logger.error("Error creating service delivery:", error);
       res.status(500).json({
         statusCode: 500,
         message: "An error occurred while creating service delivery",
@@ -832,7 +832,7 @@ export class EnumerationController {
     try {
       const clientNumber = req.query.clientNumber;
       if (!clientNumber) {
-        res.status(400).json({
+        return res.status(400).json({
           statusCode: 400,
           message: "Client Number is Required",
           result: null,
@@ -842,13 +842,13 @@ export class EnumerationController {
       const result = await getServiceDeliveriesByClientNumber(
         clientNumber as string
       );
-      res.status(200).json({
+      return res.status(200).json({
         statusCode: 200,
         message: "Service Deliveries Retrieved",
         result: result,
       });
     } catch (error) {
-      console.error("Error retrieving service deliveries:", error);
+      logger.error("Error retrieving service deliveries:", error);
       res.status(500).json({
         statusCode: 500,
         message: "An error occurred while creating service delivery",
@@ -877,7 +877,7 @@ export class EnumerationController {
     try {
       const clientNumber = req.query.clientNumber;
       if (!clientNumber) {
-        res.status(400).json({
+        return res.status(400).json({
           statusCode: 400,
           message: "Client Number is Required",
           result: null,
@@ -885,7 +885,7 @@ export class EnumerationController {
       }
 
       const result = await getReferralsByClientNumber(clientNumber as string);
-      res.status(200).json({
+      return res.status(200).json({
         statusCode: 200,
         message: "Referrals Retrieved",
         result: result,
@@ -902,7 +902,7 @@ export class EnumerationController {
     try {
       const clientNumber = req.query.clientNumber;
       if (!clientNumber) {
-        res.status(400).json({
+        return res.status(400).json({
           statusCode: 400,
           message: "Client Number is Required",
           result: null,
@@ -910,7 +910,7 @@ export class EnumerationController {
       }
 
       const result = await getEnumerationByClientNumber(clientNumber as string);
-      res.status(200).json({
+      return res.status(200).json({
         statusCode: 200,
         message: `Enumeration data for client-${clientNumber} Retrieved`,
         result: result,
@@ -927,7 +927,7 @@ export class EnumerationController {
     try {
       const clientNumber = req.query.clientNumber;
       if (!clientNumber) {
-        res.status(400).json({
+        return res.status(400).json({
           statusCode: 400,
           message: "Client Number is Required",
           result: null,
@@ -935,7 +935,7 @@ export class EnumerationController {
       }
 
       const result = await getSchedulesByClientNumber(clientNumber as string);
-      res.status(200).json({
+      return res.status(200).json({
         statusCode: 200,
         message: `Schedule for client-${clientNumber} Retrieved`,
         result: result,
