@@ -12,6 +12,7 @@ export const createServiceDelivery = async (
   submittedById: string
 ) => {
   return prisma.$transaction(async (tx) => {
+    console.log({ createServiceDelivery: data });
     const serviceDelivery = await tx.enumerationServiceDelivery.create({
       data: {
         clientNumber: data.clientNumber,
