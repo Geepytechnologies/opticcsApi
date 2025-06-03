@@ -262,7 +262,7 @@ model EnumerationOtherOutcome {
 
 model EnumerationReferrals {
   id                        Int      @id @default(autoincrement())
-  clientNumber              String   @unique
+  clientNumber              String   
   referredto                String
   nameOfReferralFacility    String
   modeOfTransportation      String
