@@ -341,6 +341,15 @@ export class EnumerationController {
     // const edd = new Date(req.body.edd).toISOString();
     // const ega = new Date(req.body.ega).toISOString();
     try {
+      const existingData = await prisma.enumerationData.findFirst({
+        where: { clientNumber },
+      });
+      if (existingData) {
+        return res.status(409).json({
+          statusCode: 409,
+          message: "Enumeration data with this client number already exists",
+        });
+      }
       const enumerationdata = await prisma.enumerationData.create({
         data: {
           clientNumber,
@@ -465,8 +474,25 @@ export class EnumerationController {
     const skip = (Number(pageNumber) - 1) * Number(pageSize);
     const take = Number(pageSize);
     try {
+      const enumeratorInformation = await prisma.enumerator.findUnique({
+        where: { userID: userId },
+        include: { healthFacility: true },
+      });
+      const facilityNames = enumeratorInformation?.healthFacility.map(
+        (hf) => hf.name
+      );
+      const facilityNamesLower = facilityNames?.map((name) =>
+        name.toLowerCase()
+      );
       const enumerationdata = await prisma.enumerationData.findMany({
-        where: { submittedById: userId },
+        where: {
+          AND: facilityNamesLower?.map((name) => ({
+            servingHealthcareFacility: {
+              equals: name,
+              mode: "insensitive",
+            },
+          })),
+        },
 
         skip,
         take,

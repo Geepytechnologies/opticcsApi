@@ -127,6 +127,8 @@ model EnumerationServiceDelivery {
   id                   Int    @id @default(autoincrement())
   clientNumber         String
   nameOfHealthFacility String
+  howclientcametoseekcareatfacility String @default("N/A")
+
   purposeOfVisit       String
 
   ancId    Int? @unique
@@ -225,6 +227,8 @@ model EnumerationServiceDeliveryPnc {
   enumerationServiceDelivery EnumerationServiceDelivery @relation("PncRelation", fields: [enumerationServiceDeliveryId], references: [id])
   dateOfVisit                DateTime
   detailsOfVisit             String
+  whatNumberIsThisVisit   String @default("N/A")
+  whatServicesWereProvided String @default("N/A")
   outcomeOfVisit             EnumerationPncOutcome[]
   dateOfNextAppointment      DateTime
 }
@@ -240,6 +244,7 @@ model EnumerationPncOutcome {
 model EnumerationServiceDeliveryOthers {
   id             Int      @id @default(autoincrement())
   dateOfVisit    DateTime
+  purposeOfUnscheduledVisit String @default("N/A")
   detailsOfVisit String
 
   outcomeOfVisit               EnumerationOtherOutcome[]

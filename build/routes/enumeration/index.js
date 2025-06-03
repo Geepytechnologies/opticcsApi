@@ -993,6 +993,8 @@ router.get("/download/data", enumeration_1.default.downloadenumerationdata);
  *                 type: string
  *               nameOfHealthFacility:
  *                 type: string
+ *               howclientcametoseekcareatfacility:
+ *                 type: string
  *               purposeOfVisit:
  *                 type: string
  *               anc:
@@ -1053,6 +1055,10 @@ router.get("/download/data", enumeration_1.default.downloadenumerationdata);
  *                     format: date-time
  *                   detailsOfVisit:
  *                     type: string
+ *                   whatNumberIsThisVisit:
+ *                     type: string
+ *                   whatServicesWereProvided:
+ *                     type: string
  *                   outcomeOfVisit:
  *                     type: array
  *                     items:
@@ -1067,6 +1073,8 @@ router.get("/download/data", enumeration_1.default.downloadenumerationdata);
  *                     type: string
  *                     format: date-time
  *                   detailsOfVisit:
+ *                     type: string
+ *                   purposeOfUnscheduledVisit:
  *                     type: string
  *                   outcomeOfVisit:
  *                     type: array
@@ -1242,7 +1250,22 @@ router.get("/client/service-delivery", enumeration_1.default.getServiceDeliveryB
  *               referredTo:
  *                 type: string
  *                 example: "General Hospital"
- *               referralDate:
+ *               nameOfReferralFacility:
+ *                 type: string
+ *                 example: "General Hospital"
+ *               modeOfTransportation:
+ *                 type: string
+ *                 example: "Ambulance"
+ *               otherModeOfTransportation:
+ *                 type: string
+ *                 example: "Taxi"
+ *               reasonForReferral:
+ *                 type: string
+ *                 example: "Emergency treatment required"
+ *               otherReasonForReferral:
+ *                 type: string
+ *                 example: "Patient request"
+ *               dateOfReferral:
  *                 type: string
  *                 format: date
  *                 example: "2025-05-16"
@@ -1250,7 +1273,8 @@ router.get("/client/service-delivery", enumeration_1.default.getServiceDeliveryB
  *               - clientNumber
  *               - referralReason
  *               - referredTo
- *               - referralDate
+ *               - nameOfReferralFacility
+ *               - dateOfReferral
  *     responses:
  *       201:
  *         description: Referral successfully created
@@ -1261,7 +1285,7 @@ router.get("/client/service-delivery", enumeration_1.default.getServiceDeliveryB
  *               properties:
  *                 statusCode:
  *                   type: integer
- *                   example: 200
+ *                   example: 201
  *                 message:
  *                   type: string
  *                   example: Referral Created
@@ -1284,10 +1308,10 @@ router.get("/client/service-delivery", enumeration_1.default.getServiceDeliveryB
 router.post("/referrals", verifyToken_1.verifyToken, enumeration_1.default.createReferral);
 /**
  * @swagger
- * /api/referrals:
+ * /api/enumeration/client-referrals:
  *   get:
  *     summary: Get referrals for a client
- *     tags: [Referrals]
+ *     tags: [Enumeration Data]
  *     description: Retrieves all referrals associated with the specified client number.
  *     parameters:
  *       - in: query

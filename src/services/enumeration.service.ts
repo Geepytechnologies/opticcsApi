@@ -17,6 +17,8 @@ export const createServiceDelivery = async (
       data: {
         clientNumber: data.clientNumber,
         nameOfHealthFacility: data.nameOfHealthFacility,
+        howclientcametoseekcareatfacility:
+          data.howclientcametoseekcareatfacility,
         purposeOfVisit: data.purposeOfVisit,
         submittedBy: { connect: { userID: submittedById } },
 
@@ -87,6 +89,8 @@ export const createServiceDelivery = async (
               create: {
                 dateOfVisit: data.pnc.dateOfVisit,
                 detailsOfVisit: data.pnc.detailsOfVisit,
+                whatNumberIsThisVisit: data.pnc.whatNumberIsThisVisit,
+                whatServicesWereProvided: data.pnc.whatServicesWereProvided,
                 dateOfNextAppointment: data.pnc.dateOfNextAppointment,
                 outcomeOfVisit: {
                   connectOrCreate: data.pnc.outcomeOfVisit.map((name) => ({
@@ -102,6 +106,8 @@ export const createServiceDelivery = async (
           ? {
               create: {
                 dateOfVisit: data.others.dateOfVisit,
+                purposeOfUnscheduledVisit:
+                  data.others.purposeOfUnscheduledVisit,
                 detailsOfVisit: data.others.detailsOfVisit,
                 outcomeOfVisit: {
                   connectOrCreate: data.others.outcomeOfVisit.map((name) => ({

@@ -25,7 +25,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnumerationController = void 0;
 const logger_1 = __importDefault(require("../../logger"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
@@ -34,22 +33,37 @@ const enumeration_service_1 = require("../../services/enumeration.service");
 class EnumerationController {
     constructor() {
         this.createEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { name, phone, gender, state, lga, ward, settlement, password } = req.body;
+            const { name, phone, gender, state, lga, ward, settlement, password, healthfacility, } = req.body;
             try {
-                // Get the last enumerator's userID
+                // Check if phone already exists
+                const existingPhone = yield prisma.enumerator.findUnique({
+                    where: { phone },
+                });
+                if (existingPhone) {
+                    return res.status(409).json({
+                        statusCode: 409,
+                        message: "Enumerator phone number already exists",
+                    });
+                }
+                // Get the last enumerator's userID and generate the next
                 const lastEnumerator = yield prisma.enumerator.findFirst({
                     orderBy: { createdAt: "desc" },
                 });
-                // Generate the new userID
                 let nextNumber = 1;
                 if (lastEnumerator) {
-                    const lastNumber = parseInt(lastEnumerator.userID.split("/")[2], 10);
+                    const parts = lastEnumerator.userID.split("/");
+                    const lastNumber = parseInt(parts[2], 10);
                     nextNumber = lastNumber + 1;
                 }
                 const userID = `IANC/EM/${String(nextNumber).padStart(4, "0")}`;
-                const salt = bcryptjs_1.default.genSaltSync(10);
-                const hashedpassword = bcryptjs_1.default.hashSync(password, salt);
-                // Create the enumerator
+                // Prepare health facilities data
+                const healthFacilityData = healthfacility.map((name) => ({
+                    name,
+                }));
+                // Hash password
+                // const salt = bcrypt.genSaltSync(10);
+                // const hashedPassword = bcrypt.hashSync(password, salt);
+                // Create enumerator
                 const enumerator = yield prisma.enumerator.create({
                     data: {
                         name,
@@ -61,9 +75,12 @@ class EnumerationController {
                         settlement: JSON.stringify(settlement),
                         password,
                         userID,
+                        healthFacility: {
+                            create: healthFacilityData,
+                        },
                     },
                 });
-                res.status(201).json({
+                return res.status(201).json({
                     statusCode: 201,
                     message: "Enumerator created",
                     result: enumerator,
@@ -71,9 +88,10 @@ class EnumerationController {
             }
             catch (error) {
                 logger_1.default.error("Error creating enumerator:", error);
-                res
-                    .status(500)
-                    .json({ statusCode: 500, message: "Something went wrong" });
+                return res.status(500).json({
+                    statusCode: 500,
+                    message: "Something went wrong",
+                });
             }
         });
         this.getEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -104,6 +122,9 @@ class EnumerationController {
                 // Find the enumerator by userID
                 const enumerator = yield prisma.enumerator.findFirst({
                     where: { userID: enumeratorId },
+                    include: {
+                        healthFacility: true,
+                    },
                 });
                 // If enumerator doesn't exist, return 401 Unauthorized
                 if (!enumerator) {
@@ -249,6 +270,15 @@ class EnumerationController {
             // const edd = new Date(req.body.edd).toISOString();
             // const ega = new Date(req.body.ega).toISOString();
             try {
+                const existingData = yield prisma.enumerationData.findFirst({
+                    where: { clientNumber },
+                });
+                if (existingData) {
+                    return res.status(409).json({
+                        statusCode: 409,
+                        message: "Enumeration data with this client number already exists",
+                    });
+                }
                 const enumerationdata = yield prisma.enumerationData.create({
                     data: {
                         clientNumber,
@@ -362,8 +392,21 @@ class EnumerationController {
             const skip = (Number(pageNumber) - 1) * Number(pageSize);
             const take = Number(pageSize);
             try {
+                const enumeratorInformation = yield prisma.enumerator.findUnique({
+                    where: { userID: userId },
+                    include: { healthFacility: true },
+                });
+                const facilityNames = enumeratorInformation === null || enumeratorInformation === void 0 ? void 0 : enumeratorInformation.healthFacility.map((hf) => hf.name);
+                const facilityNamesLower = facilityNames === null || facilityNames === void 0 ? void 0 : facilityNames.map((name) => name.toLowerCase());
                 const enumerationdata = yield prisma.enumerationData.findMany({
-                    where: { submittedById: userId },
+                    where: {
+                        AND: facilityNamesLower === null || facilityNamesLower === void 0 ? void 0 : facilityNamesLower.map((name) => ({
+                            servingHealthcareFacility: {
+                                equals: name,
+                                mode: "insensitive",
+                            },
+                        })),
+                    },
                     skip,
                     take,
                     orderBy: {
@@ -704,7 +747,7 @@ class EnumerationController {
                 });
             }
             catch (error) {
-                console.error("Error creating service delivery:", error);
+                logger_1.default.error("Error creating service delivery:", error);
                 res.status(500).json({
                     statusCode: 500,
                     message: "An error occurred while creating service delivery",
@@ -717,21 +760,21 @@ class EnumerationController {
             try {
                 const clientNumber = req.query.clientNumber;
                 if (!clientNumber) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         statusCode: 400,
                         message: "Client Number is Required",
                         result: null,
                     });
                 }
                 const result = yield (0, enumeration_service_1.getServiceDeliveriesByClientNumber)(clientNumber);
-                res.status(200).json({
+                return res.status(200).json({
                     statusCode: 200,
                     message: "Service Deliveries Retrieved",
                     result: result,
                 });
             }
             catch (error) {
-                console.error("Error retrieving service deliveries:", error);
+                logger_1.default.error("Error retrieving service deliveries:", error);
                 res.status(500).json({
                     statusCode: 500,
                     message: "An error occurred while creating service delivery",
@@ -764,14 +807,14 @@ class EnumerationController {
             try {
                 const clientNumber = req.query.clientNumber;
                 if (!clientNumber) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         statusCode: 400,
                         message: "Client Number is Required",
                         result: null,
                     });
                 }
                 const result = yield (0, enumeration_service_1.getReferralsByClientNumber)(clientNumber);
-                res.status(200).json({
+                return res.status(200).json({
                     statusCode: 200,
                     message: "Referrals Retrieved",
                     result: result,
@@ -791,14 +834,14 @@ class EnumerationController {
             try {
                 const clientNumber = req.query.clientNumber;
                 if (!clientNumber) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         statusCode: 400,
                         message: "Client Number is Required",
                         result: null,
                     });
                 }
                 const result = yield (0, enumeration_service_1.getEnumerationByClientNumber)(clientNumber);
-                res.status(200).json({
+                return res.status(200).json({
                     statusCode: 200,
                     message: `Enumeration data for client-${clientNumber} Retrieved`,
                     result: result,
@@ -818,14 +861,14 @@ class EnumerationController {
             try {
                 const clientNumber = req.query.clientNumber;
                 if (!clientNumber) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         statusCode: 400,
                         message: "Client Number is Required",
                         result: null,
                     });
                 }
                 const result = yield (0, enumeration_service_1.getSchedulesByClientNumber)(clientNumber);
-                res.status(200).json({
+                return res.status(200).json({
                     statusCode: 200,
                     message: `Schedule for client-${clientNumber} Retrieved`,
                     result: result,

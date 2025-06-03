@@ -16,10 +16,12 @@ const prisma = new client_1.PrismaClient();
 const createServiceDelivery = (data, submittedById) => __awaiter(void 0, void 0, void 0, function* () {
     return prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
+        console.log({ createServiceDelivery: data });
         const serviceDelivery = yield tx.enumerationServiceDelivery.create({
             data: {
                 clientNumber: data.clientNumber,
                 nameOfHealthFacility: data.nameOfHealthFacility,
+                howclientcametoseekcareatfacility: data.howclientcametoseekcareatfacility,
                 purposeOfVisit: data.purposeOfVisit,
                 submittedBy: { connect: { userID: submittedById } },
                 anc: data.anc
@@ -83,6 +85,8 @@ const createServiceDelivery = (data, submittedById) => __awaiter(void 0, void 0,
                         create: {
                             dateOfVisit: data.pnc.dateOfVisit,
                             detailsOfVisit: data.pnc.detailsOfVisit,
+                            whatNumberIsThisVisit: data.pnc.whatNumberIsThisVisit,
+                            whatServicesWereProvided: data.pnc.whatServicesWereProvided,
                             dateOfNextAppointment: data.pnc.dateOfNextAppointment,
                             outcomeOfVisit: {
                                 connectOrCreate: data.pnc.outcomeOfVisit.map((name) => ({
@@ -97,6 +101,7 @@ const createServiceDelivery = (data, submittedById) => __awaiter(void 0, void 0,
                     ? {
                         create: {
                             dateOfVisit: data.others.dateOfVisit,
+                            purposeOfUnscheduledVisit: data.others.purposeOfUnscheduledVisit,
                             detailsOfVisit: data.others.detailsOfVisit,
                             outcomeOfVisit: {
                                 connectOrCreate: data.others.outcomeOfVisit.map((name) => ({
@@ -159,7 +164,7 @@ const createReferralProcess = (data, submittedById) => __awaiter(void 0, void 0,
     return prisma.enumerationReferrals.create({
         data: {
             clientNumber: data.clientNumber,
-            referredto: data.referredto,
+            referredto: data.referredTo,
             nameOfReferralFacility: data.nameOfReferralFacility,
             modeOfTransportation: data.modeOfTransportation,
             otherModeOfTransportation: (_a = data.otherModeOfTransportation) !== null && _a !== void 0 ? _a : "",

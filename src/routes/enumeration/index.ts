@@ -1015,6 +1015,8 @@ router.get("/download/data", EnumerationController.downloadenumerationdata);
  *                 type: string
  *               nameOfHealthFacility:
  *                 type: string
+ *               howclientcametoseekcareatfacility:
+ *                 type: string
  *               purposeOfVisit:
  *                 type: string
  *               anc:
@@ -1075,6 +1077,10 @@ router.get("/download/data", EnumerationController.downloadenumerationdata);
  *                     format: date-time
  *                   detailsOfVisit:
  *                     type: string
+ *                   whatNumberIsThisVisit:
+ *                     type: string
+ *                   whatServicesWereProvided:
+ *                     type: string
  *                   outcomeOfVisit:
  *                     type: array
  *                     items:
@@ -1089,6 +1095,8 @@ router.get("/download/data", EnumerationController.downloadenumerationdata);
  *                     type: string
  *                     format: date-time
  *                   detailsOfVisit:
+ *                     type: string
+ *                   purposeOfUnscheduledVisit:
  *                     type: string
  *                   outcomeOfVisit:
  *                     type: array

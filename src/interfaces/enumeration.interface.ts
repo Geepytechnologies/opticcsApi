@@ -20,6 +20,7 @@ export interface QueryParams {
 export interface CreateServiceDeliveryDto {
   clientNumber: string;
   nameOfHealthFacility: string;
+  howclientcametoseekcareatfacility: string;
   purposeOfVisit: string;
   anc?: {
     dateOfVisit: Date;
@@ -44,6 +45,8 @@ export interface CreateServiceDeliveryDto {
   pnc?: {
     dateOfVisit: Date;
     detailsOfVisit: string;
+    whatNumberIsThisVisit: string;
+    whatServicesWereProvided: string;
     outcomeOfVisit: string[];
     dateOfNextAppointment: Date;
   };
@@ -51,6 +54,7 @@ export interface CreateServiceDeliveryDto {
   others?: {
     dateOfVisit: Date;
     detailsOfVisit: string;
+    purposeOfUnscheduledVisit: string;
     outcomeOfVisit: string[];
   };
 }
