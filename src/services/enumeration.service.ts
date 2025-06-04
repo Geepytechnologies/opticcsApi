@@ -163,11 +163,31 @@ export const getServiceDeliveriesByClientNumber = async (
   return prisma.enumerationServiceDelivery.findMany({
     where: { clientNumber },
     include: {
-      anc: true,
-      deliveryAndLabour: true,
-      pnc: true,
-      others: true,
-      submittedBy: true, // optionally include who submitted
+      submittedBy: true,
+      anc: {
+        include: {
+          servicesProvided: true,
+          commoditiesDispensed: true,
+          outcomeOfVisit: true,
+        },
+      },
+      deliveryAndLabour: {
+        include: {
+          commoditiesDispensed: true,
+          pregnancyOutcome: true,
+          outcomeOfVisit: true,
+        },
+      },
+      pnc: {
+        include: {
+          outcomeOfVisit: true,
+        },
+      },
+      others: {
+        include: {
+          outcomeOfVisit: true,
+        },
+      },
     },
   });
 };
