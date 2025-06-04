@@ -169,6 +169,8 @@ const router = express_1.default.Router();
  *                 type: string
  *               settlement:
  *                 type: array
+ *               healthFacility:
+ *                 type: array
  *               password:
  *                 type: string
  *             example:
@@ -179,6 +181,7 @@ const router = express_1.default.Router();
  *               lga: Ikeja
  *               ward: Ward 1
  *               settlement: ["Settlement A", "Settlement B"]
+ *               healthFacility: ["Health Facility A", "Health Facility B"]
  *               password: password123
  *     responses:
  *       201:
@@ -187,6 +190,55 @@ const router = express_1.default.Router();
  *         description: Something went wrong
  */
 router.post("/enumerators", enumeration_1.default.createEnumerator);
+/**
+ * @swagger
+ * /api/enumeration/enumerators:
+ *   put:
+ *     summary: Update an enumerator
+ *     tags: [Enumerator]
+ *     description: Update an enumerator with a unique userID in the format IANC/EM/0001. Requires Authorization header
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               lga:
+ *                 type: string
+ *               ward:
+ *                 type: string
+ *               settlement:
+ *                 type: array
+ *               healthfacility:
+ *                 type: array
+ *               password:
+ *                 type: string
+ *             example:
+ *               name: John Doe
+ *               phone: 1234567890
+ *               gender: Male
+ *               state: Lagos
+ *               lga: Ikeja
+ *               ward: Ward 1
+ *               settlement: ["Settlement A", "Settlement B"]
+ *               healthfacility: ["Health Facility A", "Health Facility B"]
+ *               password: password123
+ *     responses:
+ *       200:
+ *         description: Enumerator updated successfully
+ *       500:
+ *         description: Something went wrong
+ */
+router.put("/enumerators", verifyToken_1.verifyToken, enumeration_1.default.updateEnumerator);
 /**
  * @swagger
  * /api/enumeration/enumerators/{id}:

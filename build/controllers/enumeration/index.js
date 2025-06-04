@@ -94,6 +94,79 @@ class EnumerationController {
                 });
             }
         });
+        this.updateEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const id = req.user.id;
+            const { name, phone, gender, state, lga, ward, settlement, password, healthfacility, } = req.body;
+            try {
+                const existingEnumerator = yield prisma.enumerator.findUnique({
+                    where: { userID: id },
+                });
+                if (!existingEnumerator) {
+                    return res.status(404).json({
+                        statusCode: 404,
+                        message: "Enumerator not found",
+                    });
+                }
+                if (phone && phone !== existingEnumerator.phone) {
+                    const phoneExists = yield prisma.enumerator.findUnique({
+                        where: { phone },
+                    });
+                    if (phoneExists) {
+                        return res.status(409).json({
+                            statusCode: 409,
+                            message: "Phone number already in use by another enumerator",
+                        });
+                    }
+                }
+                // 3. Prepare update data (only include provided fields)
+                const updateData = {};
+                if (name)
+                    updateData.name = name;
+                if (phone)
+                    updateData.phone = phone;
+                if (gender)
+                    updateData.gender = gender;
+                if (state)
+                    updateData.state = state;
+                if (lga)
+                    updateData.lga = lga;
+                if (ward)
+                    updateData.ward = ward;
+                if (settlement)
+                    updateData.settlement = JSON.stringify(settlement);
+                if (password)
+                    updateData.password = password;
+                // 4. Handle health facilities (if provided)
+                let healthFacilityUpdate;
+                if (healthfacility) {
+                    yield prisma.enumerationHealthFacility.deleteMany({
+                        where: { enumeratorId: existingEnumerator.id },
+                    });
+                    healthFacilityUpdate = {
+                        create: healthfacility.map((name) => ({ name })),
+                    };
+                    updateData.healthFacility = healthFacilityUpdate;
+                }
+                // 5. Perform the update
+                const updatedEnumerator = yield prisma.enumerator.update({
+                    where: { userID: existingEnumerator.userID },
+                    data: updateData,
+                    include: { healthFacility: true }, // Return facilities in response
+                });
+                return res.status(200).json({
+                    statusCode: 200,
+                    message: "Enumerator updated successfully",
+                    result: updatedEnumerator,
+                });
+            }
+            catch (error) {
+                logger_1.default.error("Error updating enumerator:", error);
+                return res.status(500).json({
+                    statusCode: 500,
+                    message: "Failed to update enumerator",
+                });
+            }
+        });
         this.getEnumerator = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
@@ -396,30 +469,35 @@ class EnumerationController {
                     where: { userID: userId },
                     include: { healthFacility: true },
                 });
-                const facilityNames = enumeratorInformation === null || enumeratorInformation === void 0 ? void 0 : enumeratorInformation.healthFacility.map((hf) => hf.name);
-                const facilityNamesLower = facilityNames === null || facilityNames === void 0 ? void 0 : facilityNames.map((name) => name.toLowerCase());
-                const enumerationdata = yield prisma.enumerationData.findMany({
-                    where: {
-                        OR: facilityNamesLower === null || facilityNamesLower === void 0 ? void 0 : facilityNamesLower.map((name) => ({
+                if (!enumeratorInformation) {
+                    return res.status(404).json({
+                        statusCode: 404,
+                        message: "Enumerator not found",
+                    });
+                }
+                const facilityNames = enumeratorInformation.healthFacility.map((hf) => hf.name);
+                const whereClause = facilityNames.length > 0
+                    ? {
+                        OR: facilityNames.map((name) => ({
                             servingHealthcareFacility: {
                                 contains: name,
-                                mode: "insensitive",
                             },
                         })),
-                    },
-                    skip,
-                    take,
-                    orderBy: {
-                        createdAt: "desc",
-                    },
-                    include: {
-                        ancVisits: true,
-                        tetanusVaccinationReceived: true,
-                    },
-                });
-                const totalCount = yield prisma.enumerationData.count({
-                    where: { submittedById: userId },
-                });
+                    }
+                    : { submittedById: userId };
+                const [enumerationdata, totalCount] = yield Promise.all([
+                    prisma.enumerationData.findMany({
+                        where: whereClause,
+                        skip,
+                        take,
+                        orderBy: { createdAt: "desc" },
+                        include: {
+                            ancVisits: true,
+                            tetanusVaccinationReceived: true,
+                        },
+                    }),
+                    prisma.enumerationData.count({ where: whereClause }),
+                ]);
                 res.status(200).json({
                     statusCode: 200,
                     message: "Enumeration data retrieved successfully!",
@@ -433,11 +511,11 @@ class EnumerationController {
                 });
             }
             catch (error) {
-                console.log(error);
+                console.error("Error in getAllEnumeratorData:", error);
                 res.status(500).json({
                     statusCode: 500,
                     message: "Failed to retrieve enumeration data",
-                    error: error.message,
+                    error: process.env.NODE_ENV === "development" ? error.message : undefined,
                 });
             }
         });
