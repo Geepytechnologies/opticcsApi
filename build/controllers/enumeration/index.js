@@ -400,9 +400,9 @@ class EnumerationController {
                 const facilityNamesLower = facilityNames === null || facilityNames === void 0 ? void 0 : facilityNames.map((name) => name.toLowerCase());
                 const enumerationdata = yield prisma.enumerationData.findMany({
                     where: {
-                        AND: facilityNamesLower === null || facilityNamesLower === void 0 ? void 0 : facilityNamesLower.map((name) => ({
+                        OR: facilityNamesLower === null || facilityNamesLower === void 0 ? void 0 : facilityNamesLower.map((name) => ({
                             servingHealthcareFacility: {
-                                equals: name,
+                                contains: name,
                                 mode: "insensitive",
                             },
                         })),

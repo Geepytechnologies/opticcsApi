@@ -486,9 +486,9 @@ export class EnumerationController {
       );
       const enumerationdata = await prisma.enumerationData.findMany({
         where: {
-          AND: facilityNamesLower?.map((name) => ({
+          OR: facilityNamesLower?.map((name) => ({
             servingHealthcareFacility: {
-              equals: name,
+              contains: name,
               mode: "insensitive",
             },
           })),
