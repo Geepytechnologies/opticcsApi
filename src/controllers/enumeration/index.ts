@@ -251,7 +251,7 @@ export class EnumerationController {
         { id: enumerator.userID },
         process.env.ACCESS_SECRET!,
         {
-          expiresIn: "1d",
+          expiresIn: "30d",
         }
       );
 
@@ -260,7 +260,7 @@ export class EnumerationController {
         { id: enumerator.userID },
         process.env.REFRESH_SECRET!,
         {
-          expiresIn: "7d", // Refresh token expires in 7 days
+          expiresIn: "60d", // Refresh token expires in 60 days
         }
       );
       const { password, ...others } = enumerator;
@@ -486,6 +486,68 @@ export class EnumerationController {
       });
     }
   };
+  updateEnumerationData = async (req: any, res: Response) => {
+    const UserId = req.user.id;
+    const { clientNumber, ancVisits, tetanusVaccinationReceived, ...rest } =
+      req.body;
+
+    try {
+      const existingData = await prisma.enumerationData.findFirst({
+        where: { clientNumber },
+      });
+
+      if (!existingData) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "Enumeration data not found",
+        });
+      }
+
+      const updateData: any = {
+        ...rest,
+        submittedById: UserId,
+      };
+
+      // Handle nested relations if provided
+      if (ancVisits) {
+        updateData.ancVisits = {
+          deleteMany: {}, // Clear existing
+          create: ancVisits,
+        };
+      }
+
+      if (tetanusVaccinationReceived) {
+        updateData.tetanusVaccinationReceived = {
+          deleteMany: {}, // Clear existing
+          create: tetanusVaccinationReceived,
+        };
+      }
+
+      const updatedEnumeration = await prisma.enumerationData.update({
+        where: { id: existingData.id },
+        data: updateData,
+        include: {
+          ancVisits: true,
+          tetanusVaccinationReceived: true,
+        },
+      });
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Enumeration data updated successfully",
+        data: updatedEnumeration,
+      });
+    } catch (error: any) {
+      logger.error("Error updating enumeration data:", error);
+      console.log("Error updating enumeration data:", error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "Failed to update enumeration data",
+        error: error.message,
+      });
+    }
+  };
+
   getAllenumerationdata = async (req: Request, res: Response) => {
     const {
       dateCreated,

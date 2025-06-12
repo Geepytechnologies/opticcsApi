@@ -1,6 +1,8 @@
 import express from "express";
 import EnumerationController from "../../controllers/enumeration";
 import { verifyToken } from "../../middlewares/verifyToken";
+import { validateBody } from "../../middlewares/validate";
+import { EnumerationUpdateSchema } from "../../validations/enumeration";
 
 const router = express.Router();
 
@@ -559,6 +561,102 @@ router.delete("/enumerators/:id", EnumerationController.deleteEnumerator);
  *         description: Failed to create enumeration data
  */
 router.post("/data", verifyToken, EnumerationController.createenumerationdata);
+
+/**
+ * @swagger
+ * /api/enumeration/data:
+ *   patch:
+ *     summary: Update existing enumeration data by client number
+ *     tags: [Enumeration Data]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - clientNumber
+ *             properties:
+ *               clientNumber:
+ *                 type: string
+ *                 description: Unique identifier for the enumeration record
+ *               firstName:
+ *                 type: string
+ *               middleName:
+ *                 type: string
+ *               surName:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               age:
+ *                 type: number
+ *               alternatePhone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               lga:
+ *                 type: string
+ *               ward:
+ *                 type: string
+ *               settlement:
+ *                 type: string
+ *               servingHealthcareFacility:
+ *                 type: string
+ *               gravidity:
+ *                 type: string
+ *               parity:
+ *                 type: string
+ *               lmp:
+ *                 type: string
+ *               edd:
+ *                 type: string
+ *               ega:
+ *                 type: string
+ *               attendedAncVisit:
+ *                 type: string
+ *               numberOfAncVisits:
+ *                 type: integer
+ *               ancVisits:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     anc:
+ *                       type: string
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *               receivedTetanusVaccination:
+ *                 type: string
+ *               tetanusVaccinationReceived:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *               latitude:
+ *                 type: number
+ *               longitude:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Enumeration data updated successfully
+ *       404:
+ *         description: Enumeration data not found
+ *       500:
+ *         description: Failed to update enumeration data
+ */
+router.patch(
+  "/data",
+  verifyToken,
+  validateBody(EnumerationUpdateSchema),
+  EnumerationController.updateEnumerationData
+);
 
 /**
  * @swagger
