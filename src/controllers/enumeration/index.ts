@@ -26,6 +26,7 @@ import {
   getReferralsByClientNumber,
   getSchedulesByClientNumber,
   getServiceDeliveriesByClientNumber,
+  getUnifiedServiceDeliveryData,
 } from "../../services/enumeration.service";
 import { customRequest } from "../../middlewares/tsoaAuth";
 import { createError } from "../../middlewares/error";
@@ -707,6 +708,57 @@ export class EnumerationController {
       res.status(500).json({
         statusCode: 500,
         message: "Failed to download enumeration data",
+        error: error.message,
+      });
+    }
+  };
+  downloadEnumerationServiceDelivery = async (req: Request, res: Response) => {
+    try {
+      const data = await getUnifiedServiceDeliveryData(req.query);
+      if (!data || data.length === 0) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "No service delivery data found",
+        });
+      }
+      const csv = parse(data);
+
+      // Set the response headers to trigger file download
+      res.header("Content-Type", "text/csv");
+      res.attachment("enumerationservicedelivery.csv");
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=enumerationservicedelivery.csv"
+      );
+
+      res.status(200).send(csv);
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "Failed to download enumeration data",
+        error: error.message,
+      });
+    }
+  };
+  getEnumerationServiceDelivery = async (req: Request, res: Response) => {
+    try {
+      const data = await getUnifiedServiceDeliveryData(req.query);
+      if (!data || data.length === 0) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "No service delivery data found",
+        });
+      }
+
+      res
+        .status(200)
+        .json({ statusCode: 200, message: "successful", result: data });
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({
+        statusCode: 500,
+        message: "Failed to get enumeration data",
         error: error.message,
       });
     }

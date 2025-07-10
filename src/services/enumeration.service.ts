@@ -156,7 +156,151 @@ export const createServiceDelivery = async (
     return serviceDelivery;
   });
 };
+export async function getUnifiedServiceDeliveryData(filters: {
+  state?: string;
+  lga?: string;
+  ward?: string;
+  settlement?: string;
+  servingHealthcareFacility?: string;
+}) {
+  // First get the filtered client numbers
+  const enumerationDataWhere = {
+    ...(filters.state && { state: filters.state }),
+    ...(filters.lga && { lga: filters.lga }),
+    ...(filters.ward && { ward: filters.ward }),
+    ...(filters.settlement && { settlement: filters.settlement }),
+    ...(filters.servingHealthcareFacility && {
+      servingHealthcareFacility: filters.servingHealthcareFacility,
+    }),
+  };
 
+  const clientNumbers = await prisma.enumerationData.findMany({
+    where: enumerationDataWhere,
+    select: { clientNumber: true },
+  });
+
+  // Then get the service deliveries with related data
+  const serviceDeliveries = await prisma.enumerationServiceDelivery.findMany({
+    where: {
+      clientNumber: {
+        in: clientNumbers.map((c) => c.clientNumber),
+      },
+    },
+    select: {
+      id: true,
+      clientNumber: true,
+      nameOfHealthFacility: true,
+      howclientcametoseekcareatfacility: true,
+      purposeOfVisit: true,
+      anc: {
+        select: {
+          dateOfVisit: true,
+          dateOfNextAppointment: true,
+          servicesProvided: {
+            select: {
+              name: true,
+            },
+          },
+          commoditiesDispensed: {
+            select: {
+              name: true,
+            },
+          },
+          outcomeOfVisit: {
+            select: {
+              outcome: true,
+            },
+          },
+        },
+      },
+      deliveryAndLabour: {
+        select: {
+          dateOfVisit: true,
+          otherCommodities: true,
+          receivedMamaKit: true,
+          deliveryDate: true,
+          NumberOfNewBorn: true,
+          commoditiesDispensed: {
+            select: {
+              name: true,
+            },
+          },
+          pregnancyOutcome: {
+            select: {
+              result: true,
+            },
+          },
+          outcomeOfVisit: {
+            select: {
+              outcome: true,
+            },
+          },
+        },
+      },
+      pnc: {
+        select: {
+          dateOfNextAppointment: true,
+          dateOfVisit: true,
+          detailsOfVisit: true,
+          whatServicesWereProvided: true,
+          whatNumberIsThisVisit: true,
+          outcomeOfVisit: {
+            select: {
+              outcome: true,
+            },
+          },
+        },
+      },
+      others: {
+        select: {
+          purposeOfUnscheduledVisit: true,
+          dateOfVisit: true,
+          detailsOfVisit: true,
+          outcomeOfVisit: {
+            select: {
+              outcome: true,
+              others: {
+                select: {
+                  purposeOfUnscheduledVisit: true,
+                  dateOfVisit: true,
+                  detailsOfVisit: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      submittedBy: {
+        select: {
+          name: true,
+          phone: true,
+          state: true,
+          lga: true,
+          ward: true,
+          settlement: true,
+          healthFacility: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Finally, combine the data
+  return Promise.all(
+    serviceDeliveries.map(async (delivery) => {
+      const enumerationData = await prisma.enumerationData.findUnique({
+        where: { clientNumber: delivery.clientNumber },
+      });
+      return {
+        ...delivery,
+        //enumerationData,
+      };
+    })
+  );
+}
 export const getServiceDeliveriesByClientNumber = async (
   clientNumber: string
 ) => {

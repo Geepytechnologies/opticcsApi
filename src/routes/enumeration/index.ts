@@ -1147,6 +1147,114 @@ router.get("/download/data", EnumerationController.downloadenumerationdata);
 
 /**
  * @swagger
+ * /api/enumeration/data/service-delivery/download:
+ *   get:
+ *     summary: Download Enumeration Service Delivery data
+ *     tags: [Enumeration Analytics]
+ *     description: Download Enumeration Service Delivery Data.
+ *     parameters:
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         description: Filter by state
+ *         example: Lagos
+ *       - in: query
+ *         name: lga
+ *         schema:
+ *           type: string
+ *         description: Filter by Local Government Area
+ *         example: Ikeja
+ *       - in: query
+ *         name: ward
+ *         schema:
+ *           type: string
+ *         description: Filter by ward
+ *         example: Ward A
+ *       - in: query
+ *         name: settlement
+ *         schema:
+ *           type: string
+ *         description: Filter by settlement
+ *         example: Victoria Island
+ *       - in: query
+ *         name: servingHealthcareFacility
+ *         schema:
+ *           type: string
+ *         description: Filter by serving healthcare facility
+ *         example: General Hospital
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/data/service-delivery/download",
+  EnumerationController.downloadEnumerationServiceDelivery
+);
+
+/**
+ * @swagger
+ * /api/enumeration/data/service-delivery/all:
+ *   get:
+ *     summary: Get Enumeration Service Delivery data
+ *     tags: [Enumeration Analytics]
+ *     description: Get Enumeration Service Delivery Data.
+ *     parameters:
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         description: Filter by state
+ *         example: Lagos
+ *       - in: query
+ *         name: lga
+ *         schema:
+ *           type: string
+ *         description: Filter by Local Government Area
+ *         example: Ikeja
+ *       - in: query
+ *         name: ward
+ *         schema:
+ *           type: string
+ *         description: Filter by ward
+ *         example: Ward A
+ *       - in: query
+ *         name: settlement
+ *         schema:
+ *           type: string
+ *         description: Filter by settlement
+ *         example: Victoria Island
+ *       - in: query
+ *         name: servingHealthcareFacility
+ *         schema:
+ *           type: string
+ *         description: Filter by serving healthcare facility
+ *         example: General Hospital
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/data/service-delivery/all",
+  EnumerationController.getEnumerationServiceDelivery
+);
+
+/**
+ * @swagger
  * /api/enumeration/service-delivery:
  *   post:
  *     summary: Create Enumeration Service Delivery

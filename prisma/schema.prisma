@@ -140,7 +140,7 @@ model EnumerationServiceDelivery {
   deliveryAndLabour EnumerationServiceDeliveryLabour? @relation("LabourRelation")
   pnc               EnumerationServiceDeliveryPnc?    @relation("PncRelation")
   others            EnumerationServiceDeliveryOthers? @relation("OthersRelation")
-
+  //createdAt                  DateTime? @default(now()) @db.DateTime(0)
   submittedById String
   submittedBy   Enumerator @relation(fields: [submittedById], references: [userID])
 }
