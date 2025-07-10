@@ -165,12 +165,35 @@ export async function getUnifiedServiceDeliveryData(filters: {
 }) {
   // First get the filtered client numbers
   const enumerationDataWhere = {
-    ...(filters.state && { state: filters.state }),
-    ...(filters.lga && { lga: filters.lga }),
-    ...(filters.ward && { ward: filters.ward }),
-    ...(filters.settlement && { settlement: filters.settlement }),
+    ...(filters.state && {
+      state: {
+        equals: filters.state.trim(),
+        mode: "insensitive", // Makes the comparison case-insensitive
+      },
+    }),
+    ...(filters.lga && {
+      lga: {
+        equals: filters.lga.trim(),
+        mode: "insensitive",
+      },
+    }),
+    ...(filters.ward && {
+      ward: {
+        equals: filters.ward.trim(),
+        mode: "insensitive",
+      },
+    }),
+    ...(filters.settlement && {
+      settlement: {
+        equals: filters.settlement.trim(),
+        mode: "insensitive",
+      },
+    }),
     ...(filters.servingHealthcareFacility && {
-      servingHealthcareFacility: filters.servingHealthcareFacility,
+      servingHealthcareFacility: {
+        equals: filters.servingHealthcareFacility.trim(),
+        mode: "insensitive",
+      },
     }),
   };
 
