@@ -1143,7 +1143,7 @@ router.get("/activitylog", verifyToken, EnumerationController.getActivityLog);
  *       500:
  *         description: Internal server error
  */
-router.get("/download/data", EnumerationController.downloadenumerationdata);
+router.get("/data/download", EnumerationController.downloadenumerationdata);
 
 /**
  * @swagger
